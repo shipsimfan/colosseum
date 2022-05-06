@@ -1,0 +1,61 @@
+use crate::Window;
+use graphics::{Input, Vector2, Vector3, Vector4};
+
+pub struct Shader {
+    shader: graphics::Shader,
+}
+
+#[repr(C)]
+pub struct Vertex {
+    position: Vector4,
+    color: Vector4,
+    uv: Vector2,
+}
+
+const VERTEX_LAYOUT: [(&str, graphics::Format); 3] = [
+    ("POSITION", graphics::Format::R32G32B32A32Float),
+    ("COLOR", graphics::Format::R32G32B32A32Float),
+    ("TEXCOORD", graphics::Format::R32A32Float),
+];
+
+pub fn new_default<I: Input>(window: &mut Window<I>) -> Shader {
+    Shader {
+        shader: graphics::Shader::new(
+            include_str!("default_shader.hlsl"),
+            &VERTEX_LAYOUT,
+            window.inner(),
+        )
+        .unwrap(),
+    }
+}
+
+impl Shader {
+    pub fn new<S: AsRef<str>, I: Input>(code: S, window: &mut Window<I>) -> Self {
+        Shader {
+            shader: graphics::Shader::new(code, &VERTEX_LAYOUT, window.inner()).unwrap(),
+        }
+    }
+
+    pub fn set_active<I: Input>(&mut self, window: &mut Window<I>) {
+        self.shader.set_active_shader(window.inner());
+        window.update_camera_buffer();
+    }
+}
+
+impl Vertex {
+    pub fn new_vertex(position: Vector3, color: Vector4, uv: Vector2) -> Self {
+        Vertex {
+            position: Vector4::new(position.x(), position.y(), position.z(), 1.0),
+            color,
+            uv,
+        }
+    }
+
+    pub fn new(x: f32, y: f32, z: f32, r: f32, g: f32, b: f32, a: f32, uv0: f32, uv1: f32) -> Self {
+        Vertex {
+            position: Vector4::new(x, y, z, 1.0),
+            color: Vector4::new(r, g, b, a),
+            uv: Vector2::new(uv0, uv1),
+        }
+    }
+}
