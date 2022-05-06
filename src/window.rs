@@ -1,7 +1,7 @@
-use graphics::{ConstantBuffer, Input, Matrix};
+use alexandria::{ConstantBuffer, Input, Matrix};
 
 pub struct Window<I: Input> {
-    window: Box<graphics::Window<I>>,
+    window: Box<alexandria::Window<I>>,
 
     camera_matrix: Matrix,
 
@@ -11,7 +11,7 @@ pub struct Window<I: Input> {
 
 impl<I: Input> Window<I> {
     pub fn new<S: AsRef<str>>(title: S, width: usize, height: usize) -> Self {
-        let mut window = graphics::Window::new(title.as_ref(), width, height).unwrap();
+        let mut window = alexandria::Window::new(title.as_ref(), width, height).unwrap();
 
         let identity = Matrix::identity();
 
@@ -61,7 +61,7 @@ impl<I: Input> Window<I> {
         self.object_constant_buffer.set_active(&mut self.window);
     }
 
-    pub fn inner(&mut self) -> &mut Box<graphics::Window<I>> {
+    pub fn inner(&mut self) -> &mut Box<alexandria::Window<I>> {
         &mut self.window
     }
 }

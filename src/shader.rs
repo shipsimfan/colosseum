@@ -1,8 +1,8 @@
 use crate::Window;
-use graphics::{Input, Vector2, Vector3, Vector4};
+use alexandria::{Input, Vector2, Vector3, Vector4};
 
 pub struct Shader {
-    shader: graphics::Shader,
+    shader: alexandria::Shader,
 }
 
 #[repr(C)]
@@ -12,15 +12,15 @@ pub struct Vertex {
     uv: Vector2,
 }
 
-const VERTEX_LAYOUT: [(&str, graphics::Format); 3] = [
-    ("POSITION", graphics::Format::R32G32B32A32Float),
-    ("COLOR", graphics::Format::R32G32B32A32Float),
-    ("TEXCOORD", graphics::Format::R32A32Float),
+const VERTEX_LAYOUT: [(&str, alexandria::Format); 3] = [
+    ("POSITION", alexandria::Format::R32G32B32A32Float),
+    ("COLOR", alexandria::Format::R32G32B32A32Float),
+    ("TEXCOORD", alexandria::Format::R32A32Float),
 ];
 
 pub fn new_default<I: Input>(window: &mut Window<I>) -> Shader {
     Shader {
-        shader: graphics::Shader::new(
+        shader: alexandria::Shader::new(
             include_str!("default_shader.hlsl"),
             &VERTEX_LAYOUT,
             window.inner(),
@@ -32,7 +32,7 @@ pub fn new_default<I: Input>(window: &mut Window<I>) -> Shader {
 impl Shader {
     pub fn new<S: AsRef<str>, I: Input>(code: S, window: &mut Window<I>) -> Self {
         Shader {
-            shader: graphics::Shader::new(code, &VERTEX_LAYOUT, window.inner()).unwrap(),
+            shader: alexandria::Shader::new(code, &VERTEX_LAYOUT, window.inner()).unwrap(),
         }
     }
 

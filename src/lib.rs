@@ -16,4 +16,4 @@ pub use shader::{Shader, Vertex};
 pub use transform::*;
 pub use window::Window;
 
-pub use graphics::{Input, Matrix, Vector2, Vector3, Vector4};
+pub use alexandria::{Input, Matrix, Vector2, Vector3, Vector4};

@@ -1,5 +1,5 @@
 use crate::Window;
-use graphics::StateTrackingInput;
+use alexandria::StateTrackingInput;
 
 pub trait Game {
     const INITIAL_TITLE: &'static str;

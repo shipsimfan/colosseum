@@ -6,4 +6,4 @@ version = "0.1.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-graphics = {git = "https://github.com/shipsimfan/lib-graphics.git"}
+alexandria = {git = "https://github.com/shipsimfan/alexandria.git"}

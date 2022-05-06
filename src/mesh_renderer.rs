@@ -1,7 +1,7 @@
 use crate::{Transform, Vertex, Window};
-use graphics::Input;
+use alexandria::Input;
 
-pub struct Mesh(graphics::Mesh<Vertex>);
+pub struct Mesh(alexandria::Mesh<Vertex>);
 
 pub struct MeshRenderer {
     mesh: Mesh,
@@ -10,7 +10,7 @@ pub struct MeshRenderer {
 
 impl Mesh {
     pub fn new<I: Input>(vertices: &[Vertex], indices: &[u32], window: &mut Window<I>) -> Self {
-        Mesh(graphics::Mesh::new(vertices, indices, window.inner()).unwrap())
+        Mesh(alexandria::Mesh::new(vertices, indices, window.inner()).unwrap())
     }
 
     pub fn render<I: Input>(&mut self, window: &mut Window<I>) {
