@@ -1,5 +1,5 @@
 use crate::Window;
-use alexandria::{Input, Vector2, Vector3, Vector4};
+use alexandria::{Input, Matrix, Vector2, Vector3, Vector4};
 
 pub struct Shader {
     shader: alexandria::Shader,
@@ -10,6 +10,12 @@ pub struct Vertex {
     position: Vector4,
     color: Vector4,
     uv: Vector2,
+}
+
+#[repr(C)]
+pub struct ObjectBuffer {
+    matrix: Matrix,
+    tint: Vector4,
 }
 
 const VERTEX_LAYOUT: [(&str, alexandria::Format); 3] = [
@@ -51,11 +57,27 @@ impl Vertex {
         }
     }
 
-    pub fn new(x: f32, y: f32, z: f32, r: f32, g: f32, b: f32, a: f32, uv0: f32, uv1: f32) -> Self {
+    pub const fn new(
+        x: f32,
+        y: f32,
+        z: f32,
+        r: f32,
+        g: f32,
+        b: f32,
+        a: f32,
+        uv0: f32,
+        uv1: f32,
+    ) -> Self {
         Vertex {
             position: Vector4::new(x, y, z, 1.0),
             color: Vector4::new(r, g, b, a),
             uv: Vector2::new(uv0, uv1),
         }
+    }
+}
+
+impl ObjectBuffer {
+    pub fn new(matrix: Matrix, tint: Vector4) -> Self {
+        ObjectBuffer { matrix, tint }
     }
 }

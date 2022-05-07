@@ -1,11 +1,12 @@
 use crate::{Transform, Vertex, Window};
-use alexandria::Input;
+use alexandria::{Input, Vector4};
 
 pub struct Mesh(alexandria::Mesh<Vertex>);
 
 pub struct MeshRenderer {
     mesh: Mesh,
     transform: Transform,
+    tint: Vector4,
 }
 
 impl Mesh {
@@ -23,6 +24,7 @@ impl MeshRenderer {
         MeshRenderer {
             mesh,
             transform: Transform::new(),
+            tint: Vector4::ONE,
         }
     }
 
@@ -30,12 +32,20 @@ impl MeshRenderer {
         &self.transform
     }
 
+    pub fn tint(&self) -> Vector4 {
+        self.tint
+    }
+
     pub fn transform_mut(&mut self) -> &mut Transform {
         &mut self.transform
     }
 
+    pub fn set_tint(&mut self, new_tint: Vector4) {
+        self.tint = new_tint;
+    }
+
     pub fn render<I: Input>(&mut self, window: &mut Window<I>) {
-        window.set_object_matrix(*self.transform.transform());
+        window.set_object_buffer(*self.transform.transform(), self.tint);
         self.mesh.render(window);
     }
 }

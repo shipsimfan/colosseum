@@ -27,8 +27,21 @@ impl Camera {
         }
     }
 
+    pub fn transform(&self) -> &Transform {
+        &self.transform
+    }
+
+    pub fn transform_mut(&mut self) -> &mut Transform {
+        &mut self.transform
+    }
+
+    pub fn set_projection<I: Input>(&mut self, projection: Projection, window: &mut Window<I>) {
+        self.projection_matrix = projection.create_matrix(window);
+    }
+
     pub fn set_active<I: Input>(&mut self, window: &mut Window<I>) {
         if self.transform.updated() {
+            self.transform.clear_update();
             self.total_matrix = *self.transform.transform() * self.projection_matrix;
         }
 

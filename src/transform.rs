@@ -22,7 +22,7 @@ impl Transform {
         let scale = Vector3::ONE;
 
         let position_matrix = Matrix::translation(position.x(), position.y(), position.z());
-        let rotation_matrix = Matrix::translation(rotation.x(), rotation.y(), rotation.z());
+        let rotation_matrix = Matrix::rotation(rotation.x(), rotation.y(), rotation.z());
         let scale_matrix = Matrix::scale(scale.x(), scale.y(), scale.z());
 
         let transform_matrix = scale_matrix * rotation_matrix * position_matrix;
@@ -57,6 +57,10 @@ impl Transform {
 
     pub fn updated(&self) -> bool {
         self.updated
+    }
+
+    pub fn clear_update(&mut self) {
+        self.updated = false;
     }
 
     pub fn set_position(&mut self, new_position: Vector3) {

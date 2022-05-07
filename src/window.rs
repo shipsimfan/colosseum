@@ -1,4 +1,5 @@
-use alexandria::{ConstantBuffer, Input, Matrix};
+use crate::shader::ObjectBuffer;
+use alexandria::{ConstantBuffer, Input, Matrix, Vector4};
 
 pub struct Window<I: Input> {
     window: Box<alexandria::Window<I>>,
@@ -6,7 +7,7 @@ pub struct Window<I: Input> {
     camera_matrix: Matrix,
 
     camera_constant_buffer: ConstantBuffer<Matrix, 0>,
-    object_constant_buffer: ConstantBuffer<Matrix, 1>,
+    object_constant_buffer: ConstantBuffer<ObjectBuffer, 1>,
 }
 
 impl<I: Input> Window<I> {
@@ -16,7 +17,9 @@ impl<I: Input> Window<I> {
         let identity = Matrix::identity();
 
         let camera_constant_buffer = ConstantBuffer::new(Some(identity), &mut window).unwrap();
-        let object_constant_buffer = ConstantBuffer::new(Some(identity), &mut window).unwrap();
+        let object_constant_buffer =
+            ConstantBuffer::new(Some(ObjectBuffer::new(identity, Vector4::ONE)), &mut window)
+                .unwrap();
 
         Window {
             window,
@@ -32,6 +35,10 @@ impl<I: Input> Window<I> {
 
     pub fn height(&self) -> f32 {
         self.window.get_height() as f32
+    }
+
+    pub fn aspect(&self) -> f32 {
+        self.width() / self.height()
     }
 
     pub fn current_camera_matrix(&self) -> &Matrix {
@@ -50,9 +57,9 @@ impl<I: Input> Window<I> {
             .unwrap();
     }
 
-    pub fn set_object_matrix(&mut self, matrix: Matrix) {
+    pub fn set_object_buffer(&mut self, matrix: Matrix, tint: Vector4) {
         self.object_constant_buffer
-            .set(matrix, &mut self.window)
+            .set(ObjectBuffer::new(matrix, tint), &mut self.window)
             .unwrap();
     }
 

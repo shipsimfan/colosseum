@@ -1,9 +1,10 @@
-cbuffer CameraMatrixBuffer {
+cbuffer CameraBuffer {
     matrix projection;
 }
 
-cbuffer ObjectMatrixBuffer {
+cbuffer ObjectBuffer {
     matrix object;
+    float4 tint;
 }
 
 struct VertexInputType {
@@ -23,7 +24,7 @@ PixelInputType vertex_main(VertexInputType input) {
 
     output.position = mul(input.position, object);
     output.position = mul(output.position, projection);
-    output.color = input.color;
+    output.color = input.color * tint;
     output.uv = input.uv;
 
     return output;
