@@ -1,7 +1,10 @@
 use crate::{Transform, Vertex, Window};
-use alexandria::{Input, Topology, Vector4};
+use alexandria::{Input, Vector4};
 
-pub struct Mesh(alexandria::Mesh<Vertex>);
+pub enum Mesh {
+    Triangle(alexandria::Mesh<Vertex>),
+    Line(alexandria::LineMesh<Vertex>),
+}
 
 pub struct MeshRenderer {
     mesh: Mesh,
@@ -11,15 +14,19 @@ pub struct MeshRenderer {
 
 impl Mesh {
     pub fn new<I: Input>(vertices: &[Vertex], indices: &[u32], window: &mut Window<I>) -> Self {
-        Mesh(alexandria::Mesh::new(vertices, indices, window.inner()).unwrap())
+        Mesh::Triangle(alexandria::Mesh::new(vertices, indices, window.inner()).unwrap())
     }
 
-    pub fn set_topology(&mut self, topology: Topology) {
-        self.0.set_topology(topology);
+    pub fn new_line<I: Input>(vertices: &[Vertex], window: &mut Window<I>) -> Self {
+        Mesh::Line(alexandria::LineMesh::new(vertices, window.inner()).unwrap())
     }
 
     pub fn render<I: Input>(&mut self, window: &mut Window<I>) {
-        self.0.render(window.inner())
+        let window = window.inner();
+        match self {
+            Mesh::Triangle(mesh) => mesh.render(window),
+            Mesh::Line(mesh) => mesh.render(window),
+        }
     }
 }
 
