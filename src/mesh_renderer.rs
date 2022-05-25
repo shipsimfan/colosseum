@@ -55,6 +55,10 @@ impl MeshRenderer {
         self.tint = new_tint;
     }
 
+    pub fn set_mesh(&mut self, mesh: Mesh) {
+        self.mesh = mesh;
+    }
+
     pub fn render<I: Input>(&mut self, window: &mut Window<I>) {
         window.set_object_buffer(*self.transform.transform(), self.tint);
         self.mesh.render(window);
