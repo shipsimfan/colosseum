@@ -20,4 +20,4 @@ pub use transform::*;
 pub use transform_2d::*;
 pub use window::Window;
 
-pub use alexandria::{Input, Matrix, Vector2, Vector3, Vector4};
+pub use alexandria::{Input, Matrix, Topology, Vector2, Vector3, Vector4};

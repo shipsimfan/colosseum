@@ -1,5 +1,5 @@
 use crate::{Transform, Vertex, Window};
-use alexandria::{Input, Vector4};
+use alexandria::{Input, Topology, Vector4};
 
 pub struct Mesh(alexandria::Mesh<Vertex>);
 
@@ -12,6 +12,10 @@ pub struct MeshRenderer {
 impl Mesh {
     pub fn new<I: Input>(vertices: &[Vertex], indices: &[u32], window: &mut Window<I>) -> Self {
         Mesh(alexandria::Mesh::new(vertices, indices, window.inner()).unwrap())
+    }
+
+    pub fn set_topology(&mut self, topology: Topology) {
+        self.0.set_topology(topology);
     }
 
     pub fn render<I: Input>(&mut self, window: &mut Window<I>) {
