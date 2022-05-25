@@ -17,8 +17,8 @@ impl Mesh {
         Mesh::Triangle(alexandria::Mesh::new(vertices, indices, window.inner()).unwrap())
     }
 
-    pub fn new_line<I: Input>(vertices: &[Vertex], window: &mut Window<I>) -> Self {
-        Mesh::Line(alexandria::LineMesh::new(vertices, window.inner()).unwrap())
+    pub fn new_line<I: Input>(vertices: &[Vertex], strip: bool, window: &mut Window<I>) -> Self {
+        Mesh::Line(alexandria::LineMesh::new(vertices, strip, window.inner()).unwrap())
     }
 
     pub fn render<I: Input>(&mut self, window: &mut Window<I>) {
