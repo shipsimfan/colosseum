@@ -74,6 +74,30 @@ impl Vertex {
             uv: Vector2::new(uv0, uv1),
         }
     }
+
+    pub fn position(&self) -> &Vector4 {
+        &self.position
+    }
+
+    pub fn color(&self) -> &Vector4 {
+        &self.color
+    }
+
+    pub fn uv(&self) -> &Vector2 {
+        &self.uv
+    }
+
+    pub fn position_mut(&mut self) -> &mut Vector4 {
+        &mut self.position
+    }
+
+    pub fn color_mut(&mut self) -> &mut Vector4 {
+        &mut self.color
+    }
+
+    pub fn uv_mut(&mut self) -> &mut Vector2 {
+        &mut self.uv
+    }
 }
 
 impl ObjectBuffer {
