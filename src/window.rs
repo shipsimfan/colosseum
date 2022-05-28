@@ -6,8 +6,8 @@ pub struct Window<I: Input> {
 
     camera_matrix: Matrix,
 
-    camera_constant_buffer: ConstantBuffer<Matrix, 0>,
-    object_constant_buffer: ConstantBuffer<ObjectBuffer, 1>,
+    camera_constant_buffer: ConstantBuffer<Matrix>,
+    object_constant_buffer: ConstantBuffer<ObjectBuffer>,
 }
 
 impl<I: Input> Window<I> {
@@ -16,10 +16,13 @@ impl<I: Input> Window<I> {
 
         let identity = Matrix::identity();
 
-        let camera_constant_buffer = ConstantBuffer::new(Some(identity), &mut window).unwrap();
-        let object_constant_buffer =
-            ConstantBuffer::new(Some(ObjectBuffer::new(identity, Vector4::ONE)), &mut window)
-                .unwrap();
+        let camera_constant_buffer = ConstantBuffer::new(Some(identity), 0, &mut window).unwrap();
+        let object_constant_buffer = ConstantBuffer::new(
+            Some(ObjectBuffer::new(identity, Vector4::ONE)),
+            1,
+            &mut window,
+        )
+        .unwrap();
 
         Window {
             window,
