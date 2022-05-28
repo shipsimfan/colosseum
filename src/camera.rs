@@ -1,4 +1,4 @@
-use crate::{Transform, Window};
+use crate::{camera_transform::CameraTransform, Window};
 use alexandria::{Input, Matrix};
 use std::f32::consts::PI;
 
@@ -8,7 +8,7 @@ pub enum Projection {
 }
 
 pub struct Camera {
-    transform: Transform,
+    transform: CameraTransform,
     projection_matrix: Matrix,
     total_matrix: Matrix,
 }
@@ -16,7 +16,7 @@ pub struct Camera {
 impl Camera {
     pub fn new<I: Input>(window: &mut Window<I>) -> Self {
         let projection = Projection::Perspective(PI / 4.0, 0.01, 1000.0);
-        let transform = Transform::new();
+        let transform = CameraTransform::new();
         let projection_matrix = projection.create_matrix(window);
         let total_matrix = *transform.transform() * projection_matrix;
 
@@ -27,11 +27,11 @@ impl Camera {
         }
     }
 
-    pub fn transform(&self) -> &Transform {
+    pub fn transform(&self) -> &CameraTransform {
         &self.transform
     }
 
-    pub fn transform_mut(&mut self) -> &mut Transform {
+    pub fn transform_mut(&mut self) -> &mut CameraTransform {
         &mut self.transform
     }
 
@@ -42,7 +42,7 @@ impl Camera {
     pub fn set_active<I: Input>(&mut self, window: &mut Window<I>) {
         if self.transform.updated() {
             self.transform.clear_update();
-            self.total_matrix = *self.transform.transform() * self.projection_matrix;
+            self.total_matrix = self.projection_matrix * *self.transform.transform();
         }
 
         window.set_camera_matrix(self.total_matrix);

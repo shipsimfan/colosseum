@@ -2,6 +2,7 @@
 
 mod app;
 mod camera;
+mod camera_transform;
 mod game;
 mod mesh_renderer;
 mod shader;
@@ -11,6 +12,7 @@ mod transform_2d;
 mod window;
 
 pub use app::*;
+pub use camera::*;
 pub use camera::*;
 pub use game::*;
 pub use mesh_renderer::*;
