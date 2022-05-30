@@ -52,6 +52,10 @@ impl<I: Input> Window<I> {
         self.window.input()
     }
 
+    pub fn set_mouse_lock(&mut self, lock: bool) {
+        self.window.set_mouse_lock(lock);
+    }
+
     pub fn set_camera_matrix(&mut self, matrix: Matrix) {
         self.camera_matrix = matrix;
 

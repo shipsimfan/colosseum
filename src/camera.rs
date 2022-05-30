@@ -1,5 +1,5 @@
-use crate::{camera_transform::CameraTransform, Window};
-use alexandria::{Input, Matrix};
+use crate::Window;
+use alexandria::{Input, Matrix, Vector3, Vector4};
 use std::f32::consts::PI;
 
 pub enum Projection {
@@ -8,31 +8,60 @@ pub enum Projection {
 }
 
 pub struct Camera {
-    transform: CameraTransform,
+    position: Vector3,
+    rotation: Vector3,
     projection_matrix: Matrix,
     total_matrix: Matrix,
+    updated: bool,
+}
+
+fn calculate_lookahead(position: Vector3, rotation: &Vector3) -> Matrix {
+    let rotation_matrix = Matrix::rotation(rotation.x(), rotation.y(), rotation.z());
+    let target = (rotation_matrix * Vector4::FORWARD).normal();
+
+    let right = (rotation_matrix * Vector4::RIGHT).xyz();
+    let forward = (rotation_matrix * Vector4::FORWARD).xyz();
+    let up = forward.cross(right);
+
+    let target = position + target.xyz();
+    Matrix::look_at(position, target, up)
 }
 
 impl Camera {
     pub fn new<I: Input>(window: &mut Window<I>) -> Self {
         let projection = Projection::Perspective(PI / 4.0, 0.01, 1000.0);
-        let transform = CameraTransform::new();
         let projection_matrix = projection.create_matrix(window);
-        let total_matrix = *transform.transform() * projection_matrix;
+
+        let position = Vector3::ZERO;
+        let rotation = Vector3::ZERO;
+
+        let total_matrix = projection_matrix * calculate_lookahead(position, &rotation);
 
         Camera {
-            transform,
+            position,
+            rotation,
             projection_matrix,
             total_matrix,
+            updated: false,
         }
     }
 
-    pub fn transform(&self) -> &CameraTransform {
-        &self.transform
+    pub fn position(&self) -> Vector3 {
+        -self.position
     }
 
-    pub fn transform_mut(&mut self) -> &mut CameraTransform {
-        &mut self.transform
+    pub fn rotation(&self) -> Vector3 {
+        self.rotation
+    }
+
+    pub fn set_position(&mut self, position: Vector3) {
+        self.position = -position;
+        self.updated = true;
+    }
+
+    pub fn set_rotation(&mut self, rotation: Vector3) {
+        self.rotation = rotation;
+        self.updated = true;
     }
 
     pub fn set_projection<I: Input>(&mut self, projection: Projection, window: &mut Window<I>) {
@@ -40,9 +69,10 @@ impl Camera {
     }
 
     pub fn set_active<I: Input>(&mut self, window: &mut Window<I>) {
-        if self.transform.updated() {
-            self.transform.clear_update();
-            self.total_matrix = self.projection_matrix * *self.transform.transform();
+        if self.updated {
+            self.updated = false;
+            self.total_matrix =
+                self.projection_matrix * calculate_lookahead(self.position, &self.rotation);
         }
 
         window.set_camera_matrix(self.total_matrix);
