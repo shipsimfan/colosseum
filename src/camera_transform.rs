@@ -39,12 +39,12 @@ impl CameraTransform {
         }
     }
 
-    pub fn position(&self) -> &Vector3 {
-        &self.position
+    pub fn position(&self) -> Vector3 {
+        -self.position
     }
 
-    pub fn rotation(&self) -> &Vector3 {
-        &self.rotation
+    pub fn rotation(&self) -> Vector3 {
+        -self.rotation
     }
 
     pub fn scale(&self) -> &Vector3 {
