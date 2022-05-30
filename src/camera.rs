@@ -47,7 +47,7 @@ impl Camera {
     }
 
     pub fn position(&self) -> Vector3 {
-        -self.position
+        self.position
     }
 
     pub fn rotation(&self) -> Vector3 {
@@ -55,7 +55,7 @@ impl Camera {
     }
 
     pub fn set_position(&mut self, position: Vector3) {
-        self.position = -position;
+        self.position = position;
         self.updated = true;
     }
 
