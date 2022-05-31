@@ -44,6 +44,10 @@ impl<I: Input> Window<I> {
         self.width() / self.height()
     }
 
+    pub fn inv_aspect(&self) -> f32 {
+        self.height() / self.width()
+    }
+
     pub fn current_camera_matrix(&self) -> &Matrix {
         &self.camera_matrix
     }
