@@ -66,6 +66,7 @@ impl Camera {
 
     pub fn set_projection<I: Input>(&mut self, projection: Projection, window: &mut Window<I>) {
         self.projection_matrix = projection.create_matrix(window);
+        self.updated = true;
     }
 
     pub fn set_active<I: Input>(&mut self, window: &mut Window<I>) {

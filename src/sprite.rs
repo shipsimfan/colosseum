@@ -43,6 +43,6 @@ impl Sprite {
 
     pub fn render<I: Input>(&mut self, window: &mut Window<I>) {
         window.set_object_buffer(*self.transform.transform(), self.tint);
-        self.mesh.render(window);
+        self.mesh.render();
     }
 }

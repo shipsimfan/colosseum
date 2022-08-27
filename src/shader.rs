@@ -27,7 +27,7 @@ const VERTEX_LAYOUT: [(&str, alexandria::Format); 3] = [
 pub fn new_default<I: Input>(window: &mut Window<I>) -> Shader {
     Shader {
         shader: alexandria::Shader::new(
-            include_str!("default_shader.hlsl"),
+            include_str!("default_shader.acsl"),
             &VERTEX_LAYOUT,
             window.inner(),
         )
@@ -43,7 +43,7 @@ impl Shader {
     }
 
     pub fn set_active<I: Input>(&mut self, window: &mut Window<I>) {
-        self.shader.set_active_shader(window.inner());
+        self.shader.set_active();
         window.update_camera_buffer();
     }
 }

@@ -1,0 +1,35 @@
+struct CameraBuffer {
+    projection: float4x4,
+}
+
+struct ObjectBuffer {
+    object: float4x4,
+    tint: float4,
+}
+
+struct VertexInputType {
+    position: float4 : POSITION,
+    color: float4 : COLOR,
+    uv: float2 : TEXCOORD,
+}
+
+struct PixelInputType {
+    position: float4 : SV_POSITION,
+    color: float4 : COLOR,
+    uv: float2: TEXCOORD,
+}
+
+cbuffer camera: CameraBuffer : 0;
+cbuffer object: ObjectBuffer : 1;
+
+fn vertex_main(vertex_input: VertexInputType) -> PixelInputType {
+    return PixelInputType {
+        position: ((vertex_input.position * object.object) * camera.projection),
+        color: vertex_input.color * object.tint,
+        uv: vertex_input.uv,
+    };
+}
+
+fn fragment_main(pixel_input: PixelInputType) -> float4 {
+    return pixel_input.color;
+}

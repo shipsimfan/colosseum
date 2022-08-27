@@ -21,11 +21,10 @@ impl Mesh {
         Mesh::Line(alexandria::LineMesh::new(vertices, strip, window.inner()).unwrap())
     }
 
-    pub fn render<I: Input>(&mut self, window: &mut Window<I>) {
-        let window = window.inner();
+    pub fn render(&mut self) {
         match self {
-            Mesh::Triangle(mesh) => mesh.render(window),
-            Mesh::Line(mesh) => mesh.render(window),
+            Mesh::Triangle(mesh) => mesh.render(),
+            Mesh::Line(mesh) => mesh.render(),
         }
     }
 }
@@ -61,6 +60,6 @@ impl MeshRenderer {
 
     pub fn render<I: Input>(&mut self, window: &mut Window<I>) {
         window.set_object_buffer(*self.transform.transform(), self.tint);
-        self.mesh.render(window);
+        self.mesh.render();
     }
 }
