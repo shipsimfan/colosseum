@@ -22,6 +22,8 @@ struct PixelInputType {
 cbuffer camera: CameraBuffer : 0;
 cbuffer object: ObjectBuffer : 1;
 
+texture shader_texture : 0;
+
 fn vertex_main(vertex_input: VertexInputType) -> PixelInputType {
     return PixelInputType {
         position: ((vertex_input.position * object.object) * camera.projection),
@@ -31,5 +33,5 @@ fn vertex_main(vertex_input: VertexInputType) -> PixelInputType {
 }
 
 fn fragment_main(pixel_input: PixelInputType) -> float4 {
-    return pixel_input.color;
+    return sample_texture(shader_texture, pixel_input.uv) * pixel_input.color;
 }

@@ -9,6 +9,7 @@ mod sprite;
 mod transform;
 mod transform_2d;
 mod window;
+mod texture;
 
 pub use app::*;
 pub use camera::*;
@@ -19,5 +20,6 @@ pub use sprite::*;
 pub use transform::*;
 pub use transform_2d::*;
 pub use window::Window;
+pub use texture::Texture;
 
 pub use alexandria::{Input, Matrix, Vector2, Vector3, Vector4, StateTrackingInput};

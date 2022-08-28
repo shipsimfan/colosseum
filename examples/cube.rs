@@ -31,7 +31,7 @@ impl colosseum::Game for Game {
             window,
         );
 
-        let mut mesh_renderer = colosseum::MeshRenderer::new(mesh);
+        let mut mesh_renderer = colosseum::MeshRenderer::new(mesh, None);
 
         mesh_renderer
             .transform_mut()

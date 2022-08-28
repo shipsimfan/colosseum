@@ -1,4 +1,4 @@
-use crate::{Transform, Vertex, Window};
+use crate::{Texture, Transform, Vertex, Window};
 use alexandria::{Input, Vector4};
 
 pub enum Mesh {
@@ -10,6 +10,7 @@ pub struct MeshRenderer {
     mesh: Mesh,
     transform: Transform,
     tint: Vector4,
+    texture: Option<Texture>,
 }
 
 impl Mesh {
@@ -30,11 +31,12 @@ impl Mesh {
 }
 
 impl MeshRenderer {
-    pub fn new(mesh: Mesh) -> Self {
+    pub fn new(mesh: Mesh, texture: Option<Texture>) -> Self {
         MeshRenderer {
             mesh,
             transform: Transform::new(),
             tint: Vector4::ONE,
+            texture,
         }
     }
 
@@ -44,6 +46,10 @@ impl MeshRenderer {
 
     pub fn tint(&self) -> Vector4 {
         self.tint
+    }
+
+    pub fn set_texture(&mut self, texture: Option<Texture>) {
+        self.texture = texture;
     }
 
     pub fn transform_mut(&mut self) -> &mut Transform {
@@ -60,6 +66,8 @@ impl MeshRenderer {
 
     pub fn render<I: Input>(&mut self, window: &mut Window<I>) {
         window.set_object_buffer(*self.transform.transform(), self.tint);
+        self.texture.as_mut().map(|texture| texture.set_active());
         self.mesh.render();
+        self.texture.as_mut().map(|texture| texture.clear_active());
     }
 }
