@@ -5,6 +5,7 @@ pub struct App<G: Game> {
     game: G,
     window: Window<G::Input>,
     default_shader: Shader,
+    fixed_tick_timer: Option<f32>,
 }
 
 const DEFAULT_WIDTH: usize = 1920;
@@ -13,7 +14,12 @@ const DEFAULT_HEIGHT: usize = 1080;
 impl<G: Game> App<G> {
     pub fn new() -> ! {
         // Create window & default shader
-        let mut window = Window::new(G::INITIAL_TITLE, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        let mut window = Window::new(
+            G::INITIAL_TITLE,
+            DEFAULT_WIDTH,
+            DEFAULT_HEIGHT,
+            G::INITIAL_FIXED_UPDATE_DELTA_TIME,
+        );
 
         let default_shader = crate::shader::new_default(&mut window);
 
@@ -25,6 +31,7 @@ impl<G: Game> App<G> {
             game,
             window,
             default_shader,
+            fixed_tick_timer: G::INITIAL_FIXED_UPDATE_DELTA_TIME.map(|_| 0.0),
         }
         .run();
     }
@@ -47,7 +54,25 @@ impl<G: Game> App<G> {
             last_tick = current_tick;
 
             // Update
-            self.game.update(delta_time, &mut self.window)
+            self.game.update(delta_time, &mut self.window);
+
+            // Fixed Update
+            match &mut self.fixed_tick_timer {
+                Some(fixed_tick_timer) => {
+                    *fixed_tick_timer -= delta_time;
+                    if *fixed_tick_timer <= 0.0 {
+                        self.game.fixed_update(&mut self.window);
+                        self.fixed_tick_timer = self.window.fixed_update_time();
+                    }
+                }
+                None => match self.window.fixed_update_time() {
+                    Some(_) => {
+                        self.game.fixed_update(&mut self.window);
+                        self.fixed_tick_timer = self.window.fixed_update_time();
+                    }
+                    None => {}
+                },
+            }
         }
 
         std::process::exit(0);

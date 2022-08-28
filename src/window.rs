@@ -8,10 +8,17 @@ pub struct Window<I: Input> {
 
     camera_constant_buffer: ConstantBuffer<Matrix>,
     object_constant_buffer: ConstantBuffer<ObjectBuffer>,
+
+    fixed_update_time: Option<f32>,
 }
 
 impl<I: Input> Window<I> {
-    pub fn new<S: AsRef<str>>(title: S, width: usize, height: usize) -> Self {
+    pub fn new<S: AsRef<str>>(
+        title: S,
+        width: usize,
+        height: usize,
+        fixed_update_time: Option<f32>,
+    ) -> Self {
         let mut window =
             Box::new(alexandria::Window::<I>::new(title.as_ref(), width, height).unwrap());
 
@@ -26,6 +33,7 @@ impl<I: Input> Window<I> {
             camera_matrix: identity,
             camera_constant_buffer,
             object_constant_buffer,
+            fixed_update_time,
         }
     }
 
@@ -51,6 +59,14 @@ impl<I: Input> Window<I> {
 
     pub fn input(&self) -> &I {
         self.window.input()
+    }
+
+    pub fn fixed_update_time(&self) -> Option<f32> {
+        self.fixed_update_time
+    }
+
+    pub fn set_fixed_update_time(&mut self, delta_time: Option<f32>) {
+        self.fixed_update_time = delta_time;
     }
 
     pub fn set_mouse_lock(&mut self, lock: bool) {
