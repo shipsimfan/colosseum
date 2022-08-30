@@ -16,7 +16,11 @@ impl colosseum::Game for Game {
             window,
         );
 
-        let texture = colosseum::Texture::load("./examples/sprite.qoi", window);
+        let texture = colosseum::Texture::load(
+            "./examples/sprite.qoi",
+            colosseum::SampleType::Point,
+            window,
+        );
 
         Game {
             camera,
