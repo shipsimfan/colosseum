@@ -10,17 +10,28 @@ pub struct Sprite {
 
 impl Sprite {
     pub fn new<I: Input>(window: &mut Window<I>, texture: Option<Texture>) -> Self {
-        const VERTICES: [Vertex; 4] = [
-            Vertex::new(-0.5, -0.5, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0),
-            Vertex::new(-0.5, 0.5, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0),
-            Vertex::new(0.5, 0.5, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
-            Vertex::new(0.5, -0.5, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0),
-        ];
+        Self::with_uv(window, texture, 1.0, 0.0, 0.0, 1.0)
+    }
 
+    pub fn with_uv<I: Input>(
+        window: &mut Window<I>,
+        texture: Option<Texture>,
+        top: f32,
+        bottom: f32,
+        left: f32,
+        right: f32,
+    ) -> Self {
         const INDICES: [u32; 6] = [0, 1, 2, 2, 3, 0];
 
+        let vertices: [Vertex; 4] = [
+            Vertex::new(-0.5, -0.5, 0.0, 1.0, 1.0, 1.0, 1.0, left, bottom),
+            Vertex::new(-0.5, 0.5, 0.0, 1.0, 1.0, 1.0, 1.0, left, top),
+            Vertex::new(0.5, 0.5, 0.0, 1.0, 1.0, 1.0, 1.0, right, top),
+            Vertex::new(0.5, -0.5, 0.0, 1.0, 1.0, 1.0, 1.0, right, bottom),
+        ];
+
         Sprite {
-            mesh: Mesh::new(&VERTICES, &INDICES, window),
+            mesh: Mesh::new(&vertices, &INDICES, window),
             transform: Transform2D::new(),
             tint: Vector4::ONE,
             texture,
