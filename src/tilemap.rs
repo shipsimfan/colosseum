@@ -25,7 +25,7 @@ impl Tilemap {
         texture: Option<Texture>,
         window: &mut Window<I>,
     ) -> Self {
-        let indices = Vec::with_capacity(width * height * 6);
+        let mut indices = Vec::with_capacity(width * height * 6);
         let mut vertices = Vec::with_capacity(width * height * 4);
         let mut render_state = Vec::with_capacity(width * height);
 
@@ -50,6 +50,8 @@ impl Tilemap {
                 render_state.push(None);
             }
         }
+
+        indices.push(0);
 
         Tilemap {
             mesh: alexandria::Mesh::new(&vertices, &indices, window.inner()).unwrap(),
@@ -92,8 +94,16 @@ impl Tilemap {
             Some(index) => {
                 self.indices.drain(index..index + 6);
                 self.render_state[index] = None;
+
+                if self.indices.len() == 0 {
+                    self.indices.push(0);
+                }
             }
             None => {
+                if self.indices.len() == 1 {
+                    self.indices.pop();
+                }
+
                 self.render_state[index] = Some(self.indices.len());
                 let index = index as u32;
                 self.indices
@@ -157,9 +167,11 @@ impl Tilemap {
     }
 
     pub fn render<I: Input>(&mut self, window: &mut Window<I>) {
-        window.set_object_buffer(*self.transform.transform(), self.tint);
-        self.texture.as_mut().map(|texture| texture.set_active());
-        self.mesh.render();
-        self.texture.as_mut().map(|texture| texture.clear_active());
+        if self.indices.len() > 1 {
+            window.set_object_buffer(*self.transform.transform(), self.tint);
+            self.texture.as_mut().map(|texture| texture.set_active());
+            self.mesh.render();
+            self.texture.as_mut().map(|texture| texture.clear_active());
+        }
     }
 }
