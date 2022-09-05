@@ -169,9 +169,10 @@ impl Tilemap {
     pub fn render<I: Input>(&mut self, window: &mut Window<I>) {
         if self.indices.len() > 1 {
             window.set_object_buffer(*self.transform.transform(), self.tint);
-            self.texture.as_mut().map(|texture| texture.set_active());
+            let texture = self.texture.as_ref().unwrap_or(window.default_texture());
+            texture.set_active();
             self.mesh.render();
-            self.texture.as_mut().map(|texture| texture.clear_active());
+            texture.clear_active();
         }
     }
 }

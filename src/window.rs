@@ -1,4 +1,4 @@
-use crate::shader::ObjectBuffer;
+use crate::{shader::ObjectBuffer, Texture};
 use alexandria::{ConstantBuffer, Input, Matrix, Vector4};
 
 pub struct Window<I: Input> {
@@ -10,6 +10,8 @@ pub struct Window<I: Input> {
     object_constant_buffer: ConstantBuffer<ObjectBuffer>,
 
     fixed_update_time: Option<f32>,
+
+    default_texture: Option<Texture>,
 }
 
 impl<I: Input> Window<I> {
@@ -34,6 +36,7 @@ impl<I: Input> Window<I> {
             camera_constant_buffer,
             object_constant_buffer,
             fixed_update_time,
+            default_texture: None,
         }
     }
 
@@ -63,6 +66,17 @@ impl<I: Input> Window<I> {
 
     pub fn fixed_update_time(&self) -> Option<f32> {
         self.fixed_update_time
+    }
+
+    pub fn default_texture(&self) -> &Texture {
+        self.default_texture.as_ref().unwrap()
+    }
+
+    pub(super) fn init_default_texture(&mut self) {
+        let mut image = ginger::Image::new(1, 1);
+        image.set_pixel(0, 0, ginger::Pixel::new(1.0, 1.0, 1.0));
+
+        self.default_texture = Some(Texture::new(image, alexandria::SampleType::Linear, self));
     }
 
     pub fn set_fixed_update_time(&mut self, delta_time: Option<f32>) {

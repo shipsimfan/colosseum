@@ -20,6 +20,7 @@ impl<G: Game> App<G> {
             DEFAULT_HEIGHT,
             G::INITIAL_FIXED_UPDATE_DELTA_TIME,
         );
+        window.init_default_texture();
 
         let default_shader = crate::shader::new_default(&mut window);
 
