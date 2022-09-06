@@ -33,6 +33,7 @@ impl Tilemap {
             let y = y as f32;
             for x in 0..width {
                 let x = x as f32;
+
                 vertices.push(Vertex::new(x, y, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0));
                 vertices.push(Vertex::new(x, y + 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0));
                 vertices.push(Vertex::new(
@@ -84,16 +85,16 @@ impl Tilemap {
         assert!(x < self.width);
         assert!(y < self.height);
 
-        let index = x + y * self.width;
+        let state_index = x + y * self.width;
 
-        if self.render_state[index].is_some() == visible {
+        if self.render_state[state_index].is_some() == visible {
             return;
         }
 
-        match self.render_state[index] {
+        match self.render_state[state_index] {
             Some(index) => {
                 self.indices.drain(index..index + 6);
-                self.render_state[index] = None;
+                self.render_state[state_index] = None;
 
                 if self.indices.len() == 0 {
                     self.indices.push(0);
@@ -104,8 +105,8 @@ impl Tilemap {
                     self.indices.pop();
                 }
 
-                self.render_state[index] = Some(self.indices.len());
-                let index = index as u32;
+                self.render_state[state_index] = Some(self.indices.len());
+                let index = (state_index * 4) as u32;
                 self.indices
                     .extend(&[index, index + 1, index + 2, index + 2, index + 3, index]);
             }
@@ -118,7 +119,7 @@ impl Tilemap {
         assert!(x < self.width);
         assert!(y < self.height);
 
-        let index = x + y * self.width;
+        let index = (x + y * self.width) * 4;
 
         for i in 0..4 {
             *self.vertices[index + i].uv_mut() = uv[i];
@@ -131,7 +132,7 @@ impl Tilemap {
         assert!(x < self.width);
         assert!(y < self.height);
 
-        let index = x + y * self.width;
+        let index = (x + y * self.width) * 4;
 
         for i in 0..4 {
             *self.vertices[index + i].color_mut() = color;
@@ -157,12 +158,14 @@ impl Tilemap {
             self.mesh
                 .update_indices(&self.indices, window.inner())
                 .unwrap();
+            self.indices_need_update = false;
         }
 
         if self.vertices_need_update {
             self.mesh
                 .update_vertices(&self.vertices, window.inner())
                 .unwrap();
+            self.vertices_need_update = false;
         }
     }
 
