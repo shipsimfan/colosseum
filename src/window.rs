@@ -1,4 +1,4 @@
-use crate::{shader::ObjectBuffer, Texture};
+use crate::{shader::ObjectBuffer, Mesh, Sprite, Texture};
 use alexandria::{ConstantBuffer, Input, Matrix, Vector4};
 
 pub struct Window<I: Input> {
@@ -12,6 +12,7 @@ pub struct Window<I: Input> {
     fixed_update_time: Option<f32>,
 
     default_texture: Option<Texture>,
+    default_sprite_mesh: Option<Mesh>,
 }
 
 impl<I: Input> Window<I> {
@@ -37,6 +38,7 @@ impl<I: Input> Window<I> {
             object_constant_buffer,
             fixed_update_time,
             default_texture: None,
+            default_sprite_mesh: None,
         }
     }
 
@@ -72,11 +74,15 @@ impl<I: Input> Window<I> {
         self.default_texture.as_ref().unwrap()
     }
 
-    pub(super) fn init_default_texture(&mut self) {
+    pub(super) fn post_init(&mut self) {
+        // Initialize the default texture
         let mut image = ginger::Image::new(1, 1);
         image.set_pixel(0, 0, ginger::Pixel::new(1.0, 1.0, 1.0));
 
         self.default_texture = Some(Texture::new(image, alexandria::SampleType::Linear, self));
+
+        // Initialize the sprite mesh
+        self.default_sprite_mesh = Some(Sprite::create_default_sprite_mesh(self));
     }
 
     pub fn set_fixed_update_time(&mut self, delta_time: Option<f32>) {
@@ -106,5 +112,9 @@ impl<I: Input> Window<I> {
 
     pub fn inner(&mut self) -> &mut Box<alexandria::Window<I>> {
         &mut self.window
+    }
+
+    pub(crate) fn render_default_sprite_mesh(&mut self) {
+        self.default_sprite_mesh.as_mut().unwrap().render();
     }
 }

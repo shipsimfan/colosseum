@@ -24,7 +24,7 @@ impl colosseum::Game for Game {
 
         Game {
             camera,
-            sprite: colosseum::Sprite::new(window, Some(texture)),
+            sprite: colosseum::Sprite::new(Some(texture)),
         }
     }
 
