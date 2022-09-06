@@ -153,6 +153,16 @@ impl Tilemap {
         self.texture = texture;
     }
 
+    pub fn clear(&mut self) {
+        self.indices.clear();
+        self.indices.push(0);
+        self.indices_need_update = true;
+
+        for render_state in self.render_state.iter_mut() {
+            *render_state = None;
+        }
+    }
+
     pub fn update_mesh<I: Input>(&mut self, window: &mut Window<I>) {
         if self.indices_need_update {
             self.mesh
