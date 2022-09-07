@@ -16,14 +16,16 @@ pub struct Window<I: Input> {
 }
 
 impl<I: Input> Window<I> {
-    pub fn new<S: AsRef<str>>(
+    pub(crate) fn new<S: AsRef<str>>(
         title: S,
         width: usize,
         height: usize,
         fixed_update_time: Option<f32>,
+        debug_logging: bool,
     ) -> Self {
-        let mut window =
-            Box::new(alexandria::Window::<I>::new(title.as_ref(), width, height).unwrap());
+        let mut window = Box::new(
+            alexandria::Window::<I>::new(title.as_ref(), width, height, debug_logging).unwrap(),
+        );
 
         let identity = Matrix::identity();
 

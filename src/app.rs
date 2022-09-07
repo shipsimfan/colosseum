@@ -19,6 +19,7 @@ impl<G: Game> App<G> {
             DEFAULT_WIDTH,
             DEFAULT_HEIGHT,
             G::INITIAL_FIXED_UPDATE_DELTA_TIME,
+            G::ENABLE_DEBUG_LOGGING,
         );
         window.post_init();
 

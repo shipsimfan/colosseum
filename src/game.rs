@@ -7,6 +7,8 @@ pub trait Game {
     const INITIAL_TITLE: &'static str;
     const INITIAL_FIXED_UPDATE_DELTA_TIME: Option<f32> = None;
 
+    const ENABLE_DEBUG_LOGGING: bool = false;
+
     fn new(window: &mut Window<Self::Input>) -> Self;
 
     fn update(&mut self, delta_time: f32, window: &mut Window<Self::Input>);
