@@ -91,14 +91,19 @@ impl Tilemap {
             return;
         }
 
-        match self.render_state[state_index] {
+        self.indices_need_update = true;
+
+        let changed_index = match self.render_state[state_index] {
             Some(index) => {
                 self.indices.drain(index..index + 6);
                 self.render_state[state_index] = None;
 
                 if self.indices.len() == 0 {
                     self.indices.push(0);
+                    return;
                 }
+
+                index
             }
             None => {
                 if self.indices.len() == 1 {
@@ -109,10 +114,24 @@ impl Tilemap {
                 let index = (state_index * 4) as u32;
                 self.indices
                     .extend(&[index, index + 1, index + 2, index + 2, index + 3, index]);
+                return;
+            }
+        };
+
+        for i in 0..self.render_state.len() {
+            if i == state_index {
+                continue;
+            }
+
+            match &mut self.render_state[i] {
+                Some(index) => {
+                    if *index > changed_index {
+                        *index -= 6;
+                    }
+                }
+                None => {}
             }
         }
-
-        self.indices_need_update = true;
     }
 
     pub fn set_tile_uv(&mut self, x: usize, y: usize, uv: [Vector2; 4]) {
