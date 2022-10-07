@@ -2,6 +2,7 @@ use crate::Window;
 use alexandria::{Input, Matrix, Vector3, Vector4};
 use std::f32::consts::PI;
 
+#[derive(Clone, Copy)]
 pub enum Projection {
     Perspective(f32, f32, f32),
     Orthographic(f32, f32, f32),
