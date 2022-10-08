@@ -77,6 +77,8 @@ impl<G: Game> App<G> {
             }
         }
 
+        drop(self);
+
         std::process::exit(0);
     }
 }
