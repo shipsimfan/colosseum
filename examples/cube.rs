@@ -48,47 +48,63 @@ impl colosseum::Game for Game {
         let mut y_position = self.mesh_renderer.transform().position().y();
         let mut z_position = self.mesh_renderer.transform().position().z();
 
-        if window.input().get_key(b'Q') {
+        if window.input().get_key(colosseum::Key::Q) {
             y_position += delta_time;
         }
 
-        if window.input().get_key(b'E') {
+        if window.input().get_key(colosseum::Key::E) {
             y_position -= delta_time;
         }
 
-        if window.input().get_key(0x10) {
-            if window.input().get_key(b'D') || window.input().get_key(0x27) {
+        if window.input().get_key(colosseum::Key::Shift) {
+            if window.input().get_key(colosseum::Key::D)
+                || window.input().get_key(colosseum::Key::RightArrow)
+            {
                 x_position += delta_time;
             }
 
-            if window.input().get_key(b'A') || window.input().get_key(0x25) {
+            if window.input().get_key(colosseum::Key::A)
+                || window.input().get_key(colosseum::Key::LeftArrow)
+            {
                 x_position -= delta_time;
             }
 
-            if window.input().get_key(b'W') || window.input().get_key(0x26) {
+            if window.input().get_key(colosseum::Key::W)
+                || window.input().get_key(colosseum::Key::UpArrow)
+            {
                 z_position += delta_time;
             }
 
-            if window.input().get_key(b'S') || window.input().get_key(0x28) {
+            if window.input().get_key(colosseum::Key::S)
+                || window.input().get_key(colosseum::Key::DownArrow)
+            {
                 z_position -= delta_time;
             }
         } else {
             let mut x_rotation = self.mesh_renderer.transform().rotation().x();
             let mut y_rotation = self.mesh_renderer.transform().rotation().y();
 
-            if window.input().get_key(b'D') || window.input().get_key(0x27) {
+            if window.input().get_key(colosseum::Key::D)
+                || window.input().get_key(colosseum::Key::RightArrow)
+            {
                 y_rotation += delta_time;
             }
 
-            if window.input().get_key(b'A') || window.input().get_key(0x25) {
+            if window.input().get_key(colosseum::Key::A)
+                || window.input().get_key(colosseum::Key::LeftArrow)
+            {
                 y_rotation -= delta_time;
             }
 
-            if window.input().get_key(b'W') || window.input().get_key(0x26) {
+            if window.input().get_key(colosseum::Key::W)
+                || window.input().get_key(colosseum::Key::UpArrow)
+            {
                 x_rotation -= delta_time;
             }
 
-            if window.input().get_key(b'S') || window.input().get_key(0x28) {
+            if window.input().get_key(colosseum::Key::S)
+                || window.input().get_key(colosseum::Key::DownArrow)
+            {
                 x_rotation += delta_time;
             }
 

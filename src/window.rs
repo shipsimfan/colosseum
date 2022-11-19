@@ -1,5 +1,5 @@
 use crate::{shader::ObjectBuffer, Mesh, Sprite, Texture};
-use alexandria::{ConstantBuffer, Input, Matrix, Vector4};
+use alexandria::{ConstantBuffer, Input, Matrix, Vector2, Vector4};
 
 pub struct Window<I: Input> {
     window: Box<alexandria::Window<I>>,
@@ -13,6 +13,8 @@ pub struct Window<I: Input> {
 
     default_texture: Option<Texture>,
     default_sprite_mesh: Option<Mesh>,
+
+    quit: bool,
 }
 
 impl<I: Input> Window<I> {
@@ -26,6 +28,13 @@ impl<I: Input> Window<I> {
         let mut window = Box::new(
             alexandria::Window::<I>::new(title.as_ref(), width, height, debug_logging).unwrap(),
         );
+
+        let viewport = window.create_viewport(
+            Vector2::ZERO,
+            Vector2::new(width as f32, height as f32),
+            Some(alexandria::FitScreenUpdater::new()),
+        );
+        window.set_default_viewport(viewport);
 
         let identity = Matrix::identity();
 
@@ -41,6 +50,7 @@ impl<I: Input> Window<I> {
             fixed_update_time,
             default_texture: None,
             default_sprite_mesh: None,
+            quit: false,
         }
     }
 
@@ -74,6 +84,14 @@ impl<I: Input> Window<I> {
 
     pub fn default_texture(&self) -> &Texture {
         self.default_texture.as_ref().unwrap()
+    }
+
+    pub fn quit(&mut self) {
+        self.quit = true;
+    }
+
+    pub(crate) fn should_quit(&self) -> bool {
+        self.quit
     }
 
     pub(super) fn post_init(&mut self) {

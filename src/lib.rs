@@ -24,4 +24,6 @@ pub use transform::*;
 pub use transform_2d::*;
 pub use window::Window;
 
-pub use alexandria::{Input, Matrix, SampleType, StateTrackingInput, Vector2, Vector3, Vector4};
+pub use alexandria::{
+    Input, Key, Matrix, MouseButton, SampleType, StateTrackingInput, Vector2, Vector3, Vector4,
+};

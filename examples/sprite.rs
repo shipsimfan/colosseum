@@ -33,27 +33,35 @@ impl colosseum::Game for Game {
         let mut y_position = self.sprite.transform().position().y();
         let mut rotation = self.sprite.transform().rotation();
 
-        if window.input().get_key(b'D') || window.input().get_key(0x27) {
+        if window.input().get_key(colosseum::Key::D)
+            || window.input().get_key(colosseum::Key::RightArrow)
+        {
             x_position += delta_time;
         }
 
-        if window.input().get_key(b'A') || window.input().get_key(0x25) {
+        if window.input().get_key(colosseum::Key::A)
+            || window.input().get_key(colosseum::Key::LeftArrow)
+        {
             x_position -= delta_time;
         }
 
-        if window.input().get_key(b'W') || window.input().get_key(0x26) {
+        if window.input().get_key(colosseum::Key::W)
+            || window.input().get_key(colosseum::Key::UpArrow)
+        {
             y_position += delta_time;
         }
 
-        if window.input().get_key(b'S') || window.input().get_key(0x28) {
+        if window.input().get_key(colosseum::Key::S)
+            || window.input().get_key(colosseum::Key::DownArrow)
+        {
             y_position -= delta_time;
         }
 
-        if window.input().get_key(b'Q') {
+        if window.input().get_key(colosseum::Key::Q) {
             rotation -= delta_time;
         }
 
-        if window.input().get_key(b'E') {
+        if window.input().get_key(colosseum::Key::E) {
             rotation += delta_time;
         }
 

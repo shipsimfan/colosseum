@@ -41,7 +41,7 @@ impl<G: Game> App<G> {
     fn run(mut self) -> ! {
         let mut last_tick = Instant::now();
 
-        while self.window.inner().poll_events() {
+        while self.window.inner().poll_events() && !self.window.should_quit() {
             // Render
             self.window.inner().begin_render(self.game.clear_color());
             self.default_shader.set_active(&mut self.window);
