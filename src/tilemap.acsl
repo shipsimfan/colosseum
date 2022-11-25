@@ -46,5 +46,5 @@ fn fragment_main(pixel_input: PixelInputType) -> float4 {
     let value = index * tilemap.sprite_size;
     let sub_value = frac2(pixel_input.uv * float2(256.0, 128.0)) * float2(1.0, tilemap.sprite_size);
     
-    return sample_texture(shader_texture, float2(0.0, 1.0 - value) + sub_value);
+    return sample_texture(shader_texture, float2(0.0, value) + sub_value);
 }
