@@ -24,15 +24,17 @@ const VERTEX_LAYOUT: [(&str, alexandria::Format); 3] = [
     ("TEXCOORD", alexandria::Format::R32A32Float),
 ];
 
-pub fn new_default<I: Input>(window: &mut Window<I>) -> Shader {
-    Shader {
-        shader: alexandria::Shader::new(
-            include_str!("default_shader.acsl"),
-            &VERTEX_LAYOUT,
-            window.inner(),
-        )
-        .unwrap(),
-    }
+const DEFAULT_SHADER: &'static str = include_str!("default_shader.acsl");
+const TILEMAP_SHADER: &'static str = include_str!("tilemap.acsl");
+
+#[inline(always)]
+pub(crate) fn new_default<I: Input>(window: &mut Window<I>) -> Shader {
+    Shader::new(DEFAULT_SHADER, window)
+}
+
+#[inline(always)]
+pub(crate) fn new_tilemap<I: Input>(window: &mut Window<I>) -> Shader {
+    Shader::new(TILEMAP_SHADER, window)
 }
 
 impl Shader {

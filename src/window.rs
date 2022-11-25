@@ -1,5 +1,9 @@
-use crate::{shader::ObjectBuffer, Mesh, Sprite, Texture};
+use crate::{
+    shader::{self, ObjectBuffer},
+    Mesh, Shader, Sprite, Texture,
+};
 use alexandria::{ConstantBuffer, Input, Matrix, Vector2, Vector4};
+use std::{cell::RefCell, rc::Rc};
 
 pub struct Window<I: Input> {
     window: Box<alexandria::Window<I>>,
@@ -13,6 +17,8 @@ pub struct Window<I: Input> {
 
     default_texture: Option<Texture>,
     default_sprite_mesh: Option<Mesh>,
+
+    tilemap_shader: Option<Rc<RefCell<Shader>>>,
 
     quit: bool,
 }
@@ -50,6 +56,7 @@ impl<I: Input> Window<I> {
             fixed_update_time,
             default_texture: None,
             default_sprite_mesh: None,
+            tilemap_shader: None,
             quit: false,
         }
     }
@@ -136,5 +143,16 @@ impl<I: Input> Window<I> {
 
     pub(crate) fn render_default_sprite_mesh(&mut self) {
         self.default_sprite_mesh.as_mut().unwrap().render();
+    }
+
+    pub(crate) fn get_tilemap_shader(&mut self) -> Rc<RefCell<Shader>> {
+        match self.tilemap_shader.as_ref() {
+            Some(tilemap_shader) => tilemap_shader.clone(),
+            None => {
+                let tilemap_shader = Rc::new(RefCell::new(shader::new_tilemap(self)));
+                self.tilemap_shader = Some(tilemap_shader.clone());
+                tilemap_shader
+            }
+        }
     }
 }

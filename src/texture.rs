@@ -1,5 +1,5 @@
-use alexandria::Input;
 use crate::{SampleType, Window};
+use alexandria::Input;
 use std::{cell::RefCell, path::Path, rc::Rc};
 
 #[derive(Clone)]
@@ -8,10 +8,22 @@ pub struct Texture {
 }
 
 impl Texture {
-    pub fn new<I: Input>(image: ginger::Image<f32>, sample_type: SampleType, window: &mut Window<I>) -> Self {
+    pub fn new<I: Input>(
+        image: ginger::Image<f32>,
+        sample_type: SampleType,
+        window: &mut Window<I>,
+    ) -> Self {
         Texture {
             inner: Rc::new(RefCell::new(
-                alexandria::Texture2D::new(&image, 0, sample_type, window.inner()).unwrap(),
+                alexandria::Texture2D::new(
+                    image.pixels(),
+                    image.width(),
+                    image.height(),
+                    0,
+                    sample_type,
+                    window.inner(),
+                )
+                .unwrap(),
             )),
         }
     }
