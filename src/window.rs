@@ -2,7 +2,7 @@ use crate::{
     shader::{self, ObjectBuffer},
     Mesh, Shader, Sprite, Texture,
 };
-use alexandria::{ConstantBuffer, Input, Matrix, Vector2, Vector4};
+use alexandria::{ConstantBuffer, Input, Matrix, Vector4};
 use std::{cell::RefCell, rc::Rc};
 
 pub struct Window<I: Input> {
@@ -34,13 +34,6 @@ impl<I: Input> Window<I> {
         let mut window = Box::new(
             alexandria::Window::<I>::new(title.as_ref(), width, height, debug_logging).unwrap(),
         );
-
-        let viewport = window.create_viewport(
-            Vector2::ZERO,
-            Vector2::new(width as f32, height as f32),
-            Some(alexandria::FitScreenUpdater::new()),
-        );
-        window.set_default_viewport(viewport);
 
         let identity = Matrix::identity();
 

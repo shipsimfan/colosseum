@@ -56,7 +56,9 @@ impl colosseum::Game for Game {
             y_position -= delta_time;
         }
 
-        if window.input().get_key(colosseum::Key::Shift) {
+        if window.input().get_key(colosseum::Key::LeftShift)
+            || window.input().get_key(colosseum::Key::RightShift)
+        {
             if window.input().get_key(colosseum::Key::D)
                 || window.input().get_key(colosseum::Key::RightArrow)
             {
