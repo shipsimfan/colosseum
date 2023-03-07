@@ -11,3 +11,5 @@ pub use game::*;
 pub use graphics_settings::*;
 pub use scene::*;
 pub use window::*;
+
+pub use alexandria::{MessageBox, MessageBoxClass};

@@ -25,3 +25,12 @@ impl GraphicsSettings {
         self.display = display;
     }
 }
+
+impl Default for GraphicsSettings {
+    fn default() -> Self {
+        GraphicsSettings {
+            adapter: None,
+            display: None,
+        }
+    }
+}

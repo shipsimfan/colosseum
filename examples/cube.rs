@@ -1,4 +1,32 @@
-fn main() {}
+struct Scene {}
+
+fn main() {
+    run()
+        .map_err(|error| {
+            colosseum::MessageBox::run(
+                colosseum::MessageBoxClass::Error,
+                "Unable to launch game",
+                &error.to_string(),
+            )
+        })
+        .ok();
+}
+
+fn run() -> Result<(), colosseum::Error> {
+    let game = colosseum::Game::new::<Scene>(colosseum::GraphicsSettings::default(), ())?;
+
+    Ok(game.run())
+}
+
+impl colosseum::InitialScene for Scene {
+    type Context = ();
+
+    fn new(_: Self::Context, _: &mut colosseum::Window) -> Box<dyn colosseum::Scene> {
+        Box::new(Scene {})
+    }
+}
+
+impl colosseum::Scene for Scene {}
 
 /*
 use std::f32::consts::PI;

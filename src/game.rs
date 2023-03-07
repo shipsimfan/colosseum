@@ -18,5 +18,5 @@ impl Game {
         Ok(Game { window, scene })
     }
 
-    pub fn run() {}
+    pub fn run(self) {}
 }

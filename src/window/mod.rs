@@ -1,4 +1,5 @@
 use crate::{Error, GraphicsSettings, Result};
+
 mod create;
 
 pub struct Window {
