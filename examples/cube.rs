@@ -1,3 +1,6 @@
+fn main() {}
+
+/*
 use std::f32::consts::PI;
 
 struct Game {
@@ -12,7 +15,10 @@ fn main() {
 impl colosseum::Game for Game {
     const INITIAL_TITLE: &'static str = "Cube Example";
 
-    fn new(window: &mut colosseum::Window<Self::Input>) -> Self {
+    fn new(
+        window: &mut colosseum::Window<Self::Input>,
+        ui_root: &std::rc::Rc<colosseum::ui::Element<Self>>,
+    ) -> Self {
         let mesh = colosseum::Mesh::new(
             &[
                 colosseum::Vertex::new(1.0, -1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0),
@@ -37,13 +43,44 @@ impl colosseum::Game for Game {
             .transform_mut()
             .set_position(colosseum::Vector3::new(0.0, 0.0, 10.0));
 
+        let image = colosseum::ui::Element::<Self>::new(
+            "Image".to_owned(),
+            colosseum::ui::Image::new(None),
+        );
+
+        let mut image_transform = image.transform_mut();
+        image_transform
+            .set_anchors_reference(colosseum::ui::VAlign::Top, colosseum::ui::HAlign::Left);
+        image_transform.set_scale(colosseum::Vector2::new(0.25, 0.25));
+        image_transform.set_position(colosseum::Vector2::new(0.01, -0.01));
+        drop(image_transform);
+
+        let mut image2 = colosseum::ui::Image::new(None);
+        image2.set_tint(colosseum::Vector4::new(0.8, 0.2, 0.2, 1.0));
+        let image2 = colosseum::ui::Element::<Self>::new("Image2".to_owned(), image2);
+        let mut image_transform = image2.transform_mut();
+        image_transform
+            .set_anchors_reference(colosseum::ui::VAlign::Top, colosseum::ui::HAlign::Right);
+        image_transform.set_scale(colosseum::Vector2::new(0.1, 0.1));
+        image_transform.set_position(colosseum::Vector2::new(-0.01, -0.01));
+        drop(image_transform);
+
+        image.add_child(image2);
+
+        ui_root.add_child(image);
+
         Game {
             camera: colosseum::Camera::new(window),
             mesh_renderer,
         }
     }
 
-    fn update(&mut self, delta_time: f32, window: &mut colosseum::Window<Self::Input>) {
+    fn update(
+        &mut self,
+        delta_time: f32,
+        _: &std::rc::Rc<colosseum::ui::Element<Self>>,
+        window: &mut colosseum::Window<Self::Input>,
+    ) {
         let mut x_position = self.mesh_renderer.transform().position().x();
         let mut y_position = self.mesh_renderer.transform().position().y();
         let mut z_position = self.mesh_renderer.transform().position().z();
@@ -146,3 +183,4 @@ impl colosseum::Game for Game {
         [0.0, 0.0, 0.0, 1.0]
     }
 }
+*/

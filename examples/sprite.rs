@@ -1,3 +1,6 @@
+fn main() {}
+
+/*
 use std::f32::consts::PI;
 
 pub struct Game {
@@ -8,7 +11,10 @@ pub struct Game {
 impl colosseum::Game for Game {
     const INITIAL_TITLE: &'static str = "Sprite Example";
 
-    fn new(window: &mut colosseum::Window<Self::Input>) -> Self {
+    fn new(
+        window: &mut colosseum::Window<Self::Input>,
+        _: &std::rc::Rc<colosseum::ui::Element<Self>>,
+    ) -> Self {
         let mut camera = colosseum::Camera::new(window);
 
         camera.set_projection(
@@ -28,7 +34,12 @@ impl colosseum::Game for Game {
         }
     }
 
-    fn update(&mut self, delta_time: f32, window: &mut colosseum::Window<Self::Input>) {
+    fn update(
+        &mut self,
+        delta_time: f32,
+        _: &std::rc::Rc<colosseum::ui::Element<Self>>,
+        window: &mut colosseum::Window<Self::Input>,
+    ) {
         let mut x_position = self.sprite.transform().position().x();
         let mut y_position = self.sprite.transform().position().y();
         let mut rotation = self.sprite.transform().rotation();
@@ -103,3 +114,4 @@ impl colosseum::Game for Game {
 fn main() {
     colosseum::App::<Game>::new();
 }
+*/

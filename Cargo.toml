@@ -4,5 +4,6 @@ name = "colosseum"
 version = "0.1.0"
 
 [dependencies]
-alexandria = {git = "https://github.com/shipsimfan/alexandria.git"}
+alexandria = {path = "../alexandria"}#{git = "https://github.com/shipsimfan/alexandria.git"}
 ginger = {git = "https://github.com/shipsimfan/ginger.git"}
+rustc-hash = "1.1.0"
