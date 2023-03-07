@@ -3,7 +3,13 @@ edition = "2021"
 name = "colosseum"
 version = "0.1.0"
 
+
 [dependencies]
-alexandria = {path = "../alexandria"}#{git = "https://github.com/shipsimfan/alexandria.git"}
-ginger = {git = "https://github.com/shipsimfan/ginger.git"}
+alexandria = { path = "../alexandria" }                       #{git = "https://github.com/shipsimfan/alexandria.git"}
+ginger = { git = "https://github.com/shipsimfan/ginger.git" }
 rustc-hash = "1.1.0"
+
+json = { git = "https://github.com/shipsimfan/lib-json.git", optional = true }
+
+[features]
+json = ["dep:json"]
