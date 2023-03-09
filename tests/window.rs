@@ -2,7 +2,8 @@ struct Scene {}
 
 #[test]
 fn window() -> Result<(), colosseum::Error> {
-    let game = colosseum::Game::new::<Scene>(colosseum::GraphicsSettings::default(), ())?;
+    let game =
+        colosseum::Game::new::<Scene>("Window Test", colosseum::GraphicsSettings::default(), ())?;
     Ok(game.run())
 }
 
@@ -12,4 +13,10 @@ impl colosseum::InitialScene for Scene {
     }
 }
 
-impl colosseum::Scene for Scene {}
+impl colosseum::Scene for Scene {
+    fn update(&mut self, _: &mut colosseum::Window) -> Option<Box<dyn colosseum::Scene>> {
+        None
+    }
+
+    fn render(&mut self, _: &mut colosseum::Window) {}
+}

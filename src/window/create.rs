@@ -2,23 +2,28 @@ pub(super) fn get_display(
     instance: &mut alexandria::Instance,
     adapter: Option<&str>,
     display: Option<&str>,
-) -> Result<alexandria::Display, alexandria::Error> {
+) -> Result<(alexandria::Display, alexandria::Adapter), alexandria::Error> {
     let mut adapter = get_adapter(instance, adapter)?;
 
     let display_name = match display {
         Some(display_name) => display_name,
-        None => return adapter.default_display(),
+        None => {
+            let display = adapter.default_display()?;
+            return Ok((display, adapter));
+        }
     };
 
     for display in adapter.enum_displays()? {
         let display = display?;
 
         if display.name() == display_name {
-            return Ok(display);
+            return Ok((display, adapter));
         }
     }
 
-    adapter.default_display()
+    let display = adapter.default_display()?;
+
+    Ok((display, adapter))
 }
 
 fn get_adapter(

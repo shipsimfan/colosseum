@@ -1,3 +1,9 @@
+mod refresh_rate;
+mod resolution;
+
+pub use refresh_rate::*;
+pub use resolution::*;
+
 #[cfg_attr(feature = "json", derive(json::Deserialize, json::Serialize))]
 pub struct GraphicsSettings {
     adapter: Option<String>,
@@ -5,12 +11,6 @@ pub struct GraphicsSettings {
     resolution: Option<Resolution>,
     refresh_rate: Option<RefreshRate>,
 }
-
-#[derive(Clone, Copy)]
-pub struct RefreshRate(alexandria::RefreshRate);
-
-#[derive(Clone, Copy)]
-pub struct Resolution(alexandria::Resolution);
 
 #[cfg(feature = "json")]
 struct InvalidSetting(&'static str);
@@ -75,85 +75,6 @@ impl Default for GraphicsSettings {
             resolution: None,
             refresh_rate: None,
         }
-    }
-}
-
-impl Resolution {
-    #[inline]
-    pub fn new(width: usize, height: usize) -> Self {
-        Resolution(alexandria::Resolution::new(width, height))
-    }
-
-    #[inline]
-    pub fn parse(resolution: &str) -> Option<Self> {
-        alexandria::Resolution::parse(resolution).map(|resolution| Resolution(resolution))
-    }
-
-    #[inline]
-    pub fn width(&self) -> usize {
-        self.0.width()
-    }
-
-    #[inline]
-    pub fn height(&self) -> usize {
-        self.0.height()
-    }
-
-    #[inline]
-    pub fn set_width(&mut self, width: usize) {
-        self.0.set_width(width)
-    }
-
-    #[inline]
-    pub fn set_height(&mut self, height: usize) {
-        self.0.set_height(height)
-    }
-
-    #[inline]
-    pub fn to_string(&self) -> String {
-        self.0.to_string()
-    }
-}
-
-#[cfg(feature = "json")]
-impl json::Serialize for Resolution {
-    fn serialize_ref(&self) -> json::Value {
-        json::Value::String(self.to_string())
-    }
-}
-
-#[cfg(feature = "json")]
-impl json::Deserialize for Resolution {
-    fn deserialize(value: json::Value, key: Option<&str>) -> Result<Self, json::Error> {
-        Resolution::parse(&String::deserialize(value, key)?)
-            .ok_or(json::Error::Other(Box::new(InvalidSetting("resolution"))))
-    }
-}
-
-impl RefreshRate {
-    #[inline]
-    pub fn parse(refresh_rate: &str) -> Option<Self> {
-        alexandria::RefreshRate::parse(refresh_rate).map(|refresh_rate| RefreshRate(refresh_rate))
-    }
-
-    #[inline]
-    pub fn to_string(&self) -> String {
-        self.0.to_string()
-    }
-}
-
-#[cfg(feature = "json")]
-impl json::Serialize for RefreshRate {
-    fn serialize_ref(&self) -> json::Value {
-        json::Value::String(self.to_string())
-    }
-}
-
-#[cfg(feature = "json")]
-impl json::Deserialize for RefreshRate {
-    fn deserialize(value: json::Value, key: Option<&str>) -> Result<Self, json::Error> {
-        RefreshRate::parse(&String::deserialize(value, key)?)
-            .ok_or(json::Error::Other(Box::new(InvalidSetting("refresh rate"))))
     }
 }
 

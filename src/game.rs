@@ -8,15 +8,25 @@ pub struct Game {
 
 impl Game {
     pub fn new<S: InitialScene>(
+        title: &str,
         graphics_settings: GraphicsSettings,
         context: S::Context,
     ) -> Result<Self, Error> {
-        let mut window = Window::new(graphics_settings)?;
+        let mut window = Window::new(title, graphics_settings)?;
 
         let scene = S::new(context, &mut window);
 
         Ok(Game { window, scene })
     }
 
-    pub fn run(self) {}
+    pub fn run(mut self) {
+        while self.window.poll_events() {
+            match self.scene.update(&mut self.window) {
+                Some(new_scene) => self.scene = new_scene,
+                None => {}
+            }
+
+            self.scene.render(&mut self.window)
+        }
+    }
 }
