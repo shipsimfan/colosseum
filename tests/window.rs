@@ -2,8 +2,17 @@ struct Scene {}
 
 #[test]
 fn window() -> Result<(), colosseum::Error> {
-    let game =
-        colosseum::Game::new::<Scene>("Window Test", colosseum::GraphicsSettings::default(), ())?;
+    #[cfg(debug_assertions)]
+    let log_debug_messages = true;
+    #[cfg(not(debug_assertions))]
+    let log_debug_messages = false;
+
+    let game = colosseum::Game::new::<Scene>(
+        "Window Test",
+        colosseum::GraphicsSettings::default(),
+        log_debug_messages,
+        (),
+    )?;
     Ok(game.run())
 }
 

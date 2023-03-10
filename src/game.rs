@@ -10,9 +10,10 @@ impl Game {
     pub fn new<S: InitialScene>(
         title: &str,
         graphics_settings: GraphicsSettings,
+        log_debug_messages: bool,
         context: S::Context,
     ) -> Result<Self, Error> {
-        let mut window = Window::new(title, graphics_settings)?;
+        let mut window = Window::new(title, graphics_settings, log_debug_messages)?;
 
         let scene = S::new(context, &mut window);
 
