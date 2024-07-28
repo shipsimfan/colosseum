@@ -1,5 +1,5 @@
-use crate::Scene;
-use std::borrow::Cow;
+use crate::{event_logger::EventLogger, info, logging::LogController, Scene};
+use std::path::Path;
 
 #[cfg(debug_assertions)]
 const DEBUG: bool = true;
@@ -8,8 +8,12 @@ const DEBUG: bool = true;
 const DEBUG: bool = false;
 
 /// Begins running a game with `initial_scene`
-pub fn run<S: Scene>(title: &str, initial_scene: S) -> ! {
-    let exit_code = match do_run(title, Box::new(initial_scene)) {
+pub fn run<F: FnOnce(&LogController) -> Box<dyn Scene>>(
+    title: &str,
+    log_directory: Option<&Path>,
+    initial_scene: F,
+) -> ! {
+    let exit_code = match do_run(title, log_directory, initial_scene) {
         Ok(()) => 0,
         Err(error) => {
             alexandria::message_box(error.title(), &error);
@@ -21,12 +25,27 @@ pub fn run<S: Scene>(title: &str, initial_scene: S) -> ! {
 }
 
 /// Actually setups the game engine and runs `initial_scene`
-fn do_run(title: &str, mut scene: Box<dyn Scene>) -> Result<(), Box<dyn alexandria::Error>> {
+fn do_run<F: FnOnce(&LogController) -> Box<dyn Scene>>(
+    title: &str,
+    log_directory: Option<&Path>,
+    initial_scene: F,
+) -> Result<(), Box<dyn alexandria::Error>> {
     // Initial setup
-    let instance = alexandria::Instance::new(if DEBUG { Some(log_callback) } else { None })?;
+    let log_controller = LogController::new(log_directory);
+    let graphics_logger = log_controller.logger("graphics");
+
+    info!(graphics_logger, "Creating graphics instance");
+    let instance = alexandria::Instance::new(if DEBUG {
+        Some(EventLogger::new(log_controller.logger("vulkan")))
+    } else {
+        None
+    })?;
+
+    info!(graphics_logger, "Creating window");
     let mut window = alexandria::Window::new(title, 1280, 720)?;
 
     // Main game loop
+    let mut scene = initial_scene(&log_controller);
     while window.poll_events() {
         let next_scene = scene.update();
         scene.render();
@@ -36,13 +55,7 @@ fn do_run(title: &str, mut scene: Box<dyn Scene>) -> Result<(), Box<dyn alexandr
         }
     }
 
-    Ok(())
-}
+    info!(graphics_logger, "Shutting down");
 
-fn log_callback(severity: alexandria::Severity, message: &str, objects: Vec<Cow<str>>) {
-    eprint!("[{}] {}", severity, message);
-    if objects.len() > 0 {
-        eprint!(" ({:?})", objects);
-    }
-    eprintln!();
+    Ok(())
 }

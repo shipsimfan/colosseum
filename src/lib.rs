@@ -6,6 +6,9 @@
 #![deny(rustdoc::redundant_explicit_links)]
 #![warn(rustdoc::broken_intra_doc_links)]
 
+pub mod logging;
+
+mod event_logger;
 mod run;
 mod scene;
 
