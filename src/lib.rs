@@ -5,3 +5,9 @@
 #![deny(rustdoc::unescaped_backticks)]
 #![deny(rustdoc::redundant_explicit_links)]
 #![warn(rustdoc::broken_intra_doc_links)]
+
+mod run;
+mod scene;
+
+pub use run::run;
+pub use scene::Scene;
