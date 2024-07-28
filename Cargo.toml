@@ -1,8 +1,12 @@
 [package]
-edition = "2021"
 name = "colosseum"
+description = "A game engine built on Alexandria"
 version = "0.1.0"
+edition = "2021"
+authors = ["Lance Hart <me@lancehart>"]
+repository = "https://github.com/shipsimfan/colosseum.git"
+license = "GPL-3.0-or-later"
+publish = false
 
 [dependencies]
-alexandria = {git = "https://github.com/shipsimfan/alexandria.git"}
-ginger = {git = "https://github.com/shipsimfan/ginger.git"}
+alexandria.path = "../alexandria"
