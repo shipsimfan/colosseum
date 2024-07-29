@@ -3,7 +3,7 @@ use crate::Scene;
 
 impl Colosseum {
     pub(crate) fn game_loop(&mut self, mut scene: Box<dyn Scene>) {
-        while self.window.poll_events() {
+        while self.graphics.window().poll_events() {
             let next_scene = scene.update(self.update_context());
             scene.render(self.render_context());
 

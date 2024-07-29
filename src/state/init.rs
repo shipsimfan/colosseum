@@ -1,12 +1,6 @@
-use super::{event_logger::EventLogger, Colosseum};
-use crate::{info, logging::LogController, SettingsController};
+use super::Colosseum;
+use crate::{logging::LogController, state::graphics::GraphicsState, SettingsController};
 use std::path::Path;
-
-#[cfg(debug_assertions)]
-const DEBUG: bool = true;
-
-#[cfg(not(debug_assertions))]
-const DEBUG: bool = false;
 
 impl Colosseum {
     pub(crate) fn new(
@@ -17,22 +11,11 @@ impl Colosseum {
         let settings = SettingsController::new(settings_directory);
 
         let log_controller = LogController::new(log_directory);
-        let graphics_logger = log_controller.logger("graphics");
 
-        info!(graphics_logger, "Creating graphics instance");
-        let instance = alexandria::Instance::new(if DEBUG {
-            Some(EventLogger::new(log_controller.logger("vulkan")))
-        } else {
-            None
-        })?;
-
-        info!(graphics_logger, "Creating window");
-        let window = alexandria::Window::new(title, 1280, 720)?;
+        let graphics = GraphicsState::new(title, &log_controller)?;
 
         Ok(Colosseum {
-            instance,
-            window,
-            graphics_logger,
+            graphics,
             log_controller,
             settings,
         })

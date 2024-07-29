@@ -3,14 +3,14 @@ use alexandria::EventCallback;
 use std::{borrow::Cow, fmt::Display};
 
 /// The logger used for Vulkan events
-pub(crate) struct EventLogger(Logger);
+pub(super) struct EventLogger(Logger);
 
 /// Display the list contained only if it contains elements
 struct ObjectDisplay<'a>(&'a [Cow<'a, str>]);
 
 impl EventLogger {
     /// Creates a new [`EventLogger`] to `logger`
-    pub(crate) fn new(logger: Logger) -> Box<dyn EventCallback> {
+    pub(super) fn new(logger: Logger) -> Box<dyn EventCallback> {
         Box::new(EventLogger(logger))
     }
 }

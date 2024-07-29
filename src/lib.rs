@@ -19,3 +19,11 @@ pub use run::run;
 pub use scene::Scene;
 pub use settings::{LoadSettingsError, SaveSettingsError, Settings, SettingsController};
 pub use state::{RenderContext, UpdateContext};
+
+/// Is the program running in debug-mode?
+#[cfg(debug_assertions)]
+pub const DEBUG: bool = true;
+
+/// Is the program running in debug-mode?
+#[cfg(not(debug_assertions))]
+pub const DEBUG: bool = false;
