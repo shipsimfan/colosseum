@@ -4,6 +4,7 @@ use crate::{
 };
 use alexandria::{Instance, Window};
 
+mod event_logger;
 mod game_loop;
 mod init;
 mod render_context;

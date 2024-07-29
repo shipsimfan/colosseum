@@ -1,5 +1,5 @@
-use super::Colosseum;
-use crate::{event_logger::EventLogger, info, logging::LogController};
+use super::{event_logger::EventLogger, Colosseum};
+use crate::{info, logging::LogController};
 use std::path::Path;
 
 #[cfg(debug_assertions)]

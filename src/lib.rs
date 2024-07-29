@@ -8,7 +8,6 @@
 
 pub mod logging;
 
-mod event_logger;
 mod run;
 mod scene;
 mod state;
