@@ -1,5 +1,5 @@
 use super::{event_logger::EventLogger, Colosseum};
-use crate::{info, logging::LogController};
+use crate::{info, logging::LogController, SettingsController};
 use std::path::Path;
 
 #[cfg(debug_assertions)]
@@ -12,7 +12,10 @@ impl Colosseum {
     pub(crate) fn new(
         title: &str,
         log_directory: Option<&Path>,
+        settings_directory: Option<&Path>,
     ) -> Result<Self, Box<dyn alexandria::Error>> {
+        let settings = SettingsController::new(settings_directory);
+
         let log_controller = LogController::new(log_directory);
         let graphics_logger = log_controller.logger("graphics");
 
@@ -31,6 +34,7 @@ impl Colosseum {
             window,
             graphics_logger,
             log_controller,
+            settings,
         })
     }
 }

@@ -10,3 +10,5 @@ publish = false
 
 [dependencies]
 alexandria.path = "../alexandria"
+data-format.git = "https://github.com/shipsimfan/lib-data-format"
+json.git = "https://github.com/shipsimfan/lib-json"

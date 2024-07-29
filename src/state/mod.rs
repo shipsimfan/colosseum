@@ -1,6 +1,7 @@
 use crate::{
     info,
     logging::{LogController, Logger},
+    SettingsController,
 };
 use alexandria::{Instance, Window};
 
@@ -26,6 +27,9 @@ pub(crate) struct Colosseum {
 
     /// Creates loggers and maintains the logging infrastructure
     log_controller: LogController,
+
+    /// Maintains the settings files
+    settings: SettingsController,
 }
 
 impl Colosseum {

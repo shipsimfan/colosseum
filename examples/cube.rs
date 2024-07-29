@@ -2,7 +2,7 @@
 struct Scene(colosseum::logging::Logger);
 
 fn main() {
-    colosseum::run("Cube", None, Scene::new);
+    colosseum::run("Cube", None, None, Scene::new);
 }
 
 impl Scene {

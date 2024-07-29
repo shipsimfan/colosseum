@@ -1,9 +1,10 @@
 use super::Colosseum;
-use crate::logging::LogController;
+use crate::{logging::LogController, SettingsController};
 
 /// The context which scenes use to update
 pub struct UpdateContext<'a> {
     log_controller: &'a LogController,
+    settings: &'a SettingsController,
 }
 
 impl<'a> UpdateContext<'a> {
@@ -11,6 +12,7 @@ impl<'a> UpdateContext<'a> {
     pub(super) fn new(colosseum: &'a mut Colosseum) -> Self {
         UpdateContext {
             log_controller: &colosseum.log_controller,
+            settings: &colosseum.settings,
         }
     }
 
