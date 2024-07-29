@@ -14,7 +14,8 @@ mod scene;
 mod settings;
 mod state;
 
+pub use alexandria::Error;
 pub use run::run;
 pub use scene::Scene;
-pub use settings::{Settings, SettingsController};
+pub use settings::{LoadSettingsError, SaveSettingsError, Settings, SettingsController};
 pub use state::{RenderContext, UpdateContext};

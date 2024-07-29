@@ -1,9 +1,5 @@
-use std::{
-    convert::Infallible,
-    path::{Path, PathBuf},
-};
-
-use super::Settings;
+use super::{LoadSettingsError, SaveSettingsError, Settings};
+use std::path::{Path, PathBuf};
 
 /// Loads and saves settings
 pub struct SettingsController {
@@ -24,13 +20,35 @@ impl SettingsController {
     }
 
     /// Loads `T` from its configuration file
-    pub fn load<T: Settings>(&mut self) -> Result<T, Infallible> {
-        todo!()
+    pub fn load<T: Settings>(&mut self) -> Result<T, LoadSettingsError> {
+        let path = self.directory.join(format!("{}.json", T::NAME));
+        if !path
+            .try_exists()
+            .map_err(|error| LoadSettingsError::ReadFailed(error, path.clone()))?
+        {
+            let settings = T::default();
+            self.save(&settings)?;
+            return Ok(settings);
+        }
+
+        let contents = std::fs::read(&path)
+            .map_err(|error| LoadSettingsError::ReadFailed(error, path.clone()))?;
+
+        json::from_bytes(&contents)
+            .map_err(|error| LoadSettingsError::DeserializeError(error.to_string(), path))
     }
 
     /// Saves `settings` to its configuration file
-    pub fn save<T: Settings>(&mut self, settings: T) -> Result<(), Infallible> {
-        todo!()
+    pub fn save<T: Settings>(&mut self, settings: &T) -> Result<(), SaveSettingsError> {
+        let path = self.directory.join(format!("{}.json", T::NAME));
+        let mut file = std::fs::OpenOptions::new()
+            .create(true)
+            .write(true)
+            .truncate(true)
+            .open(&path)
+            .map_err(|error| SaveSettingsError::new(error.to_string(), path.clone()))?;
+        json::to_write_pretty(settings, &mut file)
+            .map_err(|error| SaveSettingsError::new(error.to_string(), path))
     }
 }
 
