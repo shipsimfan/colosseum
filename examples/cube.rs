@@ -6,17 +6,17 @@ fn main() {
 }
 
 impl Scene {
-    pub fn new(log_controller: &colosseum::logging::LogController) -> Box<dyn colosseum::Scene> {
-        let logger = log_controller.logger("cube");
+    pub fn new(context: colosseum::UpdateContext) -> Box<dyn colosseum::Scene> {
+        let logger = context.log_controller().logger("cube");
         colosseum::info!(logger, "Starting cube scene");
         Box::new(Scene(logger))
     }
 }
 
 impl colosseum::Scene for Scene {
-    fn update(&mut self) -> Option<Box<dyn colosseum::Scene>> {
+    fn update(&mut self, _: colosseum::UpdateContext) -> Option<Box<dyn colosseum::Scene>> {
         None
     }
 
-    fn render(&mut self) {}
+    fn render(&mut self, _: colosseum::RenderContext) {}
 }
