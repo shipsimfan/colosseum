@@ -1,4 +1,9 @@
-use std::path::{Path, PathBuf};
+use std::{
+    convert::Infallible,
+    path::{Path, PathBuf},
+};
+
+use super::Settings;
 
 /// Loads and saves settings
 pub struct SettingsController {
@@ -16,6 +21,16 @@ impl SettingsController {
             .to_path_buf();
 
         SettingsController { directory }
+    }
+
+    /// Loads `T` from its configuration file
+    pub fn load<T: Settings>(&mut self) -> Result<T, Infallible> {
+        todo!()
+    }
+
+    /// Saves `settings` to its configuration file
+    pub fn save<T: Settings>(&mut self, settings: T) -> Result<(), Infallible> {
+        todo!()
     }
 }
 
