@@ -8,11 +8,11 @@ impl Colosseum {
         log_directory: Option<&Path>,
         settings_directory: Option<&Path>,
     ) -> Result<Self, Box<dyn alexandria::Error>> {
-        let settings = SettingsController::new(settings_directory);
-
         let log_controller = LogController::new(log_directory);
 
-        let graphics = GraphicsState::new(title, &log_controller)?;
+        let mut settings = SettingsController::new(settings_directory, &log_controller);
+
+        let graphics = GraphicsState::new(title, &log_controller, &mut settings)?;
 
         Ok(Colosseum {
             graphics,

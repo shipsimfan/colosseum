@@ -1,14 +1,19 @@
 use crate::{info, logging::Logger};
 use alexandria::{Instance, Window};
 use event_logger::EventLogger;
+use settings::Settings;
 
 mod event_logger;
 mod init;
+mod settings;
 
 /// The current graphics state
 pub(super) struct GraphicsState {
     /// The logger for graphics information
     logger: Logger,
+
+    /// The graphics settings
+    settings: Settings,
 
     /// The graphics instance
     instance: Instance,

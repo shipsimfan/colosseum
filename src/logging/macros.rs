@@ -6,7 +6,7 @@ macro_rules! log {
     };
 
     ($logger: expr, $severity: ident, $arg: expr) => {
-        $logger.log($crate::logging::Severity::Severity::$severity, &$arg)
+        $logger.log($crate::logging::Severity::$severity, &$arg)
     };
 
     ($logger: expr, $severity: ident, $fmt: literal, $($arg:tt)*) => {
