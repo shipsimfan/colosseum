@@ -1,5 +1,12 @@
 use super::{EventLogger, GraphicsState, Settings};
-use crate::{info, logging::LogController, SettingsController, DEBUG};
+use crate::{
+    info, logging::LogController, state::graphics::select_physical_device::select_physical_device,
+    SettingsController, DEBUG,
+};
+
+mod error;
+
+pub use error::GraphicsInitError;
 
 impl GraphicsState {
     /// Creates a new [`GraphicsState`]
@@ -7,7 +14,7 @@ impl GraphicsState {
         title: &str,
         log_controller: &LogController,
         settings_controller: &mut SettingsController,
-    ) -> Result<Self, Box<dyn alexandria::Error>> {
+    ) -> Result<Self, GraphicsInitError> {
         let logger = log_controller.logger("graphics");
 
         let settings: Settings = settings_controller.load()?;
@@ -21,6 +28,22 @@ impl GraphicsState {
 
         info!(logger, "Creating window");
         let window = alexandria::Window::new(title, settings.width(), settings.height())?;
+
+        let physical_devices = instance.physical_devices(&window)?;
+        for physical_device in &physical_devices {
+            info!(
+                logger,
+                "Available physical device: {}",
+                physical_device.name()
+            );
+        }
+        let selected_physical_device = select_physical_device(settings.device(), &physical_devices)
+            .ok_or(GraphicsInitError::NoSupportedPhysicalDevices)?;
+        info!(
+            logger,
+            "Selected physical device: {}",
+            selected_physical_device.name()
+        );
 
         Ok(GraphicsState {
             logger,

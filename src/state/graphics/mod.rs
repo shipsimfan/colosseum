@@ -5,6 +5,7 @@ use settings::Settings;
 
 mod event_logger;
 mod init;
+mod select_physical_device;
 mod settings;
 
 /// The current graphics state
