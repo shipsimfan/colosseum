@@ -15,5 +15,7 @@ impl Colosseum {
                 scene.on_start(self.update_context());
             }
         }
+
+        scene.on_finish(self.update_context());
     }
 }
