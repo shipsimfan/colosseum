@@ -7,4 +7,12 @@ pub trait Scene: 'static {
 
     /// Render the current game state
     fn render(&mut self, context: RenderContext);
+
+    /// Runs when the scene starts, before any calls to `update` or `render`
+    #[allow(unused_variables)]
+    fn on_start(&mut self, context: UpdateContext) {}
+
+    /// Runs when the scene finishes, after all calls to `update` and `render`
+    #[allow(unused_variables)]
+    fn on_finish(&mut self, context: UpdateContext) {}
 }

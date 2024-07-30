@@ -19,4 +19,9 @@ impl<'a> UpdateContext<'a> {
     pub fn settings(&mut self) -> &mut SettingsController {
         &mut self.0.settings
     }
+
+    /// Signals the application to close at the end of the frame
+    pub fn exit(&mut self) {
+        self.0.graphics.window().exit()
+    }
 }
