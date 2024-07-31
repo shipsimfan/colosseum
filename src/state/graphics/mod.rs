@@ -14,7 +14,7 @@ pub(super) struct GraphicsState {
     device: Device,
 
     /// The window the game is displayed in
-    window: Box<Window>,
+    window: Window,
 
     /// The graphics instance
     instance: Instance,

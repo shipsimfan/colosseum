@@ -27,7 +27,8 @@ impl GraphicsState {
         })?;
 
         info!(logger, "Creating window");
-        let window = alexandria::Window::new(title, settings.width(), settings.height())?;
+        let window =
+            alexandria::Window::new(&instance, title, settings.width(), settings.height())?;
 
         let physical_devices = instance.physical_devices(&window)?;
         for physical_device in &physical_devices {
