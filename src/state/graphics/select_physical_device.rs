@@ -1,3 +1,4 @@
+use crate::{logging::Logger, warn};
 use alexandria::{PhysicalDevice, PhysicalDeviceType};
 
 /// Searches `physical_devices` for a device named `device_name` or the best available one if it
@@ -5,6 +6,7 @@ use alexandria::{PhysicalDevice, PhysicalDeviceType};
 pub(super) fn select_physical_device<'a>(
     device_name: Option<&str>,
     physical_devices: &'a [PhysicalDevice],
+    logger: &Logger,
 ) -> Option<&'a PhysicalDevice> {
     let mut best_score = 0;
     let mut best_device = None;
@@ -20,6 +22,13 @@ pub(super) fn select_physical_device<'a>(
             best_device = Some(physical_device);
             best_score = score;
         }
+    }
+
+    if let Some(device_name) = device_name {
+        warn!(
+            logger,
+            "Failed to find a physical device named \"{}\"", device_name
+        );
     }
 
     best_device

@@ -17,7 +17,7 @@ impl GraphicsState {
     ) -> Result<Self, GraphicsInitError> {
         let logger = log_controller.logger("graphics");
 
-        let settings: Settings = settings_controller.load()?;
+        let mut settings: Settings = settings_controller.load()?;
 
         info!(logger, "Creating graphics instance");
         let instance = alexandria::Instance::new(if DEBUG {
@@ -37,13 +37,17 @@ impl GraphicsState {
                 physical_device.name()
             );
         }
-        let selected_physical_device = select_physical_device(settings.device(), &physical_devices)
-            .ok_or(GraphicsInitError::NoSupportedPhysicalDevices)?;
+        let selected_physical_device =
+            select_physical_device(settings.device(), &physical_devices, &logger)
+                .ok_or(GraphicsInitError::NoSupportedPhysicalDevices)?;
         info!(
             logger,
             "Selected physical device: {}",
             selected_physical_device.name()
         );
+
+        settings.set_device(selected_physical_device.name().to_owned());
+        settings_controller.save(&settings)?;
 
         let device = alexandria::Device::new(selected_physical_device)?;
 
