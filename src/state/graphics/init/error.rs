@@ -1,5 +1,7 @@
 use crate::LoadSettingsError;
-use alexandria::{EnumeratePhysicalDevicesError, InstanceCreateError, WindowCreationError};
+use alexandria::{
+    DeviceCreateError, EnumeratePhysicalDevicesError, InstanceCreateError, WindowCreationError,
+};
 
 /// An error that occurred while graphics was initializing
 #[derive(Debug)]
@@ -9,6 +11,7 @@ pub enum GraphicsInitError {
     WindowCreation(WindowCreationError),
     EnumeratePhysicalDevices(EnumeratePhysicalDevicesError),
     NoSupportedPhysicalDevices,
+    DeviceCreation(DeviceCreateError),
 }
 
 impl alexandria::Error for GraphicsInitError {
@@ -29,6 +32,7 @@ impl std::fmt::Display for GraphicsInitError {
             GraphicsInitError::NoSupportedPhysicalDevices => {
                 f.write_str("No supported physical devices found")
             }
+            GraphicsInitError::DeviceCreation(error) => error.fmt(f),
         }
     }
 }
@@ -54,5 +58,11 @@ impl From<WindowCreationError> for GraphicsInitError {
 impl From<EnumeratePhysicalDevicesError> for GraphicsInitError {
     fn from(error: EnumeratePhysicalDevicesError) -> Self {
         GraphicsInitError::EnumeratePhysicalDevices(error)
+    }
+}
+
+impl From<DeviceCreateError> for GraphicsInitError {
+    fn from(error: DeviceCreateError) -> Self {
+        GraphicsInitError::DeviceCreation(error)
     }
 }

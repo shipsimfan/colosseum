@@ -45,11 +45,14 @@ impl GraphicsState {
             selected_physical_device.name()
         );
 
+        let device = alexandria::Device::new(selected_physical_device)?;
+
         Ok(GraphicsState {
-            logger,
-            settings,
-            instance,
+            device,
             window,
+            instance,
+            settings,
+            logger,
         })
     }
 }

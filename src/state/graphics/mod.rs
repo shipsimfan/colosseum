@@ -1,5 +1,5 @@
 use crate::{info, logging::Logger};
-use alexandria::{Instance, Window};
+use alexandria::{Device, Instance, Window};
 use event_logger::EventLogger;
 use settings::Settings;
 
@@ -10,17 +10,20 @@ mod settings;
 
 /// The current graphics state
 pub(super) struct GraphicsState {
-    /// The logger for graphics information
-    logger: Logger,
+    /// The device used to render
+    device: Device,
 
-    /// The graphics settings
-    settings: Settings,
+    /// The window the game is displayed in
+    window: Box<Window>,
 
     /// The graphics instance
     instance: Instance,
 
-    /// The window the game is displayed in
-    window: Box<Window>,
+    /// The graphics settings
+    settings: Settings,
+
+    /// The logger for graphics information
+    logger: Logger,
 }
 
 impl GraphicsState {
