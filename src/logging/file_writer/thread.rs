@@ -20,14 +20,14 @@ struct OpenFile {
 }
 
 /// The main entry point for the log writer thread
-pub(super) fn run(queue: Receiver<Command>, directory: PathBuf) {
+pub(super) fn run(queue: Receiver<Command>, directory: PathBuf, time_offset: i16) {
     let mut files = Vec::new();
 
     while let Ok(command) = queue.recv() {
         match command {
             Command::Open(name) => open_file(name, &directory, &mut files),
             Command::Write(name, severity, message, time) => {
-                if let Err(error) = write(name, severity, message, time, &mut files) {
+                if let Err(error) = write(name, severity, message, time, time_offset, &mut files) {
                     log_to_console(
                         Severity::Error,
                         NAME,
@@ -92,6 +92,7 @@ fn write(
     severity: Severity,
     message: Cow<'static, str>,
     time: SystemTime,
+    time_offset: i16,
     files: &mut Vec<(&'static str, OpenFile)>,
 ) -> std::io::Result<()> {
     let mut file = None;
@@ -108,16 +109,21 @@ fn write(
     let file = file.unwrap();
 
     write!(file.file, "[{}][", severity)?;
-    write_time(&mut file.file, time, 0)?;
+    write_time(&mut file.file, time, time_offset)?;
     writeln!(file.file, "] {}", message)
 }
 
 /// Writes `system_time` to `output` as an ISO 8601 date-time
 fn write_time(output: &mut File, timestamp: SystemTime, offset: i16) -> std::io::Result<()> {
-    let total_millis = timestamp
+    let mut total_millis = timestamp
         .duration_since(UNIX_EPOCH)
         .unwrap_or(Duration::ZERO)
         .as_millis();
+    if offset.is_negative() {
+        total_millis -= (-offset) as u128 * 1_000 * 60;
+    } else {
+        total_millis += offset as u128 * 1_000 * 60;
+    }
 
     let milli = (total_millis % 1_000) as u16;
     let total_seconds = (total_millis / 1_000) as u64;
@@ -149,9 +155,10 @@ fn write_time(output: &mut File, timestamp: SystemTime, offset: i16) -> std::io:
     if offset == 0 {
         write!(output, "Z")
     } else {
-        let offset_hour = offset / 60;
+        let offset_hour = (offset / 60).abs();
         let offset_minute = (offset % 60).abs();
+        let sign = if offset.is_positive() { '+' } else { '-' };
 
-        write!(output, "{:02}:{:02}", offset_hour, offset_minute)
+        write!(output, "{}{:02}{:02}", sign, offset_hour, offset_minute)
     }
 }

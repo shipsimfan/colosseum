@@ -24,7 +24,8 @@ impl FileWriter {
     pub(super) fn new(directory: PathBuf) -> (FileWriter, JoinHandle<()>) {
         let (sender, queue) = std::sync::mpsc::channel();
 
-        let join_handle = std::thread::spawn(move || thread::run(queue, directory));
+        let time_offset = alexandria::get_time_zone();
+        let join_handle = std::thread::spawn(move || thread::run(queue, directory, time_offset));
 
         (FileWriter { sender }, join_handle)
     }
