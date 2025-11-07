@@ -1,6 +1,6 @@
 [package]
 name = "colosseum"
-version = "0.0.0"
+version = "0.0.1"
 description = "D3D11 Game Engine"
 authors = ["Lance Hart <me@lancehart.ca>"]
 edition = "2024"
@@ -14,3 +14,4 @@ win32 = { git = "https://github.com/shipsimfan/lib-win32", features = [
     "d3d11sdklayers",
     "dxgi1_3",
 ] }
+argparse.git = "https://github.com/shipsimfan/lib-argparse"
