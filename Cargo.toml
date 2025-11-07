@@ -1,8 +1,16 @@
 [package]
-edition = "2021"
 name = "colosseum"
-version = "0.1.0"
+version = "0.0.0"
+description = "D3D11 Game Engine"
+authors = ["Lance Hart <me@lancehart.ca>"]
+edition = "2024"
+repository = "https://github.com/shipsimfan/colosseum"
+license = "GPL-3.0-or-later"
+publish = false
 
 [dependencies]
-alexandria = {git = "https://github.com/shipsimfan/alexandria.git"}
-ginger = {git = "https://github.com/shipsimfan/ginger.git"}
+win32 = { git = "https://github.com/shipsimfan/lib-win32", features = [
+    "d3d11",
+    "d3d11sdklayers",
+    "dxgi1_3",
+] }
