@@ -1,26 +1,23 @@
 # ToDo
- 1. Add message box calling
- 2. Add math library
- 3. Add logger
- 4. Add settings loading
- 5. Add message thread and window creation
- 6. Add graphics object creation
- 7. Add main loop
- 8. Add resize support
- 9. Add input
- 10. Add cameras + render passes
- 11. Add materials (shaders + transparent/opaque)
- 12. Add opaque mesh rendering
- 13. Add instanced mesh rendering
- 14. Add textures
- 15. Add lighting
- 16. Finish `KeyCode` enum
- 17. Add mouse support
- 18. Add xbox controller support
- 19. Add UI
- 20. Add transparency
- 21. Add audio
- 22. Add job system
+ 1. Add settings loading
+ 2. Add message thread and window creation
+ 3. Add graphics object creation
+ 4. Add main loop
+ 5. Add resize support
+ 6. Add input
+ 7. Add cameras + render passes
+ 8. Add materials (shaders + transparent/opaque)
+ 9. Add opaque mesh rendering
+ 10. Add instanced mesh rendering
+ 11. Add textures
+ 12. Add lighting
+ 13. Finish `KeyCode` enum
+ 14. Add mouse support
+ 15. Add xbox controller support
+ 16. Add UI
+ 17. Add transparency
+ 18. Add audio
+ 19. Add job system
 
 ## Additional ToDos
  1. Add MSAA

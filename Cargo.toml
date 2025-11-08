@@ -14,4 +14,8 @@ win32 = { git = "https://github.com/shipsimfan/lib-win32", features = [
     "d3d11sdklayers",
     "dxgi1_3",
 ] }
-argparse.git = "https://github.com/shipsimfan/lib-argparse"
+
+argparse.path = "../../Utility/lib-argparse" #.git = "https://github.com/shipsimfan/lib-argparse"
+data-format.git = "https://github.com/shipsimfan/lib-data-format"
+json.git = "https://github.com/shipsimfan/lib-json"
+time.git = "https://github.com/shipsimfan/lib-time"
