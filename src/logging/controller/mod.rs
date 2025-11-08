@@ -5,6 +5,7 @@ use std::{
 };
 
 mod drop;
+mod frame;
 mod log;
 mod logger;
 mod new;

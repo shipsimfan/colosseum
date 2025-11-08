@@ -1,9 +1,9 @@
 use crate::{Error, Result};
 use std::ptr::null_mut;
-use win32::{MB_ICONERROR, MB_OK, MessageBox, try_get_last_error};
+use win32::{HWND, MB_ICONERROR, MB_OK, MessageBox, try_get_last_error};
 
 /// Display a message box with an "ok" option
-pub(in crate::run) fn message_box(title: &str, content: &str) -> Result<()> {
+pub(crate) fn message_box(title: &str, content: &str, window: Option<HWND>) -> Result<()> {
     let mut title: Vec<u16> = title.encode_utf16().collect();
     title.push(0);
 
@@ -11,7 +11,7 @@ pub(in crate::run) fn message_box(title: &str, content: &str) -> Result<()> {
     content.push(0);
 
     try_get_last_error!(MessageBox(
-        null_mut(),
+        window.unwrap_or(null_mut()),
         content.as_ptr(),
         title.as_ptr(),
         MB_OK | MB_ICONERROR

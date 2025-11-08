@@ -1,5 +1,5 @@
 use crate::{
-    Error, Result,
+    Error, Result, RunningState,
     logging::{
         CombinedFileOutput, FormatterKind, HumanReadableFormatter, JsonFormatter, LogController,
         LogOutput, LoggingOptions, ScopeFilesOutput, StdoutOutput, log_thread,
@@ -18,7 +18,10 @@ use win32::{
 
 impl LogController {
     /// Creates a new [`LogController`]
-    pub(crate) fn new<Game: crate::Game>(options: &LoggingOptions<Game>) -> Result<Arc<Self>> {
+    pub(crate) fn new<Game: crate::Game>(
+        options: &LoggingOptions<Game>,
+        running_state: Arc<RunningState>,
+    ) -> Result<Arc<Self>> {
         // Get the performance counter frequency
         let mut performance_counter_frequency = LARGE_INTEGER::default();
         try_get_last_error!(QueryPerformanceFrequency(
@@ -111,7 +114,7 @@ impl LogController {
         let join_handle = Some(
             std::thread::Builder::new()
                 .name("Logging".to_string())
-                .spawn(move || log_thread(message_queue_recv, outputs))
+                .spawn(move || log_thread(message_queue_recv, outputs, running_state))
                 .map_err(|error| Error::new_inner("unable to spawn logger thread", error))?,
         );
 

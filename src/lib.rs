@@ -6,15 +6,20 @@
 #![deny(rustdoc::redundant_explicit_links)]
 #![warn(rustdoc::broken_intra_doc_links)]
 
+use message_thread::MessageThread;
+use run::RunningState;
+
 pub mod graphics;
 pub mod logging;
 pub mod math;
 pub mod settings;
-pub mod util;
+
+pub(crate) mod util;
 
 mod error;
 mod game;
 mod macros;
+mod message_thread;
 mod run;
 mod scene;
 
