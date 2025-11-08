@@ -1,13 +1,9 @@
 /// Log `message` to `logger` with `severity`
 #[macro_export]
 macro_rules! log {
-    ($severity: ident, $logger: expr, $($arg: tt)*) => {
-        if $logger.should_log($crate::logging::LogSeverity::$severity) {
-            $logger.log(
-                $crate::logging::LogSeverity::$severity,
-                ::std::format!($($arg)*),
-                ::std::module_path!()
-            );
+    ($severity: expr, $logger: expr, $($arg: tt)*) => {
+        if $logger.should_log($severity) {
+            $logger.log($severity, ::std::format!($($arg)*), ::std::module_path!());
         }
     };
 }
@@ -16,7 +12,7 @@ macro_rules! log {
 #[macro_export]
 macro_rules! error {
     ($logger: expr, $($arg: tt)*) => {
-        $crate::log!(Error, $logger, $($arg)*)
+        $crate::log!($crate::logging::LogSeverity::Error, $logger, $($arg)*)
     };
 }
 
@@ -24,7 +20,7 @@ macro_rules! error {
 #[macro_export]
 macro_rules! warning {
     ($logger: expr, $($arg: tt)*) => {
-        $crate::log!(Warning, $logger, $($arg)*)
+        $crate::log!($crate::logging::LogSeverity::Warning, $logger, $($arg)*)
     };
 }
 
@@ -32,7 +28,7 @@ macro_rules! warning {
 #[macro_export]
 macro_rules! info {
     ($logger: expr, $($arg: tt)*) => {
-        $crate::log!(Info, $logger, $($arg)*)
+        $crate::log!($crate::logging::LogSeverity::Info, $logger, $($arg)*)
     };
 }
 
@@ -40,6 +36,6 @@ macro_rules! info {
 #[macro_export]
 macro_rules! debug {
     ($logger: expr, $($arg: tt)*) => {
-        $crate::log!(Debug, $logger, $($arg)*)
+        $crate::log!($crate::logging::LogSeverity::Debug, $logger, $($arg)*)
     };
 }

@@ -1,6 +1,7 @@
 use crate::{
-    Result, RunningState, debug,
+    Result, RunningState,
     graphics::DisplayMode,
+    info,
     logging::Logger,
     message_thread::{
         MessageThreadSharedState, Window,
@@ -43,7 +44,7 @@ impl Window {
 
         // Get position and size
         let (position, size) = handle.get_size_and_position()?;
-        debug!(
+        info!(
             logger,
             "Window sized {}x{} created at {} (display mode: {})",
             size.x,
@@ -51,6 +52,10 @@ impl Window {
             position,
             display_mode
         );
+
+        shared_state.set_position(position);
+        shared_state.set_size(size);
+        shared_state.set_is_focused(true);
 
         // Write info into output box
         Ok(Box::write(

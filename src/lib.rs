@@ -18,7 +18,6 @@ pub(crate) mod util;
 
 mod error;
 mod game;
-mod macros;
 mod message_thread;
 mod run;
 mod scene;

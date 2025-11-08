@@ -9,6 +9,7 @@ use thread::log_thread;
 mod controller;
 mod formatters;
 mod logger;
+mod macros;
 mod message;
 mod options;
 mod outputs;

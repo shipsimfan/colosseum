@@ -9,6 +9,7 @@ mod thread;
 mod window;
 
 mod drop;
+mod get;
 mod new;
 
 /// A reference to the message pump thread

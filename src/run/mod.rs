@@ -1,11 +1,13 @@
 use crate::{
-    Error, MessageThread, Result, Scene, UpdateContext, info,
+    Error, MessageThread, Result, Scene, UpdateContext,
+    graphics::GraphicsContext,
+    info,
     logging::LogController,
     settings::SettingsCache,
     util::{expand_environment_string, message_box},
 };
 use argparse::Command;
-use std::{path::PathBuf, time::Instant};
+use std::{path::PathBuf, rc::Rc, time::Instant};
 
 mod initial_scene;
 mod r#macro;
@@ -61,18 +63,30 @@ fn do_run<Game: crate::Game>() -> Result<()> {
     let mut settings = <Game::SettingsCache as SettingsCache>::load(&settings_path)?;
 
     // Create window
-    let (message_thread, hwnd) = MessageThread::new(
+    let (message_thread, window) = MessageThread::new(
         Game::NAME,
         settings.graphics_settings().clone(),
         &log_controller,
         running_state.clone(),
     )?;
+    let message_thread = Rc::new(message_thread);
 
-    // Create graphics objects
+    // Create graphics context
+    let mut graphics_context = GraphicsContext::new(
+        window,
+        settings
+            .graphics_settings()
+            .adapter
+            .as_ref()
+            .map(|adapter| adapter.as_str()),
+        settings.graphics_settings().vsync,
+        message_thread,
+        &log_controller,
+    )?;
 
     // Create scene
     let mut last_time = Instant::now();
-    let mut scene = Box::new(Game::InitialScene::new(
+    let mut scene: Box<dyn Scene<Game = Game>> = Box::new(Game::InitialScene::new(
         &options,
         &mut UpdateContext::new(0.0, &log_controller, &mut settings, &running_state),
     ));
@@ -96,7 +110,7 @@ fn do_run<Game: crate::Game>() -> Result<()> {
         ));
 
         // Render
-        std::thread::sleep(std::time::Duration::from_millis(16));
+        graphics_context.render(scene.clear_color())?;
     }
 
     Ok(())
