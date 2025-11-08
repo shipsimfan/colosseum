@@ -50,14 +50,18 @@ fn do_run<Game: crate::Game>() -> Result<()> {
     let settings_path = PathBuf::from(expand_environment_string(
         &options.colosseum_options().settings_path.as_path(),
     )?);
-    let settings = <Game::SettingsCache as SettingsCache>::load(&settings_path)?;
+    let mut settings = <Game::SettingsCache as SettingsCache>::load(&settings_path)?;
 
     // Create window
 
     // Create graphics objects
 
     // Create scene
-    let scene = Box::new(Game::InitialScene::new(&options, &log_controller));
+    let scene = Box::new(Game::InitialScene::new(
+        &options,
+        &log_controller,
+        &mut settings,
+    ));
 
     // Run main loop
 

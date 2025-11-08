@@ -1,26 +1,25 @@
 # ToDo
- 1. Add `settings_cache!` macro
- 2. Add message thread and window creation
- 3. Add graphics object creation
- 4. Add main loop
- 5. Add resize support
- 6. Add input
- 7. Add cameras + render passes
- 8. Add materials (shaders + transparent/opaque)
- 9. Add opaque mesh rendering
- 10. Add instanced mesh rendering
- 11. Add model loading
- 12. Add textures
- 13. Add directional lighting
- 14. Finish `KeyCode` enum
- 15. Add mouse support
- 16. Add xbox controller support
- 17. Add UI
- 18. Add transparency
- 19. Add spot lights
- 20. Add point lights
- 21. Add audio
- 22. Add job system
+ 1. Add message thread and window creation
+ 2. Add graphics object creation
+ 3. Add main loop
+ 4. Add resize support
+ 5. Add input
+ 6. Add cameras + render passes
+ 7. Add materials (shaders + transparent/opaque)
+ 8. Add opaque mesh rendering
+ 9. Add instanced mesh rendering
+ 10. Add model loading
+ 11. Add textures
+ 12. Add directional lighting
+ 13. Finish `KeyCode` enum
+ 14. Add mouse support
+ 15. Add xbox controller support
+ 16. Add UI
+ 17. Add transparency
+ 18. Add spot lights
+ 19. Add point lights
+ 20. Add audio
+ 21. Add job system
 
 ## Additional ToDos
  1. Add frustum culling 

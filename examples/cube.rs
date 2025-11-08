@@ -30,24 +30,8 @@ impl colosseum::GetColosseumOptions<Cube> for CubeOptions {
     }
 }
 
-struct CubeSettings {
-    graphics_settings: colosseum::graphics::GraphicsSettings,
-}
-
-impl colosseum::settings::SettingsCache for CubeSettings {
-    fn load(path: &std::path::Path) -> colosseum::Result<Self> {
-        let graphics_settings: colosseum::graphics::GraphicsSettings =
-            unsafe { colosseum::settings::SettingsGroup::load(path)? };
-
-        unsafe { graphics_settings.save(path) }?;
-
-        Ok(CubeSettings { graphics_settings })
-    }
-
-    fn graphics_settings(&self) -> &colosseum::graphics::GraphicsSettings {
-        &self.graphics_settings
-    }
-}
+#[colosseum::settings::settings_cache]
+struct CubeSettings {}
 
 /// The main scene which renders a cube
 struct CubeScene;
@@ -62,6 +46,7 @@ impl colosseum::InitialScene for CubeScene {
     fn new(
         _: &<Self::Game as colosseum::Game>::Options,
         log_controller: &std::sync::Arc<colosseum::logging::LogController>,
+        _: &mut <Self::Game as colosseum::Game>::SettingsCache,
     ) -> Self {
         let logger = log_controller.logger("cube");
 

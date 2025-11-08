@@ -1,12 +1,27 @@
-[package]
-name = "colosseum"
+[workspace]
+
+[workspace.package]
 version = "0.0.1"
-description = "D3D11 Game Engine"
 authors = ["Lance Hart <me@lancehart.ca>"]
 edition = "2024"
 repository = "https://github.com/shipsimfan/colosseum"
 license = "GPL-3.0-or-later"
 publish = false
+
+[workspace.dependencies]
+colosseum-macros.path = "macros"
+
+
+[package]
+name = "colosseum"
+description = "D3D11 Game Engine"
+
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+license.workspace = true
+publish.workspace = true
 
 [dependencies]
 win32 = { git = "https://github.com/shipsimfan/lib-win32", features = [
@@ -15,7 +30,9 @@ win32 = { git = "https://github.com/shipsimfan/lib-win32", features = [
     "dxgi1_3",
 ] }
 
-argparse.path = "../../Utility/lib-argparse" #.git = "https://github.com/shipsimfan/lib-argparse"
+argparse.git = "https://github.com/shipsimfan/lib-argparse"
 data-format.git = "https://github.com/shipsimfan/lib-data-format"
 json.git = "https://github.com/shipsimfan/lib-json"
 time.git = "https://github.com/shipsimfan/lib-time"
+
+colosseum-macros.workspace = true
