@@ -56,6 +56,7 @@ impl Window {
         shared_state.set_position(position);
         shared_state.set_size(size);
         shared_state.set_is_focused(true);
+        shared_state.set_valid_hwnd(*handle);
 
         // Write info into output box
         Ok(Box::write(

@@ -74,12 +74,7 @@ fn do_run<Game: crate::Game>() -> Result<()> {
     // Create graphics context
     let mut graphics_context = GraphicsContext::new(
         window,
-        settings
-            .graphics_settings()
-            .adapter
-            .as_ref()
-            .map(|adapter| adapter.as_str()),
-        settings.graphics_settings().vsync,
+        settings.graphics_settings(),
         message_thread,
         &log_controller,
     )?;
@@ -88,7 +83,13 @@ fn do_run<Game: crate::Game>() -> Result<()> {
     let mut last_time = Instant::now();
     let mut scene: Box<dyn Scene<Game = Game>> = Box::new(Game::InitialScene::new(
         &options,
-        &mut UpdateContext::new(0.0, &log_controller, &mut settings, &running_state),
+        &mut UpdateContext::new(
+            0.0,
+            &log_controller,
+            &mut settings,
+            &mut graphics_context,
+            &running_state,
+        ),
     ));
 
     // Run main loop
@@ -106,8 +107,9 @@ fn do_run<Game: crate::Game>() -> Result<()> {
             delta_t,
             &log_controller,
             &mut settings,
+            &mut graphics_context,
             &running_state,
-        ));
+        ))?;
 
         // Render
         graphics_context.render(scene.clear_color())?;

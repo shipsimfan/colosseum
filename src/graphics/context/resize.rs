@@ -12,7 +12,7 @@ impl GraphicsContext {
     /// Resize any assets directly tied to window size
     pub(crate) fn resize(&mut self) -> Result<()> {
         let new_size = self.message_thread.window_size();
-        if self.swapchain_size == new_size {
+        if self.size == new_size {
             return Ok(());
         }
 
@@ -41,7 +41,7 @@ impl GraphicsContext {
             &self.device,
         )?);
 
-        self.swapchain_size = new_size;
+        self.size = new_size;
         debug!(
             self.logger,
             "Swapchain resized to {}x{}", new_size.x, new_size.y

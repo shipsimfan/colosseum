@@ -1,4 +1,4 @@
-use crate::{logging::LogController, run::RunningState};
+use crate::{graphics::GraphicsContext, logging::LogController, run::RunningState};
 use std::sync::Arc;
 
 mod get;
@@ -14,6 +14,9 @@ pub struct UpdateContext<'a, Game: crate::Game> {
 
     /// The settings for the game
     settings: &'a mut Game::SettingsCache,
+
+    /// The graphics context for creating rendering objects
+    graphics_context: &'a mut GraphicsContext,
 
     /// The running state of the engine
     running_state: &'a RunningState,

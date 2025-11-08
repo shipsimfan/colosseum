@@ -1,4 +1,4 @@
-use crate::{UpdateContext, logging::LogController};
+use crate::{UpdateContext, graphics::GraphicsContext, logging::LogController};
 use std::sync::Arc;
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
@@ -15,6 +15,11 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Get the settings for the game
     pub fn settings(&mut self) -> &mut Game::SettingsCache {
         self.settings
+    }
+
+    /// Get the graphics context for creating renderables
+    pub fn graphics(&mut self) -> &mut GraphicsContext {
+        self.graphics_context
     }
 
     /// Quit the game, exiting the application

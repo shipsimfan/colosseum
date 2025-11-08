@@ -1,23 +1,22 @@
 # ToDo
- 1. Add window changing functions using `WM_USER` messages
- 2. Add input
- 3. Add cameras
- 4. Add materials (shaders + transparent/opaque)
- 5. Add opaque mesh rendering
- 6. Add instanced mesh rendering
- 7. Add log header with build information to init
- 8. Add log cleanup in release
- 9. Add model loading
- 10. Add textures
- 11. Add directional lighting
- 12. Finish `KeyCode` enum
- 13. Add mouse support
- 14. Add xbox controller support
- 15. Add UI
- 16. Add transparency
- 17. Add spot lights
- 18. Add point lights
- 19. Add audio
+ 1. Add input
+ 2. Add cameras
+ 3. Add materials (shaders + transparent/opaque)
+ 4. Add opaque mesh rendering
+ 5. Add instanced mesh rendering
+ 6. Add log header with build information to init
+ 7. Add log cleanup in release
+ 8. Add model loading
+ 9. Add textures
+ 10. Add directional lighting
+ 11. Finish `KeyCode` enum
+ 12. Add mouse support
+ 13. Add xbox controller support
+ 14. Add UI
+ 15. Add transparency
+ 16. Add spot lights
+ 17. Add point lights
+ 18. Add audio
 
 ## Additional ToDos
  1. Add frustum culling 

@@ -3,7 +3,7 @@ use crate::graphics::context::InfoQueue;
 use crate::{
     Error, Result,
     graphics::{
-        Adapter, GraphicsContext,
+        Adapter, GraphicsContext, GraphicsSettings,
         context::{BUFFER_COUNT, RENDER_TARGET_FORMAT, SWAP_CHAIN_FLAGS},
     },
     info,
@@ -39,8 +39,7 @@ impl GraphicsContext {
     /// Creates a new [`GraphicsContext`] given the options
     pub(crate) fn new(
         window: HWND,
-        adapter: Option<&str>,
-        vsync: bool,
+        settings: &GraphicsSettings,
         message_thread: Rc<MessageThread>,
         log_controller: &Arc<LogController>,
     ) -> Result<Self> {
@@ -50,9 +49,9 @@ impl GraphicsContext {
         // Select adapter
         let mut selected_adapter = None;
         let mut adapters = Adapter::enumerate()?;
-        if let Some(adapter_name) = adapter {
+        if let Some(adapter_name) = settings.adapter.as_ref() {
             for (i, adapter) in adapters.iter().enumerate() {
-                if adapter.name().starts_with(&adapter_name) {
+                if adapter.name().starts_with(adapter_name) {
                     selected_adapter = Some(i);
                     info!(logger, "Found selected adapter!");
                     break;
@@ -161,8 +160,9 @@ impl GraphicsContext {
         // Create render context and graphics context
         let mut graphics_context = GraphicsContext {
             logger,
-            vsync,
-            swapchain_size: Vector2u::new(width, height),
+            vsync: settings.vsync,
+            display_mode: settings.display_mode,
+            size: Vector2u::new(width, height),
             swapchain_objects: None,
             swapchain,
             depth_stencil_state,
@@ -177,7 +177,7 @@ impl GraphicsContext {
 
         // Force a resize
         graphics_context
-            .force_resize(graphics_context.swapchain_size)
+            .force_resize(graphics_context.size)
             .map_err(|error| {
                 graphics_context.log_debug_messages().unwrap();
                 error

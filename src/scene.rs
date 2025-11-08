@@ -1,4 +1,4 @@
-use crate::{Game, UpdateContext, math::Color3f};
+use crate::{Game, Result, UpdateContext, math::Color3f};
 
 /// A single scene of a game
 pub trait Scene {
@@ -6,7 +6,7 @@ pub trait Scene {
     type Game: Game;
 
     /// Called each frame of the game to update the state
-    fn update(&mut self, context: &mut UpdateContext<Self::Game>);
+    fn update(&mut self, context: &mut UpdateContext<Self::Game>) -> Result<()>;
 
     /// Get the color to clear the screen with
     fn clear_color(&self) -> Color3f {

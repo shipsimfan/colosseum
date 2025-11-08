@@ -1,25 +1,14 @@
-use crate::{
-    Error, Result,
-    graphics::DisplayMode,
-    math::{Vector2i, Vector2u},
-    message_thread::window::WindowHandle,
-};
+use crate::{Error, Result, graphics::DisplayMode, message_thread::window::WindowHandle};
 use std::ptr::null_mut;
 use win32::{
-    GWL_EXSTYLE, GWL_STYLE, GetLastError, SetLastError, SetWindowLong, SetWindowPos,
-    try_get_last_error,
+    GWL_EXSTYLE, GWL_STYLE, GetLastError, SWP_FRAMECHANGED, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER,
+    SetLastError, SetWindowLong, SetWindowPos, try_get_last_error,
 };
 
 impl WindowHandle {
-    /// Sets the display mode, position, and size of the window
+    /// Sets the display mode of the window
     #[allow(unused)]
-    pub fn set_display_mode_size_and_position(
-        &self,
-        display_mode: DisplayMode,
-        size: Vector2u,
-        position: Vector2i,
-    ) -> Result<()> {
-        let (size, position) = display_mode.client_to_window(size, position)?;
+    pub fn set_display_mode(&self, display_mode: DisplayMode) -> Result<()> {
         let (style, ex_style) = display_mode.style();
 
         unsafe { SetLastError(0) };
@@ -44,13 +33,13 @@ impl WindowHandle {
         try_get_last_error!(SetWindowPos(
             self.handle,
             null_mut(),
-            position.x,
-            position.y,
-            size.x as _,
-            size.y as _,
-            0
+            0,
+            0,
+            0,
+            0,
+            SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED
         ))
-        .map_err(|os| Error::new_inner("unable to set window position and size", os))?;
+        .map_err(|error| Error::new_inner("unable to set window display mode", error))?;
 
         Ok(())
     }

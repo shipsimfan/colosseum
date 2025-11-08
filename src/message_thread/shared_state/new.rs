@@ -8,7 +8,7 @@ impl MessageThreadSharedState {
     /// Create a new [`MessageThreadSharedState`]
     pub fn new() -> Arc<Self> {
         Arc::new(MessageThreadSharedState {
-            hwnd_valid: Mutex::new(true),
+            hwnd: Mutex::new(None),
             position: AtomicU64::new(0),
             size: AtomicU64::new(0),
             is_focused: AtomicBool::new(true),

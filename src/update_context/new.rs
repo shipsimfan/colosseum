@@ -1,4 +1,4 @@
-use crate::{UpdateContext, logging::LogController, run::RunningState};
+use crate::{UpdateContext, graphics::GraphicsContext, logging::LogController, run::RunningState};
 use std::sync::Arc;
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
@@ -7,12 +7,14 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         delta_t: f32,
         logs: &'a Arc<LogController>,
         settings: &'a mut Game::SettingsCache,
+        graphics_context: &'a mut GraphicsContext,
         running_state: &'a RunningState,
     ) -> Self {
         UpdateContext {
             delta_t,
             logs,
             settings,
+            graphics_context,
             running_state,
         }
     }

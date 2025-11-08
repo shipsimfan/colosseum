@@ -1,4 +1,4 @@
-use crate::{MessageThread, logging::Logger, math::Vector2u};
+use crate::{MessageThread, graphics::DisplayMode, logging::Logger, math::Vector2u};
 #[cfg(debug_assertions)]
 use info_queue::InfoQueue;
 use std::rc::Rc;
@@ -12,6 +12,7 @@ use win32::{
     dxgi::{DXGI_FORMAT, DXGI_SWAP_CHAIN_FLAG, IDXGISwapChain},
 };
 
+#[cfg(debug_assertions)]
 mod info_queue;
 mod swapchain_objects;
 
@@ -19,17 +20,21 @@ mod log_debug_messages;
 mod new;
 mod render;
 mod resize;
+mod set;
 
 /// The context for creating graphics objects and rendering using them
-pub(crate) struct GraphicsContext {
+pub struct GraphicsContext {
     /// The logger for graphics events
     logger: Logger,
 
     /// Should presents be synchronized with the vertical blank?
     vsync: bool,
 
+    /// The current display mode of the window
+    display_mode: DisplayMode,
+
     /// The current size of the swapchain
-    swapchain_size: Vector2u,
+    size: Vector2u,
 
     /// The objects directly associated with the swapchain
     swapchain_objects: Option<SwapchainObjects>,

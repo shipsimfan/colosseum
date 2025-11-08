@@ -3,7 +3,9 @@ use std::sync::{
     atomic::{AtomicBool, AtomicU64},
 };
 
-mod hwnd_valid;
+use win32::HWND;
+
+mod hwnd;
 mod is_focused;
 mod new;
 mod position;
@@ -11,8 +13,8 @@ mod size;
 
 /// The shared state of the message thread
 pub(in crate::message_thread) struct MessageThreadSharedState {
-    /// Is the HWND of the message thread still valid?
-    hwnd_valid: Mutex<bool>,
+    /// The handle to the window, in a thread safe container
+    hwnd: Mutex<Option<HWND>>,
 
     /// The position of the upper-left corner of the client area of the window
     ///
@@ -29,3 +31,6 @@ pub(in crate::message_thread) struct MessageThreadSharedState {
     /// Is the window currently focused?
     is_focused: AtomicBool,
 }
+
+unsafe impl Send for MessageThreadSharedState {}
+unsafe impl Sync for MessageThreadSharedState {}

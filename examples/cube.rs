@@ -48,16 +48,24 @@ struct CubeScene {
 impl colosseum::Scene for CubeScene {
     type Game = Cube;
 
-    fn update(&mut self, context: &mut colosseum::UpdateContext<Self::Game>) {
+    fn update(
+        &mut self,
+        context: &mut colosseum::UpdateContext<Self::Game>,
+    ) -> colosseum::Result<()> {
         self.frames += 1;
         self.second_time += context.delta_t();
 
         while self.second_time >= 1.0 {
             colosseum::info!(self.logger, "FPS: {}", self.frames);
+            context
+                .graphics()
+                .set_title(&format!("Cube Example - FPS: {}", self.frames))?;
 
             self.second_time -= 1.0;
             self.frames = 0;
         }
+
+        Ok(())
     }
 }
 

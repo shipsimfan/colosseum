@@ -5,6 +5,7 @@
 #![deny(rustdoc::unescaped_backticks)]
 #![deny(rustdoc::redundant_explicit_links)]
 #![warn(rustdoc::broken_intra_doc_links)]
+#![feature(vec_into_raw_parts)]
 
 use message_thread::MessageThread;
 use run::RunningState;

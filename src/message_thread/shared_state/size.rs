@@ -2,6 +2,7 @@ use crate::{math::Vector2u, message_thread::MessageThreadSharedState};
 use std::sync::atomic::Ordering;
 
 impl MessageThreadSharedState {
+    /// Get the current size of the window
     pub fn size(&self) -> Vector2u {
         let size = self.size.load(Ordering::Acquire);
         Vector2u::new((size & 0xFFFFFFFF) as u32, (size >> 32) as u32)

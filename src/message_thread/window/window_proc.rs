@@ -1,7 +1,8 @@
 use crate::{
     debug,
+    graphics::DisplayMode,
     math::{Vector2i, Vector2u},
-    message_thread::Window,
+    message_thread::{WM_APP_SET_DISPLAY_MODE, WM_APP_SET_TITLE, Window},
 };
 use win32::{
     DefWindowProc, GWLP_USERDATA, GetWindowLongPtr, HWND, LPARAM, LRESULT, UINT, WM_ACTIVATEAPP,
@@ -112,6 +113,23 @@ impl Window {
                 }
 
                 // TODO: Handle key release
+            }
+
+            // A display mode change was requested
+            WM_APP_SET_DISPLAY_MODE => {
+                let display_mode = DisplayMode::from_w_param(w_param).unwrap();
+
+                self.wnd_proc_result = self.handle.set_display_mode(display_mode);
+            }
+
+            // A title change was requested
+            WM_APP_SET_TITLE => {
+                let length = w_param & 0xFFFFFFFF;
+                let capacity = w_param >> 32;
+                let title =
+                    unsafe { Vec::from_raw_parts(l_param as *mut u16, length as _, capacity as _) };
+
+                self.wnd_proc_result = self.handle.set_title(&title);
             }
 
             // All other events
