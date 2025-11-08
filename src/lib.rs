@@ -22,8 +22,10 @@ mod macros;
 mod message_thread;
 mod run;
 mod scene;
+mod update_context;
 
 pub use error::{Error, Result};
 pub use game::Game;
 pub use run::*;
 pub use scene::Scene;
+pub use update_context::UpdateContext;

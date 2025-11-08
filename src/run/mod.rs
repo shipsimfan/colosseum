@@ -1,11 +1,11 @@
 use crate::{
-    Error, MessageThread, Result, Scene, info,
+    Error, MessageThread, Result, Scene, UpdateContext, info,
     logging::LogController,
     settings::SettingsCache,
     util::{expand_environment_string, message_box},
 };
 use argparse::Command;
-use std::path::PathBuf;
+use std::{path::PathBuf, time::Instant};
 
 mod initial_scene;
 mod r#macro;
@@ -71,16 +71,31 @@ fn do_run<Game: crate::Game>() -> Result<()> {
     // Create graphics objects
 
     // Create scene
+    let mut last_time = Instant::now();
     let mut scene = Box::new(Game::InitialScene::new(
         &options,
-        &log_controller,
-        &mut settings,
+        &mut UpdateContext::new(0.0, &log_controller, &mut settings, &running_state),
     ));
 
     // Run main loop
     while running_state.is_running() {
+        // Pre-update actions
         log_controller.frame();
-        scene.update();
+
+        // Calculate delta time
+        let now = Instant::now();
+        let delta_t = (now - last_time).as_secs_f32();
+        last_time = now;
+
+        // Update
+        scene.update(&mut UpdateContext::new(
+            delta_t,
+            &log_controller,
+            &mut settings,
+            &running_state,
+        ));
+
+        // Render
         std::thread::sleep(std::time::Duration::from_millis(16));
     }
 

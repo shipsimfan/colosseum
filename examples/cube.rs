@@ -34,24 +34,46 @@ impl colosseum::GetColosseumOptions<Cube> for CubeOptions {
 struct CubeSettings {}
 
 /// The main scene which renders a cube
-struct CubeScene;
+struct CubeScene {
+    /// The logger to print messages with
+    logger: colosseum::logging::Logger,
+
+    /// The amount of time that has passed since last second
+    second_time: f32,
+
+    /// The number of frames that have happened
+    frames: u32,
+}
 
 impl colosseum::Scene for CubeScene {
     type Game = Cube;
 
-    fn update(&mut self) {}
+    fn update(&mut self, context: &mut colosseum::UpdateContext<Self::Game>) {
+        self.frames += 1;
+        self.second_time += context.delta_t();
+
+        while self.second_time >= 1.0 {
+            colosseum::info!(self.logger, "FPS: {}", self.frames);
+
+            self.second_time -= 1.0;
+            self.frames = 0;
+        }
+    }
 }
 
 impl colosseum::InitialScene for CubeScene {
     fn new(
         _: &<Self::Game as colosseum::Game>::Options,
-        log_controller: &std::sync::Arc<colosseum::logging::LogController>,
-        _: &mut <Self::Game as colosseum::Game>::SettingsCache,
+        context: &mut colosseum::UpdateContext<Self::Game>,
     ) -> Self {
-        let logger = log_controller.logger("cube");
+        let logger = context.logs().logger("cube");
 
         colosseum::info!(logger, "starting main cube scene!");
 
-        CubeScene
+        CubeScene {
+            logger,
+            second_time: 0.0,
+            frames: 0,
+        }
     }
 }

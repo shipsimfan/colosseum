@@ -1,7 +1,7 @@
 [workspace]
 
 [workspace.package]
-version = "0.0.1"
+version = "0.0.4"
 authors = ["Lance Hart <me@lancehart.ca>"]
 edition = "2024"
 repository = "https://github.com/shipsimfan/colosseum"
