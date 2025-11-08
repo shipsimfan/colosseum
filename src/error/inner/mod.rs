@@ -8,6 +8,9 @@ pub(crate) enum InnerError {
     /// The error happened during argument parsing
     ArgParse(argparse::Error),
 
+    /// An error occurred while deserializing
+    Deserialize(String),
+
     /// The error came from Rust I/O
     IO(std::io::Error),
 

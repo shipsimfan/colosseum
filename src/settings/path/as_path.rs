@@ -17,7 +17,7 @@ impl<Game: crate::Game> SettingsPath<Game> {
         match self {
             SettingsPath::Provided(path) => Cow::Borrowed(path),
             SettingsPath::Default(_) => Cow::Owned(format!(
-                "%USERPROFILE%/Documents/My Games/{}/{}",
+                "%USERPROFILE%/Documents/My Games/{}/{}/config",
                 Game::COMPANY,
                 Game::NAME
             )),

@@ -2,10 +2,11 @@ use crate::error::InnerError;
 
 impl std::error::Error for InnerError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        Some(match self {
-            InnerError::ArgParse(error) => error,
-            InnerError::IO(error) => error,
-            InnerError::Win32(error) => error,
-        })
+        match self {
+            InnerError::ArgParse(error) => Some(error),
+            InnerError::Deserialize(_) => None,
+            InnerError::IO(error) => Some(error),
+            InnerError::Win32(error) => Some(error),
+        }
     }
 }

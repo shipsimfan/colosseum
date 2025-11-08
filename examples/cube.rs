@@ -1,3 +1,5 @@
+use colosseum::settings::SettingsGroup;
+
 colosseum::run!(Cube);
 
 /// The cube example
@@ -28,11 +30,22 @@ impl colosseum::GetColosseumOptions<Cube> for CubeOptions {
     }
 }
 
-struct CubeSettings;
+struct CubeSettings {
+    graphics_settings: colosseum::graphics::GraphicsSettings,
+}
 
 impl colosseum::settings::SettingsCache for CubeSettings {
-    fn load(_: &std::path::Path) -> colosseum::Result<Self> {
-        Ok(CubeSettings)
+    fn load(path: &std::path::Path) -> colosseum::Result<Self> {
+        let graphics_settings: colosseum::graphics::GraphicsSettings =
+            unsafe { colosseum::settings::SettingsGroup::load(path)? };
+
+        unsafe { graphics_settings.save(path) }?;
+
+        Ok(CubeSettings { graphics_settings })
+    }
+
+    fn graphics_settings(&self) -> &colosseum::graphics::GraphicsSettings {
+        &self.graphics_settings
     }
 }
 

@@ -16,9 +16,11 @@ impl<Game: crate::Game> LogPath<Game> {
     pub(in crate::logging) fn as_path<'a>(&'a self) -> Cow<'a, str> {
         match self {
             LogPath::Provided(path) => Cow::Borrowed(path),
-            LogPath::Default(_) => {
-                Cow::Owned(format!("%LOCALAPPDATA%/{}/{}", Game::COMPANY, Game::NAME))
-            }
+            LogPath::Default(_) => Cow::Owned(format!(
+                "%LOCALAPPDATA%/{}/{}/logs",
+                Game::COMPANY,
+                Game::NAME
+            )),
         }
     }
 }
