@@ -4,6 +4,7 @@ use crate::{
         CombinedFileOutput, FormatterKind, HumanReadableFormatter, JsonFormatter, LogController,
         LogOutput, LoggingOptions, ScopeFilesOutput, StdoutOutput, log_thread,
     },
+    util::expand_environment_string,
 };
 use std::{
     io::{IsTerminal, stdout},
@@ -12,11 +13,8 @@ use std::{
 };
 use time::{DateTime, NoTimeZone};
 use win32::{
-    ExpandEnvironmentStrings, LARGE_INTEGER, QueryPerformanceCounter, QueryPerformanceFrequency,
-    try_get_last_error,
+    LARGE_INTEGER, QueryPerformanceCounter, QueryPerformanceFrequency, try_get_last_error,
 };
-
-const PATH_BUFFER_SIZE: usize = 4096;
 
 impl LogController {
     /// Creates a new [`LogController`]
@@ -37,19 +35,7 @@ impl LogController {
         let start_ticks = unsafe { start_ticks.quad_part } as u64;
 
         // Build base path
-        let mut base_folder: Vec<_> = options.log_folder.as_path().encode_utf16().collect();
-        base_folder.push(0);
-        let mut path_buffer = Vec::with_capacity(PATH_BUFFER_SIZE);
-        let path_length = try_get_last_error!(ExpandEnvironmentStrings(
-            base_folder.as_ptr(),
-            path_buffer.as_mut_ptr(),
-            PATH_BUFFER_SIZE as _
-        ))
-        .map_err(|error| Error::new_inner("unable to expand log folder path", error))?
-            - 1;
-        unsafe { path_buffer.set_len(path_length as _) };
-
-        let base_folder = PathBuf::from(String::from_utf16_lossy(&path_buffer));
+        let base_folder = PathBuf::from(expand_environment_string(&options.log_folder.as_path())?);
 
         let now = DateTime::<NoTimeZone>::now_local();
         let log_folder = base_folder.join(format!(

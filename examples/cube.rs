@@ -5,6 +5,7 @@ struct Cube;
 
 impl colosseum::Game for Cube {
     type Options = CubeOptions;
+    type SettingsCache = CubeSettings;
     type InitialScene = CubeScene;
 
     const NAME: &str = "Cube Example";
@@ -24,6 +25,14 @@ struct CubeOptions {
 impl colosseum::GetColosseumOptions<Cube> for CubeOptions {
     fn colosseum_options(&self) -> &colosseum::ColosseumOptions<Cube> {
         &self.colosseum_options
+    }
+}
+
+struct CubeSettings;
+
+impl colosseum::settings::SettingsCache for CubeSettings {
+    fn load(_: &std::path::Path) -> colosseum::Result<Self> {
+        Ok(CubeSettings)
     }
 }
 

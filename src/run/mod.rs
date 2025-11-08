@@ -1,4 +1,9 @@
-use crate::{Error, Result, info, logging::LogController};
+use std::path::PathBuf;
+
+use crate::{
+    Error, Result, info, logging::LogController, settings::SettingsCache,
+    util::expand_environment_string,
+};
 use argparse::Command;
 use message_box::message_box;
 
@@ -42,6 +47,10 @@ fn do_run<Game: crate::Game>() -> Result<()> {
     );
 
     // Load settings
+    let settings_path = PathBuf::from(expand_environment_string(
+        &options.colosseum_options().settings_path.as_path(),
+    )?);
+    let settings = <Game::SettingsCache as SettingsCache>::load(&settings_path)?;
 
     // Create window
 

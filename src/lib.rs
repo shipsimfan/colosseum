@@ -8,6 +8,8 @@
 
 pub mod logging;
 pub mod math;
+pub mod settings;
+pub mod util;
 
 mod error;
 mod game;

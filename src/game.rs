@@ -1,9 +1,12 @@
-use crate::{GetColosseumOptions, InitialScene};
+use crate::{GetColosseumOptions, InitialScene, settings::SettingsCache};
 
 /// The definition of common elements to the whole game
 pub trait Game: 'static + Sized {
     /// The command line options the game accepts
     type Options: GetColosseumOptions<Self>;
+
+    /// The settings which the game uses
+    type SettingsCache: SettingsCache;
 
     /// The scene to start the game with
     type InitialScene: InitialScene<Game = Self>;
