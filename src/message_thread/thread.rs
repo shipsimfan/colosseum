@@ -2,7 +2,7 @@ use crate::{
     Result, RunningState, debug,
     graphics::GraphicsSettings,
     logging::Logger,
-    message_thread::{MessageThreadSharedState, Window},
+    message_thread::{MessageThreadSharedState, RawInputButtonEvent, Window},
     util::message_box,
 };
 use std::sync::{Arc, mpsc::SyncSender};
@@ -17,6 +17,7 @@ pub(in crate::message_thread) fn message_thread(
     title: &str,
     settings: GraphicsSettings,
     shared_state: Arc<MessageThreadSharedState>,
+    button_event_queue: SyncSender<RawInputButtonEvent>,
     logger: Logger,
     initialization_data: SyncSender<Result<(usize, DWORD)>>,
     running_state: Arc<RunningState>,
@@ -25,8 +26,9 @@ pub(in crate::message_thread) fn message_thread(
     let mut window = match init(
         title,
         settings,
-        shared_state,
         running_state.clone(),
+        shared_state,
+        button_event_queue,
         logger.clone(),
     ) {
         Ok((window, thread_id)) => {
@@ -61,8 +63,9 @@ pub(in crate::message_thread) fn message_thread(
 fn init(
     title: &str,
     settings: GraphicsSettings,
-    shared_state: Arc<MessageThreadSharedState>,
     running_state: Arc<RunningState>,
+    shared_state: Arc<MessageThreadSharedState>,
+    button_event_queue: SyncSender<RawInputButtonEvent>,
     logger: Logger,
 ) -> Result<(Box<Window>, DWORD)> {
     // Change title to UTF-16
@@ -77,8 +80,9 @@ fn init(
         settings.width,
         settings.height,
         settings.display_mode,
-        shared_state,
         running_state,
+        shared_state,
+        button_event_queue,
         logger,
     )?;
 

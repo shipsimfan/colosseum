@@ -4,11 +4,11 @@ use crate::{
     info,
     logging::Logger,
     message_thread::{
-        MessageThreadSharedState, Window,
+        MessageThreadSharedState, RawInputButtonEvent, Window,
         window::{WindowClass, WindowHandle},
     },
 };
-use std::sync::Arc;
+use std::sync::{Arc, mpsc::SyncSender};
 
 impl Window {
     /// Create a new [`Window`] for rendering
@@ -19,8 +19,9 @@ impl Window {
         width: Option<u32>,
         height: Option<u32>,
         display_mode: DisplayMode,
-        shared_state: Arc<MessageThreadSharedState>,
         running_state: Arc<RunningState>,
+        shared_state: Arc<MessageThreadSharedState>,
+        button_event_queue: SyncSender<RawInputButtonEvent>,
         logger: Logger,
     ) -> Result<Box<Self>> {
         assert!(title.last().is_some());
@@ -65,6 +66,7 @@ impl Window {
                 logger,
                 running_state,
                 shared_state,
+                button_event_queue,
                 is_running: true,
                 position,
                 size,

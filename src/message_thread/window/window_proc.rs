@@ -1,8 +1,12 @@
+use std::ptr::null_mut;
+
 use crate::{
     debug,
     graphics::DisplayMode,
+    input::KeyCode,
     math::{Vector2i, Vector2u},
-    message_thread::{WM_APP_SET_DISPLAY_MODE, WM_APP_SET_TITLE, Window},
+    message_thread::{RawInputButtonEvent, WM_APP_SET_DISPLAY_MODE, WM_APP_SET_TITLE, Window},
+    warning,
 };
 use win32::{
     DefWindowProc, GWLP_USERDATA, GetWindowLongPtr, HWND, LPARAM, LRESULT, UINT, WM_ACTIVATEAPP,
@@ -103,7 +107,27 @@ impl Window {
                     return 0;
                 }
 
-                // TODO: Handle key press
+                let scan_code =
+                    ((l_param >> 16) & 0x1FF) as u16 | (((l_param >> 29) & 1) << 9) as u16;
+                let key_code = match KeyCode::from_scan_code(scan_code) {
+                    Some(key_code) => key_code,
+                    None => {
+                        warning!(
+                            self.logger,
+                            "Unknown scan code from keyboard: {}",
+                            scan_code
+                        );
+                        return 0;
+                    }
+                };
+
+                if self
+                    .button_event_queue
+                    .send(RawInputButtonEvent::new(null_mut(), key_code.into(), true))
+                    .is_err()
+                {
+                    warning!(self.logger, "Dropped keyboard input");
+                }
             }
 
             // A key was released
@@ -112,7 +136,27 @@ impl Window {
                     return 0;
                 }
 
-                // TODO: Handle key release
+                let scan_code =
+                    ((l_param >> 16) & 0x1FF) as u16 | (((l_param >> 29) & 1) << 9) as u16;
+                let key_code = match KeyCode::from_scan_code(scan_code) {
+                    Some(key_code) => key_code,
+                    None => {
+                        warning!(
+                            self.logger,
+                            "Unknown scan code from keyboard: {}",
+                            scan_code
+                        );
+                        return 0;
+                    }
+                };
+
+                if self
+                    .button_event_queue
+                    .try_send(RawInputButtonEvent::new(null_mut(), key_code.into(), false))
+                    .is_err()
+                {
+                    warning!(self.logger, "Dropped keyboard input");
+                }
             }
 
             // A display mode change was requested

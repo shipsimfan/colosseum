@@ -12,6 +12,11 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         self.logs
     }
 
+    /// Get the input from the player
+    pub fn input(&self) -> &Game::Input {
+        self.input
+    }
+
     /// Get the settings for the game
     pub fn settings(&mut self) -> &mut Game::SettingsCache {
         self.settings
@@ -20,10 +25,5 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Get the graphics context for creating renderables
     pub fn graphics(&mut self) -> &mut GraphicsContext {
         self.graphics_context
-    }
-
-    /// Quit the game, exiting the application
-    pub fn quit(&self) {
-        self.running_state.kill();
     }
 }

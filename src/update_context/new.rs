@@ -6,6 +6,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     pub(crate) fn new(
         delta_t: f32,
         logs: &'a Arc<LogController>,
+        input: &'a Game::Input,
         settings: &'a mut Game::SettingsCache,
         graphics_context: &'a mut GraphicsContext,
         running_state: &'a RunningState,
@@ -13,6 +14,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         UpdateContext {
             delta_t,
             logs,
+            input,
             settings,
             graphics_context,
             running_state,

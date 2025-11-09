@@ -6,11 +6,13 @@
 #![deny(rustdoc::redundant_explicit_links)]
 #![warn(rustdoc::broken_intra_doc_links)]
 #![feature(vec_into_raw_parts)]
+#![feature(associated_type_defaults)]
 
 use message_thread::MessageThread;
 use run::RunningState;
 
 pub mod graphics;
+pub mod input;
 pub mod logging;
 pub mod math;
 pub mod settings;

@@ -2,9 +2,9 @@ use crate::{
     Result, RunningState,
     logging::Logger,
     math::{Vector2i, Vector2u},
-    message_thread::MessageThreadSharedState,
+    message_thread::{MessageThreadSharedState, RawInputButtonEvent},
 };
-use std::sync::Arc;
+use std::sync::{Arc, mpsc::SyncSender};
 use window_class::WindowClass;
 use window_handle::WindowHandle;
 
@@ -27,6 +27,9 @@ pub struct Window {
 
     /// The shared state to report changes into
     shared_state: Arc<MessageThreadSharedState>,
+
+    /// The queue to send button events on
+    button_event_queue: SyncSender<RawInputButtonEvent>,
 
     /// Is the window still running?
     is_running: bool,

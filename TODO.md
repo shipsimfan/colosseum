@@ -1,22 +1,21 @@
 # ToDo
- 1. Add input
- 2. Add cameras
- 3. Add materials (shaders + transparent/opaque)
- 4. Add opaque mesh rendering
- 5. Add instanced mesh rendering
- 6. Add log header with build information to init
- 7. Add log cleanup in release
- 8. Add model loading
- 9. Add textures
- 10. Add directional lighting
- 11. Finish `KeyCode` enum
- 12. Add mouse support
- 13. Add xbox controller support
- 14. Add UI
- 15. Add transparency
- 16. Add spot lights
- 17. Add point lights
- 18. Add audio
+ 1. Add cameras
+ 2. Add materials (shaders + transparent/opaque)
+ 3. Add opaque mesh rendering
+ 4. Add instanced mesh rendering
+ 5. Add log header with build information to init
+ 6. Add log cleanup in release
+ 7. Add model loading
+ 8. Add textures
+ 9. Add directional lighting
+ 10. Finish `KeyCode` enum
+ 11. Add mouse support
+ 12. Add xbox controller support
+ 13. Add UI
+ 14. Add transparency
+ 15. Add spot lights
+ 16. Add point lights
+ 17. Add audio
 
 ## Additional ToDos
  1. Add frustum culling 
@@ -29,3 +28,5 @@
  8. Add occlussion culling
  9. Add post-processing support
  10. Add job system
+ 11. Add general file I/O thread
+ 12. Add input binding helper

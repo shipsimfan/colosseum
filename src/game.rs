@@ -1,4 +1,8 @@
-use crate::{GetColosseumOptions, InitialScene, settings::SettingsCache};
+use crate::{
+    GetColosseumOptions, InitialScene,
+    input::{Input, StateTrackingInput},
+    settings::SettingsCache,
+};
 
 /// The definition of common elements to the whole game
 pub trait Game: 'static + Sized {
@@ -7,6 +11,9 @@ pub trait Game: 'static + Sized {
 
     /// The settings which the game uses
     type SettingsCache: SettingsCache;
+
+    /// The input to use for the game
+    type Input: Input = StateTrackingInput;
 
     /// The scene to start the game with
     type InitialScene: InitialScene<Game = Self>;

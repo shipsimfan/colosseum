@@ -2,6 +2,7 @@ use crate::{
     Error, MessageThread, Result, Scene, UpdateContext,
     graphics::GraphicsContext,
     info,
+    input::{Input, InputDevice, InputDeviceKind, InputDeviceMetadata},
     logging::LogController,
     settings::SettingsCache,
     util::{expand_environment_string, message_box},
@@ -62,11 +63,22 @@ fn do_run<Game: crate::Game>() -> Result<()> {
     )?);
     let mut settings = <Game::SettingsCache as SettingsCache>::load(&settings_path)?;
 
+    // Create input handler
+    let mut input = Game::Input::new();
+    let keyboard_id = input.device_connected(InputDevice::new(
+        InputDeviceKind::Keyboard,
+        "keyboard".into(),
+        InputDeviceMetadata::new(0, 0, 0, 1, 6),
+        u8::MAX,
+        0,
+    ));
+
     // Create window
     let (message_thread, window) = MessageThread::new(
         Game::NAME,
         settings.graphics_settings().clone(),
         &log_controller,
+        keyboard_id,
         running_state.clone(),
     )?;
     let message_thread = Rc::new(message_thread);
@@ -75,7 +87,7 @@ fn do_run<Game: crate::Game>() -> Result<()> {
     let mut graphics_context = GraphicsContext::new(
         window,
         settings.graphics_settings(),
-        message_thread,
+        message_thread.clone(),
         &log_controller,
     )?;
 
@@ -86,6 +98,7 @@ fn do_run<Game: crate::Game>() -> Result<()> {
         &mut UpdateContext::new(
             0.0,
             &log_controller,
+            &input,
             &mut settings,
             &mut graphics_context,
             &running_state,
@@ -96,6 +109,7 @@ fn do_run<Game: crate::Game>() -> Result<()> {
     while running_state.is_running() {
         // Pre-update actions
         log_controller.frame();
+        message_thread.process_inputs(&mut input);
 
         // Calculate delta time
         let now = Instant::now();
@@ -106,6 +120,7 @@ fn do_run<Game: crate::Game>() -> Result<()> {
         scene.update(&mut UpdateContext::new(
             delta_t,
             &log_controller,
+            &input,
             &mut settings,
             &mut graphics_context,
             &running_state,
