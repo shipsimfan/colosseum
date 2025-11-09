@@ -8,12 +8,12 @@ use win32::{
 };
 
 mod active;
+mod bind;
 mod new;
 mod position;
 mod projection;
 mod resize;
 mod rotation;
-mod set_active;
 mod viewport;
 
 /// The actual definition of a camera

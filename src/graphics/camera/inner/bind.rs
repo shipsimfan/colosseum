@@ -6,7 +6,7 @@ use win32::{
 
 impl CameraInner {
     /// Set this camera as active, updating if needed
-    pub(in crate::graphics) fn set_active(
+    pub(in crate::graphics) fn bind(
         &mut self,
         screen_size: Vector2u,
         device_context: &mut ID3D11DeviceContext,

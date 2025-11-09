@@ -13,7 +13,7 @@ use win32::{
 };
 
 impl CameraInner {
-    /// Create new [`CameraInner`]
+    /// Create a new [`CameraInner`]
     pub(in crate::graphics) fn new(
         projection: CameraProjection,
         screen_size: Vector2u,

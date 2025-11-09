@@ -14,3 +14,7 @@ proc-macro = true
 
 [dependencies]
 proc-macro-util.git = "https://github.com/shipsimfan/lib-proc-macro-util"
+
+win32 = { git = "https://github.com/shipsimfan/lib-win32", features = [
+    "d3dcompiler",
+] }

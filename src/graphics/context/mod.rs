@@ -19,6 +19,7 @@ mod managed_objects;
 mod swapchain_objects;
 
 mod create;
+mod get;
 mod log_debug_messages;
 mod new;
 mod render;

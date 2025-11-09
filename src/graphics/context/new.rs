@@ -158,7 +158,7 @@ impl GraphicsContext {
         .map_err(|error| Error::new_inner("unable to create depth stencil state", error))?;
 
         // Create managed object state
-        let managed_objects = ManagedGraphicsObjects::new();
+        let managed_objects = ManagedGraphicsObjects::new(&device)?;
 
         // Create render context and graphics context
         let mut graphics_context = GraphicsContext {

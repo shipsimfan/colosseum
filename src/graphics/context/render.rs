@@ -35,15 +35,26 @@ impl GraphicsContext {
         // TODO: Lighting pre-passes
 
         // Camera render passes
+        let mut active_shader = 0;
         for camera in &*self.managed_objects.cameras() {
             let mut camera = camera.borrow_mut();
             if !camera.is_active() {
                 continue;
             }
 
-            camera.set_active(self.size, &mut self.device_context)?;
+            camera.bind(self.size, &mut self.device_context)?;
 
-            // TODO: Opaque render pass
+            // Opaque render pass
+            for material in &*self.managed_objects.opaque_materials() {
+                let mut material = material.borrow_mut();
+                let shader = material.shader();
+                if shader.id().get() != active_shader {
+                    shader.bind(&mut self.device_context);
+                    active_shader = shader.id().get();
+                }
+
+                material.render(&mut self.device_context)?;
+            }
 
             // TODO: Transparent render pass
         }
