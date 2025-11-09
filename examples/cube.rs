@@ -1,5 +1,3 @@
-use colosseum::settings::SettingsGroup;
-
 colosseum::run!(Cube);
 
 /// The cube example
@@ -43,6 +41,9 @@ struct CubeScene {
 
     /// The number of frames that have happened
     frames: u32,
+
+    /// The camera the scene is rendered with
+    camera: colosseum::graphics::Camera,
 }
 
 impl colosseum::Scene for CubeScene {
@@ -73,15 +74,24 @@ impl colosseum::InitialScene for CubeScene {
     fn new(
         _: &<Self::Game as colosseum::Game>::Options,
         context: &mut colosseum::UpdateContext<Self::Game>,
-    ) -> Self {
+    ) -> colosseum::Result<Self> {
         let logger = context.logs().logger("cube");
 
         colosseum::info!(logger, "starting main cube scene!");
 
-        CubeScene {
+        let camera = context.graphics().create_camera(
+            colosseum::graphics::CameraProjection::Perspective {
+                fov: 3.14 / 4.0,
+                near: 0.01,
+                far: 1000.0,
+            },
+        )?;
+
+        Ok(CubeScene {
             logger,
             second_time: 0.0,
             frames: 0,
-        }
+            camera,
+        })
     }
 }

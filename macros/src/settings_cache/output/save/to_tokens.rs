@@ -6,7 +6,7 @@ impl ToTokens for SettingsCacheSave {
         let SettingsCacheSave { field_name } = self;
 
         to_tokens! { generator
-            unsafe { #field_name.save(path) }?;
+            unsafe { ::colosseum::settings::SettingsGroup::save(&#field_name, path) }?;
         }
     }
 }

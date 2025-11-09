@@ -21,11 +21,13 @@ impl GraphicsContext {
 
     /// Forcefully resize any assets directly tied to window size
     pub(in crate::graphics::context) fn force_resize(&mut self, new_size: Vector2u) -> Result<()> {
+        // Unbind and drop the old swapchain objects
         if let Some(swapchain_objects) = &mut self.swapchain_objects {
             swapchain_objects.unbind(&mut self.device_context);
         }
         self.swapchain_objects = None;
 
+        // Resize swapchain
         try_hresult!(self.swapchain.resize_buffers(
             BUFFER_COUNT,
             new_size.x,
@@ -35,11 +37,17 @@ impl GraphicsContext {
         ))
         .map_err(|os| Error::new_inner("unable to resize swapcahin", os))?;
 
+        // Recreate the swapchain objects
         self.swapchain_objects = Some(SwapchainObjects::new(
             &mut self.swapchain,
             new_size,
             &self.device,
         )?);
+
+        // Update the camera sizes
+        for camera in &*self.managed_objects.cameras() {
+            camera.borrow_mut().resize();
+        }
 
         self.size = new_size;
         debug!(

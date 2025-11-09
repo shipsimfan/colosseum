@@ -1,6 +1,7 @@
 use crate::{MessageThread, graphics::DisplayMode, logging::Logger, math::Vector2u};
 #[cfg(debug_assertions)]
 use info_queue::InfoQueue;
+use managed_objects::ManagedGraphicsObjects;
 use std::rc::Rc;
 use swapchain_objects::SwapchainObjects;
 use win32::{
@@ -14,8 +15,10 @@ use win32::{
 
 #[cfg(debug_assertions)]
 mod info_queue;
+mod managed_objects;
 mod swapchain_objects;
 
+mod create;
 mod log_debug_messages;
 mod new;
 mod render;
@@ -35,6 +38,9 @@ pub struct GraphicsContext {
 
     /// The current size of the swapchain
     size: Vector2u,
+
+    /// The objects which the engine manages but are created by the game
+    managed_objects: ManagedGraphicsObjects,
 
     /// The objects directly associated with the swapchain
     swapchain_objects: Option<SwapchainObjects>,

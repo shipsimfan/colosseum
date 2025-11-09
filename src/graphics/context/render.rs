@@ -32,7 +32,25 @@ impl GraphicsContext {
             .unwrap()
             .bind(&mut self.device_context);
 
-        // TODO: Perform rendering
+        // TODO: Lighting pre-passes
+
+        // Camera render passes
+        for camera in &*self.managed_objects.cameras() {
+            let mut camera = camera.borrow_mut();
+            if !camera.is_active() {
+                continue;
+            }
+
+            camera.set_active(self.size, &mut self.device_context)?;
+
+            // TODO: Opaque render pass
+
+            // TODO: Transparent render pass
+        }
+
+        // TODO: Post-process, anti-aliasing, and render scaling
+
+        // TODO: UI render pass
 
         // Present
         try_hresult!(self.swapchain.present(

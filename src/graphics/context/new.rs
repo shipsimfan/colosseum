@@ -4,7 +4,7 @@ use crate::{
     Error, Result,
     graphics::{
         Adapter, GraphicsContext, GraphicsSettings,
-        context::{BUFFER_COUNT, RENDER_TARGET_FORMAT, SWAP_CHAIN_FLAGS},
+        context::{BUFFER_COUNT, ManagedGraphicsObjects, RENDER_TARGET_FORMAT, SWAP_CHAIN_FLAGS},
     },
     info,
     logging::LogController,
@@ -157,12 +157,16 @@ impl GraphicsContext {
         })
         .map_err(|error| Error::new_inner("unable to create depth stencil state", error))?;
 
+        // Create managed object state
+        let managed_objects = ManagedGraphicsObjects::new();
+
         // Create render context and graphics context
         let mut graphics_context = GraphicsContext {
             logger,
             vsync: settings.vsync,
             display_mode: settings.display_mode,
             size: Vector2u::new(width, height),
+            managed_objects,
             swapchain_objects: None,
             swapchain,
             depth_stencil_state,

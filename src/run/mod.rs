@@ -103,7 +103,7 @@ fn do_run<Game: crate::Game>() -> Result<()> {
             &mut graphics_context,
             &running_state,
         ),
-    ));
+    )?);
 
     // Run main loop
     while running_state.is_running() {
