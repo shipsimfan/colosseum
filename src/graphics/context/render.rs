@@ -72,10 +72,7 @@ impl GraphicsContext {
                 DXGI_PRESENT_ALLOW_TEARING
             }
         ))
-        .map_err(|error| {
-            self.log_debug_messages().unwrap();
-            Error::new_inner("unable to render frame", error)
-        })?;
+        .map_err(|error| Error::new_inner("unable to render frame", error))?;
 
         // Log render messages
         self.log_debug_messages()?;

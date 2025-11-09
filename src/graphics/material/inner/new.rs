@@ -23,7 +23,7 @@ impl MaterialInner {
         // Create constant buffer
         let color4 = Vector4f::new(color.r, color.b, color.g, 1.0);
         let buffer_desc = D3D11_BUFFER_DESC {
-            byte_width: std::mem::size_of::<Vector4f>() as _,
+            byte_width: std::mem::size_of::<Color3f>() as _,
             usage: D3D11_USAGE::Dynamic,
             bind_flags: D3D11_BIND_FLAG::ConstantBuffer as _,
             cpu_access_flags: D3D11_CPU_ACCESS_FLAG::Write as _,

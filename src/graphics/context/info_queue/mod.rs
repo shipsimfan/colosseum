@@ -1,6 +1,7 @@
 use crate::logging::Logger;
 use win32::{ComPtr, d3d11sdklayers::ID3D11InfoQueue};
 
+mod drop;
 mod empty_queue;
 mod new;
 

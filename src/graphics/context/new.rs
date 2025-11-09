@@ -182,10 +182,7 @@ impl GraphicsContext {
         // Force a resize
         graphics_context
             .force_resize(graphics_context.size)
-            .map_err(|error| {
-                graphics_context.log_debug_messages().unwrap();
-                error
-            })?;
+            .map_err(|error| error)?;
 
         Ok(graphics_context)
     }

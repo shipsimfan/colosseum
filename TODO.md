@@ -28,3 +28,4 @@
  10. Add job system
  11. Add general file I/O thread
  12. Add input binding helper
+ 13. Add IDXGIInfoQueue
