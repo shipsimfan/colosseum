@@ -1,8 +1,8 @@
-use crate::graphics::Shader;
+use crate::graphics::ShaderInner;
 use std::ptr::null;
 use win32::d3d11::{ID3D11DeviceContext, ID3D11InputLayout, ID3D11PixelShader, ID3D11VertexShader};
 
-impl Shader {
+impl ShaderInner {
     /// Set this shader as the active shader for rendering
     pub(in crate::graphics) fn bind(&self, device_context: &mut ID3D11DeviceContext) {
         device_context.vs_set_shader(

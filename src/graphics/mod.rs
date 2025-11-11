@@ -14,6 +14,6 @@ pub use camera::{Camera, CameraInner, CameraProjection};
 pub use context::GraphicsContext;
 pub use material::{Material, MaterialInner};
 pub use settings::{DisplayMode, GraphicsSettings};
-pub use shader::{Shader, ShaderSource};
+pub use shader::{Shader, ShaderInner, ShaderSource};
 pub use transform::Transform;
 pub use vertex::Vertex;

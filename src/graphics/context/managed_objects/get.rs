@@ -8,7 +8,7 @@ use std::{
 
 impl ManagedGraphicsObjects {
     /// Get the default shader
-    pub fn default_shader(&self) -> Rc<Shader> {
+    pub fn default_shader(&self) -> Shader {
         self.default_shader.clone()
     }
 

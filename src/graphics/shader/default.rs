@@ -3,7 +3,7 @@ use crate::{
     graphics::{Shader, ShaderSource},
 };
 use colosseum_macros::compile_shader_file;
-use std::{num::NonZeroU32, rc::Rc};
+use std::num::NonZeroU32;
 use win32::d3d11::ID3D11Device;
 
 const DEFAULT_SHADER: ShaderSource =
@@ -14,7 +14,7 @@ impl Shader {
     pub(in crate::graphics) fn create_default(
         id: NonZeroU32,
         device: &ID3D11Device,
-    ) -> Result<Rc<Shader>> {
+    ) -> Result<Shader> {
         Shader::new(id, &DEFAULT_SHADER, device)
     }
 }

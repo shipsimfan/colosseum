@@ -1,9 +1,8 @@
 use crate::graphics::{GraphicsContext, Material, Shader};
-use std::rc::Rc;
 
 impl GraphicsContext {
     /// Get the default shader
-    pub fn default_shader(&self) -> Rc<Shader> {
+    pub fn default_shader(&self) -> Shader {
         self.managed_objects.default_shader()
     }
 

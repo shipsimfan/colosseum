@@ -1,5 +1,4 @@
 use crate::{graphics::Shader, math::Color3f};
-use std::rc::Rc;
 use win32::{ComPtr, d3d11::ID3D11Buffer};
 
 mod color;
@@ -10,7 +9,7 @@ mod shader;
 /// The actual definition of a material
 pub struct MaterialInner {
     /// The shader used by this material
-    shader: Rc<Shader>,
+    shader: Shader,
 
     /// The color assigned to all objects using this material
     color: Color3f,

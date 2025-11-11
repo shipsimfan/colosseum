@@ -3,7 +3,6 @@ use crate::{
     graphics::{MaterialInner, Shader},
     math::{Color3f, Vector4f},
 };
-use std::rc::Rc;
 use win32::{
     ComPtr,
     d3d11::{
@@ -15,8 +14,8 @@ use win32::{
 
 impl MaterialInner {
     /// Create a new [`MaterialInner`]
-    pub(in crate::graphics) fn new(
-        shader: Rc<Shader>,
+    pub(in crate::graphics::material) fn new(
+        shader: Shader,
         color: Color3f,
         device: &ID3D11Device,
     ) -> Result<Self> {

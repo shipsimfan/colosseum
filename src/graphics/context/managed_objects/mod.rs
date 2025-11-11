@@ -14,7 +14,7 @@ pub(in crate::graphics::context) struct ManagedGraphicsObjects {
     opaque_materials: Rc<RefCell<Vec<Rc<RefCell<MaterialInner>>>>>,
 
     /// The default shader
-    default_shader: Rc<Shader>,
+    default_shader: Shader,
 
     /// The default material
     default_material: Material,

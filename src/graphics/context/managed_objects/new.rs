@@ -1,6 +1,6 @@
 use crate::{
     Result,
-    graphics::{Material, MaterialInner, Shader, context::ManagedGraphicsObjects},
+    graphics::{Material, Shader, context::ManagedGraphicsObjects},
     math::Color3f,
 };
 use std::{cell::RefCell, num::NonZeroU32, rc::Rc};
@@ -14,15 +14,12 @@ impl ManagedGraphicsObjects {
 
         // Create default material
         let opaque_materials = Rc::new(RefCell::new(Vec::new()));
-        let default_material_inner = Rc::new(RefCell::new(MaterialInner::new(
+        let default_material = Material::new(
+            opaque_materials.clone(),
             default_shader.clone(),
             Color3f::WHITE,
             device,
-        )?));
-        let default_material =
-            Material::new(opaque_materials.clone(), default_material_inner.clone());
-
-        opaque_materials.borrow_mut().push(default_material_inner);
+        )?;
 
         // Create objects container
         Ok(ManagedGraphicsObjects {
