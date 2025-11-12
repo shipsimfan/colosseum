@@ -1,7 +1,8 @@
 use crate::{
     Result,
     graphics::{
-        Camera, CameraProjection, Material, Shader, ShaderSource, context::ManagedGraphicsObjects,
+        Camera, CameraProjection, Material, Mesh, Shader, ShaderSource, Vertex,
+        context::ManagedGraphicsObjects,
     },
     math::{Color3f, Vector2u},
 };
@@ -38,5 +39,25 @@ impl ManagedGraphicsObjects {
         device: &ID3D11Device,
     ) -> Result<Material> {
         Material::new(self.opaque_materials.clone(), shader, color, device)
+    }
+
+    /// Create a new [`Mesh`]
+    pub fn create_mesh(
+        &mut self,
+        vertices: &[Vertex],
+        indices: &[u32],
+        device: &ID3D11Device,
+    ) -> Result<Mesh> {
+        Mesh::new(vertices, indices, device)
+    }
+
+    /// Create a new [`Mesh`] without checking the values
+    pub unsafe fn create_mesh_unchecked(
+        &mut self,
+        vertices: &[Vertex],
+        indices: &[u32],
+        device: &ID3D11Device,
+    ) -> Result<Mesh> {
+        unsafe { Mesh::new_unchecked(vertices, indices, device) }
     }
 }
