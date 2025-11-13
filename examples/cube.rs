@@ -1,5 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use colosseum::math::Vector3f;
+
 colosseum::run!(Cube);
 
 /// The cube example
@@ -71,6 +73,80 @@ impl colosseum::Scene for CubeScene {
 
             self.second_time -= 1.0;
             self.frames = 0;
+        }
+
+        if context.input().key(colosseum::input::KeyCode::LeftShift)
+            || context.input().key(colosseum::input::KeyCode::RightShift)
+        {
+            let mut rotation = Vector3f::ZERO;
+            if context.input().key(colosseum::input::KeyCode::W)
+                || context.input().key(colosseum::input::KeyCode::UpArrow)
+            {
+                rotation.x -= context.delta_t();
+            }
+            if context.input().key(colosseum::input::KeyCode::S)
+                || context.input().key(colosseum::input::KeyCode::DownArrow)
+            {
+                rotation.x += context.delta_t();
+            }
+            if context.input().key(colosseum::input::KeyCode::A)
+                || context.input().key(colosseum::input::KeyCode::LeftArrow)
+            {
+                rotation.y -= context.delta_t();
+            }
+            if context.input().key(colosseum::input::KeyCode::D)
+                || context.input().key(colosseum::input::KeyCode::RightArrow)
+            {
+                rotation.y += context.delta_t();
+            }
+            if context.input().key(colosseum::input::KeyCode::Q) {
+                rotation.z += context.delta_t();
+            }
+            if context.input().key(colosseum::input::KeyCode::E) {
+                rotation.z -= context.delta_t();
+            }
+
+            if rotation != Vector3f::ZERO {
+                let mut camera = self.camera.borrow_mut();
+                let old_rotation = camera.rotation();
+                camera.set_rotation(
+                    (old_rotation + rotation) % Vector3f::new(3.1415926, 3.1415926, 3.1415926),
+                );
+            }
+        } else {
+            let mut translation = Vector3f::ZERO;
+            if context.input().key(colosseum::input::KeyCode::W)
+                || context.input().key(colosseum::input::KeyCode::UpArrow)
+            {
+                translation.z += context.delta_t();
+            }
+            if context.input().key(colosseum::input::KeyCode::S)
+                || context.input().key(colosseum::input::KeyCode::DownArrow)
+            {
+                translation.z -= context.delta_t();
+            }
+            if context.input().key(colosseum::input::KeyCode::A)
+                || context.input().key(colosseum::input::KeyCode::LeftArrow)
+            {
+                translation.x -= context.delta_t();
+            }
+            if context.input().key(colosseum::input::KeyCode::D)
+                || context.input().key(colosseum::input::KeyCode::RightArrow)
+            {
+                translation.x += context.delta_t();
+            }
+            if context.input().key(colosseum::input::KeyCode::Q) {
+                translation.y += context.delta_t();
+            }
+            if context.input().key(colosseum::input::KeyCode::E) {
+                translation.y -= context.delta_t();
+            }
+
+            if translation != Vector3f::ZERO {
+                let mut camera = self.camera.borrow_mut();
+                let position = camera.position();
+                camera.set_position(position + translation);
+            }
         }
 
         Ok(())
