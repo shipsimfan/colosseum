@@ -52,7 +52,7 @@ fn do_run<Game: crate::Game>() -> Result<()> {
     let init_logger = log_controller.logger("init");
     info!(
         init_logger,
-        "starting {} v{} . . .",
+        "Starting {} v{} . . .",
         Game::NAME,
         Game::VERSION
     );

@@ -45,6 +45,7 @@ impl MaterialInner {
             color,
             dirty: false,
             buffer,
+            mesh_renderers: Vec::new(),
         })
     }
 }

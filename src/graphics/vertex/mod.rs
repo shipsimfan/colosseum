@@ -1,4 +1,4 @@
-use crate::math::Vector3f;
+use crate::math::{Color3f, Vector3f};
 
 mod input_layout;
 
@@ -10,5 +10,5 @@ pub struct Vertex {
     pub position: Vector3f,
 
     /// The color of the vertex
-    pub color: Vector3f,
+    pub color: Color3f,
 }

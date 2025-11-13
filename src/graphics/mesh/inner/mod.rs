@@ -1,6 +1,7 @@
 use win32::{ComPtr, d3d11::ID3D11Buffer};
 
 mod bind;
+mod get;
 mod new;
 
 /// A 3d model

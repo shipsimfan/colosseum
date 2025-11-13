@@ -59,7 +59,20 @@ impl GraphicsContext {
             }
 
             if selected_adapter.is_none() {
-                warning!(logger, "Unable to adapter named like \"{}\"", adapter_name);
+                warning!(
+                    logger,
+                    "Unable to find adapter named like \"{}\"",
+                    adapter_name
+                );
+
+                for adapter in &adapters {
+                    info!(
+                        logger,
+                        "Available adapter: \"{}\" ({} MB)",
+                        adapter.name(),
+                        adapter.video_memory() / 1000 / 1000
+                    )
+                }
             }
         }
 
