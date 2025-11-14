@@ -7,7 +7,7 @@ mod new;
 #[repr(C)]
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Matrix4x4<T> {
-    /// The values that make up the matrix, in column major
+    /// The values that make up the matrix, in row major
     pub v: [[T; 4]; 4],
 }
 

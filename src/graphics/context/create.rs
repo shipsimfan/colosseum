@@ -1,7 +1,8 @@
 use crate::{
     Result,
     graphics::{
-        Camera, CameraProjection, GraphicsContext, Material, Mesh, Shader, ShaderSource, Vertex,
+        Camera, CameraProjection, GraphicsContext, Material, Mesh, MeshRenderer, Shader,
+        ShaderSource, Vertex,
     },
     math::Color3f,
 };
@@ -40,5 +41,16 @@ impl GraphicsContext {
             self.managed_objects
                 .create_mesh_unchecked(vertices, indices, &self.device)
         }
+    }
+
+    /// Create a new [`MeshRenderer`]
+    pub fn create_mesh_renderer(
+        &mut self,
+        material: Material,
+        mesh: Mesh,
+        max_instances: usize,
+    ) -> Result<MeshRenderer> {
+        self.managed_objects
+            .create_mesh_renderer(material, mesh, max_instances, &self.device)
     }
 }

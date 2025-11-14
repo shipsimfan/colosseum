@@ -1,5 +1,5 @@
 cbuffer Camera {
-    float4x4 camera_projection;
+    row_major float4x4 camera_projection;
 }
 
 cbuffer Material {
@@ -9,6 +9,11 @@ cbuffer Material {
 struct VIn {
     float3 position : POSITION;
     float3 color : COLOR;
+
+    float4 object0: INST_OBJECT0;
+    float4 object1: INST_OBJECT1;
+    float4 object2: INST_OBJECT2;
+    float4 object3: INST_OBJECT3;
 };
 
 struct VOut {
@@ -17,8 +22,10 @@ struct VOut {
 };
 
 VOut vertex_main(VIn vin) {
+    float4x4 object = float4x4(vin.object0, vin.object1, vin.object2, vin.object3);
+
     VOut vout;
-    vout.position = mul(camera_projection, float4(vin.position, 1.0));
+    vout.position = mul(mul(float4(vin.position, 1.0), object), camera_projection);
     vout.color = float4(vin.color, 1.0) * material_color;
     return vout;
 }

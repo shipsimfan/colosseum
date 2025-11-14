@@ -44,7 +44,7 @@ impl MaterialInner {
                 bound = true;
             }
 
-            renderer.draw(device_context);
+            renderer.draw(device_context)?;
         }
         Ok(())
     }

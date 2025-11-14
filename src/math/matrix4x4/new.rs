@@ -1,6 +1,6 @@
 use crate::math::{
-    number::{Cos, Infinity, NaN, NegInfinity, One, Sin, Tan, Zero},
     Matrix4x4, Vector3,
+    number::{Cos, Infinity, NaN, NegInfinity, One, Sin, Tan, Zero},
 };
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
@@ -12,7 +12,24 @@ impl<T> Matrix4x4<T> {
 
     /// Create a new [`Matrix4x4`] from an array
     pub fn from_array(
-        [v00, v01, v02, v03, v10, v11, v12, v13, v20, v21, v22, v23, v30, v31, v32, v33]: [T; 16],
+        [
+            v00,
+            v01,
+            v02,
+            v03,
+            v10,
+            v11,
+            v12,
+            v13,
+            v20,
+            v21,
+            v22,
+            v23,
+            v30,
+            v31,
+            v32,
+            v33,
+        ]: [T; 16],
     ) -> Self {
         Matrix4x4::new([
             [v00, v01, v02, v03],
@@ -256,51 +273,42 @@ impl<T: Zero + One + Cos + Sin + Clone + Neg<Output = T> + Add<Output = T> + Mul
 }
 
 impl<
-        T: Zero
-            + One
-            + Div<Output = T>
-            + Mul<Output = T>
-            + Add<Output = T>
-            + Sub<Output = T>
-            + Neg<Output = T>
-            + Tan
-            + Clone,
-    > Matrix4x4<T>
+    T: Zero
+        + One
+        + Div<Output = T>
+        + Mul<Output = T>
+        + Add<Output = T>
+        + Sub<Output = T>
+        + Neg<Output = T>
+        + Tan
+        + Clone,
+> Matrix4x4<T>
 {
     /// Create a perspective projection matrix
     pub fn perspective(aspect: T, fov: T, near: T, far: T) -> Self {
+        let y_scale = T::ONE / (fov / (T::ONE + T::ONE)).tan();
+        let x_scale = y_scale.clone() / aspect;
         Matrix4x4::new([
-            [
-                T::ONE / (aspect * (fov.clone() / (T::ONE + T::ONE)).tan()),
-                T::ZERO,
-                T::ZERO,
-                T::ZERO,
-            ],
-            [
-                T::ZERO,
-                T::ONE / (fov / (T::ONE + T::ONE)).tan(),
-                T::ZERO,
-                T::ZERO,
-            ],
+            [x_scale, T::ZERO, T::ZERO, T::ZERO],
+            [T::ZERO, y_scale, T::ZERO, T::ZERO],
             [
                 T::ZERO,
                 T::ZERO,
-                (far.clone() + near.clone()) / (far.clone() - near.clone()),
+                (far.clone()) / (far.clone() - near.clone()),
                 T::ONE,
             ],
             [
                 T::ZERO,
                 T::ZERO,
-                -(((T::ONE + T::ONE) * far.clone() * near.clone()) / (far - near)),
+                (far.clone() * -near.clone()) / (far - near),
                 T::ZERO,
             ],
         ])
     }
 }
 
-impl<
-        T: Zero + One + Add<Output = T> + Sub<Output = T> + Div<Output = T> + Neg<Output = T> + Clone,
-    > Matrix4x4<T>
+impl<T: Zero + One + Add<Output = T> + Sub<Output = T> + Div<Output = T> + Neg<Output = T> + Clone>
+    Matrix4x4<T>
 {
     /// Creates an orthographics projection matrix
     pub fn orthographic(left: T, right: T, top: T, bottom: T, near: T, far: T) -> Self {

@@ -1,10 +1,69 @@
-use crate::graphics::MeshRendererInner;
-use win32::d3d11::ID3D11DeviceContext;
+use crate::{Error, Result, graphics::MeshRendererInner, math::Matrix4x4f};
+use win32::{
+    d3d11::{D3D11_MAP, D3D11_MAPPED_SUBRESOURCE, ID3D11Buffer, ID3D11DeviceContext},
+    try_hresult,
+};
 
 impl MeshRendererInner {
     /// Draw this mesh using the active settings
-    pub(in crate::graphics) fn draw(&mut self, device_context: &mut ID3D11DeviceContext) {
+    pub(in crate::graphics) fn draw(
+        &mut self,
+        device_context: &mut ID3D11DeviceContext,
+    ) -> Result<()> {
+        // Skip rendering if theres nothing to render
+        if self.instances.len() == 0 {
+            return Ok(());
+        }
+
+        // Check if we need to update the instance buffer
+        let mut need_update = self.dirty;
+        for transform in &mut self.instances {
+            need_update |= transform.update();
+        }
+
+        // Update the instance buffer if needed
+        if need_update {
+            let mut mapped_resource = D3D11_MAPPED_SUBRESOURCE::default();
+            try_hresult!(device_context.map(
+                self.instance_buffer.as_mut(),
+                0,
+                D3D11_MAP::WriteDiscard,
+                0,
+                &mut mapped_resource,
+            ))
+            .map_err(|error| Error::new_inner("unable to map instance buffer", error))?;
+
+            let dest = unsafe {
+                std::slice::from_raw_parts_mut(
+                    mapped_resource.data as *mut Matrix4x4f,
+                    self.instances.len(),
+                )
+            };
+            for (src, dest) in self.instances.iter().zip(dest.iter_mut()) {
+                *dest = src.matrix();
+            }
+
+            device_context.unmap(self.instance_buffer.as_mut(), 0);
+            self.dirty = false;
+        }
+
+        // Bind the mesh
         self.mesh.bind(device_context);
-        device_context.draw_indexed(self.mesh.index_count(), 0, 0);
+
+        // Bind the instance buffer
+        let buffer = self.instance_buffer.as_mut() as *mut ID3D11Buffer;
+        let stride = std::mem::size_of::<Matrix4x4f>() as _;
+        let offset = 0;
+        device_context.ia_set_vertex_buffers(1, 1, &buffer, &stride, &offset);
+
+        // Draw
+        device_context.draw_indexed_instanced(
+            self.mesh.index_count(),
+            self.instances.len() as _,
+            0,
+            0,
+            0,
+        );
+        Ok(())
     }
 }

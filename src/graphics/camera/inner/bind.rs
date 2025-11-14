@@ -32,8 +32,8 @@ impl CameraInner {
             ))
             .map_err(|error| Error::new_inner("unable to map camera constant buffer", error))?;
 
-            *unsafe { &mut *(mapped_resource.data as *mut _) } =
-                self.transform.matrix() * self.projection_matrix;
+            let matrix = self.transform.matrix() * self.projection_matrix;
+            *unsafe { &mut *(mapped_resource.data as *mut _) } = matrix;
 
             device_context.unmap(self.buffer.as_mut(), 0);
         }

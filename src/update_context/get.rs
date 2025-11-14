@@ -3,17 +3,17 @@ use std::sync::Arc;
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Get the amount of time that has passed since the last frame, in seconds
-    pub fn delta_t(&self) -> f32 {
+    pub const fn delta_t(&self) -> f32 {
         self.delta_t
     }
 
     /// Get the log controller to create loggers
-    pub fn logs(&self) -> &Arc<LogController> {
+    pub const fn logs(&self) -> &Arc<LogController> {
         self.logs
     }
 
     /// Get the input from the player
-    pub fn input(&self) -> &Game::Input {
+    pub const fn input(&self) -> &Game::Input {
         self.input
     }
 
