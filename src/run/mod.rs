@@ -23,8 +23,8 @@ pub(crate) use running_state::RunningState;
 
 /// Begins the game engine with the provided options, quiting the application based on the result
 /// of running
-pub fn run<Game: crate::Game>() -> ! {
-    if let Err(error) = do_run::<Game>() {
+pub fn run<Game: crate::Game>(game_hash: Option<&str>, game_build_time: Option<&str>) -> ! {
+    if let Err(error) = do_run::<Game>(game_hash, game_build_time) {
         eprintln!("Error: {}", error);
         message_box("Error", &error.to_string(), None).unwrap();
         std::process::exit(1);
@@ -34,7 +34,7 @@ pub fn run<Game: crate::Game>() -> ! {
 }
 
 /// Begins the game engine with the provided options
-fn do_run<Game: crate::Game>() -> Result<()> {
+fn do_run<Game: crate::Game>(game_hash: Option<&str>, game_build_time: Option<&str>) -> Result<()> {
     let start_time = time::DateTime::<time::SimpleTimeZone>::now_local();
 
     // Parse arguments
@@ -53,7 +53,7 @@ fn do_run<Game: crate::Game>() -> Result<()> {
         running_state.clone(),
     )?;
     let init_logger = log_controller.logger("init");
-    log_metadata::<Game>(&init_logger, start_time);
+    log_metadata::<Game>(&init_logger, start_time, game_hash, game_build_time);
 
     // Load settings
     let settings_path = PathBuf::from(expand_environment_string(

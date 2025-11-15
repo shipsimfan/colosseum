@@ -16,7 +16,12 @@ const BUILD_TYPE: &str = "Release";
 const CPU_ARCHITECTURE: &str = "x86-64";
 
 /// Logs the metadata about the program and the system
-pub(in crate::run) fn log_metadata<Game: crate::Game>(logger: &Logger, start_time: DateTime) {
+pub(in crate::run) fn log_metadata<Game: crate::Game>(
+    logger: &Logger,
+    start_time: DateTime,
+    game_hash: Option<&str>,
+    game_build_time: Option<&str>,
+) {
     // Log starting
     info!(logger, "Starting {} v{} . . .", Game::NAME, Game::VERSION);
     info!(logger, "Start Time: {}", start_time.iso8601());
@@ -48,13 +53,13 @@ pub(in crate::run) fn log_metadata<Game: crate::Game>(logger: &Logger, start_tim
         logger,
         "Company: {}{}, Build Type: {}",
         Game::COMPANY,
-        match option_env!("COLOSSEUM_GAME_COMMIT") {
+        match game_hash {
             Some(commit) => format!(", Game Commit: #{}", commit),
             None => String::new(),
         },
         BUILD_TYPE,
     );
-    if let Some(game_build_time) = option_env!("COLOSSEUM_GAME_BUILD_TIME") {
+    if let Some(game_build_time) = game_build_time {
         info!(logger, "Game Build Time: {}", game_build_time);
     }
 

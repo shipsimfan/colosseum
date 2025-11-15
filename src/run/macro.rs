@@ -3,7 +3,10 @@
 macro_rules! run {
     ($game: ty) => {
         fn main() {
-            $crate::run::<$game>();
+            $crate::run::<$game>(
+                option_env!("COLOSSEUM_GAME_COMMIT"),
+                option_env!("COLOSSEUM_GAME_BUILD_TIME"),
+            );
         }
     };
 }
