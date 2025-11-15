@@ -26,7 +26,7 @@ impl ManagedGraphicsObjects {
         source: &ShaderSource,
         device: &ID3D11Device,
     ) -> Result<Shader> {
-        let shader = Shader::new(self.next_shader_id, source, device)?;
+        let shader = Shader::new_unlit(self.next_shader_id, source, device)?;
         self.next_shader_id = unsafe { NonZeroU32::new_unchecked(self.next_shader_id.get() + 1) };
         Ok(shader)
     }

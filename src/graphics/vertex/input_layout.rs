@@ -6,7 +6,7 @@ use win32::{
 
 impl Vertex {
     /// The input layout to use for all vertex shaders
-    pub(in crate::graphics) const INPUT_LAYOUT: &[D3D11_INPUT_ELEMENT_DESC] = &[
+    pub(in crate::graphics) const UNLIT_INPUT_LAYOUT: &[D3D11_INPUT_ELEMENT_DESC] = &[
         // Vertex elements
         D3D11_INPUT_ELEMENT_DESC {
             semantic_name: c"POSITION".as_ptr(),

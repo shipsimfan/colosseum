@@ -8,7 +8,6 @@ mod mesh;
 mod mesh_renderer;
 mod settings;
 mod shader;
-mod transform;
 mod vertex;
 
 pub use adapter::{Adapter, Output, OutputResolution};
@@ -19,5 +18,4 @@ pub use mesh::{Mesh, MeshInner};
 pub use mesh_renderer::{MeshRenderer, MeshRendererInner};
 pub use settings::{DisplayMode, GraphicsSettings};
 pub use shader::{Shader, ShaderInner, ShaderSource};
-pub use transform::Transform;
 pub use vertex::Vertex;

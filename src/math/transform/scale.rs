@@ -1,8 +1,8 @@
-use crate::{graphics::Transform, math::Vector3f};
+use crate::math::{Transform, Vector3f};
 
 impl Transform {
     /// Get the scale
-    pub fn scale(&self) -> Vector3f {
+    pub const fn scale(&self) -> Vector3f {
         self.scale
     }
 

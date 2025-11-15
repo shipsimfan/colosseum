@@ -7,7 +7,7 @@ use win32::{ComPtr, d3d11::ID3D11Device, try_hresult};
 
 impl ShaderInner {
     /// Create a new [`ShaderInner`]
-    pub(in crate::graphics::shader) fn new(
+    pub(in crate::graphics::shader) fn new_unlit(
         id: NonZeroU32,
         compiled_shader: &ShaderSource,
         device: &ID3D11Device,
@@ -37,8 +37,8 @@ impl ShaderInner {
         // Create input layout
         let input_layout = ComPtr::new_in(|input_layout| {
             try_hresult!(device.create_input_layout(
-                Vertex::INPUT_LAYOUT.as_ptr(),
-                Vertex::INPUT_LAYOUT.len() as _,
+                Vertex::UNLIT_INPUT_LAYOUT.as_ptr(),
+                Vertex::UNLIT_INPUT_LAYOUT.len() as _,
                 compiled_shader.vertex_content().as_ptr().cast(),
                 compiled_shader.vertex_content().len() as _,
                 input_layout

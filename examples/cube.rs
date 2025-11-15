@@ -50,9 +50,53 @@ struct CubeScene {
     #[allow(unused)]
     camera: colosseum::graphics::Camera,
 
+    /// The transform of the cube
+    #[allow(unused)]
+    transform: colosseum::math::Transform,
+
     /// The renderer for the cube
     #[allow(unused)]
     mesh_renderer: colosseum::graphics::MeshRenderer,
+}
+
+impl colosseum::InitialScene for CubeScene {
+    fn new(
+        _: &<Self::Game as colosseum::Game>::Options,
+        context: &mut colosseum::UpdateContext<Self::Game>,
+    ) -> colosseum::Result<Self> {
+        let logger = context.logs().logger("cube");
+
+        colosseum::info!(logger, "Starting main cube scene!");
+
+        let camera = context.graphics().create_camera(
+            colosseum::graphics::CameraProjection::Perspective {
+                fov: 3.14 / 4.0,
+                near: 0.01,
+                far: 1000.0,
+            },
+        )?;
+
+        camera
+            .borrow_mut()
+            .set_position(colosseum::math::Vector3f::new(0.0, 0.0, -10.0));
+
+        let mut transform = colosseum::math::Transform::new();
+
+        let mesh = context.graphics().create_mesh(VERTICES, INDICES)?;
+        let material = context.graphics().default_material();
+        let mesh_renderer = context.graphics().create_mesh_renderer(material, mesh, 1)?;
+        mesh_renderer.borrow_mut().push();
+        mesh_renderer.borrow_mut().update(0, &mut transform);
+
+        Ok(CubeScene {
+            logger,
+            second_time: 0.0,
+            frames: 0,
+            camera,
+            transform,
+            mesh_renderer,
+        })
+    }
 }
 
 impl colosseum::Scene for CubeScene {
@@ -150,45 +194,6 @@ impl colosseum::Scene for CubeScene {
         }
 
         Ok(())
-    }
-}
-
-impl colosseum::InitialScene for CubeScene {
-    fn new(
-        _: &<Self::Game as colosseum::Game>::Options,
-        context: &mut colosseum::UpdateContext<Self::Game>,
-    ) -> colosseum::Result<Self> {
-        let logger = context.logs().logger("cube");
-
-        colosseum::info!(logger, "Starting main cube scene!");
-
-        let camera = context.graphics().create_camera(
-            colosseum::graphics::CameraProjection::Perspective {
-                fov: 3.14 / 4.0,
-                near: 0.01,
-                far: 1000.0,
-            },
-        )?;
-
-        camera
-            .borrow_mut()
-            .set_position(colosseum::math::Vector3f::new(0.0, 0.0, -10.0));
-
-        let mesh = context.graphics().create_mesh(VERTICES, INDICES)?;
-        let material = context.graphics().default_material();
-        let mesh_renderer = context.graphics().create_mesh_renderer(material, mesh, 1)?;
-        mesh_renderer
-            .borrow_mut()
-            .push()
-            .set_position(colosseum::math::Vector3f::new(-5.0, 0.0, 0.0));
-
-        Ok(CubeScene {
-            logger,
-            second_time: 0.0,
-            frames: 0,
-            camera,
-            mesh_renderer,
-        })
     }
 }
 

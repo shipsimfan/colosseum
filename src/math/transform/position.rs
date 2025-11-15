@@ -1,8 +1,8 @@
-use crate::{graphics::Transform, math::Vector3f};
+use crate::math::{Transform, Vector3f};
 
 impl Transform {
     /// Get the position
-    pub fn position(&self) -> Vector3f {
+    pub const fn position(&self) -> Vector3f {
         self.position
     }
 

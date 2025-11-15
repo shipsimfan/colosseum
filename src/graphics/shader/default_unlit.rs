@@ -7,7 +7,7 @@ use std::num::NonZeroU32;
 use win32::d3d11::ID3D11Device;
 
 const DEFAULT_SHADER: ShaderSource =
-    compile_shader_file!("default.hlsl", "vertex_main", "pixel_main");
+    compile_shader_file!("default_unlit.hlsl", "vertex_main", "pixel_main");
 
 impl Shader {
     /// Create the default shader
@@ -15,6 +15,6 @@ impl Shader {
         id: NonZeroU32,
         device: &ID3D11Device,
     ) -> Result<Shader> {
-        Shader::new(id, &DEFAULT_SHADER, device)
+        Shader::new_unlit(id, &DEFAULT_SHADER, device)
     }
 }

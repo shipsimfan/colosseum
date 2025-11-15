@@ -1,6 +1,6 @@
 use crate::{
-    graphics::{CameraProjection, Transform},
-    math::Matrix4x4f,
+    graphics::CameraProjection,
+    math::{Matrix4x4f, Transform},
 };
 use win32::{
     ComPtr,

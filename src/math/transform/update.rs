@@ -1,8 +1,8 @@
-use crate::{graphics::Transform, math::Matrix4x4f};
+use crate::math::{Matrix4x4f, Transform};
 
 impl Transform {
     /// Updates the transform if needed, returning if it was updated
-    pub(in crate::graphics) fn update(&mut self) -> bool {
+    pub(crate) fn update(&mut self) -> bool {
         if !self.dirty {
             return false;
         }

@@ -1,7 +1,7 @@
 use crate::{
     Error, Result,
-    graphics::{CameraInner, CameraProjection, Transform},
-    math::{Matrix4x4f, Vector2u},
+    graphics::{CameraInner, CameraProjection},
+    math::{Matrix4x4f, Transform, Vector2u},
 };
 use win32::{
     ComPtr,

@@ -15,14 +15,8 @@ impl MeshRendererInner {
             return Ok(());
         }
 
-        // Check if we need to update the instance buffer
-        let mut need_update = self.dirty;
-        for transform in &mut self.instances {
-            need_update |= transform.update();
-        }
-
         // Update the instance buffer if needed
-        if need_update {
+        if self.dirty {
             let mut mapped_resource = D3D11_MAPPED_SUBRESOURCE::default();
             try_hresult!(device_context.map(
                 self.instance_buffer.as_mut(),
@@ -39,10 +33,7 @@ impl MeshRendererInner {
                     self.instances.len(),
                 )
             };
-            for (src, dest) in self.instances.iter().zip(dest.iter_mut()) {
-                *dest = src.matrix();
-            }
-
+            dest.copy_from_slice(&self.instances);
             device_context.unmap(self.instance_buffer.as_mut(), 0);
             self.dirty = false;
         }

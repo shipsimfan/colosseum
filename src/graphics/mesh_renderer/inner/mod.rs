@@ -1,4 +1,7 @@
-use crate::graphics::{Material, Mesh, Transform};
+use crate::{
+    graphics::{Material, Mesh},
+    math::Matrix4x4f,
+};
 use win32::{ComPtr, d3d11::ID3D11Buffer};
 
 mod active;
@@ -19,7 +22,7 @@ pub struct MeshRendererInner {
     mesh: Mesh,
 
     /// The current registered instances
-    instances: Vec<Transform>,
+    instances: Vec<Matrix4x4f>,
 
     /// Did the instance order change this frame?
     dirty: bool,
