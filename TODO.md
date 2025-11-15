@@ -1,17 +1,16 @@
 # ToDo
- 1. Add log header with build information to init
- 2. Add log cleanup
- 3. Add model loading
- 4. Add textures and texture loading
- 5. Add directional lighting
- 6. Finish `KeyCode` enum
- 7. Add mouse support
- 8. Add xbox controller support
- 9. Add UI
- 10. Add transparency
- 11. Add spot lights
- 12. Add point lights
- 13. Add audio
+ 1. Add log cleanup
+ 2. Add model loading
+ 3. Add textures and texture loading
+ 4. Add directional lighting
+ 5. Finish `KeyCode` enum
+ 6. Add mouse support
+ 7. Add xbox controller support
+ 8. Add UI
+ 9. Add transparency
+ 10. Add spot lights
+ 11. Add point lights
+ 12. Add audio
 
 ## Additional ToDos
  1. Add build.rs rebuild on change for shaders
