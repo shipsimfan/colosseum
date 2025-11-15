@@ -10,7 +10,9 @@ publish = false
 
 [workspace.dependencies]
 colosseum-macros.path = "macros"
+colosseum-build.path = "build"
 
+time.git = "https://github.com/shipsimfan/lib-time"
 
 [package]
 name = "colosseum"
@@ -24,6 +26,10 @@ license.workspace = true
 publish.workspace = true
 
 [dependencies]
+colosseum-macros.workspace = true
+
+time.workspace = true
+
 win32 = { git = "https://github.com/shipsimfan/lib-win32", features = [
     "d3d11",
     "d3d11sdklayers",
@@ -33,6 +39,6 @@ win32 = { git = "https://github.com/shipsimfan/lib-win32", features = [
 argparse.git = "https://github.com/shipsimfan/lib-argparse"
 data-format.git = "https://github.com/shipsimfan/lib-data-format"
 json.git = "https://github.com/shipsimfan/lib-json"
-time.git = "https://github.com/shipsimfan/lib-time"
 
-colosseum-macros.workspace = true
+[build-dependencies]
+colosseum-build.workspace = true

@@ -1,16 +1,17 @@
 use crate::{
     Error, MessageThread, Result, Scene, UpdateContext,
     graphics::GraphicsContext,
-    info,
     input::{Input, InputDevice, InputDeviceKind, InputDeviceMetadata},
     logging::LogController,
     settings::SettingsCache,
     util::{expand_environment_string, message_box},
 };
 use argparse::Command;
+use log_metadata::log_metadata;
 use std::{path::PathBuf, rc::Rc, time::Instant};
 
 mod initial_scene;
+mod log_metadata;
 mod r#macro;
 mod options;
 mod running_state;
@@ -34,6 +35,8 @@ pub fn run<Game: crate::Game>() -> ! {
 
 /// Begins the game engine with the provided options
 fn do_run<Game: crate::Game>() -> Result<()> {
+    let start_time = time::DateTime::<time::SimpleTimeZone>::now_local();
+
     // Parse arguments
     let options = match <Game::Options as Command>::parse_env() {
         Ok(Some(options)) => options,
@@ -50,12 +53,7 @@ fn do_run<Game: crate::Game>() -> Result<()> {
         running_state.clone(),
     )?;
     let init_logger = log_controller.logger("init");
-    info!(
-        init_logger,
-        "Starting {} v{} . . .",
-        Game::NAME,
-        Game::VERSION
-    );
+    log_metadata::<Game>(&init_logger, start_time);
 
     // Load settings
     let settings_path = PathBuf::from(expand_environment_string(
