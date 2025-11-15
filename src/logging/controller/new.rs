@@ -8,13 +8,19 @@ use crate::{
 };
 use std::{
     io::{IsTerminal, stdout},
-    path::PathBuf,
+    path::{Path, PathBuf},
     sync::{Arc, atomic::AtomicU64},
 };
 use time::{DateTime, NoTimeZone};
 use win32::{
     LARGE_INTEGER, QueryPerformanceCounter, QueryPerformanceFrequency, try_get_last_error,
 };
+
+#[cfg(debug_assertions)]
+const MAX_LOG_FOLDERS: usize = 10;
+
+#[cfg(not(debug_assertions))]
+const MAX_LOG_FOLDERS: usize = 3;
 
 impl LogController {
     /// Creates a new [`LogController`]
@@ -51,12 +57,19 @@ impl LogController {
             now.second()
         ));
 
-        // Create log folder if needed
+        // Create log folder and clean it up if needed
         if options.log_combined != FormatterKind::None || options.log_scoped != FormatterKind::None
         {
             std::fs::create_dir_all(&log_folder).map_err(|error| {
                 Error::new_inner(
                     format!("unable to create \"{}\"", log_folder.display()),
+                    error,
+                )
+            })?;
+
+            cleanup_log_folder(&base_folder).map_err(|error| {
+                Error::new_inner(
+                    format!("unable to cleanup \"{}\"", base_folder.display()),
                     error,
                 )
             })?;
@@ -127,4 +140,25 @@ impl LogController {
             join_handle,
         }))
     }
+}
+
+/// Cleanup old log files in `path`
+fn cleanup_log_folder(path: &Path) -> std::io::Result<()> {
+    let mut log_folders = Vec::new();
+    for entry in std::fs::read_dir(path)? {
+        log_folders.push(entry?.file_name());
+    }
+
+    if log_folders.len() <= MAX_LOG_FOLDERS {
+        return Ok(());
+    }
+
+    log_folders.sort();
+
+    for folder in &log_folders[..log_folders.len() - MAX_LOG_FOLDERS] {
+        let path = path.join(folder);
+        std::fs::remove_dir_all(path)?;
+    }
+
+    Ok(())
 }
