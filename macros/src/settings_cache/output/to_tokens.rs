@@ -4,7 +4,8 @@ use proc_macro_util::{Generator, ToTokens, to_tokens};
 impl<'a> ToTokens for SettingsCacheOutput<'a> {
     fn to_tokens(self, generator: &mut Generator) {
         let SettingsCacheOutput {
-            r#struct,
+            item,
+            name,
             get_functions,
             set_functions,
             loads,
@@ -12,12 +13,11 @@ impl<'a> ToTokens for SettingsCacheOutput<'a> {
             struct_creation,
         } = self;
 
-        let name = r#struct.name.as_ref().clone();
         let name2 = name.clone();
         let name3 = name.clone();
 
         to_tokens! { generator
-            #r#struct
+            #item
 
             impl #name {
                 #get_functions

@@ -1,6 +1,7 @@
+use std::borrow::Cow;
 use get_function::SettingsCacheGetFunction;
 use load::SettingsCacheLoad;
-use proc_macro_util::ast::items::Struct;
+use proc_macro_util::{ast::Item, tokens::Identifier};
 use save::SettingsCacheSave;
 use set_function::SettingsCacheSetFunction;
 use struct_creation::SettingsCacheStructCreation;
@@ -17,7 +18,10 @@ mod to_tokens;
 /// Generates the tokens to produce a settings cache
 pub struct SettingsCacheOutput<'a> {
     /// The struct definition
-    r#struct: Struct<'a>,
+    item: Item<'a>,
+
+    /// The name of the struct
+    name: Cow<'a, Identifier>,
 
     /// The get functions for this cache
     get_functions: Vec<SettingsCacheGetFunction<'a>>,

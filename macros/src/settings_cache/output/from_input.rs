@@ -5,8 +5,8 @@ use crate::settings_cache::output::{
 use proc_macro_util::{
     Result, Span, Token,
     ast::{
-        Type, TypePath, TypePathSegment,
-        items::{Struct, StructBody, StructField, StructFields},
+        Item, ItemKind, Type, TypePath, TypePathSegment, VisItemKind,
+        items::{StructBody, StructField, StructFields},
     },
     tokens::Identifier,
 };
@@ -63,7 +63,17 @@ fn foreach_field<'a, F: FnMut(&StructField<'a>)>(fields: &StructFields<'a>, mut 
 
 impl<'a> SettingsCacheOutput<'a> {
     /// Create a new [`SettingsCacheOutput`] from `r#struct`
-    pub fn from_input(mut r#struct: Struct<'a>) -> Result<SettingsCacheOutput<'a>> {
+    pub fn from_input(mut item: Item<'a>) -> Result<SettingsCacheOutput<'a>> {
+        // Verify we got a struct
+        let r#struct = match &mut item.kind {
+            ItemKind::Vis(vis_item) => match &mut vis_item.kind {
+                VisItemKind::Struct(r#struct) => r#struct,
+                _ => return Err(Span::call_site().error("must be applied to a struct")),
+            },
+            _ => return Err(Span::call_site().error("must be applied to a struct")),
+        };
+        let name = r#struct.name.clone();
+
         // Validate struct body type
         let fields = match &mut r#struct.body {
             StructBody::Normal {
@@ -97,7 +107,8 @@ impl<'a> SettingsCacheOutput<'a> {
 
         // Create output
         Ok(SettingsCacheOutput {
-            r#struct,
+            item,
+            name,
             get_functions,
             set_functions,
             loads,
