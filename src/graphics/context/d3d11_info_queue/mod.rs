@@ -6,7 +6,7 @@ mod empty_queue;
 mod new;
 
 /// The info queue of messages from the system graphics API
-pub(in crate::graphics::context) struct InfoQueue {
+pub(in crate::graphics::context) struct D3D11InfoQueue {
     /// A handle to the info queue
     handle: ComPtr<ID3D11InfoQueue>,
 

@@ -1,4 +1,4 @@
-use crate::{Error, Result, graphics::context::InfoQueue, logging::Logger};
+use crate::{Error, Result, graphics::context::D3D11InfoQueue, logging::Logger};
 use win32::{
     ComPtr,
     d3d11::ID3D11Device,
@@ -9,7 +9,7 @@ use win32::{
     try_hresult,
 };
 
-impl InfoQueue {
+impl D3D11InfoQueue {
     /// Create a new [`InfoQueue`]
     pub fn new(device: &mut ComPtr<ID3D11Device>, logger: Logger) -> Result<Self> {
         let mut handle: ComPtr<ID3D11InfoQueue> = device
@@ -32,6 +32,6 @@ impl InfoQueue {
             ..Default::default()
         });
 
-        Ok(InfoQueue { handle, logger })
+        Ok(D3D11InfoQueue { handle, logger })
     }
 }

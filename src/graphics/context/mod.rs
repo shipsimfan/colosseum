@@ -1,6 +1,8 @@
 use crate::{MessageThread, graphics::DisplayMode, logging::Logger, math::Vector2u};
 #[cfg(debug_assertions)]
-use info_queue::InfoQueue;
+use d3d11_info_queue::D3D11InfoQueue;
+#[cfg(debug_assertions)]
+use dxgi_info_queue::DXGIInfoQueue;
 use managed_objects::ManagedGraphicsObjects;
 use std::rc::Rc;
 use swapchain_objects::SwapchainObjects;
@@ -14,7 +16,9 @@ use win32::{
 };
 
 #[cfg(debug_assertions)]
-mod info_queue;
+mod d3d11_info_queue;
+#[cfg(debug_assertions)]
+mod dxgi_info_queue;
 mod managed_objects;
 mod swapchain_objects;
 
@@ -61,15 +65,19 @@ pub struct GraphicsContext {
     /// The device context for issuing rendering commands
     device_context: ComPtr<ID3D11DeviceContext>,
 
-    /// The info queue producing debug messages from the system graphics API
+    /// The info queue producing debug messages from Direct3D 11
     #[cfg(debug_assertions)]
-    info_queue: InfoQueue,
+    d3d11_info_queue: D3D11InfoQueue,
 
     /// The device for creating render objects
     device: ComPtr<ID3D11Device>,
 
     /// The thread controlling the window
     message_thread: Rc<MessageThread>,
+
+    /// The info queue producing debug messages from DXGI
+    #[cfg(debug_assertions)]
+    dxgi_info_queue: DXGIInfoQueue,
 }
 
 pub(in crate::graphics) const RENDER_TARGET_FORMAT: DXGI_FORMAT = DXGI_FORMAT::B8G8R8A8UNorm;

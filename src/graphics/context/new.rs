@@ -1,5 +1,5 @@
 #[cfg(debug_assertions)]
-use crate::graphics::context::InfoQueue;
+use crate::graphics::context::{D3D11InfoQueue, DXGIInfoQueue};
 use crate::{
     Error, Result,
     graphics::{
@@ -45,6 +45,10 @@ impl GraphicsContext {
     ) -> Result<Self> {
         // Create logger
         let logger = log_controller.logger("graphics");
+
+        // Create DXGI info queue
+        #[cfg(debug_assertions)]
+        let dxgi_info_queue = DXGIInfoQueue::new(logger.clone())?;
 
         // Select adapter
         let mut selected_adapter = None;
@@ -142,7 +146,7 @@ impl GraphicsContext {
 
         // Create info queue
         #[cfg(debug_assertions)]
-        let info_queue = InfoQueue::new(&mut device, logger.clone())?;
+        let d3d11_info_queue = D3D11InfoQueue::new(&mut device, logger.clone())?;
 
         // Create rasterizer state
         let rasterizer_desc = D3D11_RASTERIZER_DESC {
@@ -186,10 +190,12 @@ impl GraphicsContext {
             rasterizer_state,
             blend_state,
             device_context,
-            #[cfg(debug_assertions)]
-            info_queue,
             device,
             message_thread,
+            #[cfg(debug_assertions)]
+            d3d11_info_queue,
+            #[cfg(debug_assertions)]
+            dxgi_info_queue,
         };
 
         // Force a resize

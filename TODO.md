@@ -12,24 +12,23 @@
  11. Add audio
 
 ## Additional ToDos
- 1. Add IDXGIInfoQueue
- 2. Add general file I/O thread
- 3. Add quarternion
- 4. Add basis vectors to transform
- 5. Finish Matrix4x4
- 6. Add basic primitive creation
+ 1. Finish Matrix4x4
+ 2. Add quarternion
+ 3. Add basis vectors to transform
+ 4. Add general file I/O thread
+ 5. Add basic primitive creation
+ 6. Add fixed update
  7. Add bounds to `Mesh`
- 8. Add fixed update
- 9. Add rigidbody
- 10. Add colliders
- 11. Add frustum culling 
- 12. Add toggleable wireframe rendering
- 13. Add MSAA
- 14. Add render scale
- 15. Add input binding helper
- 16. Add joystick support
- 17. Add steering wheel support
- 18. Add other controller support
- 19. Add occlussion culling
- 20. Add post-processing support
- 21. Add job system
+ 8. Add rigidbody
+ 9. Add colliders
+ 10. Add frustum culling 
+ 11. Add toggleable wireframe rendering
+ 12. Add MSAA
+ 13. Add render scale
+ 14. Add input binding helper
+ 15. Add joystick support
+ 16. Add steering wheel support
+ 17. Add other controller support
+ 18. Add occlussion culling
+ 19. Add post-processing support
+ 20. Add job system

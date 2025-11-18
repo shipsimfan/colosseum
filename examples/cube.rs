@@ -50,10 +50,6 @@ struct CubeScene {
     #[allow(unused)]
     camera: colosseum::graphics::Camera,
 
-    /// The transform of the cube
-    #[allow(unused)]
-    transform: colosseum::math::Transform,
-
     /// The renderer for the cube
     #[allow(unused)]
     mesh_renderer: colosseum::graphics::MeshRenderer,
@@ -80,20 +76,16 @@ impl colosseum::InitialScene for CubeScene {
             .borrow_mut()
             .set_position(colosseum::math::Vector3f::new(0.0, 0.0, -10.0));
 
-        let mut transform = colosseum::math::Transform::new();
-
         let mesh = context.graphics().create_mesh(VERTICES, INDICES)?;
         let material = context.graphics().default_material();
         let mesh_renderer = context.graphics().create_mesh_renderer(material, mesh, 1)?;
         mesh_renderer.borrow_mut().push();
-        mesh_renderer.borrow_mut().update(0, &mut transform);
 
         Ok(CubeScene {
             logger,
             second_time: 0.0,
             frames: 0,
             camera,
-            transform,
             mesh_renderer,
         })
     }

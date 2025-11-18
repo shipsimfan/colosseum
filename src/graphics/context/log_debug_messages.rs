@@ -6,6 +6,8 @@ impl GraphicsContext {
         #[cfg(not(debug_assertions))]
         return Ok(());
         #[cfg(debug_assertions)]
-        self.info_queue.empty_queue()
+        self.d3d11_info_queue.empty_queue()?;
+        #[cfg(debug_assertions)]
+        self.dxgi_info_queue.empty_queue()
     }
 }

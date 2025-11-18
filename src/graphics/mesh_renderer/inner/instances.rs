@@ -10,12 +10,12 @@ impl MeshRendererInner {
     }
 
     /// Update instance `i` with `transform`
-    pub fn update(&mut self, i: usize, transform: &mut Transform) {
-        let dirty = transform.update();
-        if dirty {
-            self.dirty = true;
-            self.instances[i] = transform.matrix();
-        }
+    pub fn update<T: AsMut<Transform>>(&mut self, i: usize, mut transform: T) {
+        let transform = transform.as_mut();
+        transform.update();
+
+        self.dirty = true;
+        self.instances[i] = transform.matrix();
     }
 
     /// Push a new instance into this renderer
