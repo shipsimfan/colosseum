@@ -12,7 +12,7 @@ impl<T: Mul<Output = T> + Clone> Mul<T> for Matrix4x4<T> {
             [v30, v31, v32, v33],
         ] = self.v;
 
-        Matrix4x4::new([
+        Matrix4x4::new_row([
             [
                 v00 * rhs.clone(),
                 v01 * rhs.clone(),
@@ -96,16 +96,11 @@ impl<T: Mul<Output = T> + Add<Output = T> + Clone> Mul for Matrix4x4<T> {
             [b30, b31, b32, b33],
         ] = rhs.v;
 
-        let [c00, c10, c20, c30] = (self.clone() * Vector4::new(b00, b10, b20, b30)).into();
-        let [c01, c11, c21, c31] = (self.clone() * Vector4::new(b01, b11, b21, b31)).into();
-        let [c02, c12, c22, c32] = (self.clone() * Vector4::new(b02, b12, b22, b32)).into();
-        let [c03, c13, c23, c33] = (self * Vector4::new(b03, b13, b23, b33)).into();
-
-        Matrix4x4::new([
-            [c00, c01, c02, c03],
-            [c10, c11, c12, c13],
-            [c20, c21, c22, c23],
-            [c30, c31, c32, c33],
+        Matrix4x4::new_col([
+            (self.clone() * Vector4::new(b00, b10, b20, b30)).into(),
+            (self.clone() * Vector4::new(b01, b11, b21, b31)).into(),
+            (self.clone() * Vector4::new(b02, b12, b22, b32)).into(),
+            (self * Vector4::new(b03, b13, b23, b33)).into(),
         ])
     }
 }
@@ -114,21 +109,21 @@ impl<T: Mul<Output = T> + Add<Output = T> + Clone> Mul for Matrix4x4<T> {
 mod tests {
     #[test]
     pub fn simple_mat_mat_mul() {
-        const A: crate::math::Matrix4x4u = crate::math::Matrix4x4u::new([
+        const A: crate::math::Matrix4x4u = crate::math::Matrix4x4u::new_row([
             [1, 2, 3, 4],
             [5, 6, 7, 8],
             [9, 10, 11, 12],
             [13, 14, 15, 16],
         ]);
 
-        const B: crate::math::Matrix4x4u = crate::math::Matrix4x4u::new([
+        const B: crate::math::Matrix4x4u = crate::math::Matrix4x4u::new_row([
             [17, 18, 19, 20],
             [21, 22, 23, 24],
             [25, 26, 27, 28],
             [29, 30, 31, 32],
         ]);
 
-        const TARGET: crate::math::Matrix4x4u = crate::math::Matrix4x4u::new([
+        const TARGET: crate::math::Matrix4x4u = crate::math::Matrix4x4u::new_row([
             [250, 260, 270, 280],
             [618, 644, 670, 696],
             [986, 1028, 1070, 1112],

@@ -1,5 +1,26 @@
+mod abs;
+mod add;
+mod ceil;
+mod clamp;
+mod constants;
+mod display;
+mod div;
+mod floor;
+mod fract;
+mod from;
+mod index;
+mod into;
+mod into_f32;
+mod max;
+mod min;
 mod mul;
+mod neg;
 mod new;
+mod rem;
+mod round;
+mod saturate;
+mod sqrt;
+mod sub;
 
 /// A matrix with 4 columns and 4 rows
 ///
