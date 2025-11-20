@@ -21,6 +21,7 @@ mod round;
 mod saturate;
 mod sqrt;
 mod sub;
+mod transpose;
 
 /// A matrix with 4 columns and 4 rows
 ///
