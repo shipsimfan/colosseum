@@ -1,10 +1,34 @@
+mod abs;
+mod add;
+mod ceil;
+mod clamp;
+mod constants;
+mod display;
+mod div;
+mod dot;
+mod floor;
+mod fract;
+mod from;
+mod index;
+mod into;
+mod into_f32;
+mod length;
+mod max;
+mod min;
+mod mul;
+mod neg;
+mod new;
+mod normalize;
+mod rem;
+mod round;
+mod saturate;
+mod sqrt;
+mod sub;
+
 /// A representation of a rotation
 #[repr(C)]
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Quaternion<T> {
-    /// The real part of the quaternion
-    pub w: T,
-
     /// The x imaginary part of the quaternion
     pub x: T,
 
@@ -13,6 +37,9 @@ pub struct Quaternion<T> {
 
     /// The z imaginary part of the quaternion
     pub z: T,
+
+    /// The real part of the quaternion
+    pub w: T,
 }
 
 /// A quaternion made of [`f32`]s

@@ -1,12 +1,12 @@
 use crate::math::{
-    Vector4,
+    Quaternion,
     number::{Max, Min},
 };
 
-impl<T: Min + Max> Vector4<T> {
+impl<T: Min + Max> Quaternion<T> {
     /// Clamps the values of the vector between two vectors component-wise
-    pub fn clamp_v(self, min: Vector4<T>, max: Vector4<T>) -> Vector4<T> {
-        Vector4::new(
+    pub fn clamp_v(self, min: Quaternion<T>, max: Quaternion<T>) -> Quaternion<T> {
+        Quaternion::new(
             self.x.max(min.x).min(max.x),
             self.y.max(min.y).min(max.y),
             self.z.max(min.z).min(max.z),
@@ -15,10 +15,10 @@ impl<T: Min + Max> Vector4<T> {
     }
 }
 
-impl<T: Min + Max + Clone> Vector4<T> {
+impl<T: Min + Max + Clone> Quaternion<T> {
     /// Clamps the values of the vector between two values component-wise
-    pub fn clamp(self, min: T, max: T) -> Vector4<T> {
-        Vector4::new(
+    pub fn clamp(self, min: T, max: T) -> Quaternion<T> {
+        Quaternion::new(
             self.x.max(min.clone()).min(max.clone()),
             self.y.max(min.clone()).min(max.clone()),
             self.z.max(min.clone()).min(max.clone()),
