@@ -1,5 +1,5 @@
 use crate::math::{
-    Matrix4x4, Vector3, Vector4,
+    Matrix4x4, Quaternion, Vector3, Vector4,
     number::{Cos, Infinity, NaN, NegInfinity, One, Sin, Tan, Zero},
 };
 use std::ops::{Add, Div, Mul, Neg, Sub};
@@ -394,6 +394,44 @@ impl<T: Zero + One + Cos + Sin + Clone + Neg<Output = T> + Add<Output = T> + Mul
         Matrix4x4::z_rotation(angles.z)
             * Matrix4x4::y_rotation(angles.y)
             * Matrix4x4::x_rotation(angles.x)
+    }
+}
+
+impl<T: Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Zero + One + Clone> Matrix4x4<T> {
+    /// Create a new [`Matrix4x4`] equivalent to the rotation represented by `rot`
+    pub fn rotation(rot: Quaternion<T>) -> Self {
+        let two = T::ONE + T::ONE;
+
+        Matrix4x4::new_row([
+            [
+                T::ONE
+                    - two.clone() * rot.y.clone() * rot.y.clone()
+                    - two.clone() * rot.z.clone() * rot.z.clone(),
+                two.clone() * rot.x.clone() * rot.y.clone()
+                    - two.clone() * rot.w.clone() * rot.z.clone(),
+                two.clone() * rot.x.clone() * rot.z.clone()
+                    + two.clone() * rot.w.clone() * rot.y.clone(),
+                T::ZERO,
+            ],
+            [
+                two.clone() * rot.x.clone() * rot.y.clone()
+                    + two.clone() * rot.w.clone() * rot.z.clone(),
+                T::ONE
+                    - two.clone() * rot.x.clone() * rot.x.clone()
+                    - two.clone() * rot.z.clone() * rot.z.clone(),
+                two.clone() * rot.y.clone() * rot.z.clone()
+                    - two.clone() * rot.w.clone() * rot.x.clone(),
+                T::ZERO,
+            ],
+            [
+                two.clone() * rot.x.clone() * rot.z.clone()
+                    - two.clone() * rot.w.clone() * rot.y.clone(),
+                two.clone() * rot.y.clone() * rot.z + two.clone() * rot.w * rot.x.clone(),
+                T::ONE - two.clone() * rot.x.clone() * rot.x - two * rot.y.clone() * rot.y,
+                T::ZERO,
+            ],
+            [T::ZERO, T::ZERO, T::ZERO, T::ONE],
+        ])
     }
 }
 
