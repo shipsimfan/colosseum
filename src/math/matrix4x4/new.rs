@@ -1,8 +1,8 @@
 use crate::math::{
     Matrix4x4, Quaternion, Vector3, Vector4,
-    number::{Cos, Infinity, NaN, NegInfinity, One, Sin, Tan, Zero},
+    number::{Cos, Infinity, NaN, NegInfinity, One, Sin, Sqrt, Tan, Zero},
 };
-use std::ops::{Add, Div, Mul, Neg, Sub};
+use std::ops::{Add, Div, DivAssign, Mul, Neg, Sub};
 
 impl<T> Matrix4x4<T> {
     /// Create a new [`Matrix4x4`] in row-major order
@@ -431,6 +431,42 @@ impl<T: Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Zero + One + Clone
                 T::ZERO,
             ],
             [T::ZERO, T::ZERO, T::ZERO, T::ONE],
+        ])
+    }
+}
+
+impl<
+    T: Add<Output = T>
+        + Sub<Output = T>
+        + Mul<Output = T>
+        + Neg<Output = T>
+        + DivAssign
+        + Clone
+        + Sqrt
+        + PartialEq
+        + Zero
+        + One,
+> Matrix4x4<T>
+{
+    /// Create a matrix which has an object at `position` looking at `target`
+    pub fn look_at(position: Vector3<T>, target: Vector3<T>, up: Vector3<T>) -> Self {
+        let forward = (target - position.clone()).normalized();
+        let right = up.cross(forward.clone()).normalized();
+        let up = forward.clone().cross(right.clone());
+
+        let right2 = right.clone();
+        let up2 = up.clone();
+        let forward2 = forward.clone();
+        Matrix4x4::new_row([
+            [right.x, up.x, forward.x, T::ZERO],
+            [right.y, up.y, forward.y, T::ZERO],
+            [right.z, up.z, forward.z, T::ZERO],
+            [
+                -right2.dot(position.clone()),
+                -up2.dot(position.clone()),
+                -forward2.dot(position),
+                T::ONE,
+            ],
         ])
     }
 }

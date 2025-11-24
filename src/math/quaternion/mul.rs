@@ -31,7 +31,7 @@ impl<T: Add<Output = T> + Sub<Output = T> + Mul<Output = T> + Clone> Mul for Qua
                 + self.z.clone() * rhs.x.clone(),
             self.w.clone() * rhs.z.clone() + self.x.clone() * rhs.y.clone()
                 - self.y.clone() * rhs.x.clone()
-                + self.z.clone() * rhs.x.clone(),
+                + self.z.clone() * rhs.w.clone(),
             self.w * rhs.w - self.x * rhs.x - self.y * rhs.y - self.z * rhs.z,
         )
     }

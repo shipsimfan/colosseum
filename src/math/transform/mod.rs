@@ -1,6 +1,7 @@
-use crate::math::{Matrix4x4f, Vector3f};
+use crate::math::{Matrix4x4f, Quaternionf, Vector3f};
 
 mod as_ref;
+mod look_at;
 mod matrix;
 mod new;
 mod position;
@@ -14,9 +15,7 @@ pub struct Transform {
     position: Vector3f,
 
     /// The current rotation represented in euler angles
-    ///
-    /// TODO: Change this to a quaternion
-    rotation: Vector3f,
+    rotation: Quaternionf,
 
     /// The scaling factor to be applied
     scale: Vector3f,

@@ -1,6 +1,7 @@
 //! Traits for defining what numeric operations types can perform
 
 mod absolute;
+mod acos;
 mod atan2;
 mod ceil;
 mod cos;
@@ -20,6 +21,7 @@ mod tan;
 mod zero;
 
 pub use absolute::Absolute;
+pub use acos::Acos;
 pub use atan2::Atan2;
 pub use ceil::Ceil;
 pub use cos::Cos;

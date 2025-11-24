@@ -1,13 +1,13 @@
-use crate::math::{Transform, Vector3f};
+use crate::math::{Quaternionf, Transform};
 
 impl Transform {
     /// Get the rotation
-    pub const fn rotation(&self) -> Vector3f {
+    pub const fn rotation(&self) -> Quaternionf {
         self.rotation
     }
 
     /// Set the rotation
-    pub fn set_rotation(&mut self, rotation: Vector3f) {
+    pub fn set_rotation(&mut self, rotation: Quaternionf) {
         self.rotation = rotation;
         self.dirty = true;
     }

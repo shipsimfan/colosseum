@@ -1,13 +1,13 @@
-use crate::{graphics::CameraInner, math::Vector3f};
+use crate::{graphics::CameraInner, math::Quaternionf};
 
 impl CameraInner {
     /// Get the rotation of the camera
-    pub fn rotation(&self) -> Vector3f {
-        -self.transform.rotation()
+    pub fn rotation(&self) -> Quaternionf {
+        self.transform.rotation().conjugate()
     }
 
     /// Set the rotation of the camera
-    pub fn set_rotation(&mut self, rotation: Vector3f) {
-        self.transform.set_rotation(-rotation);
+    pub fn set_rotation(&mut self, rotation: Quaternionf) {
+        self.transform.set_rotation(rotation.conjugate());
     }
 }

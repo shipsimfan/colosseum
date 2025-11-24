@@ -9,6 +9,7 @@ use win32::{
 
 mod active;
 mod bind;
+mod look_at;
 mod new;
 mod position;
 mod projection;

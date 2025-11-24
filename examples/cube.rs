@@ -1,7 +1,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use colosseum::math::Vector3f;
-
 colosseum::run!(Cube);
 
 /// The cube example
@@ -114,43 +112,55 @@ impl colosseum::Scene for CubeScene {
         if context.input().key(colosseum::input::KeyCode::LeftShift)
             || context.input().key(colosseum::input::KeyCode::RightShift)
         {
-            let mut rotation = Vector3f::ZERO;
+            let mut rotation = self.camera.borrow().rotation();
             if context.input().key(colosseum::input::KeyCode::W)
                 || context.input().key(colosseum::input::KeyCode::UpArrow)
             {
-                rotation.x -= context.delta_t();
+                rotation = colosseum::math::Quaternion::angle_axis(
+                    context.delta_t(),
+                    colosseum::math::Vector3f::UNIT_X,
+                ) * rotation;
             }
             if context.input().key(colosseum::input::KeyCode::S)
                 || context.input().key(colosseum::input::KeyCode::DownArrow)
             {
-                rotation.x += context.delta_t();
+                rotation = colosseum::math::Quaternion::angle_axis(
+                    -context.delta_t(),
+                    colosseum::math::Vector3f::UNIT_X,
+                ) * rotation;
             }
             if context.input().key(colosseum::input::KeyCode::A)
                 || context.input().key(colosseum::input::KeyCode::LeftArrow)
             {
-                rotation.y -= context.delta_t();
+                rotation = colosseum::math::Quaternion::angle_axis(
+                    context.delta_t(),
+                    colosseum::math::Vector3f::UNIT_Y,
+                ) * rotation;
             }
             if context.input().key(colosseum::input::KeyCode::D)
                 || context.input().key(colosseum::input::KeyCode::RightArrow)
             {
-                rotation.y += context.delta_t();
+                rotation = colosseum::math::Quaternion::angle_axis(
+                    -context.delta_t(),
+                    colosseum::math::Vector3f::UNIT_Y,
+                ) * rotation;
             }
             if context.input().key(colosseum::input::KeyCode::Q) {
-                rotation.z += context.delta_t();
+                rotation = colosseum::math::Quaternion::angle_axis(
+                    -context.delta_t(),
+                    colosseum::math::Vector3f::UNIT_Z,
+                ) * rotation;
             }
             if context.input().key(colosseum::input::KeyCode::E) {
-                rotation.z -= context.delta_t();
+                rotation = colosseum::math::Quaternion::angle_axis(
+                    context.delta_t(),
+                    colosseum::math::Vector3f::UNIT_Z,
+                ) * rotation;
             }
 
-            if rotation != Vector3f::ZERO {
-                let mut camera = self.camera.borrow_mut();
-                let old_rotation = camera.rotation();
-                camera.set_rotation(
-                    (old_rotation + rotation) % Vector3f::new(3.1415926, 3.1415926, 3.1415926),
-                );
-            }
+            self.camera.borrow_mut().set_rotation(rotation);
         } else {
-            let mut translation = Vector3f::ZERO;
+            let mut translation = colosseum::math::Vector3f::ZERO;
             if context.input().key(colosseum::input::KeyCode::W)
                 || context.input().key(colosseum::input::KeyCode::UpArrow)
             {
@@ -178,7 +188,7 @@ impl colosseum::Scene for CubeScene {
                 translation.y -= context.delta_t();
             }
 
-            if translation != Vector3f::ZERO {
+            if translation != colosseum::math::Vector3f::ZERO {
                 let mut camera = self.camera.borrow_mut();
                 let position = camera.position();
                 camera.set_position(position + translation);

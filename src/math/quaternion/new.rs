@@ -1,5 +1,5 @@
 use crate::math::{
-    Quaternion, Vector3,
+    Quaternion, Quaternionf, Vector3, Vector3f,
     number::{Cos, Infinity, NaN, NegInfinity, One, Sin, Sqrt, Zero},
 };
 use std::ops::{Add, Div, DivAssign, Mul, Sub};
@@ -62,6 +62,11 @@ impl<T: Zero + One> Quaternion<T> {
     /// Create a new unit [`Quaternion`] along the positive w-axis
     pub const fn unit_w() -> Self {
         Quaternion::new(T::ZERO, T::ZERO, T::ZERO, T::ONE)
+    }
+
+    /// Create a new [`Quaternion`] that represents no rotation
+    pub const fn identity() -> Self {
+        Quaternion::unit_w()
     }
 }
 
@@ -140,5 +145,63 @@ impl<
             cr.clone() * cp.clone() * sy.clone() - sr.clone() * sp.clone() * cy.clone(),
             cr * cp * cy + sr * sp * sy,
         )
+    }
+}
+
+impl Quaternionf {
+    /// Create a [`Quaternion`] aligned with `forward` and `up`
+    pub fn look_at(forward: Vector3f, up: Vector3f) -> Self {
+        const E2: f32 = 1e-6;
+
+        let forward = forward.normalized();
+        let mut up = up.normalized();
+        if forward.cross(up).length_squared() < E2 {
+            up = if forward.z.abs() < 0.999 {
+                Vector3f::UNIT_Z
+            } else {
+                Vector3f::UNIT_Y
+            }
+        }
+
+        let right = up.cross(forward).normalized();
+        let up = forward.cross(right);
+
+        let trace = right.x + up.y + forward.z;
+
+        let (x, y, z, w) = if trace > 0.0 {
+            let s = (trace + 1.0).sqrt() * 2.0;
+            (
+                (up.z - forward.y) / s,
+                (forward.x - right.z) / s,
+                (right.y - up.x) / s,
+                0.25 * s,
+            )
+        } else if right.x > up.y && right.x > forward.z {
+            let s = (1.0 + right.x - up.y - forward.z).sqrt() * 2.0;
+            (
+                0.25 * s,
+                (up.x + right.y) / s,
+                (forward.x + right.z) / s,
+                (up.z - forward.y) / s,
+            )
+        } else if up.y > forward.z {
+            let s = (1.0 + up.y - right.x - forward.z).sqrt() * 2.0;
+            (
+                (up.x + right.y) / s,
+                0.25 * s,
+                (forward.y + up.z) / s,
+                (forward.x - right.z) / s,
+            )
+        } else {
+            let s = (1.0 + forward.z - right.x - up.y).sqrt() * 2.0;
+            (
+                (forward.x + right.z) / s,
+                (forward.y + up.z) / s,
+                0.25 * s,
+                (right.y - up.x) / s,
+            )
+        };
+
+        Quaternion::new(x, y, z, w)
     }
 }

@@ -12,9 +12,9 @@
  11. Add audio
 
 ## Additional ToDos
- 1. Add basis vectors to transform
- 2. Add general file I/O thread
- 3. Add basic primitive creation
+ 1. Fix look at
+ 2. Add basic primitive creation
+ 3. Add general file I/O thread
  4. Add fixed update
  5. Add bounds to `Mesh`
  6. Add rigidbody
@@ -29,4 +29,7 @@
  15. Add other controller support
  16. Add occlussion culling
  17. Add post-processing support
- 18. Add job system
+ 18. Add multithreaded untracked resource creation
+ 19. Add job system
+ 20. Jobify rendering
+ 21. Generalize quaternion look at function

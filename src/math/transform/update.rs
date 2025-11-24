@@ -8,7 +8,7 @@ impl Transform {
         }
 
         self.matrix = Matrix4x4f::translation(self.position)
-            * Matrix4x4f::euler_rotation(self.rotation)
+            * Matrix4x4f::rotation(self.rotation)
             * Matrix4x4f::scale(self.scale);
 
         self.dirty = false;

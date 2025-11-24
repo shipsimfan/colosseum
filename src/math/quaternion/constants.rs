@@ -33,6 +33,9 @@ impl<T: Zero + One> Quaternion<T> {
 
     /// Unit [`Quaternion`] along the positive w-axis
     pub const UNIT_W: Self = Quaternion::unit_w();
+
+    /// A [`Quaternion`] that represents no rotation
+    pub const IDENTITY: Self = Quaternion::identity();
 }
 
 impl<T: Infinity> Quaternion<T> {
