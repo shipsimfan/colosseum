@@ -153,6 +153,8 @@ impl Quaternionf {
     pub fn look_at(forward: Vector3f, up: Vector3f) -> Self {
         const E2: f32 = 1e-6;
 
+        println!("FORWARD: {}", forward);
+
         let forward = forward.normalized();
         let mut up = up.normalized();
         if forward.cross(up).length_squared() < E2 {
@@ -165,6 +167,10 @@ impl Quaternionf {
 
         let right = up.cross(forward).normalized();
         let up = forward.cross(right);
+
+        println!("TESTING F: {}", forward);
+        println!("TESTING U: {}", up);
+        println!("TESTING R: {}", right);
 
         let trace = right.x + up.y + forward.z;
 

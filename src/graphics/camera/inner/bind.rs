@@ -12,7 +12,7 @@ impl CameraInner {
         device_context: &mut ID3D11DeviceContext,
     ) -> Result<()> {
         // Update transform
-        let update_needed = self.transform.update() || self.projection_dirty;
+        let update_needed = self.transform.update_camera() || self.projection_dirty;
 
         // Update projection matrix
         if self.projection_dirty {

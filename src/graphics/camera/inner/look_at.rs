@@ -1,26 +1,27 @@
 use crate::{
     graphics::CameraInner,
-    math::{Transform, Vector3f},
+    math::{Quaternion, Transform, Vector3f},
 };
 
 impl CameraInner {
-    /// Rotate this transform so it is looking at `target`
+    /// Rotate this camera so it is looking at `target`
     pub fn look_at(&mut self, target: &Transform) {
-        self.transform.look_at(target);
+        self.look_at_pos(target.position());
     }
 
-    /// Rotate this transform so it is looking at `target` using `up`
+    /// Rotate this camera so it is looking at `target` using `up`
     pub fn look_at_up(&mut self, target: &Transform, up: Vector3f) {
-        self.transform.look_at_up(target, up);
+        self.look_at_pos_up(target.position(), up);
     }
 
-    /// Rotate this transform so it is looking at `target`
+    /// Rotate this camera so it is looking at `target`
     pub fn look_at_pos(&mut self, target: Vector3f) {
-        self.transform.look_at_pos(target);
+        self.look_at_pos_up(target, Vector3f::UNIT_Y);
     }
 
-    /// Rotate this transform so it is looking at `target` using `up`
+    /// Rotate this camera so it is looking at `target` using `up`
     pub fn look_at_pos_up(&mut self, target: Vector3f, up: Vector3f) {
-        self.transform.look_at_pos_up(target, up);
+        self.transform
+            .set_rotation(Quaternion::look_at(target - self.position(), up).conjugate());
     }
 }
