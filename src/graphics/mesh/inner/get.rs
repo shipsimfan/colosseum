@@ -1,8 +1,13 @@
-use crate::graphics::MeshInner;
+use crate::graphics::{MeshInner, Vertex};
 
 impl MeshInner {
-    /// Get the number of indices that make up the mesh
-    pub(in crate::graphics) fn index_count(&self) -> u32 {
-        self.index_count
+    /// Get the indices which define the faces of the mesh
+    pub fn indices(&self) -> &[u32] {
+        &self.indices
+    }
+
+    /// Get the vertices that make up this mesh
+    pub fn vertices(&self) -> &[Vertex] {
+        &self.vertices
     }
 }

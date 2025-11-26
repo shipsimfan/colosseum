@@ -1,12 +1,16 @@
 use crate::{Error, Result, graphics::MaterialInner, math::Vector4f};
 use win32::{
-    d3d11::{D3D11_MAP, D3D11_MAPPED_SUBRESOURCE, ID3D11DeviceContext},
+    d3d11::{D3D11_MAP, D3D11_MAPPED_SUBRESOURCE, ID3D11Device, ID3D11DeviceContext},
     try_hresult,
 };
 
 impl MaterialInner {
     /// Binds the material properties for rendering and draws the registered meshes
-    pub fn render(&mut self, device_context: &mut ID3D11DeviceContext) -> Result<()> {
+    pub fn render(
+        &mut self,
+        device: &ID3D11Device,
+        device_context: &mut ID3D11DeviceContext,
+    ) -> Result<()> {
         let mut bound = false;
         for mesh_renderer in &self.mesh_renderers {
             let mut renderer = mesh_renderer.borrow_mut();
@@ -44,7 +48,7 @@ impl MaterialInner {
                 bound = true;
             }
 
-            renderer.draw(device_context)?;
+            renderer.draw(device, device_context)?;
         }
         Ok(())
     }

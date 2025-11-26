@@ -1,17 +1,20 @@
-use win32::{ComPtr, d3d11::ID3D11Buffer};
+use crate::graphics::Vertex;
+use buffers::MeshBuffers;
+use std::{borrow::Cow, cell::OnceCell};
 
 mod bind;
+mod buffers;
 mod get;
 mod new;
 
 /// A 3d model
 pub struct MeshInner {
-    /// The buffer for the vertices of the mesh
-    vertex_buffer: ComPtr<ID3D11Buffer>,
+    /// The vertices that make up this mesh
+    vertices: Cow<'static, [Vertex]>,
 
-    /// The buffer for the indices of the mesh
-    index_buffer: ComPtr<ID3D11Buffer>,
+    /// The indices defining the faces of the mesh
+    indices: Cow<'static, [u32]>,
 
-    /// The number of indices in the buffer
-    index_count: u32,
+    /// The GPU buffers for this mesh
+    buffers: OnceCell<MeshBuffers>,
 }

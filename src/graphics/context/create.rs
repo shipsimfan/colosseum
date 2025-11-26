@@ -2,7 +2,7 @@ use crate::{
     Result,
     graphics::{
         Camera, CameraProjection, GraphicsContext, Material, Mesh, MeshRenderer, Shader,
-        ShaderSource, Vertex,
+        ShaderSource,
     },
     math::Color3f,
 };
@@ -23,24 +23,6 @@ impl GraphicsContext {
     pub fn create_opaque_material(&mut self, shader: Shader, color: Color3f) -> Result<Material> {
         self.managed_objects
             .create_opaque_material(shader, color, &self.device)
-    }
-
-    /// Create a new [`Mesh`]
-    pub fn create_mesh(&mut self, vertices: &[Vertex], indices: &[u32]) -> Result<Mesh> {
-        self.managed_objects
-            .create_mesh(vertices, indices, &self.device)
-    }
-
-    /// Create a new [`Mesh`] without checking the values
-    pub unsafe fn create_mesh_unchecked(
-        &mut self,
-        vertices: &[Vertex],
-        indices: &[u32],
-    ) -> Result<Mesh> {
-        unsafe {
-            self.managed_objects
-                .create_mesh_unchecked(vertices, indices, &self.device)
-        }
     }
 
     /// Create a new [`MeshRenderer`]

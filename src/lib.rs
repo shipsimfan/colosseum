@@ -6,6 +6,7 @@
 #![deny(rustdoc::redundant_explicit_links)]
 #![warn(rustdoc::broken_intra_doc_links)]
 #![feature(associated_type_defaults)]
+#![feature(once_cell_try)]
 
 use message_thread::MessageThread;
 use run::RunningState;

@@ -53,7 +53,7 @@ impl GraphicsContext {
                     active_shader = shader.id().get();
                 }
 
-                material.render(&mut self.device_context)?;
+                material.render(&self.device, &mut self.device_context)?;
             }
 
             // TODO: Transparent render pass

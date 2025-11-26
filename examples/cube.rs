@@ -74,7 +74,7 @@ impl colosseum::InitialScene for CubeScene {
             .borrow_mut()
             .set_position(colosseum::math::Vector3f::new(0.0, 0.0, -10.0));
 
-        let mesh = context.graphics().create_mesh(VERTICES, INDICES)?;
+        let mesh = colosseum::graphics::Mesh::new(VERTICES, INDICES)?;
         let material = context.graphics().default_material();
         let mesh_renderer = context.graphics().create_mesh_renderer(material, mesh, 1)?;
         mesh_renderer.borrow_mut().push();

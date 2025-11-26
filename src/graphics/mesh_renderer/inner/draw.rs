@@ -1,6 +1,6 @@
 use crate::{Error, Result, graphics::MeshRendererInner, math::Matrix4x4f};
 use win32::{
-    d3d11::{D3D11_MAP, D3D11_MAPPED_SUBRESOURCE, ID3D11Buffer, ID3D11DeviceContext},
+    d3d11::{D3D11_MAP, D3D11_MAPPED_SUBRESOURCE, ID3D11Buffer, ID3D11Device, ID3D11DeviceContext},
     try_hresult,
 };
 
@@ -8,6 +8,7 @@ impl MeshRendererInner {
     /// Draw this mesh using the active settings
     pub(in crate::graphics) fn draw(
         &mut self,
+        device: &ID3D11Device,
         device_context: &mut ID3D11DeviceContext,
     ) -> Result<()> {
         // Skip rendering if theres nothing to render
@@ -39,7 +40,7 @@ impl MeshRendererInner {
         }
 
         // Bind the mesh
-        self.mesh.bind(device_context);
+        self.mesh.bind(device, device_context)?;
 
         // Bind the instance buffer
         let buffer = self.instance_buffer.as_mut() as *mut ID3D11Buffer;
@@ -49,7 +50,7 @@ impl MeshRendererInner {
 
         // Draw
         device_context.draw_indexed_instanced(
-            self.mesh.index_count(),
+            self.mesh.indices().len() as _,
             self.instances.len() as _,
             0,
             0,

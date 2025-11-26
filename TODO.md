@@ -15,22 +15,25 @@
  1. Add basic primitive creation
  2. Add general file I/O thread
  3. Add fixed update
- 4. Add caching of meshes on CPU
- 5. Add lazy uploading of meshes to GPU
- 6. Add bounds to `Mesh`
- 7. Add rigidbody
- 8. Add colliders
- 9. Add frustum culling 
- 10. Add toggleable wireframe rendering
- 11. Add MSAA
- 12. Add render scale
- 13. Add input binding helper
- 14. Add joystick support
- 15. Add steering wheel support
- 16. Add other controller support
- 17. Add occlussion culling
- 18. Add post-processing support
- 19. Add multithreaded untracked resource creation
- 20. Add job system
- 21. Jobify rendering
- 22. Generalize quaternion look at function
+ 4. Add bounds to `Mesh`
+ 5. Add rigidbody
+ 6. Add colliders
+ 7. Add frustum culling 
+ 8. Add toggleable wireframe rendering
+ 9. Add MSAA
+ 10. Add render scale
+ 11. Add input binding helper
+ 12. Add joystick support
+ 13. Add steering wheel support
+ 14. Add other controller support
+ 15. Add occlussion culling
+ 16. Add post-processing support
+ 17. Add multithreaded untracked resource creation + uploading
+ 18. Add job system
+ 19. Jobify rendering
+ 20. Generalize quaternion look at function
+ 21. Expand math options
+ 22. Expand mesh options
+ 23. Improve colors 
+    - u8 vs f32 distinction
+    - Color spaces
