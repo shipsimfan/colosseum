@@ -1,6 +1,7 @@
 use std::marker::PhantomData;
 
 mod quad;
+mod cube;
 
 /// A struct provides functions to produce primitive meshes
 pub struct MeshPrimitives {

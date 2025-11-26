@@ -74,10 +74,15 @@ impl colosseum::InitialScene for CubeScene {
             .borrow_mut()
             .set_position(colosseum::math::Vector3f::new(0.0, 0.0, -10.0));
 
-        let mesh = colosseum::graphics::Mesh::new(VERTICES, INDICES)?;
+        let mesh = colosseum::graphics::MeshPrimitives::cube();
         let material = context.graphics().default_material();
+
         let mesh_renderer = context.graphics().create_mesh_renderer(material, mesh, 1)?;
         mesh_renderer.borrow_mut().push();
+
+        let mut transform = colosseum::math::Transform::new();
+        transform.set_scale(colosseum::math::Vector3::new(2.0, 2.0, 2.0));
+        mesh_renderer.borrow_mut().update(0, &mut transform);
 
         Ok(CubeScene {
             logger,
@@ -198,43 +203,3 @@ impl colosseum::Scene for CubeScene {
         Ok(())
     }
 }
-
-const VERTICES: &[colosseum::graphics::Vertex] = &[
-    colosseum::graphics::Vertex {
-        position: colosseum::math::Vector3f::new(-1.0, -1.0, -1.0),
-        color: colosseum::math::Color3f::new(1.0, 0.0, 0.0),
-    },
-    colosseum::graphics::Vertex {
-        position: colosseum::math::Vector3f::new(1.0, -1.0, -1.0),
-        color: colosseum::math::Color3f::new(0.0, 1.0, 0.0),
-    },
-    colosseum::graphics::Vertex {
-        position: colosseum::math::Vector3f::new(1.0, 1.0, -1.0),
-        color: colosseum::math::Color3f::new(0.0, 0.0, 1.0),
-    },
-    colosseum::graphics::Vertex {
-        position: colosseum::math::Vector3f::new(-1.0, 1.0, -1.0),
-        color: colosseum::math::Color3f::new(1.0, 1.0, 0.0),
-    },
-    colosseum::graphics::Vertex {
-        position: colosseum::math::Vector3f::new(-1.0, -1.0, 1.0),
-        color: colosseum::math::Color3f::new(1.0, 0.0, 1.0),
-    },
-    colosseum::graphics::Vertex {
-        position: colosseum::math::Vector3f::new(1.0, -1.0, 1.0),
-        color: colosseum::math::Color3f::new(0.0, 1.0, 1.0),
-    },
-    colosseum::graphics::Vertex {
-        position: colosseum::math::Vector3f::new(1.0, 1.0, 1.0),
-        color: colosseum::math::Color3f::new(1.0, 1.0, 1.0),
-    },
-    colosseum::graphics::Vertex {
-        position: colosseum::math::Vector3f::new(-1.0, 1.0, 1.0),
-        color: colosseum::math::Color3f::new(0.0, 0.0, 0.0),
-    },
-];
-
-const INDICES: &[u32] = &[
-    0, 1, 3, 3, 1, 2, 1, 5, 2, 2, 5, 6, 5, 4, 6, 6, 4, 7, 4, 0, 7, 7, 0, 3, 3, 2, 7, 7, 2, 6, 4, 5,
-    0, 0, 5, 1,
-];
