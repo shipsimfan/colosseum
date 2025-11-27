@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl MeshPrimitives {
-    /// Creates a 1x1 quad facing the positive x-axis
+    /// Creates a 1x1 quad in the XY plane facing positive-z
     pub fn quad() -> Mesh {
         const VERTICES: &[Vertex] = &[
             Vertex {
@@ -24,7 +24,7 @@ impl MeshPrimitives {
                 color: Color3::WHITE,
             },
         ];
-        const INDICES: &[u32] = &[0, 1, 2, 2, 3, 0];
+        const INDICES: &[u32] = &[2, 1, 0, 0, 3, 2];
 
         unsafe { Mesh::new_unchecked(VERTICES, INDICES) }
     }
