@@ -7,9 +7,9 @@ impl Transform {
             return false;
         }
 
-        self.matrix = Matrix4x4f::translation(self.position)
+        self.matrix = Matrix4x4f::scale(self.scale)
             * Matrix4x4f::rotation(self.rotation)
-            * Matrix4x4f::scale(self.scale);
+            * Matrix4x4f::translation(self.position);
 
         self.dirty = false;
         true
