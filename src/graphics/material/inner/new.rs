@@ -20,7 +20,7 @@ impl MaterialInner {
         device: &ID3D11Device,
     ) -> Result<Self> {
         // Create constant buffer
-        let color4 = Vector4f::new(color.r, color.b, color.g, 1.0);
+        let color4 = Vector4f::new(color.r, color.g, color.b, 1.0);
         let buffer_desc = D3D11_BUFFER_DESC {
             byte_width: std::mem::size_of::<Vector4f>() as _,
             usage: D3D11_USAGE::Dynamic,
