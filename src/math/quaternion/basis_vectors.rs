@@ -6,13 +6,17 @@ impl<T: Add<Output = T> + Sub<Output = T> + Mul<Output = T> + One + Clone> Quate
     pub fn right(self) -> Vector3<T> {
         let two = T::ONE + T::ONE;
 
+        let yy = self.y.clone() * self.y.clone();
+        let zz = self.z.clone() * self.z.clone();
+        let xy = self.x.clone() * self.y.clone();
+        let xz = self.x * self.z.clone();
+        let wy = self.w.clone() * self.y;
+        let wz = self.w * self.z;
+
         Vector3::new(
-            T::ONE
-                - two.clone() * self.y.clone() * self.y.clone()
-                - two.clone() * self.z.clone() * self.z.clone(),
-            two.clone() * self.x.clone() * self.y.clone()
-                + two.clone() * self.w.clone() * self.z.clone(),
-            two.clone() * self.x * self.z - two * self.w * self.y,
+            T::ONE - two.clone() * (yy.clone() + zz.clone()),
+            two.clone() * (xy.clone() - wz.clone()),
+            two.clone() * (xz.clone() + wy.clone()),
         )
     }
 
@@ -20,13 +24,17 @@ impl<T: Add<Output = T> + Sub<Output = T> + Mul<Output = T> + One + Clone> Quate
     pub fn up(self) -> Vector3<T> {
         let two = T::ONE + T::ONE;
 
+        let xx = self.x.clone() * self.x.clone();
+        let zz = self.z.clone() * self.z.clone();
+        let xy = self.x.clone() * self.y.clone();
+        let yz = self.y * self.z.clone();
+        let wx = self.w.clone() * self.x;
+        let wz = self.w * self.z;
+
         Vector3::new(
-            two.clone() * self.x.clone() * self.y.clone()
-                - two.clone() * self.w.clone() * self.z.clone(),
-            T::ONE
-                - two.clone() * self.x.clone() * self.x.clone()
-                - two.clone() * self.z.clone() * self.z.clone(),
-            two.clone() * self.y * self.z + two * self.w * self.x,
+            two.clone() * (xy + wz),
+            T::ONE - two.clone() * (xx.clone() + zz),
+            two.clone() * (yz.clone() - wx.clone()),
         )
     }
 
@@ -34,11 +42,17 @@ impl<T: Add<Output = T> + Sub<Output = T> + Mul<Output = T> + One + Clone> Quate
     pub fn forward(self) -> Vector3<T> {
         let two = T::ONE + T::ONE;
 
+        let xx = self.x.clone() * self.x.clone();
+        let yy = self.y.clone() * self.y.clone();
+        let xz = self.x.clone() * self.z.clone();
+        let yz = self.y.clone() * self.z;
+        let wx = self.w.clone() * self.x;
+        let wy = self.w * self.y;
+
         Vector3::new(
-            two.clone() * self.x.clone() * self.z.clone()
-                + two.clone() * self.w.clone() * self.y.clone(),
-            two.clone() * self.y.clone() * self.z - two.clone() * self.w * self.x.clone(),
-            T::ONE - two.clone() * self.x.clone() * self.x - two * self.y.clone() * self.y,
+            two.clone() * (xz - wy),
+            two.clone() * (yz + wx),
+            T::ONE - two * (xx + yy),
         )
     }
 }

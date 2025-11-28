@@ -165,7 +165,7 @@ impl colosseum::Scene for CubeScene {
 
             self.camera.borrow_mut().set_rotation(rotation);
         } else {
-            let camera_rotation = self.camera.borrow().rotation().conjugate();
+            let camera_rotation = self.camera.borrow().rotation();
             let right = camera_rotation.right();
             let up = camera_rotation.up();
             let forward = camera_rotation.forward();
