@@ -138,7 +138,7 @@ impl colosseum::Scene for CubeScene {
                 || context.input().key(colosseum::input::KeyCode::LeftArrow)
             {
                 rotation = colosseum::math::Quaternion::angle_axis(
-                    context.delta_t(),
+                    -context.delta_t(),
                     colosseum::math::Vector3f::UNIT_Y,
                 ) * rotation;
             }
@@ -146,19 +146,19 @@ impl colosseum::Scene for CubeScene {
                 || context.input().key(colosseum::input::KeyCode::RightArrow)
             {
                 rotation = colosseum::math::Quaternion::angle_axis(
-                    -context.delta_t(),
+                    context.delta_t(),
                     colosseum::math::Vector3f::UNIT_Y,
                 ) * rotation;
             }
             if context.input().key(colosseum::input::KeyCode::Q) {
                 rotation = colosseum::math::Quaternion::angle_axis(
-                    -context.delta_t(),
+                    context.delta_t(),
                     colosseum::math::Vector3f::UNIT_Z,
                 ) * rotation;
             }
             if context.input().key(colosseum::input::KeyCode::E) {
                 rotation = colosseum::math::Quaternion::angle_axis(
-                    context.delta_t(),
+                    -context.delta_t(),
                     colosseum::math::Vector3f::UNIT_Z,
                 ) * rotation;
             }

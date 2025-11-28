@@ -30,7 +30,7 @@ impl<
         let v = Quaternion::new(v.x, v.y, v.z, T::ZERO);
         let inverse = self.clone().conjugate();
 
-        let result = (self * v) * inverse;
+        let result = (inverse * v) * self;
 
         Vector3::new(result.x, result.y, result.z)
     }

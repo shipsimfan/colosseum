@@ -2,7 +2,7 @@ use crate::math::{
     Quaternion, Quaternionf, Vector3, Vector3f,
     number::{Cos, Infinity, NaN, NegInfinity, One, Sin, Sqrt, Zero},
 };
-use std::ops::{Add, Div, DivAssign, Mul, Sub};
+use std::ops::{Add, Div, DivAssign, Mul, Neg, Sub};
 
 impl<T> Quaternion<T> {
     /// Create a new [`Quaternion`]
@@ -100,6 +100,7 @@ impl<
     T: Add<Output = T>
         + Mul<Output = T>
         + Div<Output = T>
+        + Neg<Output = T>
         + DivAssign
         + Sin
         + Cos
@@ -111,7 +112,7 @@ impl<
 {
     /// Produce a [`Quaternion`] representing a rotate of `angle` about `axis`
     pub fn angle_axis(angle: T, axis: Vector3<T>) -> Self {
-        let axis = axis.normalized();
+        let axis = -axis.normalized();
         let angle = angle / (T::ONE + T::ONE);
         Quaternion::new(
             axis.x * angle.clone().sin(),
