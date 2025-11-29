@@ -1,7 +1,7 @@
 use crate::{
     Error, Result,
-    graphics::{CameraInner, CameraProjection},
-    math::{Matrix4x4f, Transform, Vector2u},
+    graphics::{CameraInner, CameraProjection, camera::inner::CameraCbContent},
+    math::{Transform, Vector2u},
 };
 use win32::{
     ComPtr,
@@ -25,8 +25,10 @@ impl CameraInner {
         let combined_matrix = transform.matrix() * projection_matrix;
 
         // Create constant buffer
+        let buffer_content = CameraCbContent::new(combined_matrix);
+
         let buffer_desc = D3D11_BUFFER_DESC {
-            byte_width: std::mem::size_of::<Matrix4x4f>() as _,
+            byte_width: std::mem::size_of::<CameraCbContent>() as _,
             usage: D3D11_USAGE::Dynamic,
             bind_flags: D3D11_BIND_FLAG::ConstantBuffer as _,
             cpu_access_flags: D3D11_CPU_ACCESS_FLAG::Write as _,
@@ -34,7 +36,7 @@ impl CameraInner {
             structure_byte_stride: 0,
         };
         let initial_data = D3D11_SUBRESOURCE_DATA {
-            sys_mem: &combined_matrix as *const _ as _,
+            sys_mem: &buffer_content as *const _ as _,
             sys_mem_pitch: 0,
             sys_mem_slice_pitch: 0,
         };
@@ -50,6 +52,7 @@ impl CameraInner {
             projection,
             projection_dirty: false,
             projection_matrix,
+            buffer_content,
             buffer,
             relative_viewport: D3D11_VIEWPORT {
                 top_left_x: 0.0,

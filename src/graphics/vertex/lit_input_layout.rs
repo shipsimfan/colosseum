@@ -26,6 +26,15 @@ impl Vertex {
             input_slot_class: D3D11_INPUT_CLASSIFICATION::PerVertexData,
             instance_data_step_rate: 0,
         },
+        D3D11_INPUT_ELEMENT_DESC {
+            semantic_name: c"NORMAL".as_ptr(),
+            semantic_index: 0,
+            format: DXGI_FORMAT::R32G32B32Float,
+            input_slot: 0,
+            aligned_byte_offset: D3D11_APPEND_ALIGNED_ELEMENT,
+            input_slot_class: D3D11_INPUT_CLASSIFICATION::PerVertexData,
+            instance_data_step_rate: 0,
+        },
         // Instance elements
         D3D11_INPUT_ELEMENT_DESC {
             semantic_name: c"INST_OBJECT".as_ptr(),

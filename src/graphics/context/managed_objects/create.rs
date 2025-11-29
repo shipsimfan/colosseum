@@ -36,9 +36,16 @@ impl ManagedGraphicsObjects {
         &mut self,
         shader: Shader,
         color: Color3f,
+        specular_strength: f32,
         device: &ID3D11Device,
     ) -> Result<Material> {
-        Material::new(self.opaque_materials.clone(), shader, color, device)
+        Material::new(
+            self.opaque_materials.clone(),
+            shader,
+            color,
+            specular_strength,
+            device,
+        )
     }
 
     /// Create a new [`MeshRenderer`]

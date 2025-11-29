@@ -12,9 +12,10 @@ impl Material {
         material_list: Rc<RefCell<Vec<Rc<RefCell<MaterialInner>>>>>,
         shader: Shader,
         color: Color3f,
+        specular_strength: f32,
         device: &ID3D11Device,
     ) -> Result<Self> {
-        let material = MaterialInner::new(shader, color, device)?;
+        let material = MaterialInner::new(shader, color, specular_strength, device)?;
 
         let mut materials = material_list.borrow_mut();
         let mut insert_idx = None;

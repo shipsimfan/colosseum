@@ -1,4 +1,4 @@
-use crate::{Error, Result, graphics::MaterialInner, math::Vector4f};
+use crate::{Error, Result, graphics::MaterialInner};
 use win32::{
     d3d11::{D3D11_MAP, D3D11_MAPPED_SUBRESOURCE, ID3D11Device, ID3D11DeviceContext},
     try_hresult,
@@ -33,8 +33,7 @@ impl MaterialInner {
                         Error::new_inner("unable to map material constant buffer", error)
                     })?;
 
-                    let color4 = Vector4f::new(self.color.r, self.color.b, self.color.g, 1.0);
-                    *unsafe { &mut *(mapped_resource.data as *mut _) } = color4;
+                    *unsafe { &mut *(mapped_resource.data as *mut _) } = self.buffer_content;
 
                     device_context.unmap(self.buffer.as_mut(), 0);
 

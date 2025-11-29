@@ -10,39 +10,127 @@ impl MeshPrimitives {
             Vertex {
                 position: Vector3::new(-0.5, -0.5, -0.5),
                 color: Color3::WHITE,
+                normal: Vector3::new(0.0, 0.0, -1.0),
             },
             Vertex {
                 position: Vector3::new(0.5, -0.5, -0.5),
                 color: Color3::WHITE,
+                normal: Vector3::new(0.0, 0.0, -1.0),
             },
             Vertex {
                 position: Vector3::new(0.5, 0.5, -0.5),
                 color: Color3::WHITE,
+                normal: Vector3::new(0.0, 0.0, -1.0),
             },
             Vertex {
                 position: Vector3::new(-0.5, 0.5, -0.5),
                 color: Color3::WHITE,
+                normal: Vector3::new(0.0, 0.0, -1.0),
             },
             Vertex {
                 position: Vector3::new(-0.5, -0.5, 0.5),
                 color: Color3::WHITE,
+                normal: Vector3::new(0.0, 0.0, 1.0),
             },
             Vertex {
                 position: Vector3::new(0.5, -0.5, 0.5),
                 color: Color3::WHITE,
+                normal: Vector3::new(0.0, 0.0, 1.0),
             },
             Vertex {
                 position: Vector3::new(0.5, 0.5, 0.5),
                 color: Color3::WHITE,
+                normal: Vector3::new(0.0, 0.0, 1.0),
             },
             Vertex {
                 position: Vector3::new(-0.5, 0.5, 0.5),
                 color: Color3::WHITE,
+                normal: Vector3::new(0.0, 0.0, 1.0),
+            },
+            Vertex {
+                position: Vector3::new(-0.5, -0.5, -0.5),
+                color: Color3::WHITE,
+                normal: Vector3::new(-1.0, 0.0, 0.0),
+            },
+            Vertex {
+                position: Vector3::new(-0.5, 0.5, -0.5),
+                color: Color3::WHITE,
+                normal: Vector3::new(-1.0, 0.0, 0.0),
+            },
+            Vertex {
+                position: Vector3::new(-0.5, 0.5, 0.5),
+                color: Color3::WHITE,
+                normal: Vector3::new(-1.0, 0.0, 0.0),
+            },
+            Vertex {
+                position: Vector3::new(-0.5, -0.5, 0.5),
+                color: Color3::WHITE,
+                normal: Vector3::new(-1.0, 0.0, 0.0),
+            },
+            Vertex {
+                position: Vector3::new(0.5, -0.5, -0.5),
+                color: Color3::WHITE,
+                normal: Vector3::new(1.0, 0.0, 0.0),
+            },
+            Vertex {
+                position: Vector3::new(0.5, 0.5, -0.5),
+                color: Color3::WHITE,
+                normal: Vector3::new(1.0, 0.0, 0.0),
+            },
+            Vertex {
+                position: Vector3::new(0.5, 0.5, 0.5),
+                color: Color3::WHITE,
+                normal: Vector3::new(1.0, 0.0, 0.0),
+            },
+            Vertex {
+                position: Vector3::new(0.5, -0.5, 0.5),
+                color: Color3::WHITE,
+                normal: Vector3::new(1.0, 0.0, 0.0),
+            },
+            Vertex {
+                position: Vector3::new(-0.5, -0.5, -0.5),
+                color: Color3::WHITE,
+                normal: Vector3::new(0.0, -1.0, 0.0),
+            },
+            Vertex {
+                position: Vector3::new(-0.5, -0.5, 0.5),
+                color: Color3::WHITE,
+                normal: Vector3::new(0.0, -1.0, 0.0),
+            },
+            Vertex {
+                position: Vector3::new(0.5, -0.5, 0.5),
+                color: Color3::WHITE,
+                normal: Vector3::new(0.0, -1.0, 0.0),
+            },
+            Vertex {
+                position: Vector3::new(0.5, -0.5, -0.5),
+                color: Color3::WHITE,
+                normal: Vector3::new(0.0, -1.0, 0.0),
+            },
+            Vertex {
+                position: Vector3::new(-0.5, 0.5, -0.5),
+                color: Color3::WHITE,
+                normal: Vector3::new(0.0, 1.0, 0.0),
+            },
+            Vertex {
+                position: Vector3::new(-0.5, 0.5, 0.5),
+                color: Color3::WHITE,
+                normal: Vector3::new(0.0, 1.0, 0.0),
+            },
+            Vertex {
+                position: Vector3::new(0.5, 0.5, 0.5),
+                color: Color3::WHITE,
+                normal: Vector3::new(0.0, 1.0, 0.0),
+            },
+            Vertex {
+                position: Vector3::new(0.5, 0.5, -0.5),
+                color: Color3::WHITE,
+                normal: Vector3::new(0.0, 1.0, 0.0),
             },
         ];
         const INDICES: &[u32] = &[
-            0, 1, 3, 3, 1, 2, 1, 5, 2, 2, 5, 6, 5, 4, 6, 6, 4, 7, 4, 0, 7, 7, 0, 3, 3, 2, 7, 7, 2,
-            6, 4, 5, 0, 0, 5, 1,
+            0, 1, 2, 2, 3, 0, 6, 5, 4, 4, 7, 6, 8, 9, 10, 10, 11, 8, 14, 13, 12, 12, 15, 14, 16,
+            17, 18, 18, 19, 16, 22, 21, 20, 20, 23, 22,
         ];
 
         unsafe { Mesh::new_unchecked(VERTICES, INDICES) }

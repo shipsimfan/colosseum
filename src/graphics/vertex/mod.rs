@@ -12,4 +12,7 @@ pub struct Vertex {
 
     /// The color of the vertex
     pub color: Color3f,
+
+    /// The normal of the vertex
+    pub normal: Vector3f,
 }

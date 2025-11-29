@@ -207,8 +207,4 @@ impl colosseum::Scene for CubeScene {
 
         Ok(())
     }
-
-    fn init_ambient(&self) -> (colosseum::math::Color3f, f32) {
-        (colosseum::math::Color3f::WHITE, 1.0)
-    }
 }

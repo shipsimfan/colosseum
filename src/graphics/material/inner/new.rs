@@ -1,7 +1,7 @@
 use crate::{
     Error, Result,
-    graphics::{MaterialInner, Shader},
-    math::{Color3f, Vector4f},
+    graphics::{MaterialInner, Shader, material::inner::MaterialCbContent},
+    math::Color3f,
 };
 use win32::{
     ComPtr,
@@ -17,12 +17,13 @@ impl MaterialInner {
     pub(in crate::graphics::material) fn new(
         shader: Shader,
         color: Color3f,
+        specular_strength: f32,
         device: &ID3D11Device,
     ) -> Result<Self> {
         // Create constant buffer
-        let color4 = Vector4f::new(color.r, color.g, color.b, 1.0);
+        let buffer_content = MaterialCbContent::new(color, specular_strength);
         let buffer_desc = D3D11_BUFFER_DESC {
-            byte_width: std::mem::size_of::<Vector4f>() as _,
+            byte_width: std::mem::size_of::<MaterialCbContent>() as _,
             usage: D3D11_USAGE::Dynamic,
             bind_flags: D3D11_BIND_FLAG::ConstantBuffer as _,
             cpu_access_flags: D3D11_CPU_ACCESS_FLAG::Write as _,
@@ -30,7 +31,7 @@ impl MaterialInner {
             structure_byte_stride: 0,
         };
         let initial_data = D3D11_SUBRESOURCE_DATA {
-            sys_mem: &color4 as *const _ as _,
+            sys_mem: &buffer_content as *const _ as _,
             sys_mem_pitch: 0,
             sys_mem_slice_pitch: 0,
         };
@@ -42,8 +43,8 @@ impl MaterialInner {
 
         Ok(MaterialInner {
             shader,
-            color,
             dirty: false,
+            buffer_content,
             buffer,
             mesh_renderers: Vec::new(),
         })

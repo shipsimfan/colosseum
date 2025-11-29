@@ -20,9 +20,14 @@ impl GraphicsContext {
     }
 
     /// Create a new opaque [`Material`]
-    pub fn create_opaque_material(&mut self, shader: Shader, color: Color3f) -> Result<Material> {
+    pub fn create_opaque_material(
+        &mut self,
+        shader: Shader,
+        color: Color3f,
+        specular_strength: f32,
+    ) -> Result<Material> {
         self.managed_objects
-            .create_opaque_material(shader, color, &self.device)
+            .create_opaque_material(shader, color, specular_strength, &self.device)
     }
 
     /// Create a new [`MeshRenderer`]

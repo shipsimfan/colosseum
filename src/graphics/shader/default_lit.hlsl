@@ -1,9 +1,12 @@
 cbuffer Camera : register(b0) {
     row_major float4x4 camera_projection;
+    float3 camera_position;
+    float camera_reserved;
 }
 
 cbuffer Material : register(b1) {
-    float4 material_color;
+    float3 material_color;
+    float material_specular_strength;
 }
 
 cbuffer Lighting : register(b2) {
@@ -14,6 +17,7 @@ cbuffer Lighting : register(b2) {
 struct VIn {
     float3 position : POSITION;
     float3 color : COLOR;
+    float3 normal : NORMAL;
 
     float4 object0 : INST_OBJECT0;
     float4 object1 : INST_OBJECT1;
@@ -23,20 +27,58 @@ struct VIn {
 
 struct VOut {
     float4 position : SV_POSITION;
-    float4 color : COLOR0;
+    float3 color : COLOR0;
+    float3 pixel_position : FRAG_POSITION;
+    float3 normal : NORMAL;
 };
 
+#define LIGHT_POSITION float3(2.5, 5.0, -10.0)
+#define LIGHT_COLOR float3(1.0, 1.0, 1.0)
+
 VOut vertex_main(VIn vin) {
-    float4x4 object = float4x4(vin.object0, vin.object1, vin.object2, vin.object3);
+    float4x4 object4 = float4x4(vin.object0, vin.object1, vin.object2, vin.object3);
+    float3x3 object3 = float3x3(vin.object0.xyz, vin.object1.xyz, vin.object2.xyz);
+
+    float4 position = mul(float4(vin.position, 1.0), object4);
 
     VOut vout;
-    vout.position = mul(mul(float4(vin.position, 1.0), object), camera_projection);
-    vout.color = float4(vin.color, 1.0) * material_color;
+    vout.position = mul(position, camera_projection);
+    vout.color = vin.color * material_color;
+    vout.pixel_position = position.xyz;
+    vout.normal = mul(vin.normal, object3);
     return vout;
 }
 
-float4 pixel_main(VOut vout) : SV_TARGET {
-    float4 ambient = float4(ambient_intensity * ambient_color, 1.0);
+float3 calculate_ambient() {
+    return ambient_intensity * ambient_color;
+}
 
-    return vout.color * ambient;
+float3 calculate_diffuse(float3 normal, float3 light_direction) {
+    float diffuse_strength = max(dot(normal, light_direction), 0.0);
+    return diffuse_strength * LIGHT_COLOR;
+}
+
+float3 calculate_specular(float3 view_direction, float3 reflect_direction) {
+    float specular_strength = pow(max(dot(view_direction, reflect_direction), 0.0), 32);
+    return material_specular_strength * specular_strength * LIGHT_COLOR;
+}
+
+float3 calculate_lighting(float3 normal, float3 position) {
+    float3 light_direction = normalize(LIGHT_POSITION - position);
+    float3 view_direction = normalize(camera_position - position);
+    float3 reflect_direction = reflect(-light_direction, normal);
+
+    float3 ambient = calculate_ambient();
+    float3 diffuse = calculate_diffuse(normal, light_direction);
+    float3 specular = calculate_specular(view_direction, reflect_direction);
+
+    return ambient + diffuse + specular;
+}
+
+float4 pixel_main(VOut vout) : SV_TARGET {
+    float3 normal = normalize(vout.normal);
+
+    float3 lighting = calculate_lighting(normal, vout.pixel_position);
+
+    return float4(vout.color * lighting, 1.0);
 }
