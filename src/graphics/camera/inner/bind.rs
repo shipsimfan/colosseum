@@ -53,6 +53,7 @@ impl CameraInner {
         // Set active
         let buffer = self.buffer.as_mut() as *mut _;
         device_context.vs_set_constant_buffers(0, 1, &buffer);
+        device_context.ps_set_constant_buffers(0, 1, &buffer);
         device_context.rs_set_viewports(1, &self.screen_viewport);
 
         Ok(())

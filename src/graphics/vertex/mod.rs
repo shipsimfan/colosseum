@@ -1,6 +1,7 @@
 use crate::math::{Color3f, Vector3f};
 
-mod input_layout;
+mod lit_input_layout;
+mod unlit_input_layout;
 
 /// A vertex in a mesh
 #[repr(C)]

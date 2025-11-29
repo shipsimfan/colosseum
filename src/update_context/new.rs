@@ -18,6 +18,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
             settings,
             graphics_context,
             running_state,
+            next_scene: None,
         }
     }
 }

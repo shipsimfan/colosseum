@@ -5,7 +5,7 @@ use win32::{
 };
 
 impl Vertex {
-    /// The input layout to use for all vertex shaders
+    /// The input layout to use for all unlit vertex shaders
     pub(in crate::graphics) const UNLIT_INPUT_LAYOUT: &[D3D11_INPUT_ELEMENT_DESC] = &[
         // Vertex elements
         D3D11_INPUT_ELEMENT_DESC {

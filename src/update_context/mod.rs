@@ -1,9 +1,10 @@
-use crate::{graphics::GraphicsContext, logging::LogController, run::RunningState};
+use crate::{Scene, graphics::GraphicsContext, logging::LogController, run::RunningState};
 use std::sync::Arc;
 
 mod get;
 mod new;
 mod quit;
+mod set;
 
 /// The context used during updates to access the engine
 pub struct UpdateContext<'a, Game: crate::Game> {
@@ -24,4 +25,7 @@ pub struct UpdateContext<'a, Game: crate::Game> {
 
     /// The running state of the engine
     running_state: &'a RunningState,
+
+    /// The next scene to run on the game
+    next_scene: Option<Box<dyn Scene<Game = Game>>>,
 }

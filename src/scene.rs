@@ -1,7 +1,7 @@
 use crate::{Game, Result, UpdateContext, math::Color3f};
 
 /// A single scene of a game
-pub trait Scene {
+pub trait Scene: 'static {
     /// The game the scene is for
     type Game: Game;
 
@@ -11,6 +11,11 @@ pub trait Scene {
     /// Get the color to clear the screen with
     fn clear_color(&self) -> Color3f {
         Color3f::BLACK
+    }
+
+    /// Get the initial color and intensity of light for the scene
+    fn init_ambient(&self) -> (Color3f, f32) {
+        (Color3f::WHITE, 0.1)
     }
 
     /// Called when the scene is set active

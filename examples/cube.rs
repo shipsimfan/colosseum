@@ -75,7 +75,7 @@ impl colosseum::InitialScene for CubeScene {
             .set_position(colosseum::math::Vector3f::new(0.0, 0.0, -10.0));
 
         let mesh = colosseum::graphics::MeshPrimitives::cube();
-        let material = context.graphics().default_material();
+        let material = context.graphics().default_lit_material();
 
         let mesh_renderer = context.graphics().create_mesh_renderer(material, mesh, 1)?;
         mesh_renderer.borrow_mut().push();
@@ -206,5 +206,9 @@ impl colosseum::Scene for CubeScene {
         }
 
         Ok(())
+    }
+
+    fn init_ambient(&self) -> (colosseum::math::Color3f, f32) {
+        (colosseum::math::Color3f::WHITE, 1.0)
     }
 }

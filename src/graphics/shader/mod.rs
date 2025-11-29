@@ -3,6 +3,7 @@ use std::rc::Rc;
 mod inner;
 mod source;
 
+mod default_lit;
 mod default_unlit;
 mod deref;
 mod new;

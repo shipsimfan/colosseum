@@ -102,6 +102,10 @@ fn do_run<Game: crate::Game>(game_hash: Option<&str>, game_build_time: Option<&s
             &running_state,
         ),
     )?);
+    let (ambient_color, ambient_intensity) = scene.init_ambient();
+    graphics_context.set_ambient_color(ambient_color);
+    graphics_context.set_ambient_intensity(ambient_intensity);
+    scene.on_active();
 
     // Run main loop
     while running_state.is_running() {
@@ -115,17 +119,31 @@ fn do_run<Game: crate::Game>(game_hash: Option<&str>, game_build_time: Option<&s
         last_time = now;
 
         // Update
-        scene.update(&mut UpdateContext::new(
+        let mut update_context = UpdateContext::new(
             delta_t,
             &log_controller,
             &input,
             &mut settings,
             &mut graphics_context,
             &running_state,
-        ))?;
+        );
+        scene.update(&mut update_context)?;
+        let next_scene = update_context.take_next_scene();
 
         // Render
         graphics_context.render(scene.clear_color())?;
+
+        // Change scene
+        if let Some(next_scene) = next_scene {
+            scene.on_deactivate();
+
+            scene = next_scene;
+
+            let (ambient_color, ambient_intensity) = scene.init_ambient();
+            graphics_context.set_ambient_color(ambient_color);
+            graphics_context.set_ambient_intensity(ambient_intensity);
+            scene.on_active();
+        }
     }
 
     Ok(())

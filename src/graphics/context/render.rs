@@ -34,6 +34,11 @@ impl GraphicsContext {
 
         // TODO: Lighting pre-passes
 
+        // Bind global lighting information
+        self.managed_objects
+            .lights()
+            .bind(&mut self.device_context)?;
+
         // Camera render passes
         let mut active_shader = 0;
         for camera in &*self.managed_objects.cameras() {

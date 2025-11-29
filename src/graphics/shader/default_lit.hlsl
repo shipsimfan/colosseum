@@ -6,6 +6,11 @@ cbuffer Material : register(b1) {
     float4 material_color;
 }
 
+cbuffer Lighting : register(b2) {
+    float3 ambient_color;
+    float ambient_intensity;
+}
+
 struct VIn {
     float3 position : POSITION;
     float3 color : COLOR;
@@ -31,5 +36,7 @@ VOut vertex_main(VIn vin) {
 }
 
 float4 pixel_main(VOut vout) : SV_TARGET {
-    return vout.color;
+    float4 ambient = float4(ambient_intensity * ambient_color, 1.0);
+
+    return vout.color * ambient;
 }

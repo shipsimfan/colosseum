@@ -44,6 +44,7 @@ impl MaterialInner {
                 // Set the material property buffer
                 let buffer = self.buffer.as_mut() as *mut _;
                 device_context.vs_set_constant_buffers(1, 1, &buffer);
+                device_context.ps_set_constant_buffers(1, 1, &buffer);
 
                 bound = true;
             }

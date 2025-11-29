@@ -1,4 +1,4 @@
-use crate::{UpdateContext, graphics::GraphicsContext, logging::LogController};
+use crate::{Scene, UpdateContext, graphics::GraphicsContext, logging::LogController};
 use std::sync::Arc;
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
@@ -25,5 +25,10 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Get the graphics context for creating renderables
     pub fn graphics(&mut self) -> &mut GraphicsContext {
         self.graphics_context
+    }
+
+    /// Take the next scene from this context, if one was set
+    pub(crate) fn take_next_scene(&mut self) -> Option<Box<dyn Scene<Game = Game>>> {
+        self.next_scene.take()
     }
 }
