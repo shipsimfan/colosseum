@@ -1,11 +1,11 @@
 # ToDo
  1. Add material properties
- 2. Add textures and texture loading
- 3. Add light maps
- 4. Add multiple lights
- 5. Add spot lights
- 6. Add point lights
- 7. Add model loading
+ 2. Add spot lights
+ 3. Add point lights
+ 4. Add textures and texture loading
+ 5. Add shadow maps
+ 6. Add model loading
+ 7. Add physically based rendering
  8. Finish `KeyCode` enum
  9. Add mouse support
  10. Add xbox controller support
@@ -19,23 +19,31 @@
  3. Add bounds to `Mesh`
  4. Add rigidbody
  5. Add colliders
- 6. Add frustum culling 
- 7. Add toggleable wireframe rendering
- 8. Add MSAA
- 9. Add render scale
- 10. Add input binding helper
- 11. Add joystick support
- 12. Add steering wheel support
- 13. Add other controller support
- 14. Add occlussion culling
- 15. Add post-processing support
- 16. Add multithreaded untracked resource creation + uploading
- 17. Add job system
- 18. Jobify rendering
- 19. Generalize quaternion look at function
- 20. Expand math options
- 21. Expand mesh options
- 22. Improve colors 
+ 6. Add camera frustum culling 
+ 7. Add light frustum culling
+ 8. Add light-object culling
+ 10. Add collider culling
+ 11. Add toggleable wireframe rendering
+ 12. Add MSAA
+ 13. Add render scale
+ 14. Add input binding helper
+ 15. Add joystick support
+ 16. Add steering wheel support
+ 17. Add other controller support
+ 18. Add occlussion culling
+ 19. Add post-processing support
+ 20. Add multithreaded untracked resource creation + uploading
+ 21. Add job system
+ 22. Jobify rendering
+ 23. Generalize quaternion look at function
+ 24. Expand math options
+ 25. Expand mesh options
+ 26. Improve colors 
     - u8 vs f32 distinction
     - Color spaces
- 23. Add single creation of primitive meshes
+ 27. Add single creation of primitive meshes
+ 28. Add sphere primitive
+ 29. Add capsule primitive
+ 30. Add pyramid primitive
+ 31. Add general wrapper for buffers, textures, and views
+ 32. Allow cameras to render to textures
