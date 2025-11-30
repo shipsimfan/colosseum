@@ -1,18 +1,17 @@
 # ToDo
- 1. Add directional lighting
- 2. Add material properties
- 3. Add textures and texture loading
- 4. Add light maps
- 5. Add multiple lights
- 6. Add spot lights
- 7. Add point lights
- 8. Add model loading
- 9. Finish `KeyCode` enum
- 10. Add mouse support
- 11. Add xbox controller support
- 12. Add UI
- 13. Add transparency
- 14. Add audio
+ 1. Add material properties
+ 2. Add textures and texture loading
+ 3. Add light maps
+ 4. Add multiple lights
+ 5. Add spot lights
+ 6. Add point lights
+ 7. Add model loading
+ 8. Finish `KeyCode` enum
+ 9. Add mouse support
+ 10. Add xbox controller support
+ 11. Add UI
+ 12. Add transparency
+ 13. Add audio
 
 ## Additional ToDos
  1. Add general file I/O thread

@@ -30,7 +30,7 @@ mod render;
 mod resize;
 mod set;
 
-pub(in crate::graphics) use managed_objects::Lights;
+pub(in crate::graphics) use managed_objects::{LightType, Lights};
 
 /// The context for creating graphics objects and rendering using them
 pub struct GraphicsContext {

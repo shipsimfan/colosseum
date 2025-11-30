@@ -1,5 +1,7 @@
 //! The graphics subsystem
 
+pub mod lights;
+
 mod adapter;
 mod camera;
 mod context;

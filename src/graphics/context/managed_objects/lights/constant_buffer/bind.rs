@@ -6,7 +6,16 @@ use win32::{
 
 impl LightConstantBuffer {
     /// Bind the lights constant buffer
-    pub fn bind(&mut self, device_context: &mut ID3D11DeviceContext) -> Result<()> {
+    pub fn bind(
+        &mut self,
+        num_directional_lights: Option<usize>,
+        device_context: &mut ID3D11DeviceContext,
+    ) -> Result<()> {
+        if let Some(num_directional_lights) = num_directional_lights {
+            self.content.num_directional_lights = num_directional_lights as _;
+            self.dirty = true;
+        }
+
         // Update constant buffer if needed
         if self.dirty {
             let mut mapped_resource = D3D11_MAPPED_SUBRESOURCE::default();

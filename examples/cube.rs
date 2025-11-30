@@ -51,6 +51,10 @@ struct CubeScene {
     /// The renderer for the cube
     #[allow(unused)]
     mesh_renderer: colosseum::graphics::MeshRenderer,
+
+    /// The main light for the scene
+    #[allow(unused)]
+    directional_light: colosseum::graphics::lights::DirectionalLight,
 }
 
 impl colosseum::InitialScene for CubeScene {
@@ -84,12 +88,18 @@ impl colosseum::InitialScene for CubeScene {
         transform.set_scale(colosseum::math::Vector3::new(2.0, 2.0, 2.0));
         mesh_renderer.borrow_mut().update(0, &mut transform);
 
+        let directional_light = context.graphics().create_directional_light(
+            colosseum::math::Vector3f::new(-1.0, -2.0, 3.0),
+            colosseum::math::Color3f::new(1.0, 0.95, 0.85),
+        );
+
         Ok(CubeScene {
             logger,
             second_time: 0.0,
             frames: 0,
             camera,
             mesh_renderer,
+            directional_light,
         })
     }
 }

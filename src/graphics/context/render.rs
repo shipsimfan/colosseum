@@ -37,7 +37,7 @@ impl GraphicsContext {
         // Bind global lighting information
         self.managed_objects
             .lights()
-            .bind(&mut self.device_context)?;
+            .bind(&self.device, &mut self.device_context)?;
 
         // Camera render passes
         let mut active_shader = 0;

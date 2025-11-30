@@ -7,7 +7,7 @@ mod create;
 mod get;
 mod new;
 
-pub(in crate::graphics) use lights::Lights;
+pub(in crate::graphics) use lights::{LightType, Lights};
 
 /// The objects which are created by the game but managed by the engine
 pub(in crate::graphics::context) struct ManagedGraphicsObjects {

@@ -2,9 +2,9 @@ use crate::{
     Result,
     graphics::{
         Camera, CameraProjection, GraphicsContext, Material, Mesh, MeshRenderer, Shader,
-        ShaderSource,
+        ShaderSource, lights::DirectionalLight,
     },
-    math::Color3f,
+    math::{Color3f, Vector3f},
 };
 
 impl GraphicsContext {
@@ -39,5 +39,14 @@ impl GraphicsContext {
     ) -> Result<MeshRenderer> {
         self.managed_objects
             .create_mesh_renderer(material, mesh, max_instances, &self.device)
+    }
+
+    /// Create a new [`DirectionalLight`]
+    pub fn create_directional_light(
+        &mut self,
+        direction: Vector3f,
+        color: Color3f,
+    ) -> DirectionalLight {
+        DirectionalLight::new(self.managed_objects.lights(), direction, color)
     }
 }

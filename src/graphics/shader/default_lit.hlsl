@@ -1,18 +1,7 @@
-cbuffer Camera : register(b0) {
-    row_major float4x4 camera_projection;
-    float3 camera_position;
-    float camera_reserved;
-}
-
-cbuffer Material : register(b1) {
-    float3 material_color;
-    float material_specular_strength;
-}
-
-cbuffer Lighting : register(b2) {
-    float3 ambient_color;
-    float ambient_intensity;
-}
+struct DirectionalLight {
+    float3 direction;
+    float3 color;
+};
 
 struct VIn {
     float3 position : POSITION;
@@ -32,8 +21,25 @@ struct VOut {
     float3 normal : NORMAL;
 };
 
-#define LIGHT_POSITION float3(2.5, 5.0, -10.0)
-#define LIGHT_COLOR float3(1.0, 1.0, 1.0)
+cbuffer Camera : register(b0) {
+    row_major float4x4 camera_projection;
+    float3 camera_position;
+    float camera_reserved;
+}
+
+cbuffer Material : register(b1) {
+    float3 material_color;
+    float material_specular_strength;
+}
+
+cbuffer Lighting : register(b2) {
+    float3 ambient_color;
+    float ambient_intensity;
+    uint num_directional_lights;
+    uint3 lighting_reserved;
+}
+
+StructuredBuffer<DirectionalLight> directional_lights : register(t0);
 
 VOut vertex_main(VIn vin) {
     float4x4 object4 = float4x4(vin.object0, vin.object1, vin.object2, vin.object3);
@@ -49,36 +55,44 @@ VOut vertex_main(VIn vin) {
     return vout;
 }
 
+float3 calculate_diffuse(float3 normal, float3 light_direction, float3 light_color) {
+    float diffuse_strength = max(dot(normal, light_direction), 0.0);
+    return diffuse_strength * light_color;
+}
+
+float3 calculate_specular(float3 view_direction, float3 reflect_direction, float3 light_color) {
+    float specular_strength = pow(max(dot(view_direction, reflect_direction), 0.0), 32);
+    return material_specular_strength * specular_strength * light_color;
+}
+
+float3 calculate_directional_light(float3 normal, float3 position, DirectionalLight light) {
+    float3 light_direction = -light.direction;
+    float3 view_direction = normalize(camera_position - position);
+    float3 reflect_direction = reflect(-light_direction, normal);
+
+    float3 diffuse = calculate_diffuse(normal, light_direction, light.color);
+    float3 specular = calculate_specular(view_direction, reflect_direction, light.color);
+
+    return diffuse + specular;
+}
+
 float3 calculate_ambient() {
     return ambient_intensity * ambient_color;
 }
 
-float3 calculate_diffuse(float3 normal, float3 light_direction) {
-    float diffuse_strength = max(dot(normal, light_direction), 0.0);
-    return diffuse_strength * LIGHT_COLOR;
-}
+float3 calculate_all_lights(float3 normal, float3 position) {
+    float3 lighting = calculate_ambient();
 
-float3 calculate_specular(float3 view_direction, float3 reflect_direction) {
-    float specular_strength = pow(max(dot(view_direction, reflect_direction), 0.0), 32);
-    return material_specular_strength * specular_strength * LIGHT_COLOR;
-}
+    for (uint i = 0; i < num_directional_lights; i++)
+        lighting += calculate_directional_light(normal, position, directional_lights[i]);
 
-float3 calculate_lighting(float3 normal, float3 position) {
-    float3 light_direction = normalize(LIGHT_POSITION - position);
-    float3 view_direction = normalize(camera_position - position);
-    float3 reflect_direction = reflect(-light_direction, normal);
-
-    float3 ambient = calculate_ambient();
-    float3 diffuse = calculate_diffuse(normal, light_direction);
-    float3 specular = calculate_specular(view_direction, reflect_direction);
-
-    return ambient + diffuse + specular;
+    return lighting;
 }
 
 float4 pixel_main(VOut vout) : SV_TARGET {
     float3 normal = normalize(vout.normal);
 
-    float3 lighting = calculate_lighting(normal, vout.pixel_position);
+    float3 lighting = calculate_all_lights(normal, vout.pixel_position);
 
     return float4(vout.color * lighting, 1.0);
 }

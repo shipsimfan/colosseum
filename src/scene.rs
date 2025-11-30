@@ -15,7 +15,7 @@ pub trait Scene: 'static {
 
     /// Get the initial color and intensity of light for the scene
     fn init_ambient(&self) -> (Color3f, f32) {
-        (Color3f::WHITE, 0.1)
+        (Color3f::splat(0.698), 0.25)
     }
 
     /// Called when the scene is set active

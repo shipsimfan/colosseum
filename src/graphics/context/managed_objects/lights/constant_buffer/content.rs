@@ -9,6 +9,12 @@ pub(in crate::graphics::context::managed_objects::lights::constant_buffer) struc
 
     /// The intensity of the ambient light
     pub ambient_intensity: f32,
+
+    /// The current number of directional lights
+    pub num_directional_lights: u32,
+
+    /// Reserved values to pad to a multiple of 16-bytes
+    pub reserved: [u32; 3],
 }
 
 impl Default for LightCbContent {
@@ -16,6 +22,8 @@ impl Default for LightCbContent {
         LightCbContent {
             ambient_color: Color3f::WHITE,
             ambient_intensity: 0.1,
+            num_directional_lights: 0,
+            reserved: [0; 3],
         }
     }
 }
