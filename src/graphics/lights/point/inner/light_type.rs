@@ -1,14 +1,17 @@
 use crate::{
-    graphics::{context::LightType, lights::DirectionalLightInner},
+    graphics::{context::LightType, lights::PointLightInner},
     math::{Color3f, Vector3f},
 };
 
-/// The GPU representation of a directional light
+/// The GPU representation of a point light
 #[repr(C)]
 #[derive(Clone, Copy)]
-pub(in crate::graphics) struct DirectionalLightGPU {
-    /// The direction of the light
-    direction: Vector3f,
+pub(in crate::graphics) struct PointLightGPU {
+    /// The position of the light
+    position: Vector3f,
+
+    /// The radius of the light
+    radius: f32,
 
     /// The brightness of the light
     brightness: f32,
@@ -17,12 +20,13 @@ pub(in crate::graphics) struct DirectionalLightGPU {
     color: Color3f,
 }
 
-impl LightType for DirectionalLightInner {
-    type GPU = DirectionalLightGPU;
+impl LightType for PointLightInner {
+    type GPU = PointLightGPU;
 
     fn to_gpu(&self) -> Self::GPU {
-        DirectionalLightGPU {
-            direction: self.direction,
+        PointLightGPU {
+            position: self.position,
+            radius: self.radius,
             brightness: self.brightness,
             color: self.color,
         }

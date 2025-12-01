@@ -7,10 +7,12 @@ impl DirectionalLightInner {
     /// Create a new [`DirectionalLightInner`]
     pub(in crate::graphics::lights::directional) fn new(
         direction: Vector3f,
+        brightness: f32,
         color: Color3f,
     ) -> Self {
         DirectionalLightInner {
             direction: direction.normalized(),
+            brightness,
             color,
             dirty: true,
         }

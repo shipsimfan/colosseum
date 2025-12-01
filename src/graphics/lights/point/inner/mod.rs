@@ -5,10 +5,13 @@ mod light_type;
 mod new;
 mod set;
 
-/// The actual definition of a directional light
-pub struct DirectionalLightInner {
-    /// The direction of the light
-    direction: Vector3f,
+/// The actual definition of a point light
+pub struct PointLightInner {
+    /// The position of the light
+    position: Vector3f,
+
+    /// The radius of the light
+    radius: f32,
 
     /// The brightness of the light
     brightness: f32,

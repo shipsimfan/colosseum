@@ -9,6 +9,11 @@ impl DirectionalLightInner {
         self.direction
     }
 
+    /// Get the brightness of the light
+    pub fn brightness(&self) -> f32 {
+        self.brightness
+    }
+
     /// Get the color of the directional light
     pub fn color(&self) -> Color3f {
         self.color

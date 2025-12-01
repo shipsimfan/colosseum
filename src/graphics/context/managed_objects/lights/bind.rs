@@ -9,7 +9,8 @@ impl Lights {
         device_context: &mut ID3D11DeviceContext,
     ) -> Result<()> {
         let num_directional_lights = self.directional_lights.bind(device, device_context)?;
+        let num_point_lights = self.point_lights.bind(device, device_context)?;
         self.constant_buffer
-            .bind(num_directional_lights, device_context)
+            .bind(num_directional_lights, num_point_lights, device_context)
     }
 }

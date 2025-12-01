@@ -1,12 +1,18 @@
 use crate::{
-    graphics::lights::DirectionalLightInner,
+    graphics::lights::PointLightInner,
     math::{Color3f, Vector3f},
 };
 
-impl DirectionalLightInner {
-    /// Set the direction the light faces
-    pub fn set_direction(&mut self, direction: Vector3f) {
-        self.direction = direction;
+impl PointLightInner {
+    /// Set the position of the light
+    pub fn set_position(&mut self, position: Vector3f) {
+        self.position = position;
+        self.dirty = true;
+    }
+
+    /// Set the radius of the light
+    pub fn set_radius(&mut self, radius: f32) {
+        self.radius = radius;
         self.dirty = true;
     }
 

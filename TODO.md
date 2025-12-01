@@ -1,17 +1,16 @@
 # ToDo
  1. Add material properties
  2. Add spot lights
- 3. Add point lights
- 4. Add textures and texture loading
- 5. Add shadow maps
- 6. Add model loading
- 7. Add physically based rendering
- 8. Finish `KeyCode` enum
- 9. Add mouse support
- 10. Add xbox controller support
- 11. Add UI
- 12. Add transparency
- 13. Add audio
+ 3. Add textures and texture loading
+ 4. Add shadow maps
+ 5. Add model loading
+ 6. Add physically based rendering
+ 7. Finish `KeyCode` enum
+ 8. Add mouse support
+ 9. Add xbox controller support
+ 10. Add UI
+ 11. Add transparency
+ 12. Add audio
 
 ## Additional ToDos
  1. Add general file I/O thread
@@ -24,7 +23,7 @@
  8. Add light-object culling
  10. Add collider culling
  11. Add toggleable wireframe rendering
- 12. Add MSAA
+ 12. Add FXAA
  13. Add render scale
  14. Add input binding helper
  15. Add joystick support
@@ -47,3 +46,10 @@
  30. Add pyramid primitive
  31. Add general wrapper for buffers, textures, and views
  32. Allow cameras to render to textures
+ 33. Add deferred rendering
+ 34. Add SMAA
+ 35. Add TAA
+ 36. Add gamma correction
+ 37. Add HDR support
+ 38. Add SSAO
+ 39. Generalize shader types

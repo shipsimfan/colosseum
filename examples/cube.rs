@@ -55,6 +55,10 @@ struct CubeScene {
     /// The main light for the scene
     #[allow(unused)]
     directional_light: colosseum::graphics::lights::DirectionalLight,
+
+    /// An additional light in the scene
+    #[allow(unused)]
+    point_light: colosseum::graphics::lights::PointLight,
 }
 
 impl colosseum::InitialScene for CubeScene {
@@ -90,7 +94,15 @@ impl colosseum::InitialScene for CubeScene {
 
         let directional_light = context.graphics().create_directional_light(
             colosseum::math::Vector3f::new(-1.0, -2.0, 3.0),
+            1.0,
             colosseum::math::Color3f::new(1.0, 0.95, 0.85),
+        );
+
+        let point_light = context.graphics().create_point_light(
+            colosseum::math::Vector3::new(-2.0, -3.0, 4.0),
+            15.0,
+            1.0,
+            colosseum::math::Color3::new(0.2, 0.2, 0.8),
         );
 
         Ok(CubeScene {
@@ -100,6 +112,7 @@ impl colosseum::InitialScene for CubeScene {
             camera,
             mesh_renderer,
             directional_light,
+            point_light,
         })
     }
 }

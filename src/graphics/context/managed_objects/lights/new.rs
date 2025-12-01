@@ -15,6 +15,7 @@ impl Lights {
         Ok(Lights {
             constant_buffer: LightConstantBuffer::new(device)?,
             directional_lights: LightList::new(0, 1, device)?,
+            point_lights: LightList::new(1, 1, device)?,
         })
     }
 }
