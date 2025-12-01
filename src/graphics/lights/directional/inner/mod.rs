@@ -10,11 +10,11 @@ pub struct DirectionalLightInner {
     /// The direction of the light
     direction: Vector3f,
 
-    /// The brightness of the light
-    brightness: f32,
-
     /// The color of the light
     color: Color3f,
+
+    /// The brightness of the light
+    brightness: f32,
 
     /// Have the values of this light changed this frame?
     dirty: bool,

@@ -10,6 +10,7 @@ impl LightConstantBuffer {
         &mut self,
         num_directional_lights: Option<usize>,
         num_point_lights: Option<usize>,
+        num_spot_lights: Option<usize>,
         device_context: &mut ID3D11DeviceContext,
     ) -> Result<()> {
         if let Some(num_directional_lights) = num_directional_lights {
@@ -19,6 +20,11 @@ impl LightConstantBuffer {
 
         if let Some(num_point_lights) = num_point_lights {
             self.content.num_point_lights = num_point_lights as _;
+            self.dirty = true;
+        }
+
+        if let Some(num_spot_lights) = num_spot_lights {
+            self.content.num_spot_lights = num_spot_lights as _;
             self.dirty = true;
         }
 

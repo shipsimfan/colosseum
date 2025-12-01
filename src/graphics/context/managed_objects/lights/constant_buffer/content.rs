@@ -16,8 +16,11 @@ pub(in crate::graphics::context::managed_objects::lights::constant_buffer) struc
     /// The current number of point lights
     pub num_point_lights: u32,
 
-    /// Reserved values to pad to a multiple of 16-bytes
-    pub reserved: [u32; 2],
+    /// The current number of spot lights
+    pub num_spot_lights: u32,
+
+    /// Reserved value to pad to a multiple of 16-bytes
+    pub reserved: u32,
 }
 
 impl Default for LightCbContent {
@@ -27,7 +30,8 @@ impl Default for LightCbContent {
             ambient_intensity: 0.1,
             num_directional_lights: 0,
             num_point_lights: 0,
-            reserved: [0; 2],
+            num_spot_lights: 0,
+            reserved: 0,
         }
     }
 }

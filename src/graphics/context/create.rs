@@ -3,7 +3,7 @@ use crate::{
     graphics::{
         Camera, CameraProjection, GraphicsContext, Material, Mesh, MeshRenderer, Shader,
         ShaderSource,
-        lights::{DirectionalLight, PointLight},
+        lights::{DirectionalLight, PointLight, SpotLight},
     },
     math::{Color3f, Vector3f},
 };
@@ -46,10 +46,10 @@ impl GraphicsContext {
     pub fn create_directional_light(
         &mut self,
         direction: Vector3f,
-        brightness: f32,
         color: Color3f,
+        brightness: f32,
     ) -> DirectionalLight {
-        DirectionalLight::new(self.managed_objects.lights(), direction, brightness, color)
+        DirectionalLight::new(self.managed_objects.lights(), direction, color, brightness)
     }
 
     /// Create a new [`PointLight`]
@@ -57,15 +57,36 @@ impl GraphicsContext {
         &mut self,
         position: Vector3f,
         radius: f32,
-        brightness: f32,
         color: Color3f,
+        brightness: f32,
     ) -> PointLight {
         PointLight::new(
             self.managed_objects.lights(),
             position,
             radius,
-            brightness,
             color,
+            brightness,
+        )
+    }
+
+    /// Create a new [`SpotLight`]
+    pub fn create_spot_light(
+        &mut self,
+        position: Vector3f,
+        distance: f32,
+        direction: Vector3f,
+        cut_off: f32,
+        color: Color3f,
+        brightness: f32,
+    ) -> SpotLight {
+        SpotLight::new(
+            self.managed_objects.lights(),
+            position,
+            distance,
+            direction,
+            cut_off,
+            color,
+            brightness,
         )
     }
 }

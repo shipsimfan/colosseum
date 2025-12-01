@@ -1,16 +1,15 @@
 # ToDo
  1. Add material properties
- 2. Add spot lights
- 3. Add textures and texture loading
- 4. Add shadow maps
- 5. Add model loading
- 6. Add physically based rendering
- 7. Finish `KeyCode` enum
- 8. Add mouse support
- 9. Add xbox controller support
- 10. Add UI
- 11. Add transparency
- 12. Add audio
+ 2. Add textures and texture loading
+ 3. Add shadow maps
+ 4. Add model loading
+ 5. Add physically based rendering
+ 6. Finish `KeyCode` enum
+ 7. Add mouse support
+ 8. Add xbox controller support
+ 9. Add UI
+ 10. Add transparency
+ 11. Add audio
 
 ## Additional ToDos
  1. Add general file I/O thread

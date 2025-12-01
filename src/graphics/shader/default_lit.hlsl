@@ -1,14 +1,23 @@
 struct DirectionalLight {
     float3 direction;
-    float brightness;
     float3 color;
+    float brightness;
 };
 
 struct PointLight {
     float3 position;
     float radius;
-    float brightness;
     float3 color;
+    float brightness;
+};
+
+struct SpotLight {
+    float3 position;
+    float distance;
+    float3 direction;
+    float cut_off;
+    float3 color;
+    float brightness;
 };
 
 struct VIn {
@@ -45,11 +54,13 @@ cbuffer Lighting : register(b2) {
     float ambient_intensity;
     uint num_directional_lights;
     uint num_point_lights;
-    uint2 lighting_reserved;
+    uint num_spot_lights;
+    uint lighting_reserved;
 }
 
 StructuredBuffer<DirectionalLight> directional_lights : register(t0);
 StructuredBuffer<PointLight> point_lights : register(t1);
+StructuredBuffer<SpotLight> spot_lights : register(t2);
 
 VOut vertex_main(VIn vin) {
     float4x4 object4 = float4x4(vin.object0, vin.object1, vin.object2, vin.object3);
@@ -107,6 +118,25 @@ float3 calculate_point_light(float3 normal, float3 position, PointLight light) {
     return (diffuse + specular) * attenuation;
 }
 
+float3 calculate_spot_light(float3 normal, float3 position, SpotLight light) {
+    float3 light_vector = light.position - position;
+    float theta = dot(normalize(light_vector), -light.direction);
+    if (theta <= (3.1415926535 / 2.0) - light.cut_off)
+        return float3(0.0, 0.0, 0.0);
+
+    float distance = length(light_vector);
+    float attenuation = calculate_point_light_attenuation(distance, light.distance, light.brightness);
+    
+    float3 light_direction = normalize(light_vector);
+    float3 view_direction = normalize(camera_position - position);
+    float3 reflect_direction = reflect(-light_direction, normal);
+    
+    float3 diffuse = calculate_diffuse(normal, light_direction, light.color);
+    float3 specular = calculate_specular(view_direction, reflect_direction, light.color);
+
+    return (diffuse + specular) * attenuation;
+}
+
 float3 calculate_ambient() {
     return ambient_intensity * ambient_color;
 }
@@ -119,6 +149,9 @@ float3 calculate_all_lights(float3 normal, float3 position) {
 
     for (uint i = 0; i < num_point_lights; i++)
         lighting += calculate_point_light(normal, position, point_lights[i]);
+
+    for (uint i = 0; i < num_spot_lights; i++)
+        lighting += calculate_spot_light(normal, position, spot_lights[i]);
 
     return lighting;
 }

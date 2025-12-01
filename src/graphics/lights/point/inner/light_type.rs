@@ -13,11 +13,11 @@ pub(in crate::graphics) struct PointLightGPU {
     /// The radius of the light
     radius: f32,
 
-    /// The brightness of the light
-    brightness: f32,
-
     /// The color of the light
     color: Color3f,
+
+    /// The brightness of the light
+    brightness: f32,
 }
 
 impl LightType for PointLightInner {
@@ -27,8 +27,8 @@ impl LightType for PointLightInner {
         PointLightGPU {
             position: self.position,
             radius: self.radius,
-            brightness: self.brightness,
             color: self.color,
+            brightness: self.brightness,
         }
     }
 

@@ -1,4 +1,4 @@
-use crate::graphics::lights::{DirectionalLightInner, PointLightInner};
+use crate::graphics::lights::{DirectionalLightInner, PointLightInner, SpotLightInner};
 use constant_buffer::LightConstantBuffer;
 use list::LightList;
 
@@ -23,4 +23,7 @@ pub(in crate::graphics) struct Lights {
 
     /// The list of point lights
     point_lights: LightList<PointLightInner>,
+
+    /// The list of spot lights
+    spot_lights: LightList<SpotLightInner>,
 }

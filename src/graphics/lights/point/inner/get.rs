@@ -14,13 +14,13 @@ impl PointLightInner {
         self.radius
     }
 
-    /// The brightness of the light
-    pub fn brightness(&self) -> f32 {
-        self.brightness
-    }
-
     /// Get the color of the point light
     pub fn color(&self) -> Color3f {
         self.color
+    }
+
+    /// The brightness of the light
+    pub fn brightness(&self) -> f32 {
+        self.brightness
     }
 }

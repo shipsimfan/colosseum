@@ -8,14 +8,14 @@ impl PointLightInner {
     pub(in crate::graphics::lights::point) fn new(
         position: Vector3f,
         radius: f32,
-        brightness: f32,
         color: Color3f,
+        brightness: f32,
     ) -> Self {
         PointLightInner {
             position,
             radius,
-            brightness,
             color,
+            brightness,
             dirty: true,
         }
     }

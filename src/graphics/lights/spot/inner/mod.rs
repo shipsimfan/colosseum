@@ -6,12 +6,18 @@ mod new;
 mod set;
 
 /// The actual definition of a point light
-pub struct PointLightInner {
+pub struct SpotLightInner {
     /// The position of the light
     position: Vector3f,
 
-    /// The radius of the light
-    radius: f32,
+    /// The distance the light shines
+    distance: f32,
+
+    /// The direction of the light
+    direction: Vector3f,
+
+    /// The cut-off angle of the light
+    cut_off: f32,
 
     /// The color of the light
     color: Color3f,

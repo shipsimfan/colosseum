@@ -13,11 +13,11 @@ impl PointLight {
         lights: &mut Lights,
         position: Vector3f,
         radius: f32,
-        brightness: f32,
         color: Color3f,
+        brightness: f32,
     ) -> Self {
         let point_light = Rc::new(RefCell::new(PointLightInner::new(
-            position, radius, brightness, color,
+            position, radius, color, brightness,
         )));
 
         let point_light_list = lights.push_point_light(point_light.clone());
