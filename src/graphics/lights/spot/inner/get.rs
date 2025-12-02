@@ -19,9 +19,14 @@ impl SpotLightInner {
         self.direction
     }
 
-    /// Get the cut-off angle of the light
-    pub fn cut_off(&self) -> f32 {
-        self.cut_off
+    /// Get the angle to which the light shines with full intensity
+    pub fn inner_angle(&self) -> f32 {
+        self.inner_angle
+    }
+
+    /// Get the angle at which the light stops illuminating completely
+    pub fn outer_angle(&self) -> f32 {
+        self.outer_angle
     }
 
     /// Get the color of the point light

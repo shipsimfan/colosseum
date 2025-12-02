@@ -14,12 +14,19 @@ impl SpotLight {
         position: Vector3f,
         distance: f32,
         direction: Vector3f,
-        cut_off: f32,
+        inner_angle: f32,
+        outer_angle: f32,
         color: Color3f,
         brightness: f32,
     ) -> Self {
         let spot_light = Rc::new(RefCell::new(SpotLightInner::new(
-            position, distance, direction, cut_off, color, brightness,
+            position,
+            distance,
+            direction,
+            inner_angle,
+            outer_angle,
+            color,
+            brightness,
         )));
 
         let spot_light_list = lights.push_spot_light(spot_light.clone());

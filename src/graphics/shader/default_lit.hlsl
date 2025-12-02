@@ -15,7 +15,8 @@ struct SpotLight {
     float3 position;
     float distance;
     float3 direction;
-    float cut_off;
+    float inner_angle;
+    float outer_angle;
     float3 color;
     float brightness;
 };
@@ -120,12 +121,12 @@ float3 calculate_point_light(float3 normal, float3 position, PointLight light) {
 
 float3 calculate_spot_light(float3 normal, float3 position, SpotLight light) {
     float3 light_vector = light.position - position;
-    float theta = dot(normalize(light_vector), -light.direction);
-    if (theta <= (3.1415926535 / 2.0) - light.cut_off)
-        return float3(0.0, 0.0, 0.0);
+    float dot_dir = dot(normalize(light_vector), -light.direction);
+    float spot_factor = saturate((dot_dir - cos(light.outer_angle)) / (cos(light.inner_angle) - cos(light.outer_angle)));
 
+    float spot_attenuation = spot_factor * spot_factor;
     float distance = length(light_vector);
-    float attenuation = calculate_point_light_attenuation(distance, light.distance, light.brightness);
+    float attenuation = calculate_point_light_attenuation(distance, light.distance, light.brightness) * spot_attenuation;
     
     float3 light_direction = normalize(light_vector);
     float3 view_direction = normalize(camera_position - position);

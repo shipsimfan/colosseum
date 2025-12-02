@@ -16,8 +16,11 @@ pub struct SpotLightInner {
     /// The direction of the light
     direction: Vector3f,
 
-    /// The cut-off angle of the light
-    cut_off: f32,
+    /// The angle to which the light shines with full intensity
+    inner_angle: f32,
+
+    /// The angle at which the light stops illuminating completely
+    outer_angle: f32,
 
     /// The color of the light
     color: Color3f,

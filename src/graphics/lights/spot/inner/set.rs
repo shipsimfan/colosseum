@@ -22,10 +22,14 @@ impl SpotLightInner {
         self.dirty = true;
     }
 
-    /// Set the cut-off angle of the light
-    pub fn set_cut_off(&mut self, cut_off: f32) {
-        self.cut_off = cut_off;
-        self.dirty = true;
+    /// Set the angle to which the light shines with full intensity
+    pub fn set_inner_angle(&mut self, inner_angle: f32) {
+        self.inner_angle = inner_angle;
+    }
+
+    /// Set the angle at which the light stops illuminating completely
+    pub fn set_outer_angle(&mut self, outer_angle: f32) {
+        self.outer_angle = outer_angle;
     }
 
     /// Set the color of the light

@@ -75,7 +75,8 @@ impl GraphicsContext {
         position: Vector3f,
         distance: f32,
         direction: Vector3f,
-        cut_off: f32,
+        inner_angle: f32,
+        outer_angle: f32,
         color: Color3f,
         brightness: f32,
     ) -> SpotLight {
@@ -84,7 +85,8 @@ impl GraphicsContext {
             position,
             distance,
             direction,
-            cut_off,
+            inner_angle,
+            outer_angle,
             color,
             brightness,
         )
