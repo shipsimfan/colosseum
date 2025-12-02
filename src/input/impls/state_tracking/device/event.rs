@@ -8,6 +8,11 @@ impl StateTrackingInputDevice {
         pressed: bool,
     ) {
         self.button_states[button as usize] = pressed;
+        if pressed {
+            self.button_down_states[button as usize] = true;
+        } else {
+            self.button_up_states[button as usize] = true;
+        }
     }
 
     /// Update the state of an axis

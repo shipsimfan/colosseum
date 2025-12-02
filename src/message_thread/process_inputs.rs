@@ -3,6 +3,8 @@ use crate::{MessageThread, input::InputButtonEvent, warning};
 impl MessageThread {
     /// Process inputs in the queue
     pub fn process_inputs<Input: crate::input::Input>(&self, input: &mut Input) {
+        input.frame();
+
         // Process button events
         for _ in 0..64 {
             let event = match self.button_events.try_recv() {
