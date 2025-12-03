@@ -12,6 +12,8 @@ mod settings;
 mod shader;
 mod vertex;
 
+mod util;
+
 pub use adapter::{Adapter, Output, OutputResolution};
 pub use camera::{Camera, CameraInner, CameraProjection};
 pub use context::GraphicsContext;

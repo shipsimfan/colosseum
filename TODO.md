@@ -51,4 +51,3 @@
  36. Add gamma correction
  37. Add HDR support
  38. Add SSAO
- 39. Generalize shader types

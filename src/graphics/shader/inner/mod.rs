@@ -1,8 +1,5 @@
+use crate::graphics::util::{PixelShader, VertexShader};
 use std::num::NonZeroU32;
-use win32::{
-    ComPtr,
-    d3d11::{ID3D11InputLayout, ID3D11PixelShader, ID3D11VertexShader},
-};
 
 mod bind;
 mod id;
@@ -14,11 +11,8 @@ pub struct ShaderInner {
     id: NonZeroU32,
 
     /// The vertex shader
-    vertex_shader: ComPtr<ID3D11VertexShader>,
+    vertex_shader: VertexShader,
 
     /// The pixel shader
-    pixel_shader: ComPtr<ID3D11PixelShader>,
-
-    /// The input layout describing vertices
-    input_layout: ComPtr<ID3D11InputLayout>,
+    pixel_shader: PixelShader,
 }
