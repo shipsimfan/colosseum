@@ -1,8 +1,11 @@
 use crate::{
     Result,
-    graphics::context::{
-        Lights,
-        managed_objects::lights::{LightConstantBuffer, LightList},
+    graphics::{
+        context::{
+            Lights,
+            managed_objects::lights::{LightCbContent, LightList},
+        },
+        util::ConstantBuffer,
     },
 };
 use win32::d3d11::ID3D11Device;
@@ -13,7 +16,7 @@ impl Lights {
         device: &ID3D11Device,
     ) -> Result<Self> {
         Ok(Lights {
-            constant_buffer: LightConstantBuffer::new(device)?,
+            constant_buffer: ConstantBuffer::new(LightCbContent::default(), 2, device)?,
             directional_lights: LightList::new(0, 1, device)?,
             point_lights: LightList::new(1, 16, device)?,
             spot_lights: LightList::new(2, 4, device)?,

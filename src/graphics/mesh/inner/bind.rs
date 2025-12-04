@@ -1,6 +1,9 @@
 use crate::{
     Result,
-    graphics::{MeshInner, mesh::inner::MeshBuffers},
+    graphics::{
+        MeshInner,
+        util::{IndexBuffer, VertexBuffer},
+    },
 };
 use win32::d3d11::{ID3D11Device, ID3D11DeviceContext};
 
@@ -11,11 +14,15 @@ impl MeshInner {
         device: &ID3D11Device,
         device_context: &mut ID3D11DeviceContext,
     ) -> Result<()> {
-        let buffers = self
-            .buffers
-            .get_or_try_init(|| MeshBuffers::new(&self.vertices, &self.indices, device))?;
+        let (vertex_buffer, index_buffer) = self.buffers.get_or_try_init(|| {
+            Ok((
+                VertexBuffer::new(&self.vertices, 0, device)?,
+                IndexBuffer::new(&self.indices, device)?,
+            ))
+        })?;
 
-        buffers.bind(device_context);
+        vertex_buffer.bind(device_context);
+        index_buffer.bind(device_context);
         Ok(())
     }
 }

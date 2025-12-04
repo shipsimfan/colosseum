@@ -1,8 +1,5 @@
-use crate::{Error, Result, graphics::CameraInner, math::Vector2u};
-use win32::{
-    d3d11::{D3D11_MAP, D3D11_MAPPED_SUBRESOURCE, ID3D11DeviceContext},
-    try_hresult,
-};
+use crate::{Result, graphics::CameraInner, math::Vector2u};
+use win32::d3d11::ID3D11DeviceContext;
 
 impl CameraInner {
     /// Set this camera as active, updating if needed
@@ -22,21 +19,8 @@ impl CameraInner {
 
         // Update constant buffer if needed
         if update_needed {
-            let mut mapped_resource = D3D11_MAPPED_SUBRESOURCE::default();
-            try_hresult!(device_context.map(
-                self.buffer.as_mut(),
-                0,
-                D3D11_MAP::WriteDiscard,
-                0,
-                &mut mapped_resource,
-            ))
-            .map_err(|error| Error::new_inner("unable to map camera constant buffer", error))?;
-
-            self.buffer_content.view = self.transform.matrix() * self.projection_matrix;
-            self.buffer_content.position = self.transform.position();
-            *unsafe { &mut *(mapped_resource.data as *mut _) } = self.buffer_content;
-
-            device_context.unmap(self.buffer.as_mut(), 0);
+            self.buffer.view = self.transform.matrix() * self.projection_matrix;
+            self.buffer.position = self.transform.position();
         }
 
         // Update viewport if needed
@@ -52,9 +36,7 @@ impl CameraInner {
         }
 
         // Set active
-        let buffer = self.buffer.as_mut() as *mut _;
-        device_context.vs_set_constant_buffers(0, 1, &buffer);
-        device_context.ps_set_constant_buffers(0, 1, &buffer);
+        self.buffer.bind(device_context)?;
         device_context.rs_set_viewports(1, &self.screen_viewport);
 
         Ok(())

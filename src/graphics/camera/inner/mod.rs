@@ -1,12 +1,9 @@
 use crate::{
-    graphics::CameraProjection,
+    graphics::{CameraProjection, util::ConstantBuffer},
     math::{Matrix4x4f, Transform},
 };
 use cb_content::CameraCbContent;
-use win32::{
-    ComPtr,
-    d3d11::{D3D11_VIEWPORT, ID3D11Buffer},
-};
+use win32::d3d11::D3D11_VIEWPORT;
 
 mod cb_content;
 
@@ -37,11 +34,8 @@ pub struct CameraInner {
     /// The matrix which is the result of `projection`
     projection_matrix: Matrix4x4f,
 
-    /// The content of the constant buffer
-    buffer_content: CameraCbContent,
-
-    /// The constant buffer holding the combined world-projection matrix
-    buffer: ComPtr<ID3D11Buffer>,
+    /// The buffer holding the final camera matrix for shaders
+    buffer: ConstantBuffer<CameraCbContent>,
 
     /// The region of the window that this camera displays to, in percentages of screen size
     relative_viewport: D3D11_VIEWPORT,

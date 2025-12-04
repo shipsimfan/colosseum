@@ -1,9 +1,10 @@
-use crate::graphics::Vertex;
-use buffers::MeshBuffers;
+use crate::graphics::{
+    Vertex,
+    util::{IndexBuffer, VertexBuffer},
+};
 use std::{borrow::Cow, cell::OnceCell};
 
 mod bind;
-mod buffers;
 mod get;
 mod new;
 
@@ -16,5 +17,5 @@ pub struct MeshInner {
     indices: Cow<'static, [u32]>,
 
     /// The GPU buffers for this mesh
-    buffers: OnceCell<MeshBuffers>,
+    buffers: OnceCell<(VertexBuffer<Vertex>, IndexBuffer)>,
 }

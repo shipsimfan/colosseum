@@ -3,7 +3,7 @@ use crate::math::Color3f;
 /// The content of the light constant buffer
 #[repr(C)]
 #[derive(Clone, Copy)]
-pub(in crate::graphics::context::managed_objects::lights::constant_buffer) struct LightCbContent {
+pub(in crate::graphics::context::managed_objects::lights) struct LightCbContent {
     /// The color of the ambient light
     pub ambient_color: Color3f,
 

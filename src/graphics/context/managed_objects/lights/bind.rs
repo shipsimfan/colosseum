@@ -8,14 +8,20 @@ impl Lights {
         device: &ID3D11Device,
         device_context: &mut ID3D11DeviceContext,
     ) -> Result<()> {
-        let num_directional_lights = self.directional_lights.bind(device, device_context)?;
-        let num_point_lights = self.point_lights.bind(device, device_context)?;
-        let num_spot_lights = self.spot_lights.bind(device, device_context)?;
-        self.constant_buffer.bind(
-            num_directional_lights,
-            num_point_lights,
-            num_spot_lights,
-            device_context,
-        )
+        if let Some(num_directional_lights) =
+            self.directional_lights.bind(device, device_context)?
+        {
+            self.constant_buffer.num_directional_lights = num_directional_lights as _;
+        }
+
+        if let Some(num_point_lights) = self.point_lights.bind(device, device_context)? {
+            self.constant_buffer.num_point_lights = num_point_lights as _;
+        }
+
+        if let Some(num_spot_lights) = self.spot_lights.bind(device, device_context)? {
+            self.constant_buffer.num_spot_lights = num_spot_lights as _;
+        }
+
+        self.constant_buffer.bind(device_context)
     }
 }

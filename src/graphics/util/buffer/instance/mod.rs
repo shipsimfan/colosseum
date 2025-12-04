@@ -1,16 +1,13 @@
+use std::marker::PhantomData;
 use win32::{ComPtr, d3d11::ID3D11Buffer};
 
-mod bind;
-mod deref;
-mod new;
-
-/// A buffer which contains a single element and is only changed from the CPU
-pub struct ConstantBuffer<T: Sized + Copy> {
+/// A buffer which contains an array of elements only changed from the CPU
+pub struct InstanceBuffer<T: Sized + Copy> {
     /// The buffer itself
     buffer: ComPtr<ID3D11Buffer>,
 
-    /// The content contained in the constant buffer
-    content: T,
+    /// The content contained in the instance buffer
+    content: Box<[T]>,
 
     /// Have the contents changed since the last bind?
     dirty: bool,
