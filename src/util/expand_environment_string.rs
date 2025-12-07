@@ -4,7 +4,7 @@ use win32::{ExpandEnvironmentStrings, try_get_last_error};
 const BUFFER_SIZE: usize = 4096;
 
 /// Expand any environment variables in `string`
-pub(crate) fn expand_environment_string(string: &str) -> Result<String> {
+pub fn expand_environment_string(string: &str) -> Result<String> {
     let mut utf16_string: Vec<_> = string.encode_utf16().collect();
     utf16_string.push(0);
 

@@ -4,6 +4,6 @@ mod directional;
 mod point;
 mod spot;
 
-pub use directional::{DirectionalLight, DirectionalLightInner};
-pub use point::{PointLight, PointLightInner};
-pub use spot::{SpotLight, SpotLightInner};
+pub use directional::{DirectionalLight, DirectionalLightHandle};
+pub use point::{PointLight, PointLightHandle};
+pub use spot::{SpotLight, SpotLightHandle};

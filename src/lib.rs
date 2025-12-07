@@ -16,8 +16,7 @@ pub mod input;
 pub mod logging;
 pub mod math;
 pub mod settings;
-
-pub(crate) mod util;
+pub mod util;
 
 mod error;
 mod game;

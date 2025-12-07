@@ -8,20 +8,20 @@ mod set;
 
 /// The context used during updates to access the engine
 pub struct UpdateContext<'a, Game: crate::Game> {
-    /// The amount of time since the last frame, in seconds
-    delta_t: f32,
-
     /// The log controller
-    logs: &'a Arc<LogController>,
+    pub logs: &'a Arc<LogController>,
 
     /// The settings for the game
-    settings: &'a mut Game::SettingsCache,
+    pub settings: &'a mut Game::SettingsCache,
 
     /// The graphics context for creating rendering objects
-    graphics_context: &'a mut GraphicsContext,
+    pub graphics: &'a mut GraphicsContext,
 
     /// The input tracking for the game
-    input: &'a Game::Input,
+    pub input: &'a Game::Input,
+
+    /// The amount of time since the last frame, in seconds
+    delta_t: f32,
 
     /// The running state of the engine
     running_state: &'a RunningState,

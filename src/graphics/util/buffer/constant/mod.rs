@@ -5,7 +5,7 @@ mod deref;
 mod new;
 
 /// A buffer which contains a single element and is only changed from the CPU
-pub struct ConstantBuffer<T: Sized + Copy> {
+pub(in crate::graphics) struct ConstantBuffer<T: Sized + Copy> {
     /// The buffer itself
     buffer: ComPtr<ID3D11Buffer>,
 

@@ -1,23 +1,29 @@
 use crate::{
     Result,
     graphics::{
-        Camera, CameraProjection, GraphicsContext, Material, Mesh, MeshRenderer, Shader,
-        ShaderSource,
-        lights::{DirectionalLight, PointLight, SpotLight},
+        Camera, CameraHandle, CameraProjection, GraphicsContext, Material, MaterialHandle, Mesh,
+        MeshRenderer, MeshRendererHandle, Shader, ShaderSource,
+        lights::{DirectionalLightHandle, PointLightHandle, SpotLightHandle},
     },
     math::{Color3f, Vector3f},
 };
 
 impl GraphicsContext {
     /// Create a new [`Camera`]
-    pub fn create_camera(&mut self, projection: CameraProjection) -> Result<Camera> {
-        self.managed_objects
-            .create_camera(projection, self.size, &self.device)
+    pub fn create_camera(&mut self, projection: CameraProjection) -> Result<CameraHandle> {
+        Ok(self
+            .cameras
+            .insert(Camera::new(projection, self.size, &self.device)?))
     }
 
-    /// Create a new [`Shader`]
-    pub fn create_shader(&mut self, source: &ShaderSource) -> Result<Shader> {
-        self.managed_objects.create_shader(source, &self.device)
+    /// Create a new unlit [`Shader`]
+    pub fn create_unlit_shader(&mut self, source: &ShaderSource) -> Result<Shader> {
+        Shader::new_unlit(source, &self.device)
+    }
+
+    /// Create a new lit [`Shader`]
+    pub fn create_lit_shader(&mut self, source: &ShaderSource) -> Result<Shader> {
+        Shader::new_lit(source, &self.device)
     }
 
     /// Create a new opaque [`Material`]
@@ -26,20 +32,32 @@ impl GraphicsContext {
         shader: Shader,
         color: Color3f,
         specular_strength: f32,
-    ) -> Result<Material> {
-        self.managed_objects
-            .create_opaque_material(shader, color, specular_strength, &self.device)
+    ) -> Result<MaterialHandle> {
+        let id = self.next_material_id;
+        self.next_material_id = self.next_material_id.checked_add(1).unwrap();
+
+        Ok(self.opaque_materials.insert(Material::new(
+            id,
+            shader,
+            color,
+            specular_strength,
+            &self.device,
+        )?))
     }
 
     /// Create a new [`MeshRenderer`]
     pub fn create_mesh_renderer(
         &mut self,
-        material: Material,
+        material: MaterialHandle,
         mesh: Mesh,
         max_instances: usize,
-    ) -> Result<MeshRenderer> {
-        self.managed_objects
-            .create_mesh_renderer(material, mesh, max_instances, &self.device)
+    ) -> Result<MeshRendererHandle> {
+        Ok(self.mesh_renderers.insert(MeshRenderer::new(
+            material,
+            mesh,
+            max_instances,
+            &self.device,
+        )?))
     }
 
     /// Create a new [`DirectionalLight`]
@@ -48,8 +66,9 @@ impl GraphicsContext {
         direction: Vector3f,
         color: Color3f,
         brightness: f32,
-    ) -> DirectionalLight {
-        DirectionalLight::new(self.managed_objects.lights(), direction, color, brightness)
+    ) -> DirectionalLightHandle {
+        self.lights
+            .create_directional_light(direction, color, brightness)
     }
 
     /// Create a new [`PointLight`]
@@ -59,14 +78,9 @@ impl GraphicsContext {
         radius: f32,
         color: Color3f,
         brightness: f32,
-    ) -> PointLight {
-        PointLight::new(
-            self.managed_objects.lights(),
-            position,
-            radius,
-            color,
-            brightness,
-        )
+    ) -> PointLightHandle {
+        self.lights
+            .create_point_light(position, radius, color, brightness)
     }
 
     /// Create a new [`SpotLight`]
@@ -79,9 +93,8 @@ impl GraphicsContext {
         outer_angle: f32,
         color: Color3f,
         brightness: f32,
-    ) -> SpotLight {
-        SpotLight::new(
-            self.managed_objects.lights(),
+    ) -> SpotLightHandle {
+        self.lights.create_spot_light(
             position,
             distance,
             direction,

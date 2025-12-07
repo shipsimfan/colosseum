@@ -1,29 +1,27 @@
 use crate::{
     Result,
-    graphics::{Material, Mesh, MeshRenderer, MeshRendererInner},
+    graphics::{MaterialHandle, Mesh, MeshRenderer, util::InstanceBuffer},
+    math::Matrix4x4f,
 };
-use std::{cell::RefCell, rc::Rc};
 use win32::d3d11::ID3D11Device;
 
 impl MeshRenderer {
     /// Create a new [`MeshRenderer`]
     pub(in crate::graphics) fn new(
-        material: Material,
+        material: MaterialHandle,
         mesh: Mesh,
         max_instances: usize,
         device: &ID3D11Device,
     ) -> Result<Self> {
-        let mesh_renderer = Rc::new(RefCell::new(MeshRendererInner::new(
-            material.clone(),
+        let instance_buffer =
+            InstanceBuffer::new(Matrix4x4f::identity(), max_instances, 1, device)?;
+
+        Ok(MeshRenderer {
+            active: true,
+            material,
             mesh,
-            max_instances,
-            device,
-        )?));
-
-        material
-            .borrow_mut()
-            .push_mesh_renderer(mesh_renderer.clone());
-
-        Ok(MeshRenderer { mesh_renderer })
+            active_instances: 0,
+            instance_buffer,
+        })
     }
 }

@@ -51,3 +51,9 @@
  36. Add gamma correction
  37. Add HDR support
  38. Add SSAO
+ 39. Add device, render context, and command list wrappers
+ 40. Improve managed objects
+ 41. Add pipeline state wrapper
+ 42. Make transforms managed
+ 43. Improve mesh renderer push
+ 44. Improve scene transition

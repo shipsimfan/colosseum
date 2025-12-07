@@ -3,16 +3,17 @@ use crate::graphics::context::{D3D11InfoQueue, DXGIInfoQueue};
 use crate::{
     Error, Result,
     graphics::{
-        Adapter, GraphicsContext, GraphicsSettings,
-        context::{BUFFER_COUNT, ManagedGraphicsObjects, RENDER_TARGET_FORMAT, SWAP_CHAIN_FLAGS},
+        Adapter, GraphicsContext, GraphicsSettings, Material, Shader,
+        context::{BUFFER_COUNT, Lights, RENDER_TARGET_FORMAT, SWAP_CHAIN_FLAGS},
     },
     info,
     logging::LogController,
-    math::Vector2u,
+    math::{Color3f, Vector2u},
     message_thread::MessageThread,
+    util::Arena,
     warning,
 };
-use std::{ptr::null_mut, rc::Rc, sync::Arc};
+use std::{num::NonZeroU32, ptr::null_mut, rc::Rc, sync::Arc};
 use win32::{
     ComPtr, HWND, TRUE, UINT,
     d3d11::{
@@ -34,6 +35,8 @@ const DEVICE_FLAGS: UINT = BASE_DEVICE_FLAGS | D3D11_CREATE_DEVICE_FLAG::Debug a
 const DEVICE_FLAGS: UINT = BASE_DEVICE_FLAGS;
 
 const FEATURE_LEVELS: &[D3D_FEATURE_LEVEL] = &[D3D_FEATURE_LEVEL::_11_0, D3D_FEATURE_LEVEL::_11_1];
+
+const DEFAULT_SPECULAR_STRENGTH: f32 = 0.5;
 
 impl GraphicsContext {
     /// Creates a new [`GraphicsContext`] given the options
@@ -174,8 +177,29 @@ impl GraphicsContext {
         })
         .map_err(|error| Error::new_inner("unable to create depth stencil state", error))?;
 
-        // Create managed object state
-        let managed_objects = ManagedGraphicsObjects::new(&device)?;
+        // Create default shaders
+        let default_lit_shader = Shader::create_default_lit(&device)?;
+        let default_unlit_shader = Shader::create_default_unlit(&device)?;
+
+        // Create default materials
+        let mut opaque_materials = Arena::new();
+        let default_lit_material = opaque_materials.insert(Material::new(
+            NonZeroU32::new(1).unwrap(),
+            default_lit_shader.clone(),
+            Color3f::WHITE,
+            DEFAULT_SPECULAR_STRENGTH,
+            &device,
+        )?);
+        let default_unlit_material = opaque_materials.insert(Material::new(
+            NonZeroU32::new(2).unwrap(),
+            default_unlit_shader.clone(),
+            Color3f::WHITE,
+            DEFAULT_SPECULAR_STRENGTH,
+            &device,
+        )?);
+
+        // Create lights
+        let lights = Lights::new(&device)?;
 
         // Create render context and graphics context
         let mut graphics_context = GraphicsContext {
@@ -183,7 +207,15 @@ impl GraphicsContext {
             vsync: settings.vsync,
             display_mode: settings.display_mode,
             size: Vector2u::new(width, height),
-            managed_objects,
+            cameras: Arena::new(),
+            mesh_renderers: Arena::new(),
+            lights,
+            opaque_materials,
+            next_material_id: NonZeroU32::new(3).unwrap(),
+            default_lit_shader,
+            default_unlit_shader,
+            default_lit_material,
+            default_unlit_material,
             swapchain_objects: None,
             swapchain,
             depth_stencil_state,

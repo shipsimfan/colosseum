@@ -45,8 +45,8 @@ impl GraphicsContext {
         )?);
 
         // Update the camera sizes
-        for camera in &*self.managed_objects.cameras() {
-            camera.borrow_mut().resize();
+        for camera in &mut self.cameras {
+            camera.resize();
         }
 
         self.size = new_size;

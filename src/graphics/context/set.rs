@@ -46,15 +46,11 @@ impl GraphicsContext {
 
     /// Set the ambient light color
     pub fn set_ambient_color(&mut self, ambient_color: Color3f) {
-        self.managed_objects
-            .lights()
-            .set_ambient_color(ambient_color);
+        self.lights.set_ambient_color(ambient_color);
     }
 
     /// Set the intensity of the ambient light
     pub fn set_ambient_intensity(&mut self, ambient_intensity: f32) {
-        self.managed_objects
-            .lights()
-            .set_ambient_intensity(ambient_intensity);
+        self.lights.set_ambient_intensity(ambient_intensity);
     }
 }

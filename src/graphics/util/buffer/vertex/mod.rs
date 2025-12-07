@@ -5,7 +5,7 @@ mod bind;
 mod new;
 
 /// A buffer which contains a set of vertices
-pub struct VertexBuffer<Vertex: Sized> {
+pub(in crate::graphics) struct VertexBuffer<Vertex: Sized> {
     /// The buffer itself
     buffer: ComPtr<ID3D11Buffer>,
 

@@ -1,18 +1,28 @@
-use std::{cell::RefCell, rc::Rc};
+use crate::{
+    graphics::{Shader, util::ConstantBuffer},
+    util::Handle,
+};
+use cb_content::MaterialCbContent;
+use std::num::NonZeroU32;
 
-mod borrow;
-mod drop;
-mod inner;
+mod cb_content;
+
+mod bind;
+mod get;
 mod new;
+mod set;
 
-pub use inner::MaterialInner;
+/// A handle to a [`Material`]
+pub type MaterialHandle = Handle<Material>;
 
 /// A item which controls the way meshes are rendered
-#[derive(Clone)]
 pub struct Material {
-    /// The list of current materials that contains this materials
-    material_list: Rc<RefCell<Vec<Rc<RefCell<MaterialInner>>>>>,
+    /// The ID assigned by the graphics context which uniquely identifies this material
+    id: NonZeroU32,
 
-    /// The reference to the material itself
-    material: Rc<RefCell<MaterialInner>>,
+    /// The shader used by this material
+    shader: Shader,
+
+    /// The constant buffer giving shaders access to this material
+    buffer: ConstantBuffer<MaterialCbContent>,
 }

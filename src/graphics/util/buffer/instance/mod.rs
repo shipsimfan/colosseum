@@ -1,8 +1,11 @@
-use std::marker::PhantomData;
 use win32::{ComPtr, d3d11::ID3D11Buffer};
 
+mod bind;
+mod deref;
+mod new;
+
 /// A buffer which contains an array of elements only changed from the CPU
-pub struct InstanceBuffer<T: Sized + Copy> {
+pub(in crate::graphics) struct InstanceBuffer<T: Sized + Copy> {
     /// The buffer itself
     buffer: ComPtr<ID3D11Buffer>,
 

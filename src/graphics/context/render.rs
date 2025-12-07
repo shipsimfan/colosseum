@@ -35,14 +35,11 @@ impl GraphicsContext {
         // TODO: Lighting pre-passes
 
         // Bind global lighting information
-        self.managed_objects
-            .lights()
-            .bind(&self.device, &mut self.device_context)?;
+        self.lights.bind(&self.device, &mut self.device_context)?;
 
         // Camera render passes
-        let mut active_shader = 0;
-        for camera in &*self.managed_objects.cameras() {
-            let mut camera = camera.borrow_mut();
+        let mut active_material = 0;
+        for camera in &mut self.cameras {
             if !camera.is_active() {
                 continue;
             }
@@ -50,15 +47,14 @@ impl GraphicsContext {
             camera.bind(self.size, &mut self.device_context)?;
 
             // Opaque render pass
-            for material in &*self.managed_objects.opaque_materials() {
-                let mut material = material.borrow_mut();
-                let shader = material.shader();
-                if shader.id().get() != active_shader {
-                    shader.bind(&mut self.device_context);
-                    active_shader = shader.id().get();
+            for mesh_renderer in &mut self.mesh_renderers {
+                let material = &mut self.opaque_materials[mesh_renderer.material()];
+                if material.id() != active_material {
+                    material.bind(&mut self.device_context)?;
+                    active_material = material.id();
                 }
 
-                material.render(&self.device, &mut self.device_context)?;
+                mesh_renderer.draw(&self.device, &mut self.device_context)?;
             }
 
             // TODO: Transparent render pass

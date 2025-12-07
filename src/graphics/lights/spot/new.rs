@@ -1,16 +1,11 @@
 use crate::{
-    graphics::{
-        context::Lights,
-        lights::{SpotLight, SpotLightInner},
-    },
+    graphics::lights::SpotLight,
     math::{Color3f, Vector3f},
 };
-use std::{cell::RefCell, rc::Rc};
 
 impl SpotLight {
     /// Create a new [`SpotLight`]
     pub(in crate::graphics) fn new(
-        lights: &mut Lights,
         position: Vector3f,
         distance: f32,
         direction: Vector3f,
@@ -19,21 +14,15 @@ impl SpotLight {
         color: Color3f,
         brightness: f32,
     ) -> Self {
-        let spot_light = Rc::new(RefCell::new(SpotLightInner::new(
+        SpotLight {
             position,
             distance,
-            direction,
+            direction: direction.normalized(),
             inner_angle,
             outer_angle,
             color,
             brightness,
-        )));
-
-        let spot_light_list = lights.push_spot_light(spot_light.clone());
-
-        SpotLight {
-            spot_light_list,
-            spot_light,
+            dirty: true,
         }
     }
 }

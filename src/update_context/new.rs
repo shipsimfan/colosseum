@@ -8,7 +8,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         logs: &'a Arc<LogController>,
         input: &'a Game::Input,
         settings: &'a mut Game::SettingsCache,
-        graphics_context: &'a mut GraphicsContext,
+        graphics: &'a mut GraphicsContext,
         running_state: &'a RunningState,
     ) -> Self {
         UpdateContext {
@@ -16,7 +16,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
             logs,
             input,
             settings,
-            graphics_context,
+            graphics,
             running_state,
             next_scene: None,
         }

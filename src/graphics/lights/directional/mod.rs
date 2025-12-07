@@ -1,18 +1,27 @@
-use std::{cell::RefCell, rc::Rc};
+use crate::{
+    math::{Color3f, Vector3f},
+    util::Handle,
+};
 
-mod inner;
-
-mod borrow;
-mod drop;
+mod get;
+mod light_type;
 mod new;
+mod set;
 
-pub use inner::DirectionalLightInner;
+/// A handle to a [`DirectionalLight`]
+pub type DirectionalLightHandle = Handle<DirectionalLight>;
 
 /// A light that is located infinitely far away in a certain direction
 pub struct DirectionalLight {
-    /// The list of current directional lights that contains this light
-    directional_light_list: Rc<RefCell<(Vec<Rc<RefCell<DirectionalLightInner>>>, bool)>>,
+    /// The direction of the light
+    direction: Vector3f,
 
-    /// The reference to the directional light itself
-    directional_light: Rc<RefCell<DirectionalLightInner>>,
+    /// The color of the light
+    color: Color3f,
+
+    /// The brightness of the light
+    brightness: f32,
+
+    /// Have the values of this light changed this frame?
+    dirty: bool,
 }
