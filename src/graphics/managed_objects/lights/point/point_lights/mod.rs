@@ -1,6 +1,7 @@
 use crate::graphics::{PointLight, managed_objects::lights::LightList};
 
 mod bind;
+mod clear;
 mod create;
 mod get;
 mod index;

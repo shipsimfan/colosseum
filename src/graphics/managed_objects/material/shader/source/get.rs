@@ -1,4 +1,4 @@
-use crate::graphics::ShaderSource;
+use crate::graphics::managed_objects::material::shader::ShaderSource;
 
 impl<'a> ShaderSource<'a> {
     /// Gets the content of the vertex shader

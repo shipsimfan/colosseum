@@ -1,26 +1,25 @@
 # ToDo
- 1. Improve scene transition
- 2. Add general wrapper for buffers, textures, and views
- 3. Add device, render context, and command list wrappers
- 4. Add pipeline state wrapper
- 5. Add material properties
- 6. Improve colors 
+ 1. Add general wrapper for buffers, textures, and views
+ 2. Add device, render context, and command list wrappers
+ 3. Add pipeline state wrapper
+ 4. Add material properties
+ 5. Improve colors 
     - u8 vs f32 distinction
- 7. Add general file I/O thread
- 8. Add textures and texture loading
- 9. Add shadow maps
- 10. Add model loading
- 11. Add fixed update
- 12. Add bounds to `Mesh`
- 13. Add rigidbody
- 14. Add colliders
- 15. Add physically based rendering
- 16. Finish `KeyCode` enum
- 17. Add mouse support
- 18. Add xbox controller support
- 19. Add UI
- 20. Add transparency
- 21. Add audio
+ 6. Add general file I/O thread
+ 7. Add textures and texture loading
+ 8. Add shadow maps
+ 9. Add model loading
+ 10. Add fixed update
+ 11. Add bounds to `Mesh`
+ 12. Add rigidbody
+ 13. Add colliders
+ 14. Add physically based rendering
+ 15. Finish `KeyCode` enum
+ 16. Add mouse support
+ 17. Add xbox controller support
+ 18. Add UI
+ 19. Add transparency
+ 20. Add audio
 
 ## Additional ToDos
  1. Add post-processing support

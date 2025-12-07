@@ -19,8 +19,10 @@ pub trait Scene: 'static {
     }
 
     /// Called when the scene is set active
-    fn on_active(&mut self) {}
+    #[allow(unused_variables)]
+    fn on_active(&mut self, context: &mut UpdateContext<Self::Game>) {}
 
     /// Called when the scene is deactivated
-    fn on_deactivate(&mut self) {}
+    #[allow(unused_variables)]
+    fn on_deactivate(&mut self, context: &mut UpdateContext<Self::Game>) {}
 }

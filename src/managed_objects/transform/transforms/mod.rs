@@ -1,5 +1,6 @@
 use crate::{Transform, util::Arena};
 
+mod clear;
 mod create;
 mod get;
 mod index;

@@ -1,7 +1,4 @@
-use crate::{
-    graphics::{Material, Shader},
-    math::Color3f,
-};
+use crate::{graphics::Material, math::Color3f};
 
 impl Material {
     /// Gets the color assigned to this material
@@ -12,11 +9,6 @@ impl Material {
     /// Gets the strength of the specular highlight
     pub fn specular_strength(&self) -> f32 {
         self.buffer.specular_strength
-    }
-
-    /// Get the shader this material uses
-    pub fn shader(&self) -> &Shader {
-        &self.shader
     }
 
     /// Get the ID assigned to this material

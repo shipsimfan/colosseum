@@ -1,6 +1,21 @@
 use crate::util::arena::Slot;
 
 impl<T: Sized> Slot<T> {
+    /// Get the next free slot
+    pub fn next_free(&self) -> u32 {
+        self.next_free
+    }
+
+    /// Get the current generation
+    pub fn generation(&self) -> u32 {
+        self.generation
+    }
+
+    /// Is this slot free?
+    pub fn is_free(&self) -> bool {
+        self.item.is_none()
+    }
+
     /// Get the contained element
     pub fn get(&self, generation: u32) -> Option<&T> {
         if self.generation != generation {
@@ -27,15 +42,5 @@ impl<T: Sized> Slot<T> {
     /// Get the contained element mutably without checking the generation
     pub fn get_unchecked_mut(&mut self) -> Option<&mut T> {
         self.item.as_mut()
-    }
-
-    /// Get the next free slot
-    pub fn next_free(&self) -> u32 {
-        self.next_free
-    }
-
-    /// Get the current generation
-    pub fn generation(&self) -> u32 {
-        self.generation
     }
 }

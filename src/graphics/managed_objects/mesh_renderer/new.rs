@@ -7,7 +7,7 @@ use win32::d3d11::ID3D11Device;
 
 impl MeshRenderer {
     /// Create a new [`MeshRenderer`]
-    pub(in crate::graphics) fn new(
+    pub(in crate::graphics::managed_objects::mesh_renderer) fn new(
         material: MaterialHandle,
         mesh: Mesh,
         max_instances: usize,

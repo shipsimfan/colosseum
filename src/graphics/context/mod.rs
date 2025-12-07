@@ -1,9 +1,4 @@
-use crate::{
-    MessageThread,
-    graphics::{DisplayMode, Shader},
-    logging::Logger,
-    math::Vector2u,
-};
+use crate::{MessageThread, graphics::DisplayMode, logging::Logger, math::Vector2u};
 #[cfg(debug_assertions)]
 use d3d11_info_queue::D3D11InfoQueue;
 #[cfg(debug_assertions)]
@@ -25,7 +20,6 @@ mod d3d11_info_queue;
 mod dxgi_info_queue;
 mod swapchain_objects;
 
-mod create;
 mod get;
 mod log_debug_messages;
 mod new;
@@ -46,12 +40,6 @@ pub struct GraphicsContext {
 
     /// The current size of the swapchain
     size: Vector2u,
-
-    /// The default lit shader
-    default_lit_shader: Shader,
-
-    /// The default unlit shader
-    default_unlit_shader: Shader,
 
     /// The objects directly associated with the swapchain
     swapchain_objects: Option<SwapchainObjects>,

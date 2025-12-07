@@ -9,7 +9,7 @@ impl ToTokens for CompileShaderFile {
         } = self;
 
         to_tokens! { generator
-            colosseum::graphics::ShaderSource::new(
+            colosseum::graphics::managed_objects::material::shader::ShaderSource::new(
                 ::std::borrow::Cow::Borrowed(#vertex_content),
                 ::std::borrow::Cow::Borrowed(#pixel_content),
             )

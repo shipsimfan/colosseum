@@ -1,12 +1,11 @@
-use crate::{
-    graphics::{Shader, util::ConstantBuffer},
-    util::Handle,
-};
+use crate::{graphics::util::ConstantBuffer, util::Handle};
 use cb_content::MaterialCbContent;
-use std::num::NonZeroU32;
+use shader::MaterialShader;
+use std::{num::NonZeroU32, rc::Rc};
 
 mod cb_content;
 mod materials;
+mod shader;
 
 mod bind;
 mod get;
@@ -24,7 +23,7 @@ pub struct Material {
     id: NonZeroU32,
 
     /// The shader used by this material
-    shader: Shader,
+    shader: Rc<MaterialShader>,
 
     /// The constant buffer giving shaders access to this material
     buffer: ConstantBuffer<MaterialCbContent>,

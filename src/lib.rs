@@ -31,4 +31,4 @@ pub use game::Game;
 pub use managed_objects::*;
 pub use run::*;
 pub use scene::Scene;
-pub use update_context::UpdateContext;
+pub use update_context::*;

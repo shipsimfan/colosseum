@@ -1,6 +1,7 @@
 use crate::{graphics::MeshRenderer, util::Arena};
 use win32::{ComPtr, d3d11::ID3D11Device};
 
+mod clear;
 mod create;
 mod get;
 mod index;

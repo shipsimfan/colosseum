@@ -3,7 +3,7 @@ use crate::graphics::context::{D3D11InfoQueue, DXGIInfoQueue};
 use crate::{
     Error, ManagedObjects, Result,
     graphics::{
-        Adapter, GraphicsContext, GraphicsSettings, Shader,
+        Adapter, GraphicsContext, GraphicsSettings,
         context::{BUFFER_COUNT, RENDER_TARGET_FORMAT, SWAP_CHAIN_FLAGS},
     },
     info,
@@ -174,16 +174,8 @@ impl GraphicsContext {
         })
         .map_err(|error| Error::new_inner("unable to create depth stencil state", error))?;
 
-        // Create default shaders
-        let default_lit_shader = Shader::create_default_lit(&device)?;
-        let default_unlit_shader = Shader::create_default_unlit(&device)?;
-
         // Create managed objects
-        let mut managed_objects = ManagedObjects::new(
-            default_lit_shader.clone(),
-            default_unlit_shader.clone(),
-            &device,
-        )?;
+        let mut managed_objects = ManagedObjects::new(&device)?;
 
         // Create render context and graphics context
         let mut graphics_context = GraphicsContext {
@@ -191,8 +183,6 @@ impl GraphicsContext {
             vsync: settings.vsync,
             display_mode: settings.display_mode,
             size: Vector2u::new(width, height),
-            default_lit_shader,
-            default_unlit_shader,
             swapchain_objects: None,
             swapchain,
             depth_stencil_state,

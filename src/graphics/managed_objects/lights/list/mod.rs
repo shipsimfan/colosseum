@@ -4,6 +4,7 @@ use crate::{
 };
 
 mod bind;
+mod clear;
 mod deref;
 mod new;
 

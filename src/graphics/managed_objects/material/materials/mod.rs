@@ -1,8 +1,8 @@
 use crate::{
-    graphics::{Material, MaterialHandle},
+    graphics::{Material, MaterialHandle, managed_objects::material::MaterialShader},
     util::Arena,
 };
-use std::num::NonZeroU32;
+use std::{num::NonZeroU32, rc::Rc};
 use win32::{ComPtr, d3d11::ID3D11Device};
 
 mod create;
@@ -22,6 +22,12 @@ pub struct Materials {
 
     /// The device for creating new [`Material`]s
     device: ComPtr<ID3D11Device>,
+
+    /// The shader to use for lit materials
+    lit_shader: Rc<MaterialShader>,
+
+    /// The shader to use for unlit materials
+    unlit_shader: Rc<MaterialShader>,
 
     /// The default lit material
     default_lit: MaterialHandle,

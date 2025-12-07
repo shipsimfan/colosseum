@@ -91,30 +91,18 @@ fn do_run<Game: crate::Game>(game_hash: Option<&str>, game_build_time: Option<&s
 
     // Create scene
     let mut last_time = Instant::now();
-    let mut scene: Box<dyn Scene<Game = Game>> = Box::new(Game::InitialScene::new(
-        &options,
-        &mut UpdateContext::new(
-            0.0,
-            &log_controller,
-            &input,
-            &mut settings,
-            &mut graphics_context,
-            &mut managed_objects,
-            &running_state,
-        ),
-    )?);
-    let (ambient_color, ambient_intensity) = scene.init_ambient();
-    managed_objects
-        .graphics
-        .lights
-        .ambient
-        .set_color(ambient_color);
-    managed_objects
-        .graphics
-        .lights
-        .ambient
-        .set_intensity(ambient_intensity);
-    scene.on_active();
+    let mut init_update_context = UpdateContext::new(
+        0.0,
+        &log_controller,
+        &input,
+        &mut settings,
+        &mut graphics_context,
+        &mut managed_objects,
+        &running_state,
+    );
+    let mut scene: Box<dyn Scene<Game = Game>> =
+        Box::new(Game::InitialScene::new(&options, &mut init_update_context)?);
+    activate_scene(&mut scene, &mut init_update_context);
 
     // Run main loop
     while running_state.is_running() {
@@ -145,24 +133,54 @@ fn do_run<Game: crate::Game>(game_hash: Option<&str>, game_build_time: Option<&s
 
         // Change scene
         if let Some(next_scene) = next_scene {
-            scene.on_deactivate();
+            // Deactivate old scene
+            scene.on_deactivate(&mut UpdateContext::new(
+                delta_t,
+                &log_controller,
+                &input,
+                &mut settings,
+                &mut graphics_context,
+                &mut managed_objects,
+                &running_state,
+            ));
+            drop(scene);
 
-            scene = next_scene;
+            // Clear scene-lifetime arenas
+            managed_objects.transforms.clear();
+            managed_objects.graphics.cameras.clear();
+            managed_objects.graphics.mesh_renderers.clear();
+            managed_objects.graphics.lights.directional.clear();
+            managed_objects.graphics.lights.point.clear();
+            managed_objects.graphics.lights.spot.clear();
 
-            let (ambient_color, ambient_intensity) = scene.init_ambient();
-            managed_objects
-                .graphics
-                .lights
-                .ambient
-                .set_color(ambient_color);
-            managed_objects
-                .graphics
-                .lights
-                .ambient
-                .set_intensity(ambient_intensity);
-            scene.on_active();
+            // Activate next scene
+            let mut activate_update_context = &mut UpdateContext::new(
+                delta_t,
+                &log_controller,
+                &input,
+                &mut settings,
+                &mut graphics_context,
+                &mut managed_objects,
+                &running_state,
+            );
+            scene = next_scene(&mut activate_update_context);
+            activate_scene(&mut scene, &mut activate_update_context);
         }
     }
 
     Ok(())
+}
+
+fn activate_scene<Game: crate::Game>(
+    scene: &mut Box<dyn Scene<Game = Game>>,
+    context: &mut UpdateContext<Game>,
+) {
+    let (ambient_color, ambient_intensity) = scene.init_ambient();
+    context.graphics.lights.ambient.set_color(ambient_color);
+    context
+        .graphics
+        .lights
+        .ambient
+        .set_intensity(ambient_intensity);
+    scene.on_active(context);
 }

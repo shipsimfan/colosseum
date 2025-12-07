@@ -9,6 +9,10 @@ mod new;
 mod quit;
 mod set;
 
+/// A function which creates a new scene for a game
+pub(crate) type NextSceneFn<Game> =
+    Box<dyn FnOnce(&mut UpdateContext<Game>) -> Box<dyn Scene<Game = Game>>>;
+
 /// The context used during updates to access the engine
 pub struct UpdateContext<'a, Game: crate::Game> {
     /// The log controller
@@ -33,5 +37,5 @@ pub struct UpdateContext<'a, Game: crate::Game> {
     running_state: &'a RunningState,
 
     /// The next scene to run on the game
-    next_scene: Option<Box<dyn Scene<Game = Game>>>,
+    next_scene: Option<NextSceneFn<Game>>,
 }

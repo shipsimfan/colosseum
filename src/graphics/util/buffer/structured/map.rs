@@ -14,6 +14,10 @@ impl<T: Sized + Copy> StructuredBuffer<T> {
         device: &ID3D11Device,
         device_context: &mut ID3D11DeviceContext,
     ) -> Result<()> {
+        if count == 0 {
+            return Ok(());
+        }
+
         if count > self.buffer_capacity {
             // Resize the capacity
             while count > self.buffer_capacity {

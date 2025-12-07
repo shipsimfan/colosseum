@@ -1,4 +1,4 @@
-use crate::graphics::ShaderSource;
+use crate::graphics::managed_objects::material::shader::ShaderSource;
 use std::borrow::Cow;
 
 impl<'a> ShaderSource<'a> {

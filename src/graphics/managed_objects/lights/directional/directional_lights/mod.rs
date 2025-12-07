@@ -1,6 +1,7 @@
 use crate::graphics::{DirectionalLight, managed_objects::lights::LightList};
 
 mod bind;
+mod clear;
 mod create;
 mod get;
 mod index;

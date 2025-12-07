@@ -1,18 +1,20 @@
 use crate::{
     Result,
     graphics::{
-        Material, Shader, managed_objects::material::MaterialCbContent, util::ConstantBuffer,
+        Material,
+        managed_objects::material::{MaterialCbContent, MaterialShader},
+        util::ConstantBuffer,
     },
     math::Color3f,
 };
-use std::num::NonZeroU32;
+use std::{num::NonZeroU32, rc::Rc};
 use win32::d3d11::ID3D11Device;
 
 impl Material {
     /// Create a new [`Material`]
-    pub(in crate::graphics) fn new(
+    pub(in crate::graphics::managed_objects::material) fn new(
         id: NonZeroU32,
-        shader: Shader,
+        shader: Rc<MaterialShader>,
         color: Color3f,
         specular_strength: f32,
         device: &ID3D11Device,

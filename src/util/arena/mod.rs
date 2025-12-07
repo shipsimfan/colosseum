@@ -3,6 +3,7 @@ use slot::Slot;
 mod handle;
 mod slot;
 
+mod clear;
 mod get;
 mod index;
 mod insert;
