@@ -16,8 +16,8 @@ impl GraphicsContext {
 
         // Clear render target view
         self.swapchain_objects.as_mut().unwrap().clear(
+            [clear_color.r, clear_color.g, clear_color.b, 1.0],
             &mut self.device_context,
-            [clear_color.r, clear_color.g, clear_color.b, 0.0],
         );
 
         // Set global render state variables

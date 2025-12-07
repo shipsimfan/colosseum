@@ -1,6 +1,6 @@
 use crate::{
     Error, Result,
-    graphics::{OutputResolution, context::RENDER_TARGET_FORMAT},
+    graphics::{OutputResolution, context::SWAPCHAIN_FORMAT},
     math::{Rational, Vector2u, number::IntoF32},
 };
 use std::{cmp::Ordering, ptr::null_mut};
@@ -14,7 +14,7 @@ impl OutputResolution {
         // Get the list of formats
         let mut num_formats = 0;
         try_hresult!(output.get_display_mode_list1(
-            RENDER_TARGET_FORMAT,
+            SWAPCHAIN_FORMAT,
             0,
             &mut num_formats,
             null_mut()
@@ -23,7 +23,7 @@ impl OutputResolution {
 
         let mut formats = Vec::with_capacity(num_formats as _);
         try_hresult!(output.get_display_mode_list1(
-            RENDER_TARGET_FORMAT,
+            SWAPCHAIN_FORMAT,
             0,
             &mut num_formats,
             formats.as_mut_ptr()

@@ -74,7 +74,6 @@ pub struct GraphicsContext {
     dxgi_info_queue: DXGIInfoQueue,
 }
 
-pub(in crate::graphics) const RENDER_TARGET_FORMAT: DXGI_FORMAT = DXGI_FORMAT::B8G8R8A8UNorm;
-const DEPTH_FORMAT: DXGI_FORMAT = DXGI_FORMAT::D32Float;
+pub(in crate::graphics) const SWAPCHAIN_FORMAT: DXGI_FORMAT = DXGI_FORMAT::B8G8R8A8UNorm;
 const BUFFER_COUNT: UINT = 3;
 const SWAP_CHAIN_FLAGS: UINT = DXGI_SWAP_CHAIN_FLAG::AllowTearing as _;

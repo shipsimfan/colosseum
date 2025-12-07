@@ -2,7 +2,7 @@ use crate::{
     Error, ManagedObjects, Result, debug,
     graphics::{
         GraphicsContext,
-        context::{BUFFER_COUNT, RENDER_TARGET_FORMAT, SWAP_CHAIN_FLAGS, SwapchainObjects},
+        context::{BUFFER_COUNT, SWAPCHAIN_FORMAT, SWAP_CHAIN_FLAGS, SwapchainObjects},
     },
     math::Vector2u,
 };
@@ -36,7 +36,7 @@ impl GraphicsContext {
             BUFFER_COUNT,
             new_size.x,
             new_size.y,
-            RENDER_TARGET_FORMAT,
+            SWAPCHAIN_FORMAT,
             SWAP_CHAIN_FLAGS,
         ))
         .map_err(|os| Error::new_inner("unable to resize swapcahin", os))?;

@@ -4,7 +4,7 @@ use crate::{
     Error, ManagedObjects, Result,
     graphics::{
         Adapter, GraphicsContext, GraphicsSettings,
-        context::{BUFFER_COUNT, RENDER_TARGET_FORMAT, SWAP_CHAIN_FLAGS},
+        context::{BUFFER_COUNT, SWAP_CHAIN_FLAGS, SWAPCHAIN_FORMAT},
     },
     info,
     logging::LogController,
@@ -107,7 +107,7 @@ impl GraphicsContext {
             buffer_desc: DXGI_MODE_DESC {
                 width,
                 height,
-                format: RENDER_TARGET_FORMAT,
+                format: SWAPCHAIN_FORMAT,
                 ..Default::default()
             },
             buffer_usage: DXGI_USAGE_RENDER_TARGET_OUTPUT as _,
