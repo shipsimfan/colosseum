@@ -11,6 +11,8 @@ impl MeshRenderer {
 
     /// Update instance `i` with `transform`
     pub fn update<T: AsMut<Transform>>(&mut self, i: usize, mut transform: T) {
+        assert!(i < self.active_instances);
+
         let transform = transform.as_mut();
         transform.update();
 
