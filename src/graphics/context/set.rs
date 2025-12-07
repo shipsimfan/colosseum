@@ -1,7 +1,7 @@
 use crate::{
     Result,
     graphics::{DisplayMode, GraphicsContext},
-    math::{Color3f, Vector2i, Vector2u},
+    math::{Vector2i, Vector2u},
 };
 
 impl GraphicsContext {
@@ -42,15 +42,5 @@ impl GraphicsContext {
         title.push(0);
         self.message_thread.set_window_title(title)?;
         Ok(())
-    }
-
-    /// Set the ambient light color
-    pub fn set_ambient_color(&mut self, ambient_color: Color3f) {
-        self.lights.set_ambient_color(ambient_color);
-    }
-
-    /// Set the intensity of the ambient light
-    pub fn set_ambient_intensity(&mut self, ambient_intensity: f32) {
-        self.lights.set_ambient_intensity(ambient_intensity);
     }
 }

@@ -1,5 +1,5 @@
 use crate::{
-    Error, Result, debug,
+    Error, ManagedObjects, Result, debug,
     graphics::{
         GraphicsContext,
         context::{BUFFER_COUNT, RENDER_TARGET_FORMAT, SWAP_CHAIN_FLAGS, SwapchainObjects},
@@ -10,17 +10,21 @@ use win32::try_hresult;
 
 impl GraphicsContext {
     /// Resize any assets directly tied to window size
-    pub(crate) fn resize(&mut self) -> Result<()> {
+    pub(crate) fn resize(&mut self, managed_objects: &mut ManagedObjects) -> Result<()> {
         let new_size = self.message_thread.window_size();
         if self.size == new_size {
             return Ok(());
         }
 
-        self.force_resize(new_size)
+        self.force_resize(managed_objects, new_size)
     }
 
     /// Forcefully resize any assets directly tied to window size
-    pub(in crate::graphics::context) fn force_resize(&mut self, new_size: Vector2u) -> Result<()> {
+    pub(in crate::graphics::context) fn force_resize(
+        &mut self,
+        managed_objects: &mut ManagedObjects,
+        new_size: Vector2u,
+    ) -> Result<()> {
         // Unbind and drop the old swapchain objects
         if let Some(swapchain_objects) = &mut self.swapchain_objects {
             swapchain_objects.unbind(&mut self.device_context);
@@ -45,7 +49,7 @@ impl GraphicsContext {
         )?);
 
         // Update the camera sizes
-        for camera in &mut self.cameras {
+        for camera in &mut managed_objects.graphics.cameras {
             camera.resize();
         }
 

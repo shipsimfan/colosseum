@@ -20,6 +20,7 @@ pub mod util;
 
 mod error;
 mod game;
+mod managed_objects;
 mod message_thread;
 mod run;
 mod scene;
@@ -27,6 +28,7 @@ mod update_context;
 
 pub use error::{Error, Result};
 pub use game::Game;
+pub use managed_objects::ManagedObjects;
 pub use run::*;
 pub use scene::Scene;
 pub use update_context::UpdateContext;

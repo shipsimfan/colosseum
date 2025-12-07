@@ -1,11 +1,15 @@
-use crate::{Error, Result, graphics::GraphicsContext, math::Color3f};
+use crate::{Error, ManagedObjects, Result, graphics::GraphicsContext, math::Color3f};
 use win32::{UINT, d3d11::D3D11_PRIMITIVE_TOPOLOGY, dxgi::DXGI_PRESENT_ALLOW_TEARING, try_hresult};
 
 impl GraphicsContext {
     /// Render the current state as a frame
-    pub(crate) fn render(&mut self, clear_color: Color3f) -> Result<()> {
+    pub(crate) fn render(
+        &mut self,
+        managed_objects: &mut ManagedObjects,
+        clear_color: Color3f,
+    ) -> Result<()> {
         // Resize if needed
-        self.resize()?;
+        self.resize(managed_objects)?;
 
         // Clear debug message queue from object creation
         self.log_debug_messages()?;
@@ -35,11 +39,14 @@ impl GraphicsContext {
         // TODO: Lighting pre-passes
 
         // Bind global lighting information
-        self.lights.bind(&self.device, &mut self.device_context)?;
+        managed_objects
+            .graphics
+            .lights
+            .bind(&self.device, &mut self.device_context)?;
 
         // Camera render passes
         let mut active_material = 0;
-        for camera in &mut self.cameras {
+        for camera in &mut managed_objects.graphics.cameras {
             if !camera.is_active() {
                 continue;
             }
@@ -47,8 +54,9 @@ impl GraphicsContext {
             camera.bind(self.size, &mut self.device_context)?;
 
             // Opaque render pass
-            for mesh_renderer in &mut self.mesh_renderers {
-                let material = &mut self.opaque_materials[mesh_renderer.material()];
+            for mesh_renderer in &mut managed_objects.graphics.mesh_renderers {
+                let material =
+                    &mut managed_objects.graphics.opaque_materials[mesh_renderer.material()];
                 if material.id() != active_material {
                     material.bind(&mut self.device_context)?;
                     active_material = material.id();

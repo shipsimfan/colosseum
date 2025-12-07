@@ -82,7 +82,7 @@ fn do_run<Game: crate::Game>(game_hash: Option<&str>, game_build_time: Option<&s
     let message_thread = Rc::new(message_thread);
 
     // Create graphics context
-    let mut graphics_context = GraphicsContext::new(
+    let (mut graphics_context, mut managed_objects) = GraphicsContext::new(
         window,
         settings.graphics_settings(),
         message_thread.clone(),
@@ -99,12 +99,21 @@ fn do_run<Game: crate::Game>(game_hash: Option<&str>, game_build_time: Option<&s
             &input,
             &mut settings,
             &mut graphics_context,
+            &mut managed_objects,
             &running_state,
         ),
     )?);
     let (ambient_color, ambient_intensity) = scene.init_ambient();
-    graphics_context.set_ambient_color(ambient_color);
-    graphics_context.set_ambient_intensity(ambient_intensity);
+    managed_objects
+        .graphics
+        .lights
+        .ambient
+        .set_color(ambient_color);
+    managed_objects
+        .graphics
+        .lights
+        .ambient
+        .set_intensity(ambient_intensity);
     scene.on_active();
 
     // Run main loop
@@ -125,13 +134,14 @@ fn do_run<Game: crate::Game>(game_hash: Option<&str>, game_build_time: Option<&s
             &input,
             &mut settings,
             &mut graphics_context,
+            &mut managed_objects,
             &running_state,
         );
         scene.update(&mut update_context)?;
         let next_scene = update_context.take_next_scene();
 
         // Render
-        graphics_context.render(scene.clear_color())?;
+        graphics_context.render(&mut managed_objects, scene.clear_color())?;
 
         // Change scene
         if let Some(next_scene) = next_scene {
@@ -140,8 +150,16 @@ fn do_run<Game: crate::Game>(game_hash: Option<&str>, game_build_time: Option<&s
             scene = next_scene;
 
             let (ambient_color, ambient_intensity) = scene.init_ambient();
-            graphics_context.set_ambient_color(ambient_color);
-            graphics_context.set_ambient_intensity(ambient_intensity);
+            managed_objects
+                .graphics
+                .lights
+                .ambient
+                .set_color(ambient_color);
+            managed_objects
+                .graphics
+                .lights
+                .ambient
+                .set_intensity(ambient_intensity);
             scene.on_active();
         }
     }

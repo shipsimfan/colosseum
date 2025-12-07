@@ -1,4 +1,7 @@
-use crate::{UpdateContext, graphics::GraphicsContext, logging::LogController, run::RunningState};
+use crate::{
+    ManagedObjects, UpdateContext, graphics::GraphicsContext, logging::LogController,
+    run::RunningState,
+};
 use std::sync::Arc;
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
@@ -8,7 +11,8 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         logs: &'a Arc<LogController>,
         input: &'a Game::Input,
         settings: &'a mut Game::SettingsCache,
-        graphics: &'a mut GraphicsContext,
+        graphics_context: &'a mut GraphicsContext,
+        objects: &'a mut ManagedObjects,
         running_state: &'a RunningState,
     ) -> Self {
         UpdateContext {
@@ -16,7 +20,8 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
             logs,
             input,
             settings,
-            graphics,
+            graphics_context,
+            objects,
             running_state,
             next_scene: None,
         }

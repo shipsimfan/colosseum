@@ -1,15 +1,14 @@
 use crate::{
     MessageThread,
-    graphics::{Camera, DisplayMode, Material, MaterialHandle, MeshRenderer, Shader},
+    graphics::{DisplayMode, Shader},
     logging::Logger,
     math::Vector2u,
-    util::Arena,
 };
 #[cfg(debug_assertions)]
 use d3d11_info_queue::D3D11InfoQueue;
 #[cfg(debug_assertions)]
 use dxgi_info_queue::DXGIInfoQueue;
-use std::{num::NonZeroU32, rc::Rc};
+use std::rc::Rc;
 use swapchain_objects::SwapchainObjects;
 use win32::{
     ComPtr, UINT,
@@ -28,15 +27,11 @@ mod swapchain_objects;
 
 mod create;
 mod get;
-mod lights;
 mod log_debug_messages;
 mod new;
-mod remove;
 mod render;
 mod resize;
 mod set;
-
-pub(in crate::graphics) use lights::{LightType, Lights};
 
 /// The context for creating graphics objects and rendering using them
 pub struct GraphicsContext {
@@ -52,32 +47,11 @@ pub struct GraphicsContext {
     /// The current size of the swapchain
     size: Vector2u,
 
-    /// The cameras that have been registered
-    cameras: Arena<Camera>,
-
-    /// The materials that have been registered
-    opaque_materials: Arena<Material>,
-
-    /// The registered mesh renderers
-    mesh_renderers: Arena<MeshRenderer>,
-
-    /// The set of lights in the scene
-    lights: Lights,
-
-    /// The ID to assign the next material
-    next_material_id: NonZeroU32,
-
     /// The default lit shader
     default_lit_shader: Shader,
 
     /// The default unlit shader
     default_unlit_shader: Shader,
-
-    /// The default lit material
-    default_lit_material: MaterialHandle,
-
-    /// The default unlit material
-    default_unlit_material: MaterialHandle,
 
     /// The objects directly associated with the swapchain
     swapchain_objects: Option<SwapchainObjects>,

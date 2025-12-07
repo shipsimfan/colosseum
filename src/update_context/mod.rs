@@ -1,6 +1,9 @@
-use crate::{Scene, graphics::GraphicsContext, logging::LogController, run::RunningState};
+use crate::{
+    ManagedObjects, Scene, graphics::GraphicsContext, logging::LogController, run::RunningState,
+};
 use std::sync::Arc;
 
+mod deref;
 mod get;
 mod new;
 mod quit;
@@ -15,10 +18,13 @@ pub struct UpdateContext<'a, Game: crate::Game> {
     pub settings: &'a mut Game::SettingsCache,
 
     /// The graphics context for creating rendering objects
-    pub graphics: &'a mut GraphicsContext,
+    pub graphics_context: &'a mut GraphicsContext,
 
     /// The input tracking for the game
     pub input: &'a Game::Input,
+
+    /// The set of objects managed by the engine
+    pub objects: &'a mut ManagedObjects,
 
     /// The amount of time since the last frame, in seconds
     delta_t: f32,

@@ -57,38 +57,35 @@ impl colosseum::InitialScene for CubeScene {
 
         colosseum::info!(logger, "Starting main cube scene!");
 
-        let camera =
-            context
-                .graphics
-                .create_camera(colosseum::graphics::CameraProjection::Perspective {
-                    fov: 3.14 / 4.0,
-                    near: 0.01,
-                    far: 1000.0,
-                })?;
+        let camera = context.graphics.cameras.create(
+            colosseum::graphics::CameraProjection::Perspective {
+                fov: 3.14 / 4.0,
+                near: 0.01,
+                far: 1000.0,
+            },
+        )?;
 
-        context
-            .graphics
-            .camera_mut(camera)
+        context.graphics.cameras[camera]
             .set_position(colosseum::math::Vector3f::new(0.0, 0.0, -10.0));
 
         let mesh = colosseum::graphics::MeshPrimitives::cube();
-        let material = context.graphics.default_lit_material();
+        let material = context.graphics.opaque_materials.default_lit();
 
-        let mesh_renderer = context.graphics.create_mesh_renderer(material, mesh, 1)?;
-        let mesh_renderer = context.graphics.mesh_renderer_mut(mesh_renderer);
+        let mesh_renderer = context.graphics.mesh_renderers.create(material, mesh, 1)?;
+        let mesh_renderer = &mut context.graphics.mesh_renderers[mesh_renderer];
         mesh_renderer.push();
 
         let mut transform = colosseum::math::Transform::new();
         transform.set_scale(colosseum::math::Vector3::new(2.0, 2.0, 2.0));
         mesh_renderer.update(0, &mut transform);
 
-        context.graphics.create_directional_light(
+        context.graphics.lights.directional.create(
             colosseum::math::Vector3f::new(-1.0, -2.0, 3.0),
             colosseum::math::Color3f::new(1.0, 0.95, 0.85),
             1.0,
         );
 
-        context.graphics.create_point_light(
+        context.graphics.lights.point.create(
             colosseum::math::Vector3::new(-2.0, -3.0, 4.0),
             15.0,
             colosseum::math::Color3::new(0.2, 0.2, 0.8),
@@ -117,7 +114,7 @@ impl colosseum::Scene for CubeScene {
         while self.second_time >= 1.0 {
             colosseum::info!(self.logger, "FPS: {}", self.frames);
             context
-                .graphics
+                .graphics_context
                 .set_title(&format!("Cube Example - FPS: {}", self.frames))?;
 
             self.second_time -= 1.0;
@@ -125,7 +122,12 @@ impl colosseum::Scene for CubeScene {
         }
 
         let delta_t = context.delta_t();
-        let camera = context.graphics.camera_mut(self.camera);
+        let camera = context
+            .objects
+            .graphics
+            .cameras
+            .get_mut(self.camera)
+            .unwrap();
         if context.input.key(colosseum::input::KeyCode::LeftShift)
             || context.input.key(colosseum::input::KeyCode::RightShift)
         {
