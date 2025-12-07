@@ -1,8 +1,4 @@
-use crate::{
-    graphics::util::ConstantBuffer,
-    math::{Matrix4x4f, Transform},
-    util::Handle,
-};
+use crate::{Transform, graphics::util::ConstantBuffer, math::Matrix4x4f, util::Handle};
 use cb_content::CameraCbContent;
 use win32::d3d11::D3D11_VIEWPORT;
 
@@ -33,6 +29,9 @@ pub struct Camera {
 
     /// The location and orientation of the camera
     transform: Transform,
+
+    /// The last epoch of the transform
+    transform_epoch: u32,
 
     /// The current projection the camera uses
     projection: CameraProjection,

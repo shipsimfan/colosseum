@@ -1,9 +1,9 @@
 use crate::{
-    Result,
+    Result, Transform,
     graphics::{
         Camera, CameraProjection, managed_objects::camera::CameraCbContent, util::ConstantBuffer,
     },
-    math::{Matrix4x4f, Transform},
+    math::Matrix4x4f,
 };
 use win32::d3d11::{D3D11_VIEWPORT, ID3D11Device};
 
@@ -13,8 +13,9 @@ impl Camera {
         projection: CameraProjection,
         device: &ID3D11Device,
     ) -> Result<Self> {
-        // Create combined matrix
-        let transform = Transform::new();
+        // Create math elements
+        let mut transform = Transform::new();
+        let transform_epoch = transform.update_camera();
         let projection_matrix = Matrix4x4f::IDENTITY;
 
         // Create constant buffer
@@ -24,6 +25,7 @@ impl Camera {
         Ok(Camera {
             active: true,
             transform,
+            transform_epoch,
             projection,
             projection_dirty: true,
             projection_matrix,

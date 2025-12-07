@@ -1,37 +1,26 @@
-use crate::{
-    graphics::MeshRenderer,
-    math::{Matrix4x4f, Transform},
-};
+use crate::{TransformHandle, graphics::MeshRenderer, math::Matrix4x4f};
 
 impl MeshRenderer {
     /// Get the number of instances in the mesh renderer
     pub const fn num_instances(&self) -> usize {
-        self.active_instances
-    }
-
-    /// Update instance `i` with `transform`
-    pub fn update<T: AsMut<Transform>>(&mut self, i: usize, mut transform: T) {
-        assert!(i < self.active_instances);
-
-        let transform = transform.as_mut();
-        transform.update();
-
-        self.instance_buffer[i] = transform.matrix();
+        self.instances.len()
     }
 
     /// Push a new instance into this renderer
-    pub fn push(&mut self) -> usize {
-        assert!(self.active_instances < self.instance_buffer.len());
-        self.instance_buffer[self.active_instances] = Matrix4x4f::identity();
-        self.active_instances += 1;
-        self.active_instances - 1
+    pub fn push(&mut self, transform: TransformHandle) -> usize {
+        assert!(self.num_instances() < self.instance_buffer.len());
+        let i = self.num_instances();
+        self.instance_buffer[i] = Matrix4x4f::identity();
+        self.instances.push((transform, 0));
+        i
     }
 
     /// Insert new instance at index `i`
-    pub fn insert(&mut self, i: usize) -> usize {
-        assert!(self.active_instances < self.instance_buffer.len());
-        assert!(i <= self.active_instances);
-        for j in (i..self.active_instances).rev() {
+    pub fn insert(&mut self, i: usize, transform: TransformHandle) -> usize {
+        assert!(self.num_instances() < self.instance_buffer.len());
+        assert!(i <= self.num_instances());
+        self.instances.insert(i, (transform, 0));
+        for j in (i..self.num_instances()).rev() {
             let instance = self.instance_buffer[j];
             self.instance_buffer[j + 1] = instance;
         }
@@ -40,31 +29,31 @@ impl MeshRenderer {
     }
 
     /// Remove the last instance from this renderer
-    pub fn pop(&mut self) -> bool {
-        if self.active_instances == 0 {
-            return false;
+    pub fn pop(&mut self) -> Option<TransformHandle> {
+        if self.num_instances() == 0 {
+            return None;
         }
 
-        self.active_instances -= 1;
-        true
+        self.instances.pop().map(|(handle, _)| handle)
     }
 
     /// Removes the instance at index `i` and replaces it with the one at the end of the list
     pub fn swap_remove(&mut self, i: usize) {
-        assert!(i < self.active_instances);
+        assert!(i < self.num_instances());
 
-        self.active_instances -= 1;
-        let instance = self.instance_buffer[self.active_instances];
+        let instance = self.instance_buffer[self.num_instances()];
         self.instance_buffer[i] = instance;
+        self.instances.swap_remove(i);
     }
 
     /// Remove the instance at `i`, moving all instances after it over by one
-    pub fn remove(&mut self, i: usize) {
-        assert!(i < self.active_instances);
-        self.active_instances -= 1;
-        for j in i..self.active_instances {
+    pub fn remove(&mut self, i: usize) -> TransformHandle {
+        assert!(i < self.num_instances());
+        let handle = self.instances.remove(i).0;
+        for j in i..self.num_instances() {
             let instance = self.instance_buffer[j + 1];
             self.instance_buffer[j] = instance;
         }
+        handle
     }
 }

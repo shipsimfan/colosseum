@@ -72,12 +72,10 @@ impl colosseum::InitialScene for CubeScene {
         let material = context.graphics.opaque_materials.default_lit();
 
         let mesh_renderer = context.graphics.mesh_renderers.create(material, mesh, 1)?;
-        let mesh_renderer = &mut context.graphics.mesh_renderers[mesh_renderer];
-        mesh_renderer.push();
 
-        let mut transform = colosseum::math::Transform::new();
-        transform.set_scale(colosseum::math::Vector3::new(2.0, 2.0, 2.0));
-        mesh_renderer.update(0, &mut transform);
+        let transform = context.transforms.create();
+        context.transforms[transform].set_scale(colosseum::math::Vector3::new(2.0, 2.0, 2.0));
+        context.graphics.mesh_renderers[mesh_renderer].push(transform);
 
         context.graphics.lights.directional.create(
             colosseum::math::Vector3f::new(-1.0, -2.0, 3.0),

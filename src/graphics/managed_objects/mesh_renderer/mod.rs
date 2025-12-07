@@ -1,4 +1,5 @@
 use crate::{
+    TransformHandle,
     graphics::{MaterialHandle, Mesh, util::InstanceBuffer},
     math::Matrix4x4f,
     util::Handle,
@@ -29,8 +30,8 @@ pub struct MeshRenderer {
     /// The mesh this material uses
     mesh: Mesh,
 
-    /// The number of instances that are currently active
-    active_instances: usize,
+    /// The set of transforms and the last epoch they were updated at
+    instances: Vec<(TransformHandle, u32)>,
 
     /// The buffer for the instance matrices
     instance_buffer: InstanceBuffer<Matrix4x4f>,

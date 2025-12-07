@@ -20,7 +20,7 @@ impl MeshRenderer {
             active: true,
             material,
             mesh,
-            active_instances: 0,
+            instances: Vec::with_capacity(max_instances),
             instance_buffer,
         })
     }

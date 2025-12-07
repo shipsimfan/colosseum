@@ -62,7 +62,11 @@ impl GraphicsContext {
                     active_material = material.id();
                 }
 
-                mesh_renderer.draw(&self.device, &mut self.device_context)?;
+                mesh_renderer.draw(
+                    &mut managed_objects.transforms,
+                    &self.device,
+                    &mut self.device_context,
+                )?;
             }
 
             // TODO: Transparent render pass

@@ -9,7 +9,11 @@ impl Camera {
         device_context: &mut ID3D11DeviceContext,
     ) -> Result<()> {
         // Update transform
-        let update_needed = self.transform.update_camera() || self.projection_dirty;
+        let epoch = self.transform.update_camera();
+        let epoch_changed = epoch != self.transform_epoch;
+        self.transform_epoch = epoch;
+
+        let update_needed = epoch_changed || self.projection_dirty;
 
         // Update projection matrix
         if self.projection_dirty {

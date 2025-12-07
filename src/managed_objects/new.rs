@@ -1,5 +1,5 @@
 use crate::{
-    ManagedObjects, Result,
+    ManagedObjects, Result, Transforms,
     graphics::{ManagedGraphicsObjects, Shader},
 };
 use win32::{ComPtr, d3d11::ID3D11Device};
@@ -17,6 +17,7 @@ impl ManagedObjects {
                 default_unlit_shader,
                 device,
             )?,
+            transforms: Transforms::new(),
         })
     }
 }

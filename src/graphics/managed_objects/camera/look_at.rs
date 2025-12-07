@@ -1,6 +1,7 @@
 use crate::{
+    Transform,
     graphics::Camera,
-    math::{Quaternion, Transform, Vector3f},
+    math::{Quaternion, Vector3f},
 };
 
 impl Camera {
