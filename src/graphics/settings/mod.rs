@@ -6,6 +6,8 @@ mod settings_group;
 
 pub use display_mode::DisplayMode;
 
+use crate::graphics::context::AntiAliasing;
+
 /// The settings effecting how the graphics subsystem works
 #[derive(Clone, Serialize, Deserialize)]
 pub struct GraphicsSettings {
@@ -31,4 +33,11 @@ pub struct GraphicsSettings {
 
     /// The adapter to use for rendering
     pub adapter: Option<String>,
+
+    /// The scale to render internally at, relative to the screen
+    #[default(1.0)]
+    pub render_scale: f32,
+
+    /// The type of anti-aliasing to use
+    pub anti_aliasing: Option<AntiAliasing>,
 }

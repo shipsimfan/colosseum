@@ -1,8 +1,7 @@
-use crate::graphics::util::{BackBufferTexture, DepthTexture};
+use crate::graphics::util::BackBufferTexture;
 use win32::d3d11::D3D11_VIEWPORT;
 
-mod bind;
-mod clear;
+mod get;
 mod new;
 mod unbind;
 
@@ -11,9 +10,6 @@ mod unbind;
 pub(in crate::graphics::context) struct SwapchainObjects {
     /// The back buffer to render the final image into
     back_buffer: BackBufferTexture,
-
-    /// The texture for recording depth information during the render pass
-    depth_buffer: DepthTexture,
 
     /// The viewport to render objects into
     viewport: D3D11_VIEWPORT,

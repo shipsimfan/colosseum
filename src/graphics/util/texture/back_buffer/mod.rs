@@ -1,6 +1,5 @@
 use win32::{ComPtr, d3d11::ID3D11RenderTargetView};
 
-mod clear;
 mod new;
 mod render_view;
 

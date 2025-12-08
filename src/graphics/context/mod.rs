@@ -3,6 +3,7 @@ use crate::{MessageThread, graphics::DisplayMode, logging::Logger, math::Vector2
 use d3d11_info_queue::D3D11InfoQueue;
 #[cfg(debug_assertions)]
 use dxgi_info_queue::DXGIInfoQueue;
+use post_processing::PostProcessing;
 use std::rc::Rc;
 use swapchain_objects::SwapchainObjects;
 use win32::{
@@ -18,6 +19,7 @@ use win32::{
 mod d3d11_info_queue;
 #[cfg(debug_assertions)]
 mod dxgi_info_queue;
+mod post_processing;
 mod swapchain_objects;
 
 mod get;
@@ -26,6 +28,8 @@ mod new;
 mod render;
 mod resize;
 mod set;
+
+pub use post_processing::AntiAliasing;
 
 /// The context for creating graphics objects and rendering using them
 pub struct GraphicsContext {
@@ -41,8 +45,17 @@ pub struct GraphicsContext {
     /// The current size of the swapchain
     size: Vector2u,
 
+    /// The current render scale
+    render_scale: f32,
+
+    /// The selected type of anti-aliasing to use
+    anti_aliasing: Option<AntiAliasing>,
+
     /// The objects directly associated with the swapchain
     swapchain_objects: Option<SwapchainObjects>,
+
+    /// The objects based on the render scale
+    post_processing: Option<PostProcessing>,
 
     /// The swap chain to render onto
     swapchain: ComPtr<IDXGISwapChain>,

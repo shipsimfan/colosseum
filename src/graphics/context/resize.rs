@@ -2,7 +2,9 @@ use crate::{
     Error, ManagedObjects, Result, debug,
     graphics::{
         GraphicsContext,
-        context::{BUFFER_COUNT, SWAPCHAIN_FORMAT, SWAP_CHAIN_FLAGS, SwapchainObjects},
+        context::{
+            BUFFER_COUNT, PostProcessing, SWAP_CHAIN_FLAGS, SWAPCHAIN_FORMAT, SwapchainObjects,
+        },
     },
     math::Vector2u,
 };
@@ -25,11 +27,12 @@ impl GraphicsContext {
         managed_objects: &mut ManagedObjects,
         new_size: Vector2u,
     ) -> Result<()> {
-        // Unbind and drop the old swapchain objects
+        // Unbind and drop the old swapchain and render scale objects
         if let Some(swapchain_objects) = &mut self.swapchain_objects {
             swapchain_objects.unbind(&mut self.device_context);
         }
         self.swapchain_objects = None;
+        self.post_processing = None;
 
         // Resize swapchain
         try_hresult!(self.swapchain.resize_buffers(
@@ -45,6 +48,14 @@ impl GraphicsContext {
         self.swapchain_objects = Some(SwapchainObjects::new(
             &mut self.swapchain,
             new_size,
+            &self.device,
+        )?);
+
+        // Recreate render scale objects
+        self.post_processing = Some(PostProcessing::new(
+            new_size,
+            self.render_scale,
+            self.anti_aliasing,
             &self.device,
         )?);
 

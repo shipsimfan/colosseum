@@ -2,7 +2,7 @@ use crate::{
     Result,
     graphics::{
         context::{SWAPCHAIN_FORMAT, SwapchainObjects},
-        util::{BackBufferTexture, DepthTexture},
+        util::BackBufferTexture,
     },
     math::Vector2u,
 };
@@ -19,7 +19,6 @@ impl SwapchainObjects {
         device: &ID3D11Device,
     ) -> Result<Self> {
         let back_buffer = BackBufferTexture::new(SWAPCHAIN_FORMAT, swapchain, device)?;
-        let depth_buffer = DepthTexture::new(swapchain_size, device)?;
 
         // Create viewport
         let viewport = D3D11_VIEWPORT {
@@ -33,7 +32,6 @@ impl SwapchainObjects {
 
         Ok(SwapchainObjects {
             back_buffer,
-            depth_buffer,
             viewport,
         })
     }
