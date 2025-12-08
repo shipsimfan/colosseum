@@ -1,7 +1,4 @@
 use crate::graphics::util::{PixelShader, VertexShader};
-use source::ShaderSource;
-
-mod source;
 
 mod bind;
 mod new;

@@ -1,5 +1,5 @@
 use std::{
-    ffi::{CStr, CString},
+    ffi::CString,
     ptr::{null, null_mut},
 };
 use win32::{ComPtr, d3dcompiler::D3DCompile, try_hresult};
@@ -28,9 +28,10 @@ impl std::fmt::Display for D3DCompileError {
 pub(crate) fn d3d_compile(
     content: &str,
     entry: &str,
-    target: &CStr,
+    target: &str,
 ) -> Result<Vec<u8>, D3DCompileError> {
     let entry = CString::new(entry).unwrap();
+    let target = CString::new(target).unwrap();
     let mut error_msgs = null_mut();
     let result = ComPtr::new_in(|code| {
         try_hresult!(D3DCompile(

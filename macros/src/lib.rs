@@ -19,17 +19,17 @@ proc_macro_util::proc_macro_attribute!(
 );
 
 proc_macro_util::proc_macro_function!(
-    /// Compiles an HLSL file into a CompiledShader, producing the struct in place of this macro.
+    /// Compiles HLSL into a CompiledShader, producing the struct in place of this macro.
     ///
     /// # Format
     /// ```ignore
-    /// compile_shader!(content: literal, vertex_main: literal, pixel_main: literal);
+    /// compile_shader!(content: literal, r#type: literal, main: literal);
     /// ```
     ///
     /// # Parameters
     ///  * `content` - String literal containing the code content
-    ///  * `vertex_main` - The name of the main vertex function
-    ///  * `pixel_main` - The name of the main pixel function
+    ///  * `r#type` - The type of shader being compiled (e.g. "vs_5_0", "ps_5_0", etc.)
+    ///  * `main` - The name of the main function
     compile_shader -> compile_shader::CompileShader
 );
 
@@ -38,12 +38,12 @@ proc_macro_util::proc_macro_function!(
     ///
     /// # Format
     /// ```ignore
-    /// compile_shader_file!(file_name: literal, vertex_main: literal, pixel_main: literal);
+    /// compile_shader_file!(file_name: literal, r#type: literal, main: literal);
     /// ```
     ///
     /// # Parameters
     ///  * `file_name` - The name of the file, relative to the defining module file
-    ///  * `vertex_main` - The name of the main vertex function
-    ///  * `pixel_main` - The name of the main pixel function
+    ///  * `r#type` - The type of shader being compiled (e.g. "vs_5_0", "ps_5_0", etc.)
+    ///  * `main` - The name of the main function
     compile_shader_file -> compile_shader_file::CompileShaderFile
 );

@@ -7,13 +7,13 @@ impl CompileShaderInput {
         &self.content
     }
 
-    /// Get the provided name of the main vertex function
-    pub fn vertex_main(&self) -> &Literal {
-        &self.vertex_main
+    /// The type of the shader being compiled
+    pub fn r#type(&self) -> &Literal {
+        &self.r#type
     }
 
-    /// Get the provided name of the main pixel function
-    pub fn pixel_main(&self) -> &Literal {
-        &self.pixel_main
+    /// Get the provided name of the main function
+    pub fn main(&self) -> &Literal {
+        &self.main
     }
 }

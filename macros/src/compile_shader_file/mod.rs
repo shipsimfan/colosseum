@@ -6,9 +6,9 @@ mod parse;
 mod to_tokens;
 
 pub struct CompileShaderFile {
-    /// The compiled content of the vertex shader
-    vertex_content: Literal,
+    /// The compiled content of the shader
+    content: Literal,
 
-    /// The compiled content of the pixel shader
-    pixel_content: Literal,
+    /// The type of the compiled shader
+    r#type: Literal,
 }

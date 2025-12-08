@@ -8,9 +8,9 @@ pub struct CompileShaderInput {
     /// The content containing the shader code
     file_name: Literal,
 
-    /// The name of the main vertex function
-    vertex_main: Literal,
+    /// The type of shader being compiled
+    r#type: Literal,
 
-    /// The name of the main pixel function
-    pixel_main: Literal,
+    /// The name of the main function
+    main: Literal,
 }

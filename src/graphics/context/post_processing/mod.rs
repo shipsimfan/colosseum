@@ -1,32 +1,33 @@
-use crate::graphics::util::{DepthTexture, RenderTargetTexture};
-use win32::d3d11::D3D11_VIEWPORT;
+use crate::util::{Arena, Handle};
+use render_scale_objects::RenderScaleObjects;
 
-mod aa;
+mod anti_aliasing;
+mod render_scale_objects;
+mod shader;
 
 mod bind;
 mod clear;
 mod new;
+mod resize;
 mod run;
 
-pub use aa::AntiAliasing;
+pub use anti_aliasing::AntiAliasing;
+pub use shader::PostProcessingShader;
+
+/// A handle to a provided post-process stage
+pub type PostProcessHandle = Handle<PostProcessingShader>;
 
 /// The objects used during post processing
-pub(in crate::graphics::context) struct PostProcessing {
-    /// The first double buffer for the main color render and post processing passes
-    hdr_output1: RenderTargetTexture,
+pub struct PostProcessing {
+    /// The provided post-process stages
+    provided_post_processing: Arena<PostProcessingShader>,
 
-    /// The second double buffer for post processing passes
-    hdr_output2: RenderTargetTexture,
+    /// The objects tied to the render scale and swapchain size
+    render_scale_objects: RenderScaleObjects,
 
-    /// The type of anti-aliasing and the texture it reads from
-    anti_aliasing: Option<(AntiAliasing, RenderTargetTexture)>,
+    /// The current render scale
+    render_scale: f32,
 
-    /// The second LDR texture for the output if render scale is active
-    render_scale_input: Option<RenderTargetTexture>,
-
-    /// The texture for recording depth information during the render pass
-    depth_buffer: DepthTexture,
-
-    /// The viewport to render objects into
-    viewport: D3D11_VIEWPORT,
+    /// The type of anti-aliasing being used
+    anti_aliasing: Option<AntiAliasing>,
 }

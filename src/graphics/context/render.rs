@@ -15,8 +15,7 @@ impl GraphicsContext {
         self.log_debug_messages()?;
 
         // Clear render targets
-        let post_processing = self.post_processing.as_mut().unwrap();
-        post_processing.clear(
+        self.post_processing.clear(
             [clear_color.r, clear_color.g, clear_color.b, 1.0],
             &mut self.device_context,
         );
@@ -32,7 +31,8 @@ impl GraphicsContext {
             .om_set_depth_stencil_state(self.depth_stencil_state.as_mut(), 0);
 
         // Bind main color output
-        post_processing.bind_main_color_output(&mut self.device_context);
+        self.post_processing
+            .bind_main_color_output(&mut self.device_context);
 
         // TODO: Lighting pre-passes
 
@@ -72,7 +72,8 @@ impl GraphicsContext {
 
         // Post-process, anti-aliasing, and render scaling
         let swapchain_objects = self.swapchain_objects.as_mut().unwrap();
-        post_processing.run(swapchain_objects, &mut self.device_context);
+        self.post_processing
+            .run(swapchain_objects, &mut self.device_context);
 
         // TODO: UI render pass
 

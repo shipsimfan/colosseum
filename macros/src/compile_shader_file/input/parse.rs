@@ -5,14 +5,14 @@ impl<'a> Parse<'a> for CompileShaderInput {
     fn parse(parser: &mut Parser<'a>) -> Result<Self> {
         let file_name = parser.parse()?;
         parser.parse::<Token![,]>()?;
-        let vertex_main = parser.parse()?;
+        let r#type = parser.parse()?;
         parser.parse::<Token![,]>()?;
-        let pixel_main = parser.parse()?;
+        let main = parser.parse()?;
 
         Ok(CompileShaderInput {
             file_name,
-            vertex_main,
-            pixel_main,
+            r#type,
+            main,
         })
     }
 }

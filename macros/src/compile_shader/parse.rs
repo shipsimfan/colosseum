@@ -20,24 +20,21 @@ impl<'a> Parse<'a> for CompileShader {
         let input = CompileShaderInput::parse(parser)?;
         let content = strip_string(input.content())?;
 
-        let vertex_content = d3d_compile(&content, &strip_string(input.vertex_main())?, c"vs_5_0")
-            .map_err(|error| {
-                input
-                    .content()
-                    .span()
-                    .error(format!("unable to compile program - {}", error))
-            })?;
-        let pixel_content = d3d_compile(&content, &strip_string(input.pixel_main())?, c"ps_5_0")
-            .map_err(|error| {
-                input
-                    .content()
-                    .span()
-                    .error(format!("unable to compile program - {}", error))
-            })?;
+        let content = d3d_compile(
+            &content,
+            &strip_string(input.main())?,
+            &strip_string(input.r#type())?,
+        )
+        .map_err(|error| {
+            input
+                .content()
+                .span()
+                .error(format!("unable to compile program - {}", error))
+        })?;
 
         Ok(CompileShader {
-            vertex_content: Literal::new(vertex_content.as_slice()),
-            pixel_content: Literal::new(pixel_content.as_slice()),
+            content: Literal::new(content.as_slice()),
+            r#type: input.r#type().clone(),
         })
     }
 }

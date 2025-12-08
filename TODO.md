@@ -24,12 +24,11 @@
     1. Add post-processing "mesh"
     2. Add post-processing vertex shader
     3. Add post-processing sampler
-    4. Add `PostProcessShader` (pixel shader)
-    5. Add color correction
-    6. Add `set_render_scale` function
-    7. Add FXAA
-    8. Add `set_anti_aliasing` function
-    9. Add provided post-processing support
+    4. Add color correction
+    5. Add `set_render_scale` function
+    6. Add FXAA
+    7. Add `set_anti_aliasing` function
+    9. Add access to the provided post-processing arena
  2. Add SSAO
  3. Add deferred rendering
  4. Add camera frustum culling 

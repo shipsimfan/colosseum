@@ -7,6 +7,7 @@ mod bind;
 mod clear;
 mod new;
 mod render_view;
+mod unbind;
 
 /// A texture which is rendered into by a pass and then later read
 pub(in crate::graphics) struct RenderTargetTexture {
