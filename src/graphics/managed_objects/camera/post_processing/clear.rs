@@ -1,7 +1,7 @@
-use crate::graphics::PostProcessing;
+use crate::graphics::CameraPostProcessing;
 use win32::d3d11::ID3D11DeviceContext;
 
-impl PostProcessing {
+impl CameraPostProcessing {
     /// Clear the main color output
     pub(in crate::graphics::managed_objects::camera) fn clear(
         &mut self,

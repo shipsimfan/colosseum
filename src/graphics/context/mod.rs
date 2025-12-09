@@ -1,13 +1,9 @@
-use crate::{
-    MessageThread,
-    graphics::{AntiAliasing, DisplayMode},
-    logging::Logger,
-    math::Vector2u,
-};
+use crate::{MessageThread, graphics::DisplayMode, logging::Logger, math::Vector2u};
 #[cfg(debug_assertions)]
 use d3d11_info_queue::D3D11InfoQueue;
 #[cfg(debug_assertions)]
 use dxgi_info_queue::DXGIInfoQueue;
+use post_processing::PostProcessing;
 use std::rc::Rc;
 use win32::{
     ComPtr, UINT,
@@ -22,6 +18,7 @@ use win32::{
 mod d3d11_info_queue;
 #[cfg(debug_assertions)]
 mod dxgi_info_queue;
+mod post_processing;
 mod swapchain_objects;
 
 mod get;
@@ -30,6 +27,8 @@ mod new;
 mod render;
 mod resize;
 mod set;
+
+pub use post_processing::{AntiAliasing, PostProcessingShader};
 
 pub(in crate::graphics) use swapchain_objects::SwapchainObjects;
 
@@ -50,8 +49,8 @@ pub struct GraphicsContext {
     /// The current render scale
     render_scale: f32,
 
-    /// The type of anti-aliasing being used
-    anti_aliasing: Option<AntiAliasing>,
+    /// The global post-processing options
+    post_processing: PostProcessing,
 
     /// The objects directly associated with the swapchain
     swapchain_objects: Option<SwapchainObjects>,

@@ -1,7 +1,7 @@
 use crate::{
     Result, Transform,
     graphics::{
-        Camera, CameraProjection, PostProcessing, managed_objects::camera::CameraCbContent,
+        Camera, CameraProjection, CameraPostProcessing, managed_objects::camera::CameraCbContent,
         util::ConstantBuffer,
     },
     math::{Matrix4x4f, Vector2u},
@@ -34,7 +34,7 @@ impl Camera {
 
         // Create post processing
         let post_processing =
-            PostProcessing::new(Vector2u::new(1, 1), &relative_viewport, 1.0, None, device)?;
+            CameraPostProcessing::new(Vector2u::new(1, 1), &relative_viewport, 1.0, None, device)?;
 
         Ok(Camera {
             active: true,

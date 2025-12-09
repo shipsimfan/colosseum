@@ -4,7 +4,7 @@ use crate::{
     Error, ManagedObjects, Result,
     graphics::{
         Adapter, GraphicsContext, GraphicsSettings,
-        context::{BUFFER_COUNT, SWAP_CHAIN_FLAGS, SWAPCHAIN_FORMAT},
+        context::{BUFFER_COUNT, PostProcessing, SWAP_CHAIN_FLAGS, SWAPCHAIN_FORMAT},
     },
     info,
     logging::LogController,
@@ -177,14 +177,17 @@ impl GraphicsContext {
         // Create managed objects
         let mut managed_objects = ManagedObjects::new(&device)?;
 
+        // Create post processing objects
+        let post_processing = PostProcessing::new(settings.anti_aliasing, &device)?;
+
         // Create render context and graphics context
         let mut graphics_context = GraphicsContext {
             logger,
             vsync: settings.vsync,
             display_mode: settings.display_mode,
             size: Vector2u::new(width, height),
+            post_processing,
             render_scale: settings.render_scale,
-            anti_aliasing: settings.anti_aliasing,
             swapchain_objects: None,
             swapchain,
             depth_stencil_state,

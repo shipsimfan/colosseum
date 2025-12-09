@@ -1,13 +1,14 @@
 use crate::{
     Result,
     graphics::{
-        AntiAliasing, PostProcessing, managed_objects::camera::post_processing::RenderScaleObjects,
+        AntiAliasing, CameraPostProcessing,
+        managed_objects::camera::post_processing::RenderScaleObjects,
     },
     math::Vector2u,
 };
 use win32::d3d11::{D3D11_VIEWPORT, ID3D11Device};
 
-impl PostProcessing {
+impl CameraPostProcessing {
     /// Resizes all render-scale based elements based on `size`
     pub(in crate::graphics::managed_objects::camera) fn resize(
         &mut self,

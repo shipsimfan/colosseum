@@ -1,11 +1,19 @@
-use crate::graphics::{PostProcessing, context::SwapchainObjects};
+use crate::graphics::{
+    CameraPostProcessing,
+    context::{PostProcessing, SwapchainObjects},
+};
 use std::ptr::null_mut;
 use win32::d3d11::ID3D11DeviceContext;
 
+mod anti_aliasing;
+mod color_correction;
+mod provided;
+
 impl PostProcessing {
     /// Run the post-processing steps needed, writing the output to `swapchain`
-    pub(in crate::graphics::managed_objects::camera) fn run(
+    pub(in crate::graphics::context) fn run(
         &mut self,
+        camera_post_processing: &mut CameraPostProcessing,
         swapchain: &mut SwapchainObjects,
         device_context: &mut ID3D11DeviceContext,
     ) {
@@ -32,7 +40,11 @@ impl PostProcessing {
 
     /// Run the provided post-processing steps, returning `true` if the final output was HDR2 or
     /// `false` if the final output was HDR1
-    fn provided_post_processing(&mut self, device_context: &mut ID3D11DeviceContext) -> bool {
+    fn provided_post_processing(
+        &mut self,
+        camera_post_processing: &mut CameraPostProcessing,
+        device_context: &mut ID3D11DeviceContext,
+    ) -> bool {
         let mut input = &mut self.render_scale_objects.hdr_output1;
         let mut output = &mut self.render_scale_objects.hdr_output2;
         let mut final_output = false;
@@ -60,6 +72,7 @@ impl PostProcessing {
     fn color_correction(
         &mut self,
         input: bool,
+        camera_post_processing: &mut CameraPostProcessing,
         swapchain: &mut SwapchainObjects,
         device_context: &mut ID3D11DeviceContext,
     ) {
@@ -112,6 +125,7 @@ impl PostProcessing {
     /// Run the anti-aliasing shader if needed
     fn anti_aliasing(
         &mut self,
+        camera_post_processing: &mut CameraPostProcessing,
         swapchain: &mut SwapchainObjects,
         device_context: &mut ID3D11DeviceContext,
     ) {

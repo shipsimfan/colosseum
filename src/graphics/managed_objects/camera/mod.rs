@@ -19,7 +19,9 @@ mod run_post_process;
 mod viewport;
 
 pub use cameras::Cameras;
-pub use post_processing::{AntiAliasing, PostProcessHandle, PostProcessing, PostProcessingShader};
+pub use post_processing::{
+    AntiAliasing, CameraPostProcessing, PostProcessHandle, PostProcessingShader,
+};
 pub use projection_type::CameraProjection;
 
 /// A handle pointing to a camera
@@ -55,5 +57,5 @@ pub struct Camera {
     viewport_dirty: bool,
 
     /// The post-processing context
-    post_processing: PostProcessing,
+    post_processing: CameraPostProcessing,
 }
