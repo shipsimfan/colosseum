@@ -14,26 +14,6 @@ impl GraphicsContext {
         // Clear debug message queue from object creation
         self.log_debug_messages()?;
 
-        // Clear render targets
-        self.post_processing.clear(
-            [clear_color.r, clear_color.g, clear_color.b, 1.0],
-            &mut self.device_context,
-        );
-
-        // Set global render state variables
-        self.device_context
-            .ia_set_primitive_topology(D3D11_PRIMITIVE_TOPOLOGY::TriangleList);
-        self.device_context
-            .rs_set_state(self.rasterizer_state.as_mut());
-        self.device_context
-            .om_set_blend_state(self.blend_state.as_mut(), [1.; 4], UINT::MAX);
-        self.device_context
-            .om_set_depth_stencil_state(self.depth_stencil_state.as_mut(), 0);
-
-        // Bind main color output
-        self.post_processing
-            .bind_main_color_output(&mut self.device_context);
-
         // TODO: Lighting pre-passes
 
         // Bind global lighting information
@@ -49,7 +29,25 @@ impl GraphicsContext {
                 continue;
             }
 
-            camera.bind(self.size, &mut self.device_context)?;
+            // Set pipeline state variables
+            self.device_context
+                .ia_set_primitive_topology(D3D11_PRIMITIVE_TOPOLOGY::TriangleList);
+            self.device_context
+                .rs_set_state(self.rasterizer_state.as_mut());
+            self.device_context
+                .om_set_blend_state(self.blend_state.as_mut(), [1.; 4], UINT::MAX);
+            self.device_context
+                .om_set_depth_stencil_state(self.depth_stencil_state.as_mut(), 0);
+
+            // Bind the camera
+            camera.bind(
+                self.size,
+                self.render_scale,
+                self.anti_aliasing,
+                [clear_color.r, clear_color.g, clear_color.b, 1.0],
+                &self.device,
+                &mut self.device_context,
+            )?;
 
             // Opaque render pass
             for mesh_renderer in &mut managed_objects.graphics.mesh_renderers {
@@ -68,12 +66,11 @@ impl GraphicsContext {
             }
 
             // TODO: Transparent render pass
-        }
 
-        // Post-process, anti-aliasing, and render scaling
-        let swapchain_objects = self.swapchain_objects.as_mut().unwrap();
-        self.post_processing
-            .run(swapchain_objects, &mut self.device_context);
+            // Post-process, anti-aliasing, and render scaling
+            let swapchain_objects = self.swapchain_objects.as_mut().unwrap();
+            camera.run_post_process(swapchain_objects, &mut self.device_context);
+        }
 
         // TODO: UI render pass
 

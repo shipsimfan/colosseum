@@ -1,12 +1,9 @@
 use crate::{
     self as colosseum, Error, Result,
     graphics::{
-        AntiAliasing, PostProcessingShader, ShaderSource,
-        context::{
-            PostProcessing,
-            post_processing::{
-                POST_PROCESS_INPUT_LAYOUT, QUAD_INDICES, QUAD_VERTICES, RenderScaleObjects,
-            },
+        AntiAliasing, PostProcessing, PostProcessingShader, ShaderSource,
+        managed_objects::camera::post_processing::{
+            POST_PROCESS_INPUT_LAYOUT, QUAD_INDICES, QUAD_VERTICES, RenderScaleObjects,
         },
         util::{IndexBuffer, VertexBuffer, VertexShader},
     },
@@ -16,25 +13,33 @@ use crate::{
 use colosseum_macros::compile_shader_file;
 use win32::{
     ComPtr, FALSE,
-    d3d11::{D3D11_DEPTH_STENCIL_DESC, D3D11_SAMPLER_DESC, ID3D11Device},
+    d3d11::{D3D11_DEPTH_STENCIL_DESC, D3D11_SAMPLER_DESC, D3D11_VIEWPORT, ID3D11Device},
     try_hresult,
 };
 
 const VERTEX_SHADER: ShaderSource = compile_shader_file!("vertex_shader.hlsl", "vs_5_0", "main");
 const COLOR_CORRECITON_SHADER: ShaderSource =
     compile_shader_file!("color_correction.hlsl", "ps_5_0", "main");
+const RENDER_SCALE_SHADER: ShaderSource =
+    compile_shader_file!("render_scale.hlsl", "ps_5_0", "main");
 
 impl PostProcessing {
     /// Create a new [`PostProcessing`] context
-    pub(in crate::graphics::context) fn new(
-        size: Vector2u,
+    pub(in crate::graphics::managed_objects::camera) fn new(
+        window_size: Vector2u,
+        relative_viewport: &D3D11_VIEWPORT,
         render_scale: f32,
         anti_aliasing: Option<AntiAliasing>,
         device: &ID3D11Device,
     ) -> Result<Self> {
         // Create render scale objects
-        let render_scale_objects =
-            RenderScaleObjects::new(size, render_scale, anti_aliasing.is_some(), device)?;
+        let render_scale_objects = RenderScaleObjects::new(
+            window_size,
+            relative_viewport,
+            render_scale,
+            anti_aliasing,
+            device,
+        )?;
 
         // Create depth stencil state
         let depth_stencil_desc = D3D11_DEPTH_STENCIL_DESC {
@@ -66,11 +71,10 @@ impl PostProcessing {
             VertexShader::new(VERTEX_SHADER.content(), POST_PROCESS_INPUT_LAYOUT, device)?;
 
         let color_correction_shader = PostProcessingShader::new(&COLOR_CORRECITON_SHADER, device)?;
+        let render_scale_shader = PostProcessingShader::new(&RENDER_SCALE_SHADER, device)?;
 
         Ok(PostProcessing {
             provided_post_processing: Arena::new(),
-            render_scale,
-            anti_aliasing,
             render_scale_objects,
             depth_stencil_state,
             sampler_state,
@@ -78,6 +82,7 @@ impl PostProcessing {
             index_buffer,
             vertex_shader,
             color_correction_shader,
+            render_scale_shader,
         })
     }
 }

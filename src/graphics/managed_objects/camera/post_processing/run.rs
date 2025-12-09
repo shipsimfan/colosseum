@@ -1,10 +1,10 @@
-use crate::graphics::context::{PostProcessing, SwapchainObjects};
+use crate::graphics::{PostProcessing, context::SwapchainObjects};
 use std::ptr::null_mut;
 use win32::d3d11::ID3D11DeviceContext;
 
 impl PostProcessing {
     /// Run the post-processing steps needed, writing the output to `swapchain`
-    pub(in crate::graphics::context) fn run(
+    pub(in crate::graphics::managed_objects::camera) fn run(
         &mut self,
         swapchain: &mut SwapchainObjects,
         device_context: &mut ID3D11DeviceContext,
@@ -33,8 +33,6 @@ impl PostProcessing {
     /// Run the provided post-processing steps, returning `true` if the final output was HDR2 or
     /// `false` if the final output was HDR1
     fn provided_post_processing(&mut self, device_context: &mut ID3D11DeviceContext) -> bool {
-        device_context.rs_set_viewports(1, &self.render_scale_objects.viewport);
-
         let mut input = &mut self.render_scale_objects.hdr_output1;
         let mut output = &mut self.render_scale_objects.hdr_output2;
         let mut final_output = false;
@@ -80,17 +78,20 @@ impl PostProcessing {
             // Anti-aliasing is in use, use the anti-aliasing input texture
             (Some(anti_aliasing_input), _) => (
                 anti_aliasing_input.render_view(),
-                &self.render_scale_objects.viewport,
+                &self.render_scale_objects.render_scale_viewport,
             ),
 
             // No anti-aliasing but render scale is in use, use the render-scale input texture
             (None, Some(render_scale_input)) => (
                 render_scale_input.render_view(),
-                &self.render_scale_objects.viewport,
+                &self.render_scale_objects.render_scale_viewport,
             ),
 
             // No anti-aliasing or render scale, use the swapchain
-            (None, None) => swapchain.render_view(),
+            (None, None) => (
+                swapchain.render_view(),
+                &self.render_scale_objects.screen_viewport,
+            ),
         };
 
         // Bind the inputs and outputs
@@ -115,7 +116,7 @@ impl PostProcessing {
         device_context: &mut ID3D11DeviceContext,
     ) {
         // See if we need anti-aliasing
-        let anti_aliasing = match self.anti_aliasing {
+        let anti_aliasing = match self.render_scale_objects.anti_aliasing {
             Some(anti_aliasing) => anti_aliasing,
             None => return,
         };
@@ -132,9 +133,12 @@ impl PostProcessing {
             match self.render_scale_objects.render_scale_input.as_mut() {
                 Some(render_scale_input) => (
                     render_scale_input.render_view(),
-                    &self.render_scale_objects.viewport,
+                    &self.render_scale_objects.render_scale_viewport,
                 ),
-                None => swapchain.render_view(),
+                None => (
+                    swapchain.render_view(),
+                    &self.render_scale_objects.screen_viewport,
+                ),
             };
 
         // Bind the inputs and outputs
@@ -164,14 +168,16 @@ impl PostProcessing {
         };
 
         // Get the output
-        let (render_scale_output, render_scale_viewport) = swapchain.render_view();
+        let render_scale_output = swapchain.render_view();
+        let render_scale_viewport = &self.render_scale_objects.screen_viewport;
 
         // Bind the inputs and outputs
         device_context.rs_set_viewports(1, render_scale_viewport);
         device_context.om_set_render_targets(1, &render_scale_output, null_mut());
         render_scale_input.bind(device_context);
 
-        // TODO: Set pixel shader
+        // Set pixel shader
+        self.render_scale_shader.bind(device_context);
 
         // Make draw call
         device_context.draw_indexed(6, 0, 0);

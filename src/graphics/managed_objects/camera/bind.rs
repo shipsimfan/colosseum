@@ -1,11 +1,19 @@
-use crate::{Result, graphics::Camera, math::Vector2u};
-use win32::d3d11::ID3D11DeviceContext;
+use crate::{
+    Result,
+    graphics::{AntiAliasing, Camera},
+    math::Vector2u,
+};
+use win32::d3d11::{ID3D11Device, ID3D11DeviceContext};
 
 impl Camera {
     /// Set this camera as active, updating if needed
     pub(in crate::graphics) fn bind(
         &mut self,
-        screen_size: Vector2u,
+        window_size: Vector2u,
+        render_scale: f32,
+        anti_aliasing: Option<AntiAliasing>,
+        clear_color: [f32; 4],
+        device: &ID3D11Device,
         device_context: &mut ID3D11DeviceContext,
     ) -> Result<()> {
         // Update transform
@@ -17,7 +25,7 @@ impl Camera {
 
         // Update projection matrix
         if self.projection_dirty {
-            self.projection_matrix = self.projection.matrix(screen_size);
+            self.projection_matrix = self.projection.matrix(window_size);
             self.projection_dirty = false;
         }
 
@@ -29,19 +37,21 @@ impl Camera {
 
         // Update viewport if needed
         if self.viewport_dirty {
-            self.screen_viewport.top_left_x =
-                self.relative_viewport.top_left_x * screen_size.x as f32;
-            self.screen_viewport.top_left_y =
-                self.relative_viewport.top_left_y * screen_size.y as f32;
-            self.screen_viewport.width = self.relative_viewport.width * screen_size.x as f32;
-            self.screen_viewport.height = self.relative_viewport.height * screen_size.y as f32;
+            self.post_processing.resize(
+                window_size,
+                &self.relative_viewport,
+                render_scale,
+                anti_aliasing,
+                device,
+            )?;
 
             self.viewport_dirty = false;
         }
 
         // Set active
         self.buffer.bind(device_context)?;
-        device_context.rs_set_viewports(1, &self.screen_viewport);
+        self.post_processing.clear(clear_color, device_context);
+        self.post_processing.bind_main_color_output(device_context);
 
         Ok(())
     }

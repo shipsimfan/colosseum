@@ -7,7 +7,7 @@ use crate::math::Vector2f;
 
 /// A vertex of the post processing quad
 #[repr(C)]
-pub(in crate::graphics::context::post_processing) struct PostProcessingVertex {
+pub(in crate::graphics::managed_objects::camera::post_processing) struct PostProcessingVertex {
     /// The position of the vertex
     position: Vector2f,
 
@@ -15,7 +15,7 @@ pub(in crate::graphics::context::post_processing) struct PostProcessingVertex {
     uv: Vector2f,
 }
 
-pub(in crate::graphics::context::post_processing) const POST_PROCESS_INPUT_LAYOUT:
+pub(in crate::graphics::managed_objects::camera::post_processing) const POST_PROCESS_INPUT_LAYOUT:
     &[D3D11_INPUT_ELEMENT_DESC] = &[
     D3D11_INPUT_ELEMENT_DESC {
         semantic_name: c"POSITION".as_ptr(),
@@ -38,7 +38,8 @@ pub(in crate::graphics::context::post_processing) const POST_PROCESS_INPUT_LAYOU
 ];
 
 /// The vertices making up the fullscreen post process quad
-pub(in crate::graphics::context::post_processing) const QUAD_VERTICES: &[PostProcessingVertex] = &[
+pub(in crate::graphics::managed_objects::camera::post_processing) const QUAD_VERTICES:
+    &[PostProcessingVertex] = &[
     PostProcessingVertex {
         position: Vector2f::new(-1.0, -1.0),
         uv: Vector2f::new(0.0, 1.0),
@@ -58,4 +59,5 @@ pub(in crate::graphics::context::post_processing) const QUAD_VERTICES: &[PostPro
 ];
 
 /// The indices making up the fullscreen post process quad
-pub(in crate::graphics::context::post_processing) const QUAD_INDICES: &[u32] = &[0, 1, 2, 2, 3, 0];
+pub(in crate::graphics::managed_objects::camera::post_processing) const QUAD_INDICES: &[u32] =
+    &[0, 1, 2, 2, 3, 0];

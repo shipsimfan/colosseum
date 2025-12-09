@@ -31,12 +31,6 @@ pub struct PostProcessing {
     /// The provided post-process stages
     provided_post_processing: Arena<PostProcessingShader>,
 
-    /// The current render scale
-    render_scale: f32,
-
-    /// The type of anti-aliasing being used
-    anti_aliasing: Option<AntiAliasing>,
-
     /// The objects tied to the render scale and swapchain size
     render_scale_objects: RenderScaleObjects,
 
@@ -57,4 +51,7 @@ pub struct PostProcessing {
 
     /// The shader to use for color correction
     color_correction_shader: PostProcessingShader,
+
+    /// The shader to use for render scaling
+    render_scale_shader: PostProcessingShader,
 }

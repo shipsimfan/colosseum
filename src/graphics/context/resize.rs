@@ -42,14 +42,7 @@ impl GraphicsContext {
         .map_err(|os| Error::new_inner("unable to resize swapcahin", os))?;
 
         // Recreate the swapchain objects
-        self.swapchain_objects = Some(SwapchainObjects::new(
-            &mut self.swapchain,
-            new_size,
-            &self.device,
-        )?);
-
-        // Recreate render scale objects
-        self.post_processing.resize(new_size, &self.device)?;
+        self.swapchain_objects = Some(SwapchainObjects::new(&mut self.swapchain, &self.device)?);
 
         // Update the camera sizes
         for camera in &mut managed_objects.graphics.cameras {

@@ -1,4 +1,4 @@
-use crate::graphics::context::post_processing::RenderScaleObjects;
+use crate::graphics::managed_objects::camera::post_processing::RenderScaleObjects;
 use win32::d3d11::ID3D11DeviceContext;
 
 impl RenderScaleObjects {

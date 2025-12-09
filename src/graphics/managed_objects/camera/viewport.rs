@@ -16,7 +16,7 @@ impl Camera {
     /// Set the viewport being used by the camera
     pub fn set_viewport(&mut self, position: Vector2f, size: Vector2f) {
         self.viewport_dirty = true;
-        self.screen_viewport = D3D11_VIEWPORT {
+        self.relative_viewport = D3D11_VIEWPORT {
             top_left_x: position.x,
             top_left_y: position.y,
             width: size.x,

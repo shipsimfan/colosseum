@@ -1,3 +1,4 @@
+use crate::graphics::AntiAliasing;
 use data_format::{Deserialize, Serialize};
 
 mod display_mode;
@@ -5,8 +6,6 @@ mod display_mode;
 mod settings_group;
 
 pub use display_mode::DisplayMode;
-
-use crate::graphics::context::AntiAliasing;
 
 /// The settings effecting how the graphics subsystem works
 #[derive(Clone, Serialize, Deserialize)]

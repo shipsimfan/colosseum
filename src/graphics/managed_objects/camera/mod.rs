@@ -4,6 +4,7 @@ use win32::d3d11::D3D11_VIEWPORT;
 
 mod cameras;
 mod cb_content;
+mod post_processing;
 mod projection_type;
 
 mod active;
@@ -14,9 +15,11 @@ mod position;
 mod projection;
 mod resize;
 mod rotation;
+mod run_post_process;
 mod viewport;
 
 pub use cameras::Cameras;
+pub use post_processing::{AntiAliasing, PostProcessHandle, PostProcessing, PostProcessingShader};
 pub use projection_type::CameraProjection;
 
 /// A handle pointing to a camera
@@ -48,9 +51,9 @@ pub struct Camera {
     /// The region of the window that this camera displays to, in percentages of screen size
     relative_viewport: D3D11_VIEWPORT,
 
-    /// The region of the window that this camera displays to, in pixels
-    screen_viewport: D3D11_VIEWPORT,
-
     /// Has the viewport changed this frame?
     viewport_dirty: bool,
+
+    /// The post-processing context
+    post_processing: PostProcessing,
 }

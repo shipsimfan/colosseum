@@ -6,7 +6,7 @@ use win32::d3d11::ID3D11Device;
 
 impl PostProcessingShader {
     /// Create a new [`PostProcessingShader`]
-    pub(in crate::graphics::context::post_processing) fn new(
+    pub(in crate::graphics::managed_objects::camera::post_processing) fn new(
         source: &ShaderSource,
         device: &ID3D11Device,
     ) -> Result<Self> {

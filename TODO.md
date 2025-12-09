@@ -21,11 +21,10 @@
 
 ## Additional ToDos
  1. Add post-processing support
-    1. Add HDR
-    2. Add `set_render_scale` function
-    3. Add FXAA
-    4. Add `set_anti_aliasing` function
-    5. Add access to the provided post-processing arena
+    1. Add `set_render_scale` function
+    2. Add FXAA
+    3. Add `set_anti_aliasing` function
+    4. Add access to the provided post-processing arena
  2. Add SSAO
  3. Add deferred rendering
  4. Add camera frustum culling 

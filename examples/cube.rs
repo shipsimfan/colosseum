@@ -87,7 +87,7 @@ impl colosseum::InitialScene for CubeScene {
             colosseum::math::Vector3::new(-2.0, -3.0, 4.0),
             15.0,
             colosseum::math::Color3::new(0.2, 0.2, 0.8),
-            1.0,
+            5.0,
         );
 
         Ok(CubeScene {

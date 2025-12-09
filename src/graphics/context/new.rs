@@ -3,7 +3,7 @@ use crate::graphics::context::{D3D11InfoQueue, DXGIInfoQueue};
 use crate::{
     Error, ManagedObjects, Result,
     graphics::{
-        Adapter, GraphicsContext, GraphicsSettings, PostProcessing,
+        Adapter, GraphicsContext, GraphicsSettings,
         context::{BUFFER_COUNT, SWAP_CHAIN_FLAGS, SWAPCHAIN_FORMAT},
     },
     info,
@@ -176,12 +176,6 @@ impl GraphicsContext {
 
         // Create managed objects
         let mut managed_objects = ManagedObjects::new(&device)?;
-        let post_processing = PostProcessing::new(
-            Vector2u::new(width, height),
-            settings.render_scale,
-            settings.anti_aliasing,
-            &device,
-        )?;
 
         // Create render context and graphics context
         let mut graphics_context = GraphicsContext {
@@ -189,8 +183,9 @@ impl GraphicsContext {
             vsync: settings.vsync,
             display_mode: settings.display_mode,
             size: Vector2u::new(width, height),
+            render_scale: settings.render_scale,
+            anti_aliasing: settings.anti_aliasing,
             swapchain_objects: None,
-            post_processing,
             swapchain,
             depth_stencil_state,
             rasterizer_state,
