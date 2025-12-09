@@ -55,8 +55,8 @@ impl MaterialShader {
         );
         assert_eq!(pixel_shader.r#type(), "ps_5_0", "invalid pixel shader type");
 
-        let vertex_shader = VertexShader::new(device, vertex_shader.content(), input_layout)?;
-        let pixel_shader = PixelShader::new(device, pixel_shader.content())?;
+        let vertex_shader = VertexShader::new(vertex_shader.content(), input_layout, device)?;
+        let pixel_shader = PixelShader::new(pixel_shader.content(), device)?;
 
         Ok(Rc::new(MaterialShader {
             vertex_shader,

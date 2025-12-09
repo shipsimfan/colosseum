@@ -1,7 +1,4 @@
-use crate::graphics::{
-    context::{PostProcessing, SwapchainObjects},
-    util::RenderTargetTexture,
-};
+use crate::graphics::context::{PostProcessing, SwapchainObjects};
 use std::ptr::null_mut;
 use win32::d3d11::ID3D11DeviceContext;
 
@@ -12,7 +9,13 @@ impl PostProcessing {
         swapchain: &mut SwapchainObjects,
         device_context: &mut ID3D11DeviceContext,
     ) {
-        // TODO: Set vertex shader and mesh
+        // Set sampler, vertex shader, and mesh
+        device_context.om_set_depth_stencil_state(self.depth_stencil_state.as_mut(), 0);
+        let sampler = self.sampler_state.as_mut() as *mut _;
+        device_context.ps_set_samplers(0, 1, &sampler);
+        self.vertex_buffer.bind(device_context);
+        self.index_buffer.bind(device_context);
+        self.vertex_shader.bind(device_context);
 
         // Provided post-processing steps
         let color_correction_input = self.provided_post_processing(device_context);
@@ -27,36 +30,48 @@ impl PostProcessing {
         self.render_scale(swapchain, device_context);
     }
 
-    /// Run the provided post-processing steps
-    fn provided_post_processing<'a>(
-        &'a mut self,
-        device_context: &mut ID3D11DeviceContext,
-    ) -> &'a mut RenderTargetTexture {
+    /// Run the provided post-processing steps, returning `true` if the final output was HDR2 or
+    /// `false` if the final output was HDR1
+    fn provided_post_processing(&mut self, device_context: &mut ID3D11DeviceContext) -> bool {
         device_context.rs_set_viewports(1, &self.render_scale_objects.viewport);
 
         let mut input = &mut self.render_scale_objects.hdr_output1;
         let mut output = &mut self.render_scale_objects.hdr_output2;
+        let mut final_output = false;
         for shader in &mut self.provided_post_processing {
+            // Bind the inputs and outputs
             device_context.om_set_render_targets(1, &output.render_view(), null_mut());
             input.bind(device_context);
 
-            // TODO: Set pixel shader and make draw call
+            // Bind pixel shader
+            shader.bind(device_context);
+
+            // Make draw call
+            device_context.draw_indexed(6, 0, 0);
 
             input.unbind(device_context);
 
             std::mem::swap(&mut input, &mut output);
+            final_output = !final_output;
         }
 
-        input
+        final_output
     }
 
     /// Run the color correction shader
     fn color_correction(
         &mut self,
-        input: &mut RenderTargetTexture,
+        input: bool,
         swapchain: &mut SwapchainObjects,
         device_context: &mut ID3D11DeviceContext,
     ) {
+        // Determine the input
+        let input = if input {
+            &mut self.render_scale_objects.hdr_output2
+        } else {
+            &mut self.render_scale_objects.hdr_output1
+        };
+
         // Determine where to render to
         let (color_correction_output, color_correction_viewport) = match (
             &mut self.render_scale_objects.anti_aliasing_input.as_mut(),
@@ -83,7 +98,11 @@ impl PostProcessing {
         device_context.om_set_render_targets(1, &color_correction_output, null_mut());
         input.bind(device_context);
 
-        // TODO: Set pixel shader and make draw call
+        // Set pixel shader
+        self.color_correction_shader.bind(device_context);
+
+        // Make draw call
+        device_context.draw_indexed(6, 0, 0);
 
         // Unbind the input
         input.unbind(device_context);
@@ -123,7 +142,10 @@ impl PostProcessing {
         device_context.om_set_render_targets(1, &anti_aliasing_output, null_mut());
         anti_aliasing_input.bind(device_context);
 
-        // TODO: Set pixel shader and make draw call
+        // TODO: Set pixel shader
+
+        // Make draw call
+        device_context.draw_indexed(6, 0, 0);
 
         // Unbind the input
         anti_aliasing_input.unbind(device_context);
@@ -149,7 +171,10 @@ impl PostProcessing {
         device_context.om_set_render_targets(1, &render_scale_output, null_mut());
         render_scale_input.bind(device_context);
 
-        // TODO: Set pixel shader and make draw call
+        // TODO: Set pixel shader
+
+        // Make draw call
+        device_context.draw_indexed(6, 0, 0);
 
         // Unbind the input
         render_scale_input.unbind(device_context);

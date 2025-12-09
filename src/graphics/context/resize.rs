@@ -49,7 +49,7 @@ impl GraphicsContext {
         )?);
 
         // Recreate render scale objects
-        self.post_processing.resize(new_size, &self.device);
+        self.post_processing.resize(new_size, &self.device)?;
 
         // Update the camera sizes
         for camera in &mut managed_objects.graphics.cameras {

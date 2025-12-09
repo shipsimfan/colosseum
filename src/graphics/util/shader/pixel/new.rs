@@ -4,7 +4,7 @@ use win32::{ComPtr, d3d11::ID3D11Device, try_hresult};
 
 impl PixelShader {
     /// Create a new [`PixelShader`]
-    pub fn new(device: &ID3D11Device, compiled_shader: &[u8]) -> Result<Self> {
+    pub fn new(compiled_shader: &[u8], device: &ID3D11Device) -> Result<Self> {
         let shader = ComPtr::new_in(|pixel_shader| {
             try_hresult!(device.create_pixel_shader(
                 compiled_shader.as_ptr().cast(),

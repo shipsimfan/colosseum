@@ -9,9 +9,9 @@ use win32::{
 impl VertexShader {
     /// Create a new [`VertexShader`]
     pub fn new(
-        device: &ID3D11Device,
         compiled_shader: &[u8],
         input_layout: &[D3D11_INPUT_ELEMENT_DESC],
+        device: &ID3D11Device,
     ) -> Result<Self> {
         // Create vertex shader
         let shader = ComPtr::new_in(|vertex_shader| {

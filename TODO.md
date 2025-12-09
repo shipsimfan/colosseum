@@ -21,14 +21,11 @@
 
 ## Additional ToDos
  1. Add post-processing support
-    1. Add post-processing "mesh"
-    2. Add post-processing vertex shader
-    3. Add post-processing sampler
-    4. Add color correction
-    5. Add `set_render_scale` function
-    6. Add FXAA
-    7. Add `set_anti_aliasing` function
-    9. Add access to the provided post-processing arena
+    1. Add HDR
+    2. Add `set_render_scale` function
+    3. Add FXAA
+    4. Add `set_anti_aliasing` function
+    5. Add access to the provided post-processing arena
  2. Add SSAO
  3. Add deferred rendering
  4. Add camera frustum culling 
