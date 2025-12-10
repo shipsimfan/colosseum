@@ -45,9 +45,8 @@ impl GraphicsContext {
         self.swapchain_objects = Some(SwapchainObjects::new(&mut self.swapchain, &self.device)?);
 
         // Update the camera sizes
-        for camera in &mut managed_objects.graphics.cameras {
-            camera.resize();
-        }
+        self.render_scale_dirty = true;
+        self.update_render_scale(managed_objects);
 
         self.size = new_size;
         debug!(
@@ -55,5 +54,18 @@ impl GraphicsContext {
             "Swapchain resized to {}x{}", new_size.x, new_size.y
         );
         Ok(())
+    }
+
+    // Update the cameras if the render scale has changed
+    fn update_render_scale(&mut self, managed_objects: &mut ManagedObjects) {
+        if !self.render_scale_dirty {
+            return;
+        }
+
+        for camera in &mut managed_objects.graphics.cameras {
+            camera.resize();
+        }
+
+        self.render_scale_dirty = false;
     }
 }

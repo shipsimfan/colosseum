@@ -52,6 +52,9 @@ pub struct GraphicsContext {
     /// The type of anti-aliasing being used
     anti_aliasing: Option<AntiAliasing>,
 
+    /// Have the settings affecting render scale objects changed?
+    render_scale_dirty: bool,
+
     /// The global post-processing options
     post_processing: PostProcessing,
 

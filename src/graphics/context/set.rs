@@ -1,6 +1,6 @@
 use crate::{
     Result,
-    graphics::{DisplayMode, GraphicsContext},
+    graphics::{AntiAliasing, DisplayMode, GraphicsContext},
     math::{Vector2i, Vector2u},
 };
 
@@ -42,5 +42,17 @@ impl GraphicsContext {
         title.push(0);
         self.message_thread.set_window_title(title)?;
         Ok(())
+    }
+
+    /// Set the type of anti-aliasing being used
+    pub fn set_anti_aliasing(&mut self, anti_aliasing: Option<AntiAliasing>) {
+        self.anti_aliasing = anti_aliasing;
+        self.render_scale_dirty = true;
+    }
+
+    /// Set the scale internal rendering occurs at
+    pub fn set_render_scale(&mut self, render_scale: f32) {
+        self.render_scale = render_scale;
+        self.render_scale_dirty = true;
     }
 }

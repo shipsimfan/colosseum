@@ -189,6 +189,7 @@ impl GraphicsContext {
             anti_aliasing: settings.anti_aliasing,
             post_processing,
             render_scale: settings.render_scale,
+            render_scale_dirty: true,
             swapchain_objects: None,
             swapchain,
             depth_stencil_state,
