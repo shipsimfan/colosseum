@@ -178,7 +178,7 @@ impl GraphicsContext {
         let mut managed_objects = ManagedObjects::new(&device)?;
 
         // Create post processing objects
-        let post_processing = PostProcessing::new(settings.anti_aliasing, &device)?;
+        let post_processing = PostProcessing::new(&device)?;
 
         // Create render context and graphics context
         let mut graphics_context = GraphicsContext {
@@ -186,6 +186,7 @@ impl GraphicsContext {
             vsync: settings.vsync,
             display_mode: settings.display_mode,
             size: Vector2u::new(width, height),
+            anti_aliasing: settings.anti_aliasing,
             post_processing,
             render_scale: settings.render_scale,
             swapchain_objects: None,

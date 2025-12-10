@@ -68,8 +68,11 @@ impl GraphicsContext {
             // TODO: Transparent render pass
 
             // Post-process, anti-aliasing, and render scaling
-            let swapchain_objects = self.swapchain_objects.as_mut().unwrap();
-            camera.run_post_process(swapchain_objects, &mut self.device_context);
+            self.post_processing.run(
+                camera.post_processing(),
+                self.swapchain_objects.as_mut().unwrap(),
+                &mut self.device_context,
+            );
         }
 
         // TODO: UI render pass

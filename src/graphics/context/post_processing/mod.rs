@@ -17,9 +17,6 @@ pub use shader::PostProcessingShader;
 
 /// Common elements to post-processing
 pub(in crate::graphics::context) struct PostProcessing {
-    /// The type of anti-aliasing being used
-    anti_aliasing: Option<AntiAliasing>,
-
     /// The state describing how the depth stecil view should work for post process passes
     depth_stencil_state: ComPtr<ID3D11DepthStencilState>,
 

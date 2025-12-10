@@ -8,7 +8,7 @@ mod bind;
 mod clear;
 mod new;
 
-pub(in crate::graphics::managed_objects::camera::post_processing) struct RenderScaleObjects {
+pub(in crate::graphics) struct RenderScaleObjects {
     /// The first double buffer for the main color render and post processing passes
     pub hdr_output1: RenderTargetTexture,
 

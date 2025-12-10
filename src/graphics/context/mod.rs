@@ -49,6 +49,9 @@ pub struct GraphicsContext {
     /// The current render scale
     render_scale: f32,
 
+    /// The type of anti-aliasing being used
+    anti_aliasing: Option<AntiAliasing>,
+
     /// The global post-processing options
     post_processing: PostProcessing,
 

@@ -9,19 +9,17 @@ mod projection_type;
 
 mod active;
 mod bind;
+mod get;
 mod look_at;
 mod new;
 mod position;
 mod projection;
 mod resize;
 mod rotation;
-mod run_post_process;
 mod viewport;
 
 pub use cameras::Cameras;
-pub use post_processing::{
-    AntiAliasing, CameraPostProcessing, PostProcessHandle, PostProcessingShader,
-};
+pub use post_processing::{CameraPostProcessing, PostProcessHandle};
 pub use projection_type::CameraProjection;
 
 /// A handle pointing to a camera

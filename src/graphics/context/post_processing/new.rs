@@ -1,7 +1,7 @@
 use crate::{
     self as colosseum, Error, Result,
     graphics::{
-        AntiAliasing, PostProcessingShader, ShaderSource,
+        PostProcessingShader, ShaderSource,
         context::{
             PostProcessing,
             post_processing::{POST_PROCESS_INPUT_LAYOUT, QUAD_INDICES, QUAD_VERTICES},
@@ -24,7 +24,7 @@ const RENDER_SCALE_SHADER: ShaderSource =
 
 impl PostProcessing {
     /// Create a set of global [`PostProcessing`] objects
-    pub fn new(anti_aliasing: Option<AntiAliasing>, device: &ID3D11Device) -> Result<Self> {
+    pub fn new(device: &ID3D11Device) -> Result<Self> {
         // Create depth stencil state
         let depth_stencil_desc = D3D11_DEPTH_STENCIL_DESC {
             depth_enable: FALSE,
@@ -58,7 +58,6 @@ impl PostProcessing {
         let render_scale_shader = PostProcessingShader::new(&RENDER_SCALE_SHADER, device)?;
 
         Ok(PostProcessing {
-            anti_aliasing,
             depth_stencil_state,
             sampler_state,
             vertex_buffer,

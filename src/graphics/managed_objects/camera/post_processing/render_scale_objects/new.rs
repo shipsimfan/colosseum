@@ -17,7 +17,7 @@ const LDR_FORMAT: DXGI_FORMAT = DXGI_FORMAT::R8G8B8A8UNorm;
 
 impl RenderScaleObjects {
     /// Create a new set of [`RenderScaleObjects`]
-    pub fn new(
+    pub(in crate::graphics::managed_objects::camera) fn new(
         window_size: Vector2u,
         relative_viewport: &D3D11_VIEWPORT,
         render_scale: f32,
