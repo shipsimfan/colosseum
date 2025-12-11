@@ -8,6 +8,7 @@ mod render_scale_objects;
 
 mod bind;
 mod clear;
+mod get;
 mod new;
 mod resize;
 

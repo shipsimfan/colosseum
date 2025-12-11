@@ -129,7 +129,7 @@ fn do_run<Game: crate::Game>(game_hash: Option<&str>, game_build_time: Option<&s
         let next_scene = update_context.take_next_scene();
 
         // Render
-        graphics_context.render(&mut managed_objects, scene.clear_color())?;
+        graphics_context.render(&mut managed_objects, scene.clear_color(), delta_t)?;
 
         // Change scene
         if let Some(next_scene) = next_scene {

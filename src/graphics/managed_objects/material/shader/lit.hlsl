@@ -39,18 +39,27 @@ struct VOut {
     float3 normal : NORMAL;
 };
 
-cbuffer Camera : register(b0) {
-    row_major float4x4 camera_projection;
-    float3 camera_position;
-    float camera_reserved;
+cbuffer Frame : register(b0) {
+    uint frame;
+    float time;
+    float delta_time;
+    float frame_reserved;
 }
 
-cbuffer Material : register(b1) {
+cbuffer Camera : register(b1) {
+    row_major float4x4 camera_projection;
+    float3 camera_position;
+    float render_scale;
+    float2 render_size;
+    float2 inverse_render_size;
+}
+
+cbuffer Material : register(b2) {
     float3 material_color;
     float material_specular_strength;
 }
 
-cbuffer Lighting : register(b2) {
+cbuffer Lighting : register(b3) {
     float3 ambient_color;
     float ambient_intensity;
     uint num_directional_lights;

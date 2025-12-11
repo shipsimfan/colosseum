@@ -1,6 +1,6 @@
 use crate::{
     graphics::managed_objects::camera::CameraCbContent,
-    math::{Matrix4x4f, Vector3f},
+    math::{Matrix4x4f, Vector2f, Vector3f},
 };
 
 impl CameraCbContent {
@@ -9,7 +9,9 @@ impl CameraCbContent {
         CameraCbContent {
             view,
             position: Vector3f::ZERO,
-            reserved: 0.0,
+            render_scale: 0.0,
+            render_size: Vector2f::ZERO,
+            inverse_render_size: Vector2f::ZERO,
         }
     }
 }

@@ -1,7 +1,7 @@
 use crate::{
     Result,
     graphics::{AntiAliasing, Camera},
-    math::Vector2u,
+    math::{Vector2f, Vector2u},
 };
 use win32::d3d11::{ID3D11Device, ID3D11DeviceContext};
 
@@ -44,6 +44,13 @@ impl Camera {
                 anti_aliasing,
                 device,
             )?;
+
+            self.buffer.render_scale = render_scale;
+            self.buffer.render_size = self.post_processing.render_size().into_f32();
+            self.buffer.inverse_render_size = Vector2f::new(
+                1.0 / self.buffer.render_size.x,
+                1.0 / self.buffer.render_size.y,
+            );
 
             self.viewport_dirty = false;
         }

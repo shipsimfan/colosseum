@@ -1,7 +1,7 @@
 use crate::{
     Result, Transform,
     graphics::{
-        Camera, CameraProjection, CameraPostProcessing, managed_objects::camera::CameraCbContent,
+        Camera, CameraPostProcessing, CameraProjection, managed_objects::camera::CameraCbContent,
         util::ConstantBuffer,
     },
     math::{Matrix4x4f, Vector2u},
@@ -21,7 +21,7 @@ impl Camera {
 
         // Create constant buffer
         let buffer_content = CameraCbContent::new(Matrix4x4f::IDENTITY);
-        let buffer = ConstantBuffer::new(buffer_content, 0, device)?;
+        let buffer = ConstantBuffer::new(buffer_content, ConstantBuffer::CAMERA_SLOT, device)?;
 
         // Create relative viewport
         let relative_viewport = D3D11_VIEWPORT {

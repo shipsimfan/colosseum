@@ -1,8 +1,14 @@
-use crate::{MessageThread, graphics::DisplayMode, logging::Logger, math::Vector2u};
+use crate::{
+    MessageThread,
+    graphics::{DisplayMode, util::ConstantBuffer},
+    logging::Logger,
+    math::Vector2u,
+};
 #[cfg(debug_assertions)]
 use d3d11_info_queue::D3D11InfoQueue;
 #[cfg(debug_assertions)]
 use dxgi_info_queue::DXGIInfoQueue;
+use frame_cb::FrameCb;
 use post_processing::PostProcessing;
 use std::rc::Rc;
 use win32::{
@@ -18,6 +24,7 @@ use win32::{
 mod d3d11_info_queue;
 #[cfg(debug_assertions)]
 mod dxgi_info_queue;
+mod frame_cb;
 mod post_processing;
 mod swapchain_objects;
 
@@ -57,6 +64,9 @@ pub struct GraphicsContext {
 
     /// The global post-processing options
     post_processing: PostProcessing,
+
+    /// The constant buffer holding frame information
+    frame: ConstantBuffer<FrameCb>,
 
     /// The objects directly associated with the swapchain
     swapchain_objects: Option<SwapchainObjects>,

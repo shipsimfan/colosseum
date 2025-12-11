@@ -16,7 +16,7 @@ impl PostProcessing {
         let rso = &mut camera.render_scale_objects;
 
         // See if we need anti-aliasing
-        let anti_aliasing = match rso.anti_aliasing {
+        let anti_aliasing = match rso.anti_aliasing() {
             Some(anti_aliasing) => anti_aliasing,
             None => return,
         };

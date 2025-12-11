@@ -1,4 +1,4 @@
-use crate::math::{Matrix4x4f, Vector3f};
+use crate::math::{Matrix4x4f, Vector2f, Vector3f};
 
 mod new;
 
@@ -12,6 +12,12 @@ pub(in crate::graphics::managed_objects::camera) struct CameraCbContent {
     /// The position of the camera
     pub position: Vector3f,
 
-    /// A reserved value to pad it
-    reserved: f32,
+    /// The scale the frame will be rendered down to
+    pub render_scale: f32,
+
+    /// The size of the output in pixels
+    pub render_size: Vector2f,
+
+    /// The inverse of `render_size`
+    pub inverse_render_size: Vector2f,
 }

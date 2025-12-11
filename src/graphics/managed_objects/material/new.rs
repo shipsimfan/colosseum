@@ -20,7 +20,7 @@ impl Material {
         device: &ID3D11Device,
     ) -> Result<Self> {
         let buffer_content = MaterialCbContent::new(color, specular_strength);
-        let buffer = ConstantBuffer::new(buffer_content, 1, device)?;
+        let buffer = ConstantBuffer::new(buffer_content, ConstantBuffer::MATERIAL_SLOT, device)?;
 
         Ok(Material { id, shader, buffer })
     }

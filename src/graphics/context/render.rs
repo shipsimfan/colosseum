@@ -7,12 +7,17 @@ impl GraphicsContext {
         &mut self,
         managed_objects: &mut ManagedObjects,
         clear_color: Color3f,
+        delta_time: f32,
     ) -> Result<()> {
         // Resize if needed
         self.resize(managed_objects)?;
 
         // Clear debug message queue from object creation
         self.log_debug_messages()?;
+
+        // Update and bind frame buffer
+        self.frame.update(delta_time);
+        self.frame.bind(&mut self.device_context);
 
         // TODO: Lighting pre-passes
 

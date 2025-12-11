@@ -1,11 +1,3 @@
-cbuffer Camera : register(b0) {
-    row_major float4x4 camera_projection;
-}
-
-cbuffer Material : register(b1) {
-    float4 material_color;
-}
-
 struct VIn {
     float3 position : POSITION;
     float3 color : COLOR;
@@ -20,6 +12,22 @@ struct VOut {
     float4 position : SV_POSITION;
     float4 color : COLOR0;
 };
+
+
+cbuffer Frame : register(b0) {
+    uint frame;
+    float time;
+    float delta_time;
+    float frame_reserved;
+}
+
+cbuffer Camera : register(b1) {
+    row_major float4x4 camera_projection;
+}
+
+cbuffer Material : register(b2) {
+    float4 material_color;
+}
 
 VOut vertex_main(VIn vin) {
     float4x4 object = float4x4(vin.object0, vin.object1, vin.object2, vin.object3);

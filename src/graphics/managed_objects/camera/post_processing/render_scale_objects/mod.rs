@@ -1,11 +1,15 @@
-use crate::graphics::{
-    AntiAliasing,
-    util::{DepthTexture, RenderTargetTexture},
+use crate::{
+    graphics::{
+        AntiAliasing,
+        util::{DepthTexture, RenderTargetTexture},
+    },
+    math::Vector2u,
 };
 use win32::d3d11::D3D11_VIEWPORT;
 
 mod bind;
 mod clear;
+mod get;
 mod new;
 
 pub(in crate::graphics) struct RenderScaleObjects {
@@ -31,5 +35,8 @@ pub(in crate::graphics) struct RenderScaleObjects {
     pub screen_viewport: D3D11_VIEWPORT,
 
     /// The type of anti-aliasing being used
-    pub anti_aliasing: Option<AntiAliasing>,
+    anti_aliasing: Option<AntiAliasing>,
+
+    /// The size of the render backends
+    render_size: Vector2u,
 }

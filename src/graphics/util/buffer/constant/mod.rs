@@ -3,6 +3,7 @@ use win32::{ComPtr, d3d11::ID3D11Buffer};
 mod bind;
 mod deref;
 mod new;
+mod slots;
 
 /// A buffer which contains a single element and is only changed from the CPU
 pub(in crate::graphics) struct ConstantBuffer<T: Sized + Copy> {

@@ -25,29 +25,39 @@ impl RenderScaleObjects {
         device: &ID3D11Device,
     ) -> Result<Self> {
         // Calculate render scale
-        let size = Vector2u::new(
+        let render_size = Vector2u::new(
             (window_size.x as f32 * render_scale * relative_viewport.width) as u32,
             (window_size.y as f32 * render_scale * relative_viewport.height) as u32,
         );
 
         // Create outputs for provided post-processing stages
-        let hdr_output1 = RenderTargetTexture::new(size, HDR_FORMAT, 0, device)?;
-        let hdr_output2 = RenderTargetTexture::new(size, HDR_FORMAT, 0, device)?;
+        let hdr_output1 = RenderTargetTexture::new(render_size, HDR_FORMAT, 0, device)?;
+        let hdr_output2 = RenderTargetTexture::new(render_size, HDR_FORMAT, 0, device)?;
 
         // Create anti-aliasing and render-scale targets
         let anti_aliasing_input = if anti_aliasing.is_some() {
-            Some(RenderTargetTexture::new(size, LDR_FORMAT, 0, device)?)
+            Some(RenderTargetTexture::new(
+                render_size,
+                LDR_FORMAT,
+                0,
+                device,
+            )?)
         } else {
             None
         };
         let render_scale_input = if render_scale == 1.0 {
             None
         } else {
-            Some(RenderTargetTexture::new(size, LDR_FORMAT, 0, device)?)
+            Some(RenderTargetTexture::new(
+                render_size,
+                LDR_FORMAT,
+                0,
+                device,
+            )?)
         };
 
         // Create depth buffer
-        let depth_buffer = DepthTexture::new(size, device)?;
+        let depth_buffer = DepthTexture::new(render_size, device)?;
 
         // Create viewports
         let screen_viewport = D3D11_VIEWPORT {
@@ -61,8 +71,8 @@ impl RenderScaleObjects {
         let render_scale_viewport = D3D11_VIEWPORT {
             top_left_x: 0.0,
             top_left_y: 0.0,
-            width: size.x as _,
-            height: size.y as _,
+            width: render_size.x as _,
+            height: render_size.y as _,
             min_depth: 0.0,
             max_depth: 1.0,
         };
@@ -76,6 +86,7 @@ impl RenderScaleObjects {
             screen_viewport,
             render_scale_viewport,
             anti_aliasing,
+            render_size,
         })
     }
 }
