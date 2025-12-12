@@ -35,7 +35,7 @@ impl PostProcessing {
         // Bind the inputs and outputs
         device_context.rs_set_viewports(1, anti_aliasing_viewport);
         device_context.om_set_render_targets(1, &anti_aliasing_output, null_mut());
-        anti_aliasing_input.bind(&mut self.sampler, device_context);
+        anti_aliasing_input.bind(&mut self.anti_aliasing_sampler, device_context);
 
         // TODO: Set pixel shader
 

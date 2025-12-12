@@ -55,4 +55,14 @@ impl GraphicsContext {
         self.render_scale = render_scale;
         self.render_scale_dirty = true;
     }
+
+    /// Set the render scale post-process pass to use linear filtering
+    pub fn set_render_scale_linear(&mut self) {
+        self.post_processing.set_render_scale_linear();
+    }
+
+    /// Set the render scale post-process pass to use point filtering
+    pub fn set_render_scale_point(&mut self) {
+        self.post_processing.set_render_scale_point();
+    }
 }

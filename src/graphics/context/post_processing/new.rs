@@ -39,8 +39,12 @@ impl PostProcessing {
             Error::new_inner("unable to create post process depth stencil state", error)
         })?;
 
-        // Create sampler
-        let sampler = TextureSampler::new(TextureFilter::Linear, TextureEdge::Clamp, device)?;
+        // Create samplers
+        let linear_sampler =
+            TextureSampler::new(TextureFilter::Linear, TextureEdge::Clamp, device)?;
+        let point_sampler = TextureSampler::new(TextureFilter::Point, TextureEdge::Clamp, device)?;
+        let anti_aliasing_sampler =
+            TextureSampler::new(TextureFilter::Anisotropic, TextureEdge::Clamp, device)?;
 
         // Create quad mesh
         let vertex_buffer = VertexBuffer::new(QUAD_VERTICES, 0, device)?;
@@ -55,7 +59,10 @@ impl PostProcessing {
 
         Ok(PostProcessing {
             depth_stencil_state,
-            sampler,
+            linear_sampler,
+            point_sampler,
+            anti_aliasing_sampler,
+            render_scale_point: false,
             vertex_buffer,
             index_buffer,
             vertex_shader,

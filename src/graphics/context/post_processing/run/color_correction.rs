@@ -46,7 +46,7 @@ impl PostProcessing {
         // Bind the inputs and outputs
         device_context.rs_set_viewports(1, color_correction_viewport);
         device_context.om_set_render_targets(1, &color_correction_output, null_mut());
-        input.bind(&mut self.sampler, device_context);
+        input.bind(&mut self.linear_sampler, device_context);
 
         // Set pixel shader
         self.color_correction_shader.bind(device_context);

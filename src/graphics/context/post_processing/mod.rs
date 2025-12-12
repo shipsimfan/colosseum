@@ -8,6 +8,7 @@ mod shader;
 
 mod new;
 mod run;
+mod set;
 
 pub use anti_aliasing::AntiAliasing;
 pub use shader::PostProcessingShader;
@@ -18,7 +19,16 @@ pub(in crate::graphics::context) struct PostProcessing {
     depth_stencil_state: ComPtr<ID3D11DepthStencilState>,
 
     /// The sampler to use for most post-process passes
-    sampler: TextureSampler,
+    linear_sampler: TextureSampler,
+
+    /// An alternative sampler for the render-scale post-process pass
+    point_sampler: TextureSampler,
+
+    /// The sampler to use for the anti-aliasing post-process pass
+    anti_aliasing_sampler: TextureSampler,
+
+    /// Should the render scale post-process pass use point sampling?
+    render_scale_point: bool,
 
     /// The vertex buffer for the quad
     vertex_buffer: VertexBuffer<PostProcessingVertex>,
