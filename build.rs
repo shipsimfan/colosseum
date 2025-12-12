@@ -4,4 +4,9 @@ fn main() {
 
     println!("cargo::rerun-if-changed=src/graphics/managed_objects/material/shader/lit.hlsl");
     println!("cargo::rerun-if-changed=src/graphics/managed_objects/material/shader/unlit.hlsl");
+
+    println!("cargo::rerun-if-changed=src/graphics/context/post_processing/color_correction.hlsl");
+    println!("cargo::rerun-if-changed=src/graphics/context/post_processing/fxaa.hlsl");
+    println!("cargo::rerun-if-changed=src/graphics/context/post_processing/render_scale.hlsl");
+    println!("cargo::rerun-if-changed=src/graphics/context/post_processing/vertex_shader.hlsl");
 }

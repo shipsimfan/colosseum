@@ -1,5 +1,5 @@
 use crate::graphics::{
-    CameraPostProcessing,
+    AntiAliasing, CameraPostProcessing,
     context::{PostProcessing, SwapchainObjects},
 };
 use std::ptr::null_mut;
@@ -37,7 +37,10 @@ impl PostProcessing {
         device_context.om_set_render_targets(1, &anti_aliasing_output, null_mut());
         anti_aliasing_input.bind(&mut self.anti_aliasing_sampler, device_context);
 
-        // TODO: Set pixel shader
+        // Set pixel shader
+        match anti_aliasing {
+            AntiAliasing::FXAA => self.fxaa_shader.bind(device_context),
+        }
 
         // Make draw call
         device_context.draw_indexed(6, 0, 0);

@@ -21,6 +21,7 @@ const COLOR_CORRECITON_SHADER: ShaderSource =
     compile_shader_file!("color_correction.hlsl", "ps_5_0", "main");
 const RENDER_SCALE_SHADER: ShaderSource =
     compile_shader_file!("render_scale.hlsl", "ps_5_0", "main");
+const FXAA_SHADER: ShaderSource = compile_shader_file!("fxaa.hlsl", "ps_5_0", "main");
 
 impl PostProcessing {
     /// Create a set of global [`PostProcessing`] objects
@@ -56,6 +57,7 @@ impl PostProcessing {
 
         let color_correction_shader = PostProcessingShader::new(&COLOR_CORRECITON_SHADER, device)?;
         let render_scale_shader = PostProcessingShader::new(&RENDER_SCALE_SHADER, device)?;
+        let fxaa_shader = PostProcessingShader::new(&FXAA_SHADER, device)?;
 
         Ok(PostProcessing {
             depth_stencil_state,
@@ -68,6 +70,7 @@ impl PostProcessing {
             vertex_shader,
             color_correction_shader,
             render_scale_shader,
+            fxaa_shader,
         })
     }
 }

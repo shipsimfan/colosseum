@@ -6,6 +6,10 @@ struct Vertex {
 Texture2D input_texture : register(t0);
 SamplerState input_sampler : register(s0);
 
+float calculate_luminance(float3 color) {
+    return dot(float3(0.2126, 0.7152, 0.0722), color);
+}
+
 float4 main(Vertex vertex) : SV_TARGET {
     float gamma = 2.2;
 
@@ -18,5 +22,8 @@ float4 main(Vertex vertex) : SV_TARGET {
     // Apply gamma correction
     color = pow(color, float3(1.0 / gamma, 1.0 / gamma, 1.0 / gamma));
 
-    return float4(color, 1.0);
+    // Calculate luminance for anti-aliasing
+    float luminance = calculate_luminance(color);
+
+    return float4(color, luminance);
 }

@@ -44,4 +44,7 @@ pub(in crate::graphics::context) struct PostProcessing {
 
     /// The shader to use for render scaling
     render_scale_shader: PostProcessingShader,
+
+    /// The shader which implements FXAA
+    fxaa_shader: PostProcessingShader,
 }

@@ -7,5 +7,5 @@ Texture2D input_texture : register(t0);
 SamplerState input_sampler : register(s0);
 
 float4 main(Vertex vertex) : SV_TARGET {
-    return input_texture.Sample(input_sampler, vertex.tex);
+    return float4(input_texture.Sample(input_sampler, vertex.tex).xyz, 1.0);
 }
