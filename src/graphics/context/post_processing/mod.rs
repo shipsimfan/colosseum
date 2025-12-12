@@ -1,9 +1,6 @@
-use crate::graphics::util::{IndexBuffer, VertexBuffer, VertexShader};
+use crate::graphics::util::{IndexBuffer, TextureSampler, VertexBuffer, VertexShader};
 use quad::{POST_PROCESS_INPUT_LAYOUT, PostProcessingVertex, QUAD_INDICES, QUAD_VERTICES};
-use win32::{
-    ComPtr,
-    d3d11::{ID3D11DepthStencilState, ID3D11SamplerState},
-};
+use win32::{ComPtr, d3d11::ID3D11DepthStencilState};
 
 mod anti_aliasing;
 mod quad;
@@ -20,8 +17,8 @@ pub(in crate::graphics::context) struct PostProcessing {
     /// The state describing how the depth stecil view should work for post process passes
     depth_stencil_state: ComPtr<ID3D11DepthStencilState>,
 
-    /// The sampler state to use for all post-process passes
-    sampler_state: ComPtr<ID3D11SamplerState>,
+    /// The sampler to use for most post-process passes
+    sampler: TextureSampler,
 
     /// The vertex buffer for the quad
     vertex_buffer: VertexBuffer<PostProcessingVertex>,

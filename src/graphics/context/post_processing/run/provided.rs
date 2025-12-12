@@ -18,7 +18,7 @@ impl PostProcessing {
         for shader in &mut camera.provided_post_processing {
             // Bind the inputs and outputs
             device_context.om_set_render_targets(1, &output.render_view(), null_mut());
-            input.bind(device_context);
+            input.bind(&mut self.sampler, device_context);
 
             // Bind pixel shader
             shader.bind(device_context);

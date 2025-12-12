@@ -1,18 +1,18 @@
 use crate::{
     self as colosseum, Error, Result,
     graphics::{
-        PostProcessingShader, ShaderSource,
+        PostProcessingShader, ShaderSource, TextureEdge, TextureFilter,
         context::{
             PostProcessing,
             post_processing::{POST_PROCESS_INPUT_LAYOUT, QUAD_INDICES, QUAD_VERTICES},
         },
-        util::{IndexBuffer, VertexBuffer, VertexShader},
+        util::{IndexBuffer, TextureSampler, VertexBuffer, VertexShader},
     },
 };
 use colosseum_macros::compile_shader_file;
 use win32::{
     ComPtr, FALSE,
-    d3d11::{D3D11_DEPTH_STENCIL_DESC, D3D11_SAMPLER_DESC, ID3D11Device},
+    d3d11::{D3D11_DEPTH_STENCIL_DESC, ID3D11Device},
     try_hresult,
 };
 
@@ -40,11 +40,7 @@ impl PostProcessing {
         })?;
 
         // Create sampler
-        let sampler_desc = D3D11_SAMPLER_DESC::default();
-        let sampler_state = ComPtr::new_in(|sampler_state| {
-            try_hresult!(device.create_sampler_state(&sampler_desc, sampler_state))
-        })
-        .map_err(|error| Error::new_inner("unable to create post process sampler state", error))?;
+        let sampler = TextureSampler::new(TextureFilter::Linear, TextureEdge::Clamp, device)?;
 
         // Create quad mesh
         let vertex_buffer = VertexBuffer::new(QUAD_VERTICES, 0, device)?;
@@ -59,7 +55,7 @@ impl PostProcessing {
 
         Ok(PostProcessing {
             depth_stencil_state,
-            sampler_state,
+            sampler,
             vertex_buffer,
             index_buffer,
             vertex_shader,

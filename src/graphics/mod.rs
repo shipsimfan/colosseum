@@ -17,4 +17,5 @@ pub use managed_objects::*;
 pub use mesh::{Mesh, MeshInner, MeshPrimitives};
 pub use settings::{DisplayMode, GraphicsSettings};
 pub use shader_source::ShaderSource;
+pub use util::{TextureEdge, TextureFilter};
 pub use vertex::Vertex;

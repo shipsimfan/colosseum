@@ -24,41 +24,40 @@
     1. Add FXAA
     2. Add access to the provided post-processing arena
  2. Add device and render context wrappers
- 3. Add sampler state wrapper
- 4. Allow adjustable render scale sampler
- 5. Re-add custom material shaders
- 6. Add SSAO
- 7. Add camera frustum culling 
- 8. Add light frustum culling
- 9. Add light-object culling
- 10. Add deferred rendering
- 11. Add collider culling
- 12. Add toggleable wireframe rendering
- 13. Add render scale
- 14. Add input binding helper
- 15. Add joystick support
- 16. Add steering wheel support
- 17. Add other controller support
- 18. Add occlussion culling
- 19. Add multithreaded untracked resource creation + uploading
- 20. Reverse message and main thread
- 21. Add job system
- 22. Jobify rendering
- 23. Generalize quaternion look at function
- 24. Expand math options
- 25. Expand mesh options
- 26. Add single creation of primitive meshes
- 27. Add sphere primitive
- 28. Add capsule primitive
- 29. Add pyramid primitive
- 30. Allow cameras to render to textures
- 31. Add SMAA
- 32. Add TAA
- 33. Upgrade to Vulkan
- 34. Add Linux support
- 35. Upgrade tone mapping to ACES
- 36. Add adaptive exposure to tone mapping
- 37. Expose depth textures and render target textures
- 38. Allow using depth textures and render target textures like image textures
- 39. Add custom shader language to allow custom shader bindings
- 40. Update shader wrappers to check shader types
+ 3. Allow adjustable render scale sampler
+ 4. Re-add custom material shaders
+ 5. Add SSAO
+ 6. Add camera frustum culling 
+ 7. Add light frustum culling
+ 8. Add light-object culling
+ 9. Add deferred rendering
+ 10. Add collider culling
+ 11. Add toggleable wireframe rendering
+ 12. Add render scale
+ 13. Add input binding helper
+ 14. Add joystick support
+ 15. Add steering wheel support
+ 16. Add other controller support
+ 17. Add occlussion culling
+ 18. Add multithreaded untracked resource creation + uploading
+ 19. Reverse message and main thread
+ 20. Add job system
+ 21. Jobify rendering
+ 22. Generalize quaternion look at function
+ 23. Expand math options
+ 24. Expand mesh options
+ 25. Add single creation of primitive meshes
+ 26. Add sphere primitive
+ 27. Add capsule primitive
+ 28. Add pyramid primitive
+ 29. Allow cameras to render to textures
+ 30. Add SMAA
+ 31. Add TAA
+ 32. Upgrade to Vulkan
+ 33. Add Linux support
+ 34. Upgrade tone mapping to ACES
+ 35. Add adaptive exposure to tone mapping
+ 36. Expose depth textures and render target textures
+ 37. Allow using depth textures and render target textures like image textures
+ 38. Add custom shader language to allow custom shader bindings
+ 39. Update shader wrappers to check shader types

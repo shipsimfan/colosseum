@@ -17,7 +17,7 @@ impl GraphicsContext {
 
         // Update and bind frame buffer
         self.frame.update(delta_time);
-        self.frame.bind(&mut self.device_context);
+        self.frame.bind(&mut self.device_context)?;
 
         // TODO: Lighting pre-passes
 

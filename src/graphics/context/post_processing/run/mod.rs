@@ -17,10 +17,8 @@ impl PostProcessing {
         swapchain: &mut SwapchainObjects,
         device_context: &mut ID3D11DeviceContext,
     ) {
-        // Set sampler, vertex shader, and mesh
+        // Set depth state, vertex shader, and mesh
         device_context.om_set_depth_stencil_state(self.depth_stencil_state.as_mut(), 0);
-        let sampler = self.sampler_state.as_mut() as *mut _;
-        device_context.ps_set_samplers(0, 1, &sampler);
         self.vertex_buffer.bind(device_context);
         self.index_buffer.bind(device_context);
         self.vertex_shader.bind(device_context);

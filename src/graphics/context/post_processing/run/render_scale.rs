@@ -28,7 +28,7 @@ impl PostProcessing {
         // Bind the inputs and outputs
         device_context.rs_set_viewports(1, render_scale_viewport);
         device_context.om_set_render_targets(1, &render_scale_output, null_mut());
-        render_scale_input.bind(device_context);
+        render_scale_input.bind(&mut self.sampler, device_context);
 
         // Set pixel shader
         self.render_scale_shader.bind(device_context);
