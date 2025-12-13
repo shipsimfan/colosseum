@@ -28,6 +28,7 @@ mod frame_cb;
 mod post_processing;
 mod swapchain_objects;
 
+mod create;
 mod get;
 mod log_debug_messages;
 mod new;

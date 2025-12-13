@@ -58,7 +58,8 @@ impl Camera {
 
         // Set active
         self.buffer.bind(device_context)?;
-        self.post_processing.clear(clear_color, device_context);
+        self.post_processing
+            .clear_main_output(clear_color, device_context);
         self.post_processing.bind_main_color_output(device_context);
 
         Ok(())

@@ -1,27 +1,25 @@
 # ToDo
- 1. Add post-processing support
-    1. Add access to the provided post-processing arena
- 2. Add device and render context wrappers
- 3. Add pipeline state wrapper
- 4. Add shadow maps
- 5. Improve colors 
+ 1. Add device and render context wrappers
+ 2. Add pipeline state wrapper
+ 3. Add shadow maps
+ 4. Improve colors 
     - u8 vs f32 distinction
     - Color4
- 6. Add material properties
- 7. Add general file I/O thread
- 8. Add textures and texture loading
- 9. Add model loading
- 10. Add physically based rendering
- 11. Finish `KeyCode` enum
- 12. Add mouse support
- 13. Add UI
- 14. Add fixed update
- 15. Add bounds to `Mesh`
- 16. Add rigidbody
- 17. Add colliders
- 18. Add audio
- 19. Add xbox controller support
- 20. Add transparency
+ 5. Add material properties
+ 6. Add general file I/O thread
+ 7. Add textures and texture loading
+ 8. Add model loading
+ 9. Add physically based rendering
+ 10. Finish `KeyCode` enum
+ 11. Add mouse support
+ 12. Add UI
+ 13. Add fixed update
+ 14. Add bounds to `Mesh`
+ 15. Add rigidbody
+ 16. Add colliders
+ 17. Add audio
+ 18. Add xbox controller support
+ 19. Add transparency
 
 ## Additional ToDos
  1. Re-add custom material shaders
@@ -60,3 +58,4 @@
  34. Add custom shader language to allow custom shader bindings
  35. Update shader wrappers to check shader types
  36. Add the ability to disable anti-aliasing per-camera
+ 37. Add dithering
