@@ -51,6 +51,7 @@ impl Camera {
                 1.0 / self.buffer.render_size.x,
                 1.0 / self.buffer.render_size.y,
             );
+            println!("Inverse render size: {}", self.buffer.inverse_render_size);
 
             self.viewport_dirty = false;
         }

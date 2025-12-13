@@ -12,7 +12,7 @@ dependencies = [
 
 [[package]]
 name = "colosseum"
-version = "0.3.1"
+version = "0.4.0"
 dependencies = [
  "argparse",
  "colosseum-build",
@@ -25,14 +25,14 @@ dependencies = [
 
 [[package]]
 name = "colosseum-build"
-version = "0.3.1"
+version = "0.4.0"
 dependencies = [
  "time",
 ]
 
 [[package]]
 name = "colosseum-macros"
-version = "0.3.1"
+version = "0.4.0"
 dependencies = [
  "proc-macro-util",
  "win32",
