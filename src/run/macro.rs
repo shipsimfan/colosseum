@@ -1,0 +1,13 @@
+/// Begins the game engine with the specified game type
+#[macro_export]
+macro_rules! run {
+    ($game: ty) => {
+        fn main() {
+            $crate::run::<$game>(
+                option_env!("COLOSSEUM_GAME_BRANCH"),
+                option_env!("COLOSSEUM_GAME_COMMIT"),
+                option_env!("COLOSSEUM_GAME_BUILD_TIME"),
+            );
+        }
+    };
+}

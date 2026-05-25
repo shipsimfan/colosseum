@@ -1,0 +1,14 @@
+[package]
+name = "colosseum-build"
+description = "Utilities to help produce build.rs for games"
+
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+alexandria = { workspace = true, features = ["git"] }
+time.workspace = true

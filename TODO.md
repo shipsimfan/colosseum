@@ -1,12 +1,12 @@
 # ToDo
- 1. Add logging system
- 2. Add configuration system
- 3. Add main WSI thread
- 4. Add job system
- 5. Add pacer thread
- 6. Add simple render job
- 7. Add simple update job
- 8. Add frame graph system
+ 1. Add settings system
+ 2. Add main WSI thread
+ 3. Add job system
+ 4. Add pacer thread
+ 5. Add simple render job
+ 6. Add simple update job
+ 7. Add frame graph system
+ 8. Add input system
  9. Add ECS system
  10. Add unlit mesh rendering
  11. Add mesh primitives

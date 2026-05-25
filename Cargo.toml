@@ -6,6 +6,16 @@ repository = "https://github.com/shipsimfan/colosseum"
 license = "GPL-3.0-or-later"
 publish = false
 
+[workspace.dependencies]
+colosseum-build.path = "build"
+
+alexandria.git = "https://github.com/shipsimfan/alexandria"
+
+argparse.git = "https://github.com/shipsimfan/lib-argparse"
+data-format.git = "https://github.com/shipsimfan/lib-data-format"
+json.git = "https://github.com/shipsimfan/lib-json"
+time.git = "https://github.com/shipsimfan/lib-time"
+
 [package]
 name = "colosseum"
 description = "Cross-Platform, Multi-threaded Vulkan Game Engine"
@@ -16,3 +26,14 @@ edition.workspace = true
 repository.workspace = true
 license.workspace = true
 publish.workspace = true
+
+[dependencies]
+alexandria.workspace = true
+
+argparse.workspace = true
+data-format.workspace = true
+json.workspace = true
+time.workspace = true
+
+[build-dependencies]
+colosseum-build.path = "build"

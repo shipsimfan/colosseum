@@ -3,5 +3,144 @@
 version = 4
 
 [[package]]
+name = "alexandria"
+version = "0.3.0"
+source = "git+https://github.com/shipsimfan/alexandria#347e617d8a4e4e19ede4497da3f7a5896b573ed9"
+dependencies = [
+ "linux",
+ "time",
+ "vulkan",
+ "wayland",
+ "win32",
+]
+
+[[package]]
+name = "argparse"
+version = "4.0.2"
+source = "git+https://github.com/shipsimfan/lib-argparse#fb50575c0d8bcc8cccd785788456f002a88ec45e"
+dependencies = [
+ "macros 4.0.2",
+]
+
+[[package]]
 name = "colosseum"
 version = "0.4.0"
+dependencies = [
+ "alexandria",
+ "argparse",
+ "colosseum-build",
+ "data-format",
+ "json",
+ "time",
+]
+
+[[package]]
+name = "colosseum-build"
+version = "0.4.0"
+dependencies = [
+ "alexandria",
+ "time",
+]
+
+[[package]]
+name = "data-format"
+version = "1.1.1"
+source = "git+https://github.com/shipsimfan/lib-data-format#527fccd4e2f6fbc039824314478230b1346c8b43"
+dependencies = [
+ "macros 1.1.1",
+]
+
+[[package]]
+name = "json"
+version = "2.1.1"
+source = "git+https://github.com/shipsimfan/lib-json#74b6991eb90a2bb0c24354e7dd3f87c37b27a5bd"
+dependencies = [
+ "data-format",
+ "lct-streams",
+]
+
+[[package]]
+name = "lct-span"
+version = "1.1.0"
+source = "git+https://github.com/shipsimfan/lct#6c0151efc7dad9f6aeb411968d0a0bc46f0d2e73"
+
+[[package]]
+name = "lct-streams"
+version = "1.1.0"
+source = "git+https://github.com/shipsimfan/lct#6c0151efc7dad9f6aeb411968d0a0bc46f0d2e73"
+dependencies = [
+ "lct-span",
+]
+
+[[package]]
+name = "linux"
+version = "1.0.0"
+source = "git+https://github.com/shipsimfan/lib-linux#9febb23824004e1cd5f45088e7c474cccb1bac5c"
+
+[[package]]
+name = "macros"
+version = "1.1.1"
+source = "git+https://github.com/shipsimfan/lib-data-format#527fccd4e2f6fbc039824314478230b1346c8b43"
+dependencies = [
+ "proc-macro-util",
+]
+
+[[package]]
+name = "macros"
+version = "4.0.2"
+source = "git+https://github.com/shipsimfan/lib-argparse#fb50575c0d8bcc8cccd785788456f002a88ec45e"
+dependencies = [
+ "proc-macro-util",
+]
+
+[[package]]
+name = "proc-macro-util"
+version = "0.1.0"
+source = "git+https://github.com/shipsimfan/lib-proc-macro-util#c1a5999df72a7ed1e3f390e77ebdaa970977bf05"
+dependencies = [
+ "proc-macro-util-base",
+ "proc-macro-util-macros",
+]
+
+[[package]]
+name = "proc-macro-util-base"
+version = "0.1.0"
+source = "git+https://github.com/shipsimfan/lib-proc-macro-util#c1a5999df72a7ed1e3f390e77ebdaa970977bf05"
+
+[[package]]
+name = "proc-macro-util-macros"
+version = "0.1.0"
+source = "git+https://github.com/shipsimfan/lib-proc-macro-util#c1a5999df72a7ed1e3f390e77ebdaa970977bf05"
+dependencies = [
+ "proc-macro-util-base",
+]
+
+[[package]]
+name = "time"
+version = "0.0.0"
+source = "git+https://github.com/shipsimfan/lib-time#f3ff0d1007a9a3e385a549e1c038e4c62ac06304"
+dependencies = [
+ "linux",
+ "win32",
+]
+
+[[package]]
+name = "vulkan"
+version = "0.1.0"
+source = "git+https://github.com/shipsimfan/lib-vulkan#87c4c8f99907c80cae8dab2baf123fb1bec9e76d"
+dependencies = [
+ "win32",
+]
+
+[[package]]
+name = "wayland"
+version = "0.1.0"
+source = "git+https://github.com/shipsimfan/lib-wayland#f267e003a4fe9a97dde096f377475fcee7bb44fa"
+dependencies = [
+ "linux",
+]
+
+[[package]]
+name = "win32"
+version = "0.1.0"
+source = "git+https://github.com/shipsimfan/lib-win32#380593b381b659a55901a788edb151e070f3e029"
