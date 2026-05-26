@@ -27,5 +27,6 @@ impl colosseum::GameOptions<Cube> for CubeOptions {
     }
 }
 
+/// The settings cache for the cube example
 #[colosseum::settings::settings_cache]
 struct CubeSettings {}

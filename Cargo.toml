@@ -8,6 +8,7 @@ publish = false
 
 [workspace.dependencies]
 colosseum-build.path = "build"
+colosseum-macros.path = "macros"
 
 alexandria.git = "https://github.com/shipsimfan/alexandria"
 
@@ -28,6 +29,8 @@ license.workspace = true
 publish.workspace = true
 
 [dependencies]
+colosseum-macros.workspace = true
+
 alexandria.workspace = true
 
 argparse.workspace = true
@@ -36,4 +39,4 @@ json.workspace = true
 time.workspace = true
 
 [build-dependencies]
-colosseum-build.path = "build"
+colosseum-build.workspace = true
