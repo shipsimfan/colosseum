@@ -3,7 +3,7 @@ use data_format::{Deserialize, Serialize};
 use std::path::Path;
 
 /// A named group of settings
-pub trait SettingsGroup: for<'de> Deserialize<'de> + Serialize + Send + Default {
+pub trait SettingsGroup: for<'de> Deserialize<'de> + Serialize + Send + Clone + Default {
     /// The name of the file to load and save these settings to
     const FILE_NAME: &str;
 
@@ -59,6 +59,10 @@ pub trait SettingsGroup: for<'de> Deserialize<'de> + Serialize + Send + Default 
     /// Games should not directly call this function. Use the settings cache to save settings
     /// correctly.
     unsafe fn save(&self, path: &Path, logger: &Logger) -> Result<()> {
+        std::fs::create_dir_all(path).map_err(|error| {
+            Error::new_with(format!("unable to create \"{}\"", path.display()), error)
+        })?;
+
         let path = path.join(format!("{}.json", Self::FILE_NAME));
         let file = std::fs::OpenOptions::new()
             .write(true)

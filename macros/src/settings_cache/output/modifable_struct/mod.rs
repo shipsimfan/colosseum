@@ -1,0 +1,32 @@
+use proc_macro_util::{
+    ast::{GenericParams, OuterAttribute, Visibility, WhereClause},
+    tokens::Identifier,
+};
+
+mod field;
+
+mod from_input;
+mod to_tokens;
+
+pub use field::*;
+
+/// The version of the settings cache struct that is modifiable
+pub struct SettingsCacheOutputModifiableStruct<'a> {
+    /// The outer attributes on the struct
+    pub attributes: Vec<OuterAttribute<'a>>,
+
+    /// The visibility of the struct
+    pub visibility: Option<Visibility<'a>>,
+
+    /// The name of the struct
+    pub name: Identifier,
+
+    /// The generic parameters of the struct, if any
+    pub generic_params: Option<GenericParams<'a>>,
+
+    /// The where clause of the struct, if any
+    pub where_clause: Option<WhereClause<'a>>,
+
+    /// The fields of the struct
+    pub fields: Vec<SettingsCacheOutputModifiableStructField<'a>>,
+}

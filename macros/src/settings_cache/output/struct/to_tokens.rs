@@ -7,12 +7,18 @@ impl<'a> ToTokens for SettingsCacheOutputStruct<'a> {
             attributes,
             visibility,
             name,
+            generic_params,
+            where_clause,
+            fields,
         } = self;
 
         to_tokens! { generator
             #attributes
-            #visibility struct #name {
+            #visibility struct #name #generic_params #where_clause {
+                #fields
 
+                __logger: ::colosseum::logging::Logger,
+                __path: ::std::path::PathBuf,
             }
         }
     }

@@ -7,9 +7,15 @@ use std::path::Path;
 /// attribute attached to a struct containing fields for each settings group, and implementing
 /// `SettingsGroup` for each of those groups.
 pub trait SettingsCache: Sized {
-    /// Loads the setttings from `path`
+    /// The settings cache that is modifiable
+    type Modifiable;
+
+    /// Loads the settings from `path`
     fn load(path: &Path, logger: Logger) -> Result<Self>;
 
-    /// Saves all the settings to `path`
-    fn save(&self, path: &Path) -> Result<()>;
+    /// Create a modifiable version of this settings cache
+    fn begin_modify(&self) -> Self::Modifiable;
+
+    /// Save this settings cache to `path`
+    fn save(&mut self, new_settings: &Self::Modifiable) -> Result<()>;
 }

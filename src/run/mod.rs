@@ -63,11 +63,14 @@ fn do_run<Game: crate::Game>(
     // Start the logging thread
     log_controller.spawn_thread(log_start_token, &mut thread_manager)?;
 
-    // Load settings
-    let settings = <Game::SettingsCache as SettingsCache>::load(
+    // Load settings and save them back
+    let mut settings = <Game::SettingsCache as SettingsCache>::load(
         &options.colosseum_options().settings_path.as_path(),
         log_controller.logger("settings"),
     )?;
+
+    let new_settings = settings.begin_modify();
+    settings.save(&new_settings)?;
 
     // Create the core WSI components
 

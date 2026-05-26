@@ -1,7 +1,11 @@
-use crate::settings_cache::SettingsCacheInput;
+use crate::settings_cache::{SettingsCacheInput, SettingsCacheInputField};
 use proc_macro_util::{
     Result, Span,
-    ast::{Item, ItemKind, VisItemKind, Visibility, items::Struct},
+    ast::{
+        Item, ItemKind, VisItemKind, Visibility, WhereClause,
+        items::{Struct, StructBody, StructFields},
+    },
+    tokens::Identifier,
 };
 
 impl<'a> SettingsCacheInput<'a> {
@@ -14,10 +18,19 @@ impl<'a> SettingsCacheInput<'a> {
         let (visibility, r#struct) = extract_struct(item.kind)
             .ok_or_else(|| Span::call_site().error("must be applied to a struct"))?;
 
+        let modifiable_name = Identifier::new(&format!("Modifiable{}", r#struct.name));
+
+        // Extract the struct fields
+        let (where_clause, struct_fields) = extract_fields(r#struct.body)?;
+
         Ok(SettingsCacheInput {
             attributes,
             visibility,
             name: r#struct.name,
+            modifiable_name,
+            generic_params: r#struct.generic_params,
+            where_clause,
+            fields: SettingsCacheInputField::new_set(struct_fields)?,
         })
     }
 }
@@ -36,4 +49,17 @@ fn extract_struct<'a>(item: ItemKind<'a>) -> Option<(Option<Visibility<'a>>, Str
     };
 
     Some((visibility, r#struct))
+}
+
+/// Extract a [`StructFields`] from a [`StructBody`]
+fn extract_fields<'a>(
+    body: StructBody<'a>,
+) -> Result<(Option<WhereClause<'a>>, Option<StructFields<'a>>)> {
+    match body {
+        StructBody::Normal {
+            where_clause,
+            fields,
+        } => Ok((where_clause, fields)),
+        _ => return Err(Span::call_site().error("only normal structs are supported")),
+    }
 }
