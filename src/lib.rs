@@ -20,3 +20,5 @@ pub use game::*;
 pub use run::*;
 
 pub(crate) use threads::*;
+
+pub use alexandria::math;

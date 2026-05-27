@@ -5,6 +5,9 @@ mod from;
 /// A type of error that can be inside of a [`crate::Error`]
 #[derive(Debug)]
 pub(crate) enum InnerError {
+    /// The error came from alexandria
+    Alexandria(alexandria::Error),
+
     /// The error came from argparse
     Argparse(argparse::Error),
 

@@ -4,10 +4,12 @@ use crate::{
 };
 use argparse::Command;
 use time::{DateTime, SimpleTimeZone};
+use wsi::Wsi;
 
 mod log_metadata;
 mod r#macro;
 mod options;
+mod wsi;
 
 pub use options::*;
 
@@ -58,10 +60,10 @@ fn do_run<Game: crate::Game>(
     )?;
 
     // Create the thread manager
-    let mut thread_manager = ThreadManager::new(&log_controller);
+    let thread_manager = ThreadManager::new(&log_controller);
 
     // Start the logging thread
-    log_controller.spawn_thread(log_start_token, &mut thread_manager)?;
+    log_controller.spawn_thread(log_start_token, &thread_manager)?;
 
     // Load settings and save them back
     let mut settings = <Game::SettingsCache as SettingsCache>::load(
@@ -69,16 +71,26 @@ fn do_run<Game: crate::Game>(
         log_controller.logger("settings"),
     )?;
 
+    // Create the core WSI components
+    let (mut wsi, vulkan_instance, surface) = Wsi::new(
+        Game::NAME,
+        Game::VERSION,
+        &init_logger,
+        settings.display_settings(),
+    )?;
+    thread_manager.set_event_queue(wsi.event_queue().clone());
+
     let new_settings = settings.begin_modify();
     settings.save(&new_settings)?;
-
-    // Create the core WSI components
-
-    // Start the job system
 
     // Start the pacer thread
 
     // Run the WSI event loop
+    while thread_manager.shared_state().is_running() {
+        if !wsi.pump()? {
+            break;
+        }
+    }
 
     // Cleanup all running threads
     if let Err(mut errors) = thread_manager.kill() {

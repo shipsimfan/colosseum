@@ -2,11 +2,13 @@ use crate::{Error, ThreadManager};
 
 impl ThreadManager {
     /// Signal all threads to stop running and join them
-    pub fn kill(mut self) -> Result<(), Vec<Error>> {
+    pub fn kill(&self) -> Result<(), Vec<Error>> {
         self.shared_state.kill();
 
         let mut errors = Vec::new();
-        for thread in self.threads.drain(..).rev() {
+
+        let mut threads = self.threads.lock().unwrap();
+        for thread in threads.drain(..).rev() {
             if let Err(error) = thread.join() {
                 errors.push(error);
             }

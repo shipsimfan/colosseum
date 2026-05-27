@@ -6,10 +6,14 @@ use std::sync::Arc;
 
 impl Thread {
     /// Create a new thread with the provided name
-    pub fn new<F: 'static + FnOnce(&GlobalSharedState) -> Result<()> + Send>(
+    pub fn new<
+        F1: 'static + FnOnce(&GlobalSharedState) -> Result<()> + Send,
+        F2: 'static + FnOnce(),
+    >(
         name: String,
-        f: F,
         global_shared_state: Arc<GlobalSharedState>,
+        f: F1,
+        on_kill: F2,
     ) -> Result<Thread> {
         let thread_shared_state = Arc::new(ThreadSharedState::new(name.clone()));
         let child_shared_state = thread_shared_state.clone();
@@ -49,6 +53,7 @@ impl Thread {
         Ok(Thread {
             join_handle,
             shared_state: thread_shared_state,
+            on_kill: Box::new(on_kill),
         })
     }
 }

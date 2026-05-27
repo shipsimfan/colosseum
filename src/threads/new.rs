@@ -1,12 +1,12 @@
 use crate::{GlobalSharedState, ThreadManager, logging::LogController};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 impl ThreadManager {
     /// Create a new [`ThreadManager`]
-    pub fn new(log_controller: &Arc<LogController>) -> ThreadManager {
-        ThreadManager {
+    pub fn new(log_controller: &Arc<LogController>) -> Arc<ThreadManager> {
+        Arc::new(ThreadManager {
             shared_state: Arc::new(GlobalSharedState::new(log_controller)),
-            threads: Vec::new(),
-        }
+            threads: Mutex::new(Vec::new()),
+        })
     }
 }

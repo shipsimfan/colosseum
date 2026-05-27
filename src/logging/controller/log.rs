@@ -21,6 +21,6 @@ impl LogController {
 
         // Send the message to the thread
         let message = LogMessage::new(severity, message, frame, milliseconds, scope, module);
-        self.message_queue.send(message).ok();
+        self.message_queue.send(Some(message)).ok();
     }
 }

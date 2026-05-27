@@ -1,5 +1,11 @@
 use crate::error::InnerError;
 
+impl From<alexandria::Error> for InnerError {
+    fn from(error: alexandria::Error) -> Self {
+        InnerError::Alexandria(error)
+    }
+}
+
 impl From<argparse::Error> for InnerError {
     fn from(error: argparse::Error) -> Self {
         InnerError::Argparse(error)

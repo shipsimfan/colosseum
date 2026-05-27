@@ -24,6 +24,10 @@ impl<'a> ToTokens for SettingsCacheOutputTrait<'a> {
                 }
 
                 #save_fn
+
+                fn display_settings(&self) -> &::colosseum::settings::DisplaySettings {
+                    &self.display
+                }
             }
         }
     }

@@ -13,4 +13,7 @@ pub(in crate::threads) struct Thread {
 
     /// The state shared between the thread and the thread manager
     shared_state: Arc<ThreadSharedState>,
+
+    /// The function to call to kill the thread
+    on_kill: Box<dyn FnOnce()>,
 }

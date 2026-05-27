@@ -27,5 +27,5 @@ pub struct LogController {
     start_time: Instant,
 
     /// The queue for sending log messages to the logger thread
-    message_queue: Sender<LogMessage>,
+    message_queue: Sender<Option<LogMessage>>,
 }

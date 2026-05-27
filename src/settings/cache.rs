@@ -1,4 +1,4 @@
-use crate::{Result, logging::Logger};
+use crate::{Result, logging::Logger, settings::DisplaySettings};
 use std::path::Path;
 
 /// A cache of settings groups
@@ -18,4 +18,7 @@ pub trait SettingsCache: Sized {
 
     /// Save this settings cache to `path`
     fn save(&mut self, new_settings: &Self::Modifiable) -> Result<()>;
+
+    /// Get the display settings
+    fn display_settings(&self) -> &DisplaySettings;
 }
