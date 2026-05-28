@@ -6,6 +6,7 @@ use argparse::Command;
 use time::{DateTime, SimpleTimeZone};
 use wsi::Wsi;
 
+mod game;
 mod log_metadata;
 mod r#macro;
 mod options;
@@ -47,8 +48,7 @@ fn do_run<Game: crate::Game>(
     };
 
     // Create the logging interface
-    let (log_controller, log_start_token) =
-        LogController::new(&options.colosseum_options().logging_options)?;
+    let log_controller = LogController::new(&options.colosseum_options().logging_options)?;
 
     let init_logger = log_controller.logger("init");
     log_metadata::<Game>(
@@ -63,7 +63,10 @@ fn do_run<Game: crate::Game>(
     let thread_manager = ThreadManager::new(&log_controller);
 
     // Start the logging thread
-    log_controller.spawn_thread(log_start_token, &thread_manager)?;
+    log_controller.spawn_thread(
+        &thread_manager,
+        &options.colosseum_options().logging_options,
+    )?;
 
     // Load settings and save them back
     let mut settings = <Game::SettingsCache as SettingsCache>::load(
@@ -83,17 +86,47 @@ fn do_run<Game: crate::Game>(
     let new_settings = settings.begin_modify();
     settings.save(&new_settings)?;
 
-    // Start the pacer thread
+    // Start the game thread
+    thread_manager.spawn(
+        "Game".to_string(),
+        move |shared_state| {
+            game::run::<Game>(
+                shared_state,
+                vulkan_instance,
+                surface,
+                settings,
+                init_logger,
+            )
+        },
+        || {},
+    )?;
 
     // Run the WSI event loop
+    let mut error = None;
     while thread_manager.shared_state().is_running() {
-        if !wsi.pump()? {
-            break;
+        match wsi.pump() {
+            Ok(true) => {}
+            Ok(false) => break,
+            Err(e) => {
+                error = Some(e);
+                break;
+            }
         }
     }
 
     // Cleanup all running threads
-    if let Err(mut errors) = thread_manager.kill() {
+    let mut errors = match (thread_manager.kill(), error) {
+        (Ok(()), None) => Vec::new(),
+        (Err(errors), None) => errors,
+        (Ok(()), Some(error)) => vec![error],
+        (Err(mut errors), Some(error)) => {
+            errors.push(error);
+            errors
+        }
+    };
+
+    // Print any errors that occured during shutdown, returning the last one as the error for the function
+    if errors.len() > 0 {
         let last = errors.len() - 1;
         for error in &errors[..last] {
             display_error(error);

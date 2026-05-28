@@ -1,10 +1,7 @@
 use crate::logging::Logger;
 #[cfg(debug_assertions)]
 use alexandria::gpu::VulkanDebugMessenger;
-use alexandria::{
-    AlexandriaContext, EventPump,
-    gpu::{VulkanInstance, VulkanSurface},
-};
+use alexandria::{AlexandriaContext, EventPump};
 #[cfg(debug_assertions)]
 use new::VulkanDebugCallbacks;
 

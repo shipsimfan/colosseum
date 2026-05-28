@@ -6,7 +6,7 @@ use std::path::Path;
 /// This trait should be implemented by adding the `#[colosseum::settings::settings_cache]`
 /// attribute attached to a struct containing fields for each settings group, and implementing
 /// `SettingsGroup` for each of those groups.
-pub trait SettingsCache: Sized {
+pub trait SettingsCache: Sized + Send {
     /// The settings cache that is modifiable
     type Modifiable;
 

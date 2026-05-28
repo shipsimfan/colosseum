@@ -1,10 +1,12 @@
 use crate::logging::{LogMessage, LogSeverity};
 use std::{
-    sync::{atomic::AtomicU64, mpsc::Sender},
+    sync::{
+        Mutex,
+        atomic::AtomicU64,
+        mpsc::{Receiver, Sender},
+    },
     time::Instant,
 };
-
-mod start_token;
 
 mod frame;
 mod log;
@@ -12,8 +14,6 @@ mod logger;
 mod new;
 mod should_log;
 mod spawn_thread;
-
-pub(crate) use start_token::LogStartToken;
 
 /// The central controller for all logging in the engine
 pub struct LogController {
@@ -28,4 +28,7 @@ pub struct LogController {
 
     /// The queue for sending log messages to the logger thread
     message_queue: Sender<Option<LogMessage>>,
+
+    /// The receiver to start the thread logging with
+    reciever: Mutex<Option<Receiver<Option<LogMessage>>>>,
 }

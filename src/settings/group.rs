@@ -29,7 +29,7 @@ pub trait SettingsGroup: for<'de> Deserialize<'de> + Serialize + Send + Clone + 
         if !path.exists() {
             info!(
                 logger,
-                "no \"{}\" settings found at \"{}\", using defaults",
+                "No \"{}\" settings found at \"{}\", using defaults",
                 Self::PRETTY_NAME,
                 path.display(),
             );
@@ -46,7 +46,7 @@ pub trait SettingsGroup: for<'de> Deserialize<'de> + Serialize + Send + Clone + 
 
         info!(
             logger,
-            "loaded \"{}\" settings from \"{}\"",
+            "Loaded \"{}\" settings from \"{}\"",
             Self::PRETTY_NAME,
             path.display()
         );
@@ -87,7 +87,7 @@ pub trait SettingsGroup: for<'de> Deserialize<'de> + Serialize + Send + Clone + 
 
         info!(
             logger,
-            "saved \"{}\" settings to \"{}\"",
+            "Saved \"{}\" settings to \"{}\"",
             Self::PRETTY_NAME,
             path.display()
         );

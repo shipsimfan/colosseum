@@ -11,4 +11,7 @@ pub struct DisplaySettings {
 
     /// Whether to use fullscreen mode
     pub fullscreen: bool,
+
+    /// The name or UUID of the adapter to use for rendering
+    pub adapter: Option<String>,
 }
