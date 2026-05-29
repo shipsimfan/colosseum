@@ -20,7 +20,7 @@ impl<'surface> GraphicsDevice<'surface> {
                 VulkanAdapterInfo::is_compatible_adapter(adapter, surface, logger).transpose()
             })
             .collect::<Result<_>>()?;
-        adapters.sort();
+        adapters.sort_by(|a, b| b.cmp(a));
         Ok(adapters)
     }
 }

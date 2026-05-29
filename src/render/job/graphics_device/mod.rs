@@ -4,6 +4,8 @@ use alexandria::gpu::{VulkanCommandPool, VulkanDevice, VulkanFormat, VulkanSurfa
 
 mod adapter_info;
 
+mod allocate_command_buffer;
+mod deref;
 mod drop;
 mod get;
 mod get_adapters;
