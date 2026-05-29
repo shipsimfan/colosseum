@@ -11,7 +11,7 @@ pub(in crate::run::wsi::new::vulkan_instance) fn get_layers_and_extensions(
 ) -> Result<(Vec<String>, Vec<VulkanInstanceExtension>, bool)> {
     // Check for validation layers
     let mut has_validation_layers = false;
-    for layer in gpu.layers().map_err(|error| Error::new_inner(error))? {
+    for layer in gpu.layers().map_err(Error::new_inner)? {
         if layer.name() == VALIDATION_LAYER_NAME {
             has_validation_layers = true;
             break;
@@ -32,10 +32,7 @@ pub(in crate::run::wsi::new::vulkan_instance) fn get_layers_and_extensions(
 
     // Check for the debug utils extension
     let mut has_debug_utils_extension = false;
-    for extension in gpu
-        .extensions(None)
-        .map_err(|error| Error::new_inner(error))?
-    {
+    for extension in gpu.extensions(None).map_err(Error::new_inner)? {
         if extension == VulkanInstanceExtension::DebugUtils {
             has_debug_utils_extension = true;
             break;

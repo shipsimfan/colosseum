@@ -8,6 +8,7 @@
 #![feature(box_into_inner)]
 
 pub mod logging;
+pub mod render;
 pub mod settings;
 
 mod error;

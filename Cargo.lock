@@ -5,6 +5,7 @@ version = 4
 [[package]]
 name = "alexandria"
 version = "0.3.0"
+source = "git+https://github.com/shipsimfan/alexandria#8600b6dd35101730a6ce3085cb56604d0f963890"
 dependencies = [
  "data-format",
  "linux",
@@ -135,7 +136,7 @@ dependencies = [
 [[package]]
 name = "vulkan"
 version = "0.1.0"
-source = "git+https://github.com/shipsimfan/lib-vulkan#ec960074e87f01cf4fbd071b98bf38d309d1a88b"
+source = "git+https://github.com/shipsimfan/lib-vulkan#dab1b246ca15e45010dc45226a3d0f10c0edfc0d"
 dependencies = [
  "win32",
 ]

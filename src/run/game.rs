@@ -1,8 +1,10 @@
-use crate::{GlobalSharedState, Result, logging::Logger, settings::SettingsCache};
-use alexandria::gpu::{VulkanInstance, VulkanSurface};
-use graphics_device::GraphicsDevice;
-
-mod graphics_device;
+use crate::{
+    GlobalSharedState, Result, logging::Logger, render::RenderJob, settings::SettingsCache,
+};
+use alexandria::{
+    gpu::{VulkanInstance, VulkanSurface},
+    math::Vector2u,
+};
 
 /// Run the main game thread
 pub(in crate::run) fn run<Game: crate::Game>(
@@ -10,17 +12,19 @@ pub(in crate::run) fn run<Game: crate::Game>(
     instance: VulkanInstance,
     surface: VulkanSurface,
     settings: Game::SettingsCache,
+    window_size: Vector2u,
     logger: Logger,
 ) -> Result<()> {
-    let device = GraphicsDevice::new(
+    let mut render_job = RenderJob::new(
         settings.display_settings().adapter.as_deref(),
         &instance,
         &surface,
+        window_size,
         &logger,
     )?;
 
     while shared_state.is_running() {
-        std::thread::sleep(std::time::Duration::from_millis(16));
+        render_job = render_job.run(window_size)?;
     }
 
     Ok(())

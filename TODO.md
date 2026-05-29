@@ -1,10 +1,8 @@
 # ToDo
  1. Add game thread
-   1. Create Vulkan device
-   2. Create command pool 
-   3. Create swapchain + inflight frame data
-   4. Basic render + present loop
-   5. Swapchain resize signalled from WSI thread
+   1. Create inflight frame data
+   2. Basic render + present loop
+   3. Swapchain resize signalled from WSI thread
  2. Add File I/O thread
  3. Make settings load + save asynchronous
  4. Update display settings when window changes and initialization

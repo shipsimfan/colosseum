@@ -18,7 +18,7 @@ pub(in crate::run::wsi::new) fn create(
                 logger: logger.clone(),
             },
         )
-        .map_err(|error| Error::new_inner(error))
+        .map_err(Error::new_inner)
 }
 
 /// The callbacks for the Vulkan debug messenger

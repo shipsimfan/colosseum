@@ -87,6 +87,7 @@ fn do_run<Game: crate::Game>(
     settings.save(&new_settings)?;
 
     // Start the game thread
+    let window_size = wsi.window_size();
     thread_manager.spawn(
         "Game".to_string(),
         move |shared_state| {
@@ -95,6 +96,7 @@ fn do_run<Game: crate::Game>(
                 vulkan_instance,
                 surface,
                 settings,
+                window_size,
                 init_logger,
             )
         },

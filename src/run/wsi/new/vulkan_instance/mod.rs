@@ -32,7 +32,7 @@ pub(in crate::run::wsi::new) fn create(
         .extensions(extensions)
         .window_extensions(window)
         .create()
-        .map_err(|error| Error::new_inner(error))?;
+        .map_err(Error::new_inner)?;
 
     Ok((vulkan_instance, create_debug_messenger))
 }

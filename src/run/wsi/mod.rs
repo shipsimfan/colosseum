@@ -1,7 +1,7 @@
 use crate::logging::Logger;
 #[cfg(debug_assertions)]
 use alexandria::gpu::VulkanDebugMessenger;
-use alexandria::{AlexandriaContext, EventPump};
+use alexandria::{AlexandriaContext, EventPump, window::Window};
 #[cfg(debug_assertions)]
 use new::VulkanDebugCallbacks;
 
@@ -19,6 +19,9 @@ pub(in crate::run) struct Wsi {
 
     /// The event pump for the Alexandria context
     event_pump: EventPump<()>,
+
+    /// The window being managed by the WSI
+    window: Window<()>,
 
     /// The debug messenger, if validation layers are available and we're in debug mode
     #[cfg(debug_assertions)]

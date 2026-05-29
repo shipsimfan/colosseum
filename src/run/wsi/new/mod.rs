@@ -25,7 +25,7 @@ impl Wsi {
             .gpu()
             .window()
             .create()
-            .map_err(|error| Error::new_inner(error))?;
+            .map_err(Error::new_inner)?;
         debug!(logger, "Created Alexandria context");
 
         // Create window
@@ -37,7 +37,7 @@ impl Wsi {
             builder.fullscreen();
         }
 
-        let window = builder.create().map_err(|error| Error::new_inner(error))?;
+        let window = builder.create().map_err(Error::new_inner)?;
 
         // Create the Vulkan instance and check for validation layers
         let vulkan_logger = logger.logger("vulkan");
@@ -61,13 +61,14 @@ impl Wsi {
 
         let surface = vulkan_instance
             .create_window_surface(&window)
-            .map_err(|error| Error::new_inner(error))?;
+            .map_err(Error::new_inner)?;
 
         Ok((
             Wsi {
                 logger: logger.logger("wsi"),
                 context,
                 event_pump,
+                window,
                 #[cfg(debug_assertions)]
                 _debug_messenger,
             },
