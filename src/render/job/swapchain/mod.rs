@@ -1,8 +1,16 @@
 use crate::render::job::GraphicsDevice;
-use alexandria::gpu::{VulkanImageView, VulkanSwapchain};
+use alexandria::{
+    gpu::{VulkanImageView, VulkanSwapchain},
+    math::Vector2u,
+};
+use frame_data::FrameData;
 
 mod frame_context;
+mod frame_data;
+
 mod new;
+mod next_frame;
+mod unwrap;
 
 pub(in crate::render) use frame_context::FrameContext;
 
@@ -17,6 +25,12 @@ pub(in crate::render::job) struct Swapchain<'surface> {
     /// The image views for the swapchain images
     image_views: Vec<VulkanImageView>,
 
-    /// The frame contexts for each frame in flight
-    frame_contexts: Vec<FrameContext>,
+    /// The frame data for each frame in flight
+    frame_data: Vec<FrameData>,
+
+    /// The index of the next frame to use
+    frame_index: usize,
+
+    /// The size of the swapchain images
+    size: Vector2u,
 }

@@ -48,6 +48,7 @@ impl<'surface> GraphicsDevice<'surface> {
         Ok(GraphicsDevice {
             logger: logger.clone(),
             device,
+            queue,
             command_pool,
             surface,
             swapchain_format: adapter.swapchain_format(),

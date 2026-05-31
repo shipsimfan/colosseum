@@ -1,21 +1,26 @@
-use crate::{
-    Error, Result,
-    render::{FrameContext, job::GraphicsDevice},
+use crate::render::{FrameContext, job::swapchain::FrameData};
+use alexandria::{
+    gpu::{VulkanImageView, VulkanQueue, VulkanSwapchain},
+    math::Vector2u,
 };
 
-impl FrameContext {
-    /// Creates a new [`FrameContext`]
-    pub(in crate::render::job::swapchain) fn new(device: &GraphicsDevice) -> Result<FrameContext> {
-        let command_buffer = device.allocate_command_buffer()?;
-        let render_complete_semaphore = device.create_semaphore().map_err(Error::new_inner)?;
-        let present_complete_semaphore = device.create_semaphore().map_err(Error::new_inner)?;
-        let draw_fence = device.create_fence(true).map_err(Error::new_inner)?;
-
-        Ok(FrameContext {
-            command_buffer,
-            render_complete_semaphore,
-            present_complete_semaphore,
-            draw_fence,
-        })
+impl<'frame, 'surface> FrameContext<'frame, 'surface> {
+    /// Create a new [`FrameContext`]
+    pub(in crate::render::job::swapchain) fn new(
+        data: &'frame mut FrameData,
+        queue: &'frame mut VulkanQueue,
+        image_index: u32,
+        image_view: &'frame mut VulkanImageView,
+        swapchain: &'frame mut VulkanSwapchain<'surface>,
+        size: Vector2u,
+    ) -> FrameContext<'frame, 'surface> {
+        FrameContext {
+            data,
+            queue,
+            image_index,
+            image_view,
+            swapchain,
+            size,
+        }
     }
 }

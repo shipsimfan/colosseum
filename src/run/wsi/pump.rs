@@ -1,5 +1,5 @@
 use crate::{Error, Result, debug, run::Wsi};
-use alexandria::{Event, EventKind};
+use alexandria::{Event, EventKind, math::Vector2u};
 
 impl Wsi {
     /// Pump the event loop, handling events as they come in. This will block until an event is received
@@ -23,9 +23,15 @@ impl Wsi {
         match event.kind {
             EventKind::Quit | EventKind::WindowCloseRequest { .. } => {
                 debug!(&self.logger, "Received quit event");
-                Ok(false)
+                return Ok(false);
             }
-            _ => Ok(true),
+            EventKind::WindowResized { id: _, new_size } => {
+                self.shared_window
+                    .set_size(Vector2u::new(new_size.x as _, new_size.y as _));
+            }
+            _ => {}
         }
+
+        Ok(true)
     }
 }

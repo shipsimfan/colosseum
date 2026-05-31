@@ -14,6 +14,8 @@ mod wsi;
 
 pub use options::*;
 
+pub(crate) use wsi::Window;
+
 /// Begins the game engine with the provided options, quiting the application based on the result
 /// of running
 pub fn run<Game: crate::Game>(
@@ -87,7 +89,7 @@ fn do_run<Game: crate::Game>(
     settings.save(&new_settings)?;
 
     // Start the game thread
-    let window_size = wsi.window_size();
+    let window = wsi.window();
     thread_manager.spawn(
         "Game".to_string(),
         move |shared_state| {
@@ -96,8 +98,9 @@ fn do_run<Game: crate::Game>(
                 vulkan_instance,
                 surface,
                 settings,
-                window_size,
+                window,
                 init_logger,
+                log_controller,
             )
         },
         || {},

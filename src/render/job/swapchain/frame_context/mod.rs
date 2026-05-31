@@ -1,18 +1,32 @@
-use alexandria::gpu::{VulkanCommandBuffer, VulkanFence, VulkanSemaphore};
+use crate::render::job::swapchain::FrameData;
+use alexandria::{
+    gpu::{VulkanImageView, VulkanQueue, VulkanSwapchain},
+    math::Vector2u,
+};
 
+mod begin_rendering_swapchain;
+mod deref;
 mod new;
+mod present;
 
-/// The objects needed to render a single frame
-pub(in crate::render) struct FrameContext {
-    /// The command buffer to record rendering commands into
-    command_buffer: VulkanCommandBuffer,
+/// The data required to render a single frame
+#[must_use]
+pub(in crate::render) struct FrameContext<'frame, 'surface> {
+    /// The per-frame objects
+    data: &'frame mut FrameData,
 
-    /// Semaphore signaled when the GPU has finished rendering this frame and presentation can begin
-    pub render_complete_semaphore: VulkanSemaphore,
+    /// The queue to submit the commands to
+    queue: &'frame mut VulkanQueue,
 
-    /// Semaphore signaled when the presentation engine has finished reading from the swapchain image
-    pub present_complete_semaphore: VulkanSemaphore,
+    /// The index of the current image in the swapchain
+    image_index: u32,
 
-    /// Fence signaled when the GPU has finished executing the command buffer for this frame
-    pub draw_fence: VulkanFence,
+    /// The image view for the current frame
+    image_view: &'frame mut VulkanImageView,
+
+    /// The swapchain to present to
+    swapchain: &'frame mut VulkanSwapchain<'surface>,
+
+    /// The size of the swapchain images
+    size: Vector2u,
 }

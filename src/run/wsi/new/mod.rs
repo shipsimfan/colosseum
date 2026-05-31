@@ -1,9 +1,15 @@
-use crate::{Error, Result, debug, logging::Logger, run::Wsi, settings::DisplaySettings};
+use crate::{
+    Error, Result, debug,
+    logging::Logger,
+    run::{Wsi, wsi::SharedWindow},
+    settings::DisplaySettings,
+};
 use alexandria::{
     AlexandriaContext,
     gpu::{VulkanInstance, VulkanSurface, VulkanVersion},
+    math::Vector2u,
 };
-use std::str::FromStr;
+use std::{str::FromStr, sync::Arc};
 
 #[cfg(debug_assertions)]
 mod debug_messenger;
@@ -32,12 +38,16 @@ impl Wsi {
         let mut builder = context
             .window()
             .create_window(format!("{} v{}", game_name, game_version));
-        builder.size(display_settings.resolution);
+        builder.size(display_settings.resolution).resizable();
         if display_settings.fullscreen {
             builder.fullscreen();
         }
 
         let window = builder.create().map_err(Error::new_inner)?;
+
+        // Create the shared window state
+        let size = window.size();
+        let shared_window = Arc::new(SharedWindow::new(Vector2u::new(size.x as _, size.y as _)));
 
         // Create the Vulkan instance and check for validation layers
         let vulkan_logger = logger.logger("vulkan");
@@ -68,7 +78,7 @@ impl Wsi {
                 logger: logger.logger("wsi"),
                 context,
                 event_pump,
-                window,
+                shared_window,
                 #[cfg(debug_assertions)]
                 _debug_messenger,
             },

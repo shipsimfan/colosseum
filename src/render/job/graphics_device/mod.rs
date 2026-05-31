@@ -1,6 +1,6 @@
 use crate::logging::Logger;
 use adapter_info::VulkanAdapterInfo;
-use alexandria::gpu::{VulkanCommandPool, VulkanDevice, VulkanFormat, VulkanSurface};
+use alexandria::gpu::{VulkanCommandPool, VulkanDevice, VulkanFormat, VulkanQueue, VulkanSurface};
 
 mod adapter_info;
 
@@ -18,6 +18,9 @@ pub(in crate::render::job) struct GraphicsDevice<'surface> {
 
     /// The Vulkan device
     device: VulkanDevice,
+
+    /// The queue to submit rendering commands to
+    queue: VulkanQueue,
 
     /// The command pool for the graphics queue
     command_pool: VulkanCommandPool,
