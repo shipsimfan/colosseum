@@ -34,6 +34,7 @@ struct CubeSettings {}
 
 /// The initial scene for the cube example
 struct CubeScene {
+    /// A color that shifts over time to demonstrate the update loop
     color: colosseum::math::ColorHsv<f32, colosseum::math::Linear>,
 }
 
@@ -57,7 +58,7 @@ impl colosseum::update::InitialScene for CubeScene {
         _: &mut colosseum::update::UpdateContext<Cube>,
     ) -> colosseum::Result<Self> {
         Ok(CubeScene {
-            color: colosseum::math::ColorHsv::new(0.0, 1.0, 1.0),
+            color: colosseum::math::ColorHsv::RED,
         })
     }
 }
