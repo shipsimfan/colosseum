@@ -14,7 +14,7 @@ pub struct ColosseumOptions<Game: crate::Game> {
 }
 
 /// A set of options which contains colosseum options
-pub trait GameOptions<Game: crate::Game>: Command {
+pub trait GameOptions<Game: crate::Game>: Command + Send {
     /// Get the colosseum options
     fn colosseum_options(&self) -> &ColosseumOptions<Game>;
 }

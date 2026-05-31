@@ -1,4 +1,4 @@
-use crate::{GameOptions, settings::SettingsCache};
+use crate::{GameOptions, settings::SettingsCache, update::InitialScene};
 
 /// The definition of common elements to the whole game
 pub trait Game: 'static + Sized {
@@ -7,6 +7,9 @@ pub trait Game: 'static + Sized {
 
     /// The settings which the game uses
     type SettingsCache: SettingsCache;
+
+    /// The scene to start the game with
+    type InitialScene: InitialScene<Game = Self>;
 
     /// The name of the game, to be used as the title for the window
     const NAME: &str;

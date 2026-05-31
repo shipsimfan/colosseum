@@ -10,6 +10,7 @@
 pub mod logging;
 pub mod render;
 pub mod settings;
+pub mod update;
 
 mod error;
 mod game;

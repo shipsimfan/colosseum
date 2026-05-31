@@ -98,6 +98,7 @@ fn do_run<Game: crate::Game>(
                 vulkan_instance,
                 surface,
                 settings,
+                options,
                 window,
                 init_logger,
                 log_controller,

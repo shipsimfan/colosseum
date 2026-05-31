@@ -1,17 +1,17 @@
 use crate::{
     Result,
-    render::{RenderJob, job::Swapchain},
+    render::{RenderData, RenderJob, job::Swapchain},
 };
-use alexandria::math::{Color4f, Srgb, Vector2u};
+use alexandria::math::Vector2u;
 
 impl<'surface> RenderJob<'surface> {
     /// Run the render job, returning the next state of the job
-    pub(crate) fn run(self, window_size: Vector2u) -> Result<Self> {
+    pub(crate) fn run(self, window_size: Vector2u, render_data: &RenderData) -> Result<Self> {
         match self {
             RenderJob::RecreateSwapchain { device } => Ok(RenderJob::Rendering {
                 swapchain: Swapchain::new(device, window_size)?,
             }),
-            RenderJob::Rendering { swapchain } => render_frame(swapchain, window_size),
+            RenderJob::Rendering { swapchain } => render_frame(swapchain, window_size, render_data),
         }
     }
 }
@@ -19,6 +19,7 @@ impl<'surface> RenderJob<'surface> {
 fn render_frame<'surface>(
     mut swapchain: Swapchain<'surface>,
     size: Vector2u,
+    render_data: &RenderData,
 ) -> Result<RenderJob<'surface>> {
     let mut frame = match swapchain.next_frame(size)? {
         Some(frame) => frame,
@@ -29,7 +30,7 @@ fn render_frame<'surface>(
         }
     };
 
-    let clear_color = Color4f::<Srgb>::new(1.0, 0.0, 1.0, 1.0);
+    let clear_color = render_data.clear_color().with_alpha(1.0);
     frame.begin_rendering_swapchain(clear_color);
     frame.cmd_end_rendering();
 
