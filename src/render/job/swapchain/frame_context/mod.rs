@@ -4,7 +4,6 @@ use alexandria::{
     math::Vector2u,
 };
 
-mod begin_rendering_swapchain;
 mod deref;
 mod new;
 mod present;

@@ -5,14 +5,23 @@ version = 4
 [[package]]
 name = "alexandria"
 version = "0.3.0"
-source = "git+https://github.com/shipsimfan/alexandria#038d14a3abaaa9e402c8c64885cb49f4606c9ade"
+source = "git+https://github.com/shipsimfan/alexandria#5c25e95286784a282d8e98e702f338d8ff951d4b"
 dependencies = [
+ "alexandria-macros",
  "data-format",
  "linux",
  "time",
  "vulkan",
  "wayland",
  "win32",
+]
+
+[[package]]
+name = "alexandria-macros"
+version = "0.3.0"
+source = "git+https://github.com/shipsimfan/alexandria#5c25e95286784a282d8e98e702f338d8ff951d4b"
+dependencies = [
+ "proc-macro-util",
 ]
 
 [[package]]

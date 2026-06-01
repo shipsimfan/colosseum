@@ -1,4 +1,4 @@
-use crate::logging::Logger;
+use crate::{logging::Logger, render::FrameGraph};
 use adapter_info::VulkanAdapterInfo;
 use alexandria::gpu::{VulkanCommandPool, VulkanDevice, VulkanFormat, VulkanQueue, VulkanSurface};
 
@@ -30,4 +30,7 @@ pub(in crate::render::job) struct GraphicsDevice<'surface> {
 
     /// The format of the swapchain images, which is determined when creating the swapchain
     swapchain_format: VulkanFormat,
+
+    /// The frame graph, which can be built and executed to render frames
+    frame_graph: FrameGraph,
 }

@@ -1,7 +1,10 @@
 use crate::{
     Error, Result, info,
     logging::Logger,
-    render::job::{GraphicsDevice, graphics_device::VulkanAdapterInfo},
+    render::{
+        FrameGraph,
+        job::{GraphicsDevice, graphics_device::VulkanAdapterInfo},
+    },
     warning,
 };
 use alexandria::gpu::{
@@ -52,6 +55,7 @@ impl<'surface> GraphicsDevice<'surface> {
             command_pool,
             surface,
             swapchain_format: adapter.swapchain_format(),
+            frame_graph: FrameGraph::new(),
         })
     }
 }

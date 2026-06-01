@@ -1,4 +1,7 @@
-use crate::{logging::Logger, render::job::GraphicsDevice};
+use crate::{
+    logging::Logger,
+    render::{FrameGraph, job::GraphicsDevice},
+};
 use alexandria::gpu::{VulkanFormat, VulkanQueue, VulkanSurface};
 
 impl<'surface> GraphicsDevice<'surface> {
@@ -18,7 +21,7 @@ impl<'surface> GraphicsDevice<'surface> {
     }
 
     /// Get the queue that this graphics device uses for rendering
-    pub fn queue(&mut self) -> &mut VulkanQueue {
-        &mut self.queue
+    pub fn queue_and_frame_graph(&mut self) -> (&mut VulkanQueue, &mut FrameGraph) {
+        (&mut self.queue, &mut self.frame_graph)
     }
 }

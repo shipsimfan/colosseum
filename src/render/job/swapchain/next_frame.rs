@@ -1,16 +1,17 @@
 use crate::{
     Error, Result,
-    render::{FrameContext, job::Swapchain},
+    render::{FrameContext, RenderData, job::Swapchain},
 };
 use alexandria::math::Vector2u;
 
 impl<'surface> Swapchain<'surface> {
-    /// Get the context for the next frame, or [`None`] if the swapchain is out of date and needs
+    /// Get the context for the next frame, or true if the swapchain is out of date and needs
     /// to be recreated
     pub fn next_frame<'frame>(
         &'frame mut self,
         size: Vector2u,
-    ) -> Result<Option<FrameContext<'frame, 'surface>>> {
+        render_data: &RenderData,
+    ) -> Result<bool> {
         // Get the next frame data
         let frame = &mut self.frame_data[self.frame_index];
         self.frame_index = (self.frame_index + 1) % self.image_views.len();
@@ -19,7 +20,7 @@ impl<'surface> Swapchain<'surface> {
         frame.wait_for_draw_finish()?;
 
         if self.size != size {
-            return Ok(None);
+            return Ok(true);
         }
 
         // Acquire the next image to render into
@@ -29,7 +30,7 @@ impl<'surface> Swapchain<'surface> {
             .unwrap()
         {
             Some(image_index) => image_index,
-            None => return Ok(None),
+            None => return Ok(true),
         };
 
         // Begin the command buffer for the frame
@@ -46,13 +47,19 @@ impl<'surface> Swapchain<'surface> {
             alexandria::gpu::VulkanPipelineStageFlag::ColorAttachmentOutput,
         );
 
-        Ok(Some(FrameContext::new(
-            frame,
-            self.device.queue(),
-            image_index as _,
-            &mut self.image_views[image_index],
-            &mut self.swapchain,
-            self.size,
-        )))
+        let (queue, frame_graph) = self.device.queue_and_frame_graph();
+
+        frame_graph.build(
+            render_data,
+            FrameContext::new(
+                frame,
+                queue,
+                image_index as _,
+                &mut self.image_views[image_index],
+                &mut self.swapchain,
+                self.size,
+            ),
+        );
+        Ok(false)
     }
 }
