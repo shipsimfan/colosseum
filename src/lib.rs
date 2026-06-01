@@ -23,4 +23,4 @@ pub use run::*;
 
 pub(crate) use threads::*;
 
-pub use alexandria::math;
+pub use alexandria::{input::KeyCode as Key, math};

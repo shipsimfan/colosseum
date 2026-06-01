@@ -1,4 +1,7 @@
-use crate::{logging::Logger, update::Scene};
+use crate::{
+    logging::Logger,
+    update::{Inputs, Scene},
+};
 
 mod new;
 mod run;
@@ -16,4 +19,7 @@ pub(crate) struct UpdateJob<'a, Game: crate::Game> {
 
     /// The game's settings cache
     settings: &'a mut Game::SettingsCache,
+
+    /// The current set of inputs for the game
+    inputs: Inputs,
 }

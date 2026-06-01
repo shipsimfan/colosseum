@@ -60,7 +60,7 @@ pub(in crate::run) fn run<Game: crate::Game>(
         window_size = window.size();
 
         // Update and render the frame
-        if !update_job.run(window_size, delta_time, &mut render_data)? {
+        if !update_job.run(window_size, delta_time, &mut render_data, &window)? {
             info!(logger, "Update job requested exit");
             break;
         }

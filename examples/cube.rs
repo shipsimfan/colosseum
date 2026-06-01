@@ -45,8 +45,19 @@ impl colosseum::update::Scene for CubeScene {
         &mut self,
         context: &mut colosseum::update::UpdateContext<Cube>,
     ) -> colosseum::Result<()> {
-        let dt = context.delta_time().as_secs_f32();
-        self.color = self.color.shift_hue(dt / 5.0);
+        let amount = context.delta_time().as_secs_f32() / 5.0;
+        self.color = if context.inputs().key(colosseum::Key::Left)
+            || context.inputs().key(colosseum::Key::A)
+        {
+            self.color.add_hue(amount)
+        } else if context.inputs().key(colosseum::Key::Right)
+            || context.inputs().key(colosseum::Key::D)
+        {
+            self.color.sub_hue(amount)
+        } else {
+            self.color
+        };
+
         context.set_clear_color(self.color.into_rgb());
         Ok(())
     }

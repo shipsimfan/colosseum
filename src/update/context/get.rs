@@ -1,7 +1,7 @@
 use crate::{
     logging::Logger,
     render::RenderData,
-    update::{Scene, UpdateContext},
+    update::{Inputs, Scene, UpdateContext},
 };
 use alexandria::math::{Color3f, Linear, Vector2u};
 use std::time::Duration;
@@ -35,6 +35,11 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Get the color to clear the screen with before rendering
     pub fn clear_color(&self) -> Color3f<Linear> {
         self.render_data.clear_color()
+    }
+
+    /// Get the current set of inputs for the game
+    pub fn inputs(&self) -> &Inputs {
+        self.inputs
     }
 
     /// Get the render data for this update

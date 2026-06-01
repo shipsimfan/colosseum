@@ -1,5 +1,5 @@
 use crate::{
-    Error, Result, debug,
+    Error, InputEvent, Result, debug,
     logging::Logger,
     run::{Wsi, wsi::SharedWindow},
     settings::DisplaySettings,
@@ -9,7 +9,13 @@ use alexandria::{
     gpu::{VulkanInstance, VulkanSurface, VulkanVersion},
     math::Vector2u,
 };
-use std::{str::FromStr, sync::Arc};
+use std::{
+    str::FromStr,
+    sync::{
+        Arc,
+        mpsc::{self, Receiver},
+    },
+};
 
 #[cfg(debug_assertions)]
 mod debug_messenger;
@@ -25,7 +31,7 @@ impl Wsi {
         game_version: &str,
         logger: &Logger,
         display_settings: &DisplaySettings,
-    ) -> Result<(Wsi, VulkanInstance, VulkanSurface)> {
+    ) -> Result<(Wsi, VulkanInstance, VulkanSurface, Receiver<InputEvent>)> {
         // Create the Alexandria context
         let (context, event_pump) = AlexandriaContext::builder()
             .gpu()
@@ -69,9 +75,13 @@ impl Wsi {
             None
         };
 
+        // Create the window surface
         let surface = vulkan_instance
             .create_window_surface(&window)
             .map_err(Error::new_inner)?;
+
+        // Create the input event channel
+        let (input_sender, input_receiver) = mpsc::channel();
 
         Ok((
             Wsi {
@@ -79,11 +89,13 @@ impl Wsi {
                 context,
                 event_pump,
                 shared_window,
+                input_sender,
                 #[cfg(debug_assertions)]
                 _debug_messenger,
             },
             vulkan_instance,
             surface,
+            input_receiver,
         ))
     }
 }

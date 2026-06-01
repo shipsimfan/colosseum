@@ -1,4 +1,8 @@
-use crate::{logging::Logger, render::RenderData, update::UpdateContext};
+use crate::{
+    logging::Logger,
+    render::RenderData,
+    update::{Inputs, UpdateContext},
+};
 use alexandria::math::Vector2u;
 use std::time::Duration;
 
@@ -10,6 +14,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         logger: &'a Logger,
         settings: &'a mut Game::SettingsCache,
         render_data: &'a mut RenderData,
+        inputs: &'a Inputs,
     ) -> UpdateContext<'a, Game> {
         UpdateContext {
             delta_time,
@@ -19,6 +24,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
             should_exit: false,
             next_scene: None,
             render_data,
+            inputs,
         }
     }
 }

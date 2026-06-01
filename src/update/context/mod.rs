@@ -1,4 +1,8 @@
-use crate::{logging::Logger, render::RenderData, update::Scene};
+use crate::{
+    logging::Logger,
+    render::RenderData,
+    update::{Inputs, Scene},
+};
 use alexandria::math::Vector2u;
 use std::time::Duration;
 
@@ -28,4 +32,7 @@ pub struct UpdateContext<'a, Game: crate::Game> {
 
     /// The next scene to switch to, if any
     next_scene: Option<Box<dyn Scene<Game = Game>>>,
+
+    /// The current set of inputs for the game
+    inputs: &'a Inputs,
 }

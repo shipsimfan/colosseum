@@ -1,5 +1,5 @@
 use crate::{
-    Result, debug,
+    InputEvent, Result, Window, debug,
     render::RenderData,
     update::{UpdateContext, UpdateJob},
 };
@@ -13,7 +13,21 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         window_size: Vector2u,
         delta_time: Duration,
         render_data: &mut RenderData,
+        window: &Window,
     ) -> Result<bool> {
+        // Process input events
+        self.inputs.reset();
+        while let Some(input) = window.next_input() {
+            match input {
+                InputEvent::KeyDown { key } => {
+                    self.inputs.set_key_down(key);
+                }
+                InputEvent::KeyUp { key } => {
+                    self.inputs.set_key_up(key);
+                }
+            }
+        }
+
         // Create the update context for this frame
         let mut update_context = UpdateContext::new(
             delta_time,
@@ -21,6 +35,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             &self.logger,
             self.settings,
             render_data,
+            &self.inputs,
         );
 
         // Handle any pending scene changes before updating the current scene

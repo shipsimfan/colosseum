@@ -1,4 +1,4 @@
-use crate::{Error, Result, debug, run::Wsi};
+use crate::{Error, InputEvent, Result, debug, run::Wsi};
 use alexandria::{Event, EventKind, math::Vector2u};
 
 impl Wsi {
@@ -28,6 +28,16 @@ impl Wsi {
             EventKind::WindowResized { id: _, new_size } => {
                 self.shared_window
                     .set_size(Vector2u::new(new_size.x as _, new_size.y as _));
+            }
+            EventKind::KeyDown { key_code, .. } => {
+                self.input_sender
+                    .send(InputEvent::KeyDown { key: key_code })
+                    .ok();
+            }
+            EventKind::KeyUp { key_code, .. } => {
+                self.input_sender
+                    .send(InputEvent::KeyUp { key: key_code })
+                    .ok();
             }
             _ => {}
         }

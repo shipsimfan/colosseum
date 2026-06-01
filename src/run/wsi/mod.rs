@@ -4,7 +4,7 @@ use alexandria::gpu::VulkanDebugMessenger;
 use alexandria::{AlexandriaContext, EventPump};
 #[cfg(debug_assertions)]
 use new::VulkanDebugCallbacks;
-use std::sync::Arc;
+use std::sync::{Arc, mpsc::Sender};
 use window::SharedWindow;
 
 mod window;
@@ -13,7 +13,7 @@ mod get;
 mod new;
 mod pump;
 
-pub(crate) use window::Window;
+pub(crate) use window::*;
 
 /// The components needed to run the WSI thread
 pub(in crate::run) struct Wsi {
@@ -28,6 +28,9 @@ pub(in crate::run) struct Wsi {
 
     /// The shared state of the window
     shared_window: Arc<SharedWindow>,
+
+    /// The sender for input events from the WSI thread to the game thread
+    input_sender: Sender<InputEvent>,
 
     /// The debug messenger, if validation layers are available and we're in debug mode
     #[cfg(debug_assertions)]

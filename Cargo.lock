@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "alexandria"
 version = "0.3.0"
-source = "git+https://github.com/shipsimfan/alexandria#58bcd0ae377c30e203d74dd38a48ad70bee70349"
+source = "git+https://github.com/shipsimfan/alexandria#038d14a3abaaa9e402c8c64885cb49f4606c9ade"
 dependencies = [
  "data-format",
  "linux",

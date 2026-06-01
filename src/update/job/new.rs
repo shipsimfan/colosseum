@@ -2,7 +2,7 @@ use crate::{
     Result,
     logging::Logger,
     render::RenderData,
-    update::{InitialScene, Scene, UpdateContext, UpdateJob},
+    update::{InitialScene, Inputs, Scene, UpdateContext, UpdateJob},
 };
 use alexandria::math::Vector2u;
 use std::{marker::PhantomData, time::Duration};
@@ -16,8 +16,16 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         settings: &'a mut Game::SettingsCache,
         render_data: &mut RenderData,
     ) -> Result<Option<UpdateJob<'a, Game>>> {
-        let mut update_context =
-            UpdateContext::new(Duration::ZERO, window_size, logger, settings, render_data);
+        let inputs = Inputs::new();
+
+        let mut update_context = UpdateContext::new(
+            Duration::ZERO,
+            window_size,
+            logger,
+            settings,
+            render_data,
+            &inputs,
+        );
 
         let mut initial_scene: Box<dyn Scene<Game = Game>> = Box::new(
             <Game::InitialScene as InitialScene>::new(options, &mut update_context)?,
@@ -36,6 +44,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             next_scene: Some(initial_scene),
             logger: logger.logger("scenes"),
             settings,
+            inputs,
         }))
     }
 }
