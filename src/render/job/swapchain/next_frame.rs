@@ -1,8 +1,12 @@
 use crate::{
     Error, Result,
-    render::{FrameContext, RenderData, job::Swapchain},
+    render::{RenderData, job::Swapchain},
 };
-use alexandria::math::Vector2u;
+use alexandria::{
+    gpu::{VulkanAccessFlag, VulkanAccessFlags, VulkanImageLayout, VulkanPipelineStageFlag},
+    math::Vector2u,
+};
+use std::ops::DerefMut;
 
 impl<'surface> Swapchain<'surface> {
     /// Get the context for the next frame, or true if the swapchain is out of date and needs
@@ -19,9 +23,13 @@ impl<'surface> Swapchain<'surface> {
         // Wait for the previous frame to finish
         frame.wait_for_draw_finish()?;
 
+        // Check if the swapchain is out of date and needs to be recreated
         if self.size != size {
             return Ok(true);
         }
+
+        // Begin the command buffer for the frame
+        frame.begin().map_err(Error::new_inner)?;
 
         // Acquire the next image to render into
         let image_index = match self
@@ -33,33 +41,42 @@ impl<'surface> Swapchain<'surface> {
             None => return Ok(true),
         };
 
-        // Begin the command buffer for the frame
-        frame.begin().map_err(Error::new_inner)?;
+        // Build and execute the frame graph for this frame
+        self.device.build_and_run_frame_graph(
+            render_data,
+            &self.image_views[image_index as usize],
+            self.size,
+            self.device.swapchain_format(),
+            frame.deref_mut(),
+        );
 
-        // Transition the swapchain image to the color attachment layout
+        // Transition the swapchain image to the present layout
         frame.cmd_pipeline_barrier2(
             &self.swapchain.images()[image_index],
-            alexandria::gpu::VulkanImageLayout::Undefined,
-            alexandria::gpu::VulkanImageLayout::ColorAttachmentOptimal,
-            alexandria::gpu::VulkanAccessFlags::default(),
-            alexandria::gpu::VulkanAccessFlag::ColorAttachmentWrite,
-            alexandria::gpu::VulkanPipelineStageFlag::ColorAttachmentOutput,
-            alexandria::gpu::VulkanPipelineStageFlag::ColorAttachmentOutput,
+            VulkanImageLayout::ColorAttachmentOptimal,
+            VulkanImageLayout::PresentSrcKhr,
+            VulkanAccessFlag::ColorAttachmentWrite,
+            VulkanAccessFlags::default(),
+            VulkanPipelineStageFlag::ColorAttachmentOutput,
+            VulkanPipelineStageFlag::BottomOfPipe,
         );
 
-        let (queue, frame_graph) = self.device.queue_and_frame_graph();
+        // End the command buffer
+        frame.end().map_err(Error::new_inner)?;
 
-        frame_graph.build(
-            render_data,
-            FrameContext::new(
-                frame,
-                queue,
+        // Submit the command buffer for execution
+        frame.submit(self.device.queue())?;
+
+        // Present the rendered image
+        self.device
+            .queue()
+            .present(
+                &frame.render_complete_semaphore(),
+                &self.swapchain,
                 image_index as _,
-                &mut self.image_views[image_index],
-                &mut self.swapchain,
-                self.size,
-            ),
-        );
+            )
+            .map_err(Error::new_inner)?;
+
         Ok(false)
     }
 }

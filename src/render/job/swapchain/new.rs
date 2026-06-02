@@ -2,10 +2,7 @@ use crate::{
     Error, Result, debug,
     render::job::{GraphicsDevice, Swapchain, swapchain::FrameData},
 };
-use alexandria::{
-    gpu::VulkanSwapchainPresentMode,
-    math::{Vector2i, Vector2u},
-};
+use alexandria::{gpu::VulkanSwapchainPresentMode, math::Vector2u};
 
 const MAX_FRAMES_IN_FLIGHT: usize = 3;
 
@@ -16,7 +13,7 @@ impl<'surface> Swapchain<'surface> {
             .create_swapchain(
                 MAX_FRAMES_IN_FLIGHT as _,
                 device.swapchain_format(),
-                Vector2i::new(size.x as _, size.y as _),
+                size,
                 VulkanSwapchainPresentMode::Fifo,
                 device.surface(),
             )

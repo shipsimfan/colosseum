@@ -5,14 +5,11 @@ use alexandria::{
 };
 use frame_data::FrameData;
 
-mod frame_context;
 mod frame_data;
 
 mod new;
 mod next_frame;
 mod unwrap;
-
-pub(in crate::render) use frame_context::FrameContext;
 
 /// The swapchain for the render job, which holds the graphics device and the Vulkan swapchain itself
 pub(in crate::render::job) struct Swapchain<'surface> {

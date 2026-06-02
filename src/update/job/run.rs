@@ -67,6 +67,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         }
 
         // Update the current scene
+        update_context.render_data().reset();
         self.scene.update(&mut update_context)?;
 
         // Check if the game should exit or if a new scene was set during the update

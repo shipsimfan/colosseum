@@ -7,8 +7,6 @@ mod swapchain;
 mod new;
 mod run;
 
-pub(in crate::render) use swapchain::FrameContext;
-
 /// The persistent state of the render job
 #[allow(private_interfaces)]
 pub(crate) enum RenderJob<'surface> {

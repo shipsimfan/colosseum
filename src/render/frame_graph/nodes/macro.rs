@@ -16,6 +16,27 @@ macro_rules! nodes {
             $name($type),
         )*}
 
+        impl FrameGraphNode {
+            /// Execute this node, performing the rendering operations associated with it
+            pub(in crate::render::frame_graph) fn execute(
+                &self,
+                render_data: &RenderData,
+                resources: &FrameGraphResources,
+                cmd_buffer: &mut VulkanCommandBuffer,
+            ) {
+                match self {$(
+                        FrameGraphNode::$name(node) => node.execute(render_data, resources, cmd_buffer),
+                )* }
+            }
+
+            /// Get the resources that this node writes to
+            pub fn write_resources<T, F: FnMut(FrameGraphResourceId) -> T>(&self, f: F) -> T {
+                match self {$(
+                    FrameGraphNode::$name(node) => node.write_resources(f),
+                )*}
+            }
+        }
+
         $(
             impl From<$type> for FrameGraphNode {
                 fn from(node: $type) -> Self {

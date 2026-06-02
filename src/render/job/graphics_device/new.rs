@@ -2,7 +2,7 @@ use crate::{
     Error, Result, info,
     logging::Logger,
     render::{
-        FrameGraph,
+        FrameGraph, FrameGraphResourcesPool,
         job::{GraphicsDevice, graphics_device::VulkanAdapterInfo},
     },
     warning,
@@ -45,7 +45,7 @@ impl<'surface> GraphicsDevice<'surface> {
 
         // Create the command pool
         let command_pool = device
-            .create_command_pool(queue.queue_family())
+            .create_command_pool(queue.queue_family(), true)
             .map_err(Error::new_inner)?;
 
         Ok(GraphicsDevice {
@@ -56,6 +56,7 @@ impl<'surface> GraphicsDevice<'surface> {
             surface,
             swapchain_format: adapter.swapchain_format(),
             frame_graph: FrameGraph::new(),
+            frame_graph_resources_pool: FrameGraphResourcesPool::new(),
         })
     }
 }

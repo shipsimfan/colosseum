@@ -1,15 +1,29 @@
-use crate::render::{FrameContext, FrameGraph, RenderData, frame_graph::UnlitForwardPassNode};
+use crate::render::{
+    FrameGraph,
+    frame_graph::{FrameGraphResources, UnlitForwardPassNode},
+};
+use alexandria::{
+    gpu::{VulkanFormat, VulkanImageView},
+    math::Vector2u,
+};
 
 impl FrameGraph {
-    /// Build, compile, and execute the frame graph
-    pub fn build(&mut self, data: &RenderData, frame: FrameContext) {
-        // TODO: Add nodes to the frame graph here
-        self.add_node(UnlitForwardPassNode::new(
-            FrameGraphResourceId::SWAPCHAIN_IMAGE,
-        ));
+    /// Build the frame graph for a single frame
+    pub(in crate::render::frame_graph) fn build<'a>(
+        &mut self,
+        swapchain_image: &'a VulkanImageView,
+        swapchain_image_size: Vector2u,
+        swapchain_image_format: VulkanFormat,
+        resources: &mut FrameGraphResources<'a>,
+    ) {
+        // Register the swapchain image as a resource in the frame graph
+        let swapchain_image = resources.register(
+            swapchain_image,
+            swapchain_image_size,
+            swapchain_image_format,
+        );
 
-        // Compile and execute the frame graph
-        self.compile();
-        self.execute(frame);
+        // Add nodes to the frame graph
+        self.add_node(UnlitForwardPassNode::new(swapchain_image));
     }
 }

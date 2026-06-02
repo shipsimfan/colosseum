@@ -1,10 +1,14 @@
-use crate::{logging::Logger, render::FrameGraph};
+use crate::{
+    logging::Logger,
+    render::{FrameGraph, FrameGraphResourcesPool},
+};
 use adapter_info::VulkanAdapterInfo;
 use alexandria::gpu::{VulkanCommandPool, VulkanDevice, VulkanFormat, VulkanQueue, VulkanSurface};
 
 mod adapter_info;
 
 mod allocate_command_buffer;
+mod build_and_run_frame_graph;
 mod deref;
 mod drop;
 mod get;
@@ -33,4 +37,7 @@ pub(in crate::render::job) struct GraphicsDevice<'surface> {
 
     /// The frame graph, which can be built and executed to render frames
     frame_graph: FrameGraph,
+
+    /// The pool of resources the frame graph can use to register resources for rendering
+    frame_graph_resources_pool: FrameGraphResourcesPool,
 }
