@@ -2,11 +2,12 @@ use crate::{
     Error, Result,
     render::job::{GraphicsDevice, Swapchain},
 };
+use alexandria::gpu::VulkanSurface;
 
 impl<'surface> Swapchain<'surface> {
     /// Unwrap the swapchain, returning the graphics device
-    pub fn unwrap(self) -> Result<GraphicsDevice<'surface>> {
-        self.device.wait_idle().map_err(Error::new_inner)?;
-        Ok(self.device)
+    pub fn unwrap(self, device: &GraphicsDevice) -> Result<&'surface mut VulkanSurface> {
+        device.wait_idle().map_err(Error::new_inner)?;
+        Ok(self.swapchain.unwrap_surface())
     }
 }

@@ -1,12 +1,14 @@
 use crate::{
     Error, Result,
-    render::{RenderData, job::Swapchain},
+    render::{
+        RenderData,
+        job::{GraphicsDevice, Swapchain},
+    },
 };
 use alexandria::{
     gpu::{VulkanAccessFlag, VulkanAccessFlags, VulkanImageLayout, VulkanPipelineStageFlag},
     math::Vector2u,
 };
-use std::ops::DerefMut;
 
 impl<'surface> Swapchain<'surface> {
     /// Get the context for the next frame, or true if the swapchain is out of date and needs
@@ -15,10 +17,12 @@ impl<'surface> Swapchain<'surface> {
         &'frame mut self,
         size: Vector2u,
         render_data: &RenderData,
+        device: &mut GraphicsDevice,
     ) -> Result<bool> {
         // Get the next frame data
-        let frame = &mut self.frame_data[self.frame_index];
-        self.frame_index = (self.frame_index + 1) % self.image_views.len();
+        let frame_index = self.frame_index;
+        let frame = &mut self.frame_data[frame_index];
+        self.frame_index = (frame_index + 1) % self.image_views.len();
 
         // Wait for the previous frame to finish
         frame.wait_for_draw_finish()?;
@@ -29,12 +33,15 @@ impl<'surface> Swapchain<'surface> {
         }
 
         // Begin the command buffer for the frame
-        frame.begin().map_err(Error::new_inner)?;
+        device
+            .command_buffer(frame_index)
+            .begin()
+            .map_err(Error::new_inner)?;
 
         // Acquire the next image to render into
         let image_index = match self
             .swapchain
-            .acquire_next_image(u64::MAX, frame.present_complete_semaphore())
+            .acquire_next_image(u64::MAX, Some(frame.acquire_image_semaphore()), None, 1)
             .unwrap()
         {
             Some(image_index) => image_index,
@@ -42,16 +49,17 @@ impl<'surface> Swapchain<'surface> {
         };
 
         // Build and execute the frame graph for this frame
-        self.device.build_and_run_frame_graph(
+        device.build_and_run_frame_graph(
             render_data,
             &self.image_views[image_index as usize],
             self.size,
-            self.device.swapchain_format(),
-            frame.deref_mut(),
+            frame_index,
         );
 
+        let command_buffer = device.command_buffer(frame_index);
+
         // Transition the swapchain image to the present layout
-        frame.cmd_pipeline_barrier2(
+        command_buffer.cmd_pipeline_barrier2(
             &self.swapchain.images()[image_index],
             VulkanImageLayout::ColorAttachmentOptimal,
             VulkanImageLayout::PresentSrcKhr,
@@ -62,16 +70,15 @@ impl<'surface> Swapchain<'surface> {
         );
 
         // End the command buffer
-        frame.end().map_err(Error::new_inner)?;
+        command_buffer.end().map_err(Error::new_inner)?;
 
         // Submit the command buffer for execution
-        frame.submit(self.device.queue())?;
+        device.submit(frame_index)?;
 
         // Present the rendered image
-        self.device
-            .queue()
+        device
             .present(
-                &frame.render_complete_semaphore(),
+                Some(&frame.render_complete_semaphore()),
                 &self.swapchain,
                 image_index as _,
             )

@@ -3,7 +3,8 @@ use crate::{
     logging::{LogSeverity, Logger},
 };
 use alexandria::gpu::{
-    VulkanDebugMessageSeverity, VulkanDebugMessenger, VulkanDebugMessengerCallback, VulkanInstance,
+    VulkanDebugMessageSeverityFlag, VulkanDebugMessageTypeFlag, VulkanDebugMessageTypeFlags,
+    VulkanDebugMessenger, VulkanDebugMessengerCallback, VulkanInstance,
 };
 
 /// Create a new [`VulkanDebugMessenger`]
@@ -13,7 +14,14 @@ pub(in crate::run::wsi::new) fn create(
 ) -> Result<VulkanDebugMessenger<VulkanDebugCallbacks>> {
     vulkan_instance
         .create_debug_messenger(
-            VulkanDebugMessageSeverity::Verbose,
+            VulkanDebugMessageSeverityFlag::ErrorExt
+                | VulkanDebugMessageSeverityFlag::WarningExt
+                | VulkanDebugMessageSeverityFlag::InfoExt
+                | VulkanDebugMessageSeverityFlag::VerboseExt,
+            VulkanDebugMessageTypeFlag::AddressBindingExt
+                | VulkanDebugMessageTypeFlag::GeneralExt
+                | VulkanDebugMessageTypeFlag::PerformanceExt
+                | VulkanDebugMessageTypeFlag::ValidationExt,
             VulkanDebugCallbacks {
                 logger: logger.clone(),
             },
@@ -28,12 +36,17 @@ pub(in crate::run::wsi) struct VulkanDebugCallbacks {
 }
 
 impl VulkanDebugMessengerCallback for VulkanDebugCallbacks {
-    fn message(&self, message: &str, severity: VulkanDebugMessageSeverity) {
+    fn message(
+        &self,
+        message: &str,
+        severity: VulkanDebugMessageSeverityFlag,
+        _: VulkanDebugMessageTypeFlags,
+    ) {
         let severity = match severity {
-            VulkanDebugMessageSeverity::Error => LogSeverity::Error,
-            VulkanDebugMessageSeverity::Warning => LogSeverity::Warning,
-            VulkanDebugMessageSeverity::Info => LogSeverity::Info,
-            VulkanDebugMessageSeverity::Verbose => LogSeverity::Debug,
+            VulkanDebugMessageSeverityFlag::ErrorExt => LogSeverity::Error,
+            VulkanDebugMessageSeverityFlag::WarningExt => LogSeverity::Warning,
+            VulkanDebugMessageSeverityFlag::InfoExt => LogSeverity::Info,
+            _ => LogSeverity::Debug,
         };
 
         log!(severity, self.logger, "{}", message);

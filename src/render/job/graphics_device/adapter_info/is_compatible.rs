@@ -1,5 +1,8 @@
 use crate::{
-    Error, Result, info, logging::Logger, render::job::graphics_device::VulkanAdapterInfo, warning,
+    Error, Result, info,
+    logging::Logger,
+    render::job::{Swapchain, graphics_device::VulkanAdapterInfo},
+    warning,
 };
 use alexandria::gpu::{
     VulkanAdapter, VulkanDeviceFeatures, VulkanDeviceVulkan13Features, VulkanFormat, VulkanSurface,
@@ -22,13 +25,12 @@ impl<'instance> VulkanAdapterInfo<'instance> {
         }
 
         // Determine if the adapter has the supported features
-        let mut extended_info = [
-            VulkanDeviceFeatures::default().into(),
-            VulkanDeviceVulkan13Features::default().into(),
-        ];
-        adapter.get_extended_info(&mut extended_info);
+        let mut vulkan_13_features = VulkanDeviceVulkan13Features::default();
+        adapter.get_features([
+            &mut VulkanDeviceFeatures::default() as _,
+            &mut vulkan_13_features as _,
+        ]);
 
-        let vulkan_13_features = extended_info[1].as_vulkan_13_features().unwrap();
         if !vulkan_13_features.synchronization2() || !vulkan_13_features.dynamic_rendering() {
             if let Some(logger) = logger {
                 warning!(
@@ -45,8 +47,18 @@ impl<'instance> VulkanAdapterInfo<'instance> {
             .swapchain_formats(surface)
             .map_err(Error::new_inner)?
             .into_iter()
-            .filter(|format| match format {
-                VulkanFormat::B8G8R8A8UNorm | VulkanFormat::R8G8B8A8UNorm => true,
+            .filter_map(|format| {
+                match format.color_space {
+                    Swapchain::COLOR_SPACE => (),
+                    _ => return None,
+                }
+
+                match format.format {
+                    VulkanFormat::B8G8R8A8UNorm | VulkanFormat::R8G8B8A8UNorm => {
+                        Some(format.format)
+                    }
+                    _ => None,
+                }
             })
             .next();
 

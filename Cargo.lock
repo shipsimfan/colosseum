@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "alexandria"
 version = "0.3.0"
-source = "git+https://github.com/shipsimfan/alexandria#6c10a2b70d7ff045c210f3ebc0653ec1383a67fc"
+source = "git+https://github.com/shipsimfan/alexandria#4fb2687484129275e659f536fee6ca74e5e7b85e"
 dependencies = [
  "alexandria-macros",
  "data-format",
@@ -19,7 +19,7 @@ dependencies = [
 [[package]]
 name = "alexandria-macros"
 version = "0.3.0"
-source = "git+https://github.com/shipsimfan/alexandria#6c10a2b70d7ff045c210f3ebc0653ec1383a67fc"
+source = "git+https://github.com/shipsimfan/alexandria#4fb2687484129275e659f536fee6ca74e5e7b85e"
 dependencies = [
  "proc-macro-util",
 ]
@@ -145,7 +145,7 @@ dependencies = [
 [[package]]
 name = "vulkan"
 version = "0.1.0"
-source = "git+https://github.com/shipsimfan/lib-vulkan#dab1b246ca15e45010dc45226a3d0f10c0edfc0d"
+source = "git+https://github.com/shipsimfan/lib-vulkan#23c22788b6f6496c588425925c670d38eb7cb2a5"
 dependencies = [
  "wayland",
  "win32",

@@ -27,5 +27,6 @@ fn format_score(format: VulkanFormat) -> u32 {
     match format {
         VulkanFormat::B8G8R8A8UNorm => 0,
         VulkanFormat::R8G8B8A8UNorm => 1,
+        _ => 2,
     }
 }

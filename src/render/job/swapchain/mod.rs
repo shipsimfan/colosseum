@@ -1,6 +1,5 @@
-use crate::render::job::GraphicsDevice;
 use alexandria::{
-    gpu::{VulkanImageView, VulkanSwapchain},
+    gpu::{VulkanColorSpace, VulkanImageView, VulkanSwapchain},
     math::Vector2u,
 };
 use frame_data::FrameData;
@@ -13,9 +12,6 @@ mod unwrap;
 
 /// The swapchain for the render job, which holds the graphics device and the Vulkan swapchain itself
 pub(in crate::render::job) struct Swapchain<'surface> {
-    /// The graphics device to use for rendering
-    device: GraphicsDevice<'surface>,
-
     /// The swapchain itself
     swapchain: VulkanSwapchain<'surface>,
 
@@ -30,4 +26,9 @@ pub(in crate::render::job) struct Swapchain<'surface> {
 
     /// The size of the swapchain images
     size: Vector2u,
+}
+
+impl<'surface> Swapchain<'surface> {
+    /// The color space to use for the swapchain
+    pub const COLOR_SPACE: VulkanColorSpace = VulkanColorSpace::SRGBNonlinearKhr;
 }

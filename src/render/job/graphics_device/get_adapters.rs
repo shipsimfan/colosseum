@@ -5,11 +5,11 @@ use crate::{
 };
 use alexandria::gpu::{VulkanInstance, VulkanSurface};
 
-impl<'surface> GraphicsDevice<'surface> {
+impl GraphicsDevice {
     /// Get a list of available compatible graphics adapters
     pub(in crate::render::job::graphics_device) fn get_adapters<'instance>(
         instance: &'instance VulkanInstance,
-        surface: &'surface VulkanSurface,
+        surface: &VulkanSurface,
         logger: Option<&Logger>,
     ) -> Result<Vec<VulkanAdapterInfo<'instance>>> {
         let adapters = instance.enumerate_adapters().map_err(Error::new_inner)?;

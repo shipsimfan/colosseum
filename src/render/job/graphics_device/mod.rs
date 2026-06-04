@@ -3,7 +3,10 @@ use crate::{
     render::{FrameGraph, FrameGraphResourcesPool},
 };
 use adapter_info::VulkanAdapterInfo;
-use alexandria::gpu::{VulkanCommandPool, VulkanDevice, VulkanFormat, VulkanQueue, VulkanSurface};
+use alexandria::{
+    Id,
+    gpu::{VulkanCommandBuffer, VulkanCommandPool, VulkanDevice, VulkanFormat, VulkanQueue},
+};
 
 mod adapter_info;
 
@@ -16,7 +19,7 @@ mod get_adapters;
 mod new;
 
 /// The graphics device is responsible for managing the Vulkan device and related resources
-pub(in crate::render::job) struct GraphicsDevice<'surface> {
+pub(in crate::render::job) struct GraphicsDevice {
     /// The logger for operations related to the graphics device
     logger: Logger,
 
@@ -29,8 +32,8 @@ pub(in crate::render::job) struct GraphicsDevice<'surface> {
     /// The command pool for the graphics queue
     command_pool: VulkanCommandPool,
 
-    /// The surface to use for the swapchain
-    surface: &'surface VulkanSurface,
+    /// The command buffers that have been allocated in the pool
+    command_buffers: Vec<Id<VulkanCommandBuffer>>,
 
     /// The format of the swapchain images, which is determined when creating the swapchain
     swapchain_format: VulkanFormat,

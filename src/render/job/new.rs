@@ -16,14 +16,14 @@ impl<'surface> RenderJob<'surface> {
     pub fn new(
         adapter: Option<&str>,
         instance: &VulkanInstance,
-        surface: &'surface VulkanSurface,
+        surface: &'surface mut VulkanSurface,
         size: Vector2u,
         logger: &Logger,
     ) -> Result<RenderJob<'surface>> {
-        let device = GraphicsDevice::new(adapter, instance, surface, logger)?;
+        let mut device = GraphicsDevice::new(adapter, instance, surface, logger)?;
 
-        let swapchain = Swapchain::new(device, size)?;
+        let swapchain = Swapchain::new(surface, size, &mut device)?;
 
-        Ok(RenderJob::Rendering { swapchain })
+        Ok(RenderJob::Rendering { device, swapchain })
     }
 }

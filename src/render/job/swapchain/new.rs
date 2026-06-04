@@ -2,20 +2,42 @@ use crate::{
     Error, Result, debug,
     render::job::{GraphicsDevice, Swapchain, swapchain::FrameData},
 };
-use alexandria::{gpu::VulkanSwapchainPresentMode, math::Vector2u};
+use alexandria::{
+    gpu::{
+        VulkanComponentMapping, VulkanCompositeAlphaFlag, VulkanImageAspectFlag,
+        VulkanImageUsageFlag, VulkanImageViewType, VulkanPresentMode, VulkanSharingMode,
+        VulkanSurface, VulkanSurfaceTransformFlag,
+    },
+    math::Vector2u,
+};
 
 const MAX_FRAMES_IN_FLIGHT: usize = 3;
 
 impl<'surface> Swapchain<'surface> {
     /// Create a new [`Swapchain`] from a [`GraphicsDevice`]
-    pub fn new(device: GraphicsDevice<'surface>, size: Vector2u) -> Result<Swapchain<'surface>> {
+    pub fn new(
+        surface: &'surface mut VulkanSurface,
+        size: Vector2u,
+        device: &mut GraphicsDevice,
+    ) -> Result<Swapchain<'surface>> {
+        let swapchain_format = device.swapchain_format();
         let swapchain = device
             .create_swapchain(
+                0,
+                surface,
                 MAX_FRAMES_IN_FLIGHT as _,
-                device.swapchain_format(),
+                swapchain_format,
+                Swapchain::COLOR_SPACE,
                 size,
-                VulkanSwapchainPresentMode::Fifo,
-                device.surface(),
+                1,
+                VulkanImageUsageFlag::ColorAttachment,
+                VulkanSharingMode::Exclusive,
+                &[],
+                VulkanSurfaceTransformFlag::IdentityKhr,
+                VulkanCompositeAlphaFlag::OpaqueKhr,
+                VulkanPresentMode::FIFOKhr,
+                true,
+                None,
             )
             .map_err(Error::new_inner)?;
 
@@ -24,7 +46,17 @@ impl<'surface> Swapchain<'surface> {
             .iter()
             .map(|image| {
                 image
-                    .create_image_view(device.swapchain_format())
+                    .create_image_view(
+                        0,
+                        VulkanImageViewType::_2d,
+                        device.swapchain_format(),
+                        VulkanComponentMapping::default(),
+                        VulkanImageAspectFlag::Color,
+                        0,
+                        1,
+                        0,
+                        1,
+                    )
                     .map_err(Error::new_inner)
             })
             .collect::<Result<Vec<_>>>()?;
@@ -34,13 +66,14 @@ impl<'surface> Swapchain<'surface> {
             frame_data.push(FrameData::new(&device)?);
         }
 
+        device.reserve_command_buffers(image_views.len());
+
         debug!(
             device.logger(),
             "Created swapchain sized {}x{}", size.x, size.y
         );
 
         Ok(Swapchain {
-            device,
             swapchain,
             image_views,
             frame_data,

@@ -1,25 +1,21 @@
 use crate::render::{RenderData, job::GraphicsDevice};
-use alexandria::{
-    gpu::{VulkanCommandBuffer, VulkanFormat, VulkanImageView},
-    math::Vector2u,
-};
+use alexandria::{gpu::VulkanImageView, math::Vector2u};
 
-impl<'surface> GraphicsDevice<'surface> {
+impl GraphicsDevice {
     /// Build and run the frame graph to render a frame
     pub fn build_and_run_frame_graph(
         &mut self,
         data: &RenderData,
         swapchain_image: &VulkanImageView,
         swapchain_image_size: Vector2u,
-        swapchain_image_format: VulkanFormat,
-        command_buffer: &mut VulkanCommandBuffer,
+        frame_index: usize,
     ) {
         self.frame_graph.build_and_run(
             data,
             swapchain_image,
             swapchain_image_size,
-            swapchain_image_format,
-            command_buffer,
+            self.swapchain_format,
+            &mut self.command_pool[self.command_buffers[frame_index]],
             &mut self.frame_graph_resources_pool,
         );
     }

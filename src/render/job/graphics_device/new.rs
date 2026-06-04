@@ -8,33 +8,33 @@ use crate::{
     warning,
 };
 use alexandria::gpu::{
-    VulkanDeviceExtension, VulkanDeviceVulkan13Features, VulkanInstance, VulkanQueueCreateInfo,
-    VulkanSurface,
+    VulkanCommandPoolCreateFlag, VulkanDeviceExtension, VulkanDeviceVulkan13Features,
+    VulkanInstance, VulkanQueueCreateInfo, VulkanSurface,
 };
 
-impl<'surface> GraphicsDevice<'surface> {
+impl GraphicsDevice {
     /// Locate a new graphics device based on the name or UUID of the adapter, or use a default if none is provided
     pub fn new(
         adapter: Option<&str>,
         instance: &VulkanInstance,
-        surface: &'surface VulkanSurface,
+        surface: &VulkanSurface,
         logger: &Logger,
-    ) -> Result<GraphicsDevice<'surface>> {
+    ) -> Result<GraphicsDevice> {
         let logger = logger.logger("vulkan");
 
         // Select the adapter
-        let adapter = select_adapter(adapter, instance, surface, &logger)?;
+        let adapter = select_adapter(adapter, instance, &surface, &logger)?;
 
         // Create the Vulkan device
         let (device, mut queues) = adapter
             .device_builder()
             .extension(VulkanDeviceExtension::Swapchain)
-            .queue(VulkanQueueCreateInfo {
-                queue_family: adapter.graphics_queue_family_index(),
-                priorities: &[1.0],
-            })
-            .extended_info(
-                VulkanDeviceVulkan13Features::default()
+            .queue(VulkanQueueCreateInfo::new(
+                adapter.graphics_queue_family_index(),
+                &[1.0],
+            ))
+            .feature(
+                &mut VulkanDeviceVulkan13Features::default()
                     .enable_synchronization2()
                     .enable_dynamic_rendering(),
             )
@@ -45,7 +45,10 @@ impl<'surface> GraphicsDevice<'surface> {
 
         // Create the command pool
         let command_pool = device
-            .create_command_pool(queue.queue_family(), true)
+            .create_command_pool(
+                queue.queue_family(),
+                VulkanCommandPoolCreateFlag::ResetCommandBuffer,
+            )
             .map_err(Error::new_inner)?;
 
         Ok(GraphicsDevice {
@@ -53,7 +56,7 @@ impl<'surface> GraphicsDevice<'surface> {
             device,
             queue,
             command_pool,
-            surface,
+            command_buffers: Vec::new(),
             swapchain_format: adapter.swapchain_format(),
             frame_graph: FrameGraph::new(),
             frame_graph_resources_pool: FrameGraphResourcesPool::new(),

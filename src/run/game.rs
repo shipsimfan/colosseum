@@ -12,7 +12,7 @@ use std::{sync::Arc, time::Instant};
 pub(in crate::run) fn run<Game: crate::Game>(
     shared_state: &GlobalSharedState,
     instance: VulkanInstance,
-    surface: VulkanSurface,
+    mut surface: VulkanSurface,
     mut settings: Game::SettingsCache,
     options: Game::Options,
     window: Window,
@@ -24,7 +24,7 @@ pub(in crate::run) fn run<Game: crate::Game>(
     let mut render_job = RenderJob::new(
         settings.display_settings().adapter.as_deref(),
         &instance,
-        &surface,
+        &mut surface,
         window_size,
         &logger,
     )?;
