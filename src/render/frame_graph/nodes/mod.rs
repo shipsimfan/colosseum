@@ -1,10 +1,10 @@
 use crate::render::{
     RenderData,
-    frame_graph::{FrameGraphResourceId, FrameGraphResources},
+    frame_graph::{FrameGraphResourceId, FrameGraphResourceWriteUsage},
 };
 use alexandria::gpu::VulkanCommandBuffer;
 use r#macro::nodes;
 
 mod r#macro;
 
-nodes![unlit_forward_pass::UnlitForwardPass(UnlitForwardPassNode),];
+nodes![solid_color_sky::SolidColorSky(SolidColorSkyNode),];

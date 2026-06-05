@@ -6,12 +6,12 @@ macro_rules! nodes {
         $(
             mod $module;
 
-            pub(in crate::render::frame_graph) use $module::$type;
+            pub(in crate::render) use $module::$type;
         )*
 
         /// A single node in the frame graph
         #[derive(Debug)]
-        pub(in crate::render::frame_graph) enum FrameGraphNode {$(
+        pub(in crate::render) enum FrameGraphNode {$(
             $(#[$meta])*
             $name($type),
         )*}
@@ -21,16 +21,21 @@ macro_rules! nodes {
             pub(in crate::render::frame_graph) fn execute(
                 &self,
                 render_data: &RenderData,
-                resources: &FrameGraphResources,
                 cmd_buffer: &mut VulkanCommandBuffer,
             ) {
                 match self {$(
-                        FrameGraphNode::$name(node) => node.execute(render_data, resources, cmd_buffer),
-                )* }
+                        FrameGraphNode::$name(node) => node.execute(render_data, cmd_buffer),
+                )*}
             }
 
             /// Get the resources that this node writes to
-            pub fn write_resources<T, F: FnMut(FrameGraphResourceId) -> T>(&self, f: F) -> T {
+            pub(in crate::render::frame_graph) fn write_resources<
+                T,
+                F: FnOnce(&[(FrameGraphResourceId, FrameGraphResourceWriteUsage)]) -> T,
+            >(
+                &self,
+                f: F,
+            ) -> T {
                 match self {$(
                     FrameGraphNode::$name(node) => node.write_resources(f),
                 )*}

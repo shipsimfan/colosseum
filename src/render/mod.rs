@@ -6,5 +6,6 @@ mod data;
 mod frame_graph;
 mod job;
 
-pub(crate) use data::*;
+pub use data::*;
+
 pub(crate) use job::*;

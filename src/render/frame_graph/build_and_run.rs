@@ -21,6 +21,7 @@ impl FrameGraph {
 
         // Build the frame graph for this frame
         self.build(
+            data,
             swapchain_image,
             swapchain_image_size,
             swapchain_image_format,

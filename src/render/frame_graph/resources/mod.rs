@@ -7,9 +7,9 @@ mod index;
 mod new;
 mod register;
 
+pub(in crate::render) use id::*;
 pub(in crate::render) use pool::*;
 
-pub(in crate::render::frame_graph) use id::*;
 pub(in crate::render::frame_graph) use resource::*;
 
 /// The resources that are available to the frame graph, which can be accessed by nodes during

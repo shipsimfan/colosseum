@@ -1,6 +1,6 @@
 use crate::render::frame_graph::FrameGraphResource;
 use alexandria::{
-    gpu::{VulkanFormat, VulkanImageView},
+    gpu::{VulkanFormat, VulkanImageLayout, VulkanImageView, VulkanPipelineStageFlag},
     math::Vector2u,
 };
 
@@ -15,6 +15,9 @@ impl<'a> FrameGraphResource<'a> {
             image_view: image_view.into(),
             size,
             format,
+            stage_mask: VulkanPipelineStageFlag::ColorAttachmentOutput.into(),
+            access_mask: 0.into(),
+            layout: VulkanImageLayout::Undefined,
         }
     }
 }
