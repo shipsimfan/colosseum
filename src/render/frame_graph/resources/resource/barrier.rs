@@ -11,16 +11,16 @@ impl<'a> FrameGraphResource<'a> {
         new_layout: VulkanImageLayout,
         new_stage_mask: F1,
         new_access_mask: F2,
-    ) -> VulkanImageMemoryBarrier<'b> {
+    ) -> Option<VulkanImageMemoryBarrier<'b>> {
         let new_stage_mask = new_stage_mask.into();
         let new_access_mask = new_access_mask.into();
 
         let (old_stage_mask, old_access_mask, old_layout) =
             self.state
                 .borrow_mut()
-                .transition(new_stage_mask, new_access_mask, new_layout);
+                .transition(new_stage_mask, new_access_mask, new_layout)?;
 
-        VulkanImageMemoryBarrier::new(
+        Some(VulkanImageMemoryBarrier::new(
             old_stage_mask,
             old_access_mask,
             new_stage_mask,
@@ -35,6 +35,6 @@ impl<'a> FrameGraphResource<'a> {
             1,
             0,
             1,
-        )
+        ))
     }
 }

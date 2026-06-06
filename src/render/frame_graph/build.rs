@@ -1,5 +1,6 @@
 use crate::render::{
-    FrameGraph, FrameGraphResourceId, RenderData, frame_graph::FrameGraphResources,
+    FrameGraph, FrameGraphResourceId, RenderData, UnlitForwardRenderNode,
+    frame_graph::FrameGraphResources,
 };
 use alexandria::{
     gpu::{VulkanFormat, VulkanImageView},
@@ -25,6 +26,7 @@ impl FrameGraph {
 
         // Add nodes to the frame graph
         self.add_node(data.skybox().create_node(swapchain_image));
+        self.add_node(UnlitForwardRenderNode::new(swapchain_image));
 
         swapchain_image
     }

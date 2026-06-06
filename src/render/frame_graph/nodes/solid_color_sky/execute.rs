@@ -2,7 +2,7 @@ use crate::render::{RenderData, frame_graph::SolidColorSkyNode};
 use alexandria::gpu::VulkanCommandBuffer;
 
 impl SolidColorSkyNode {
-    /// Execute the unlit forward pass, rendering all unlit objects in the scene
+    /// Execute the solid color sky pass, rendering a full-screen quad with the specified clear color
     pub(in crate::render::frame_graph) fn execute(
         &self,
         render_data: &RenderData,

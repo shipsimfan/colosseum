@@ -41,11 +41,13 @@ impl FrameGraph {
 
                     match usage {
                         FrameGraphResourceWriteUsage::ColorAttachment { load_op } => {
-                            image_barriers.push(resource.barrier(
+                            if let Some(barrier) = resource.barrier(
                                 VulkanImageLayout::ColorAttachmentOptimal,
                                 VulkanPipelineStageFlag::ColorAttachmentOutput,
                                 VulkanAccessFlag::ColorAttachmentWrite,
-                            ));
+                            ) {
+                                image_barriers.push(barrier);
+                            }
 
                             let (load_op, clear_value) = load_op.to_vk();
                             color_attachments.push(VulkanRenderingAttachmentInfo::new(

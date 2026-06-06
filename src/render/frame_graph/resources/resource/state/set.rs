@@ -8,11 +8,18 @@ impl FrameGraphResourceState {
         new_stage_mask: VulkanPipelineStageFlags,
         new_access_mask: VulkanAccessFlags,
         new_layout: VulkanImageLayout,
-    ) -> (
+    ) -> Option<(
         VulkanPipelineStageFlags,
         VulkanAccessFlags,
         VulkanImageLayout,
-    ) {
+    )> {
+        if new_access_mask == self.access_mask
+            && new_stage_mask == self.stage_mask
+            && new_layout == self.layout
+        {
+            return None;
+        }
+
         let old_stage_mask = self.stage_mask;
         let old_access_mask = self.access_mask;
         let old_layout = self.layout;
@@ -21,6 +28,6 @@ impl FrameGraphResourceState {
         self.access_mask = new_access_mask;
         self.layout = new_layout;
 
-        (old_stage_mask, old_access_mask, old_layout)
+        Some((old_stage_mask, old_access_mask, old_layout))
     }
 }

@@ -7,4 +7,10 @@ use r#macro::nodes;
 
 mod r#macro;
 
-nodes![solid_color_sky::SolidColorSky(SolidColorSkyNode),];
+nodes![
+    /// A node that clears the screen to a solid color
+    solid_color_sky::SolidColorSky(SolidColorSkyNode),
+
+    /// A node that renders unlit objects using a forward rendering pipeline
+    unlit_forward_render::UnlitForwardRender(UnlitForwardRenderNode),
+];

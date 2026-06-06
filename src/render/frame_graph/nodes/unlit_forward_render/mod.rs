@@ -1,0 +1,12 @@
+use crate::render::FrameGraphResourceId;
+
+mod execute;
+mod new;
+mod write_resources;
+
+/// A node that renders unlit objects using a forward rendering pipeline
+#[derive(Debug)]
+pub(in crate::render) struct UnlitForwardRenderNode {
+    /// The ID of the output color attachment
+    output: FrameGraphResourceId,
+}
