@@ -1,4 +1,4 @@
-use crate::render::{RenderData, UnlitForwardRenderNode};
+use crate::render::{RenderData, frame_graph::UnlitForwardRenderNode};
 use alexandria::gpu::VulkanCommandBuffer;
 
 impl UnlitForwardRenderNode {

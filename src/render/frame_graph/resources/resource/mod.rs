@@ -1,27 +1,15 @@
-use alexandria::{gpu::VulkanFormat, math::Vector2u};
-use kind::FrameGraphResourceKind;
-use state::FrameGraphResourceState;
-use std::cell::RefCell;
-
-mod kind;
+mod external;
 mod state;
+mod usage;
 
-mod barrier;
-mod deref;
 mod get;
-mod new;
 
-/// A single resource accessible to nodes in the frame graph, which can be used as an input or output for a node
-pub(in crate::render::frame_graph) struct FrameGraphResource<'a> {
-    /// The image view of the resource
-    image_view: FrameGraphResourceKind<'a>,
+pub(in crate::render::frame_graph) use external::*;
+pub(in crate::render::frame_graph) use state::*;
+pub(in crate::render::frame_graph) use usage::*;
 
-    /// The size of the resource, in pixels
-    size: Vector2u,
-
-    /// The format of the resource
-    format: VulkanFormat,
-
-    /// The current state of the resource
-    state: RefCell<FrameGraphResourceState>,
+/// A resource in the frame graph
+pub(in crate::render::frame_graph) enum FrameGraphResource<'a, 'b> {
+    /// The resource is external to the frame graph, such as a swapchain image
+    External(&'b FrameGraphExternalResource<'a>),
 }

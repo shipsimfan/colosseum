@@ -1,6 +1,7 @@
 use crate::render::frame_graph::{
-    FrameGraphResourceId, FrameGraphResourceLoadOp, FrameGraphResourceWriteUsage, SolidColorSkyNode,
+    FrameGraphResourceId, FrameGraphResourceWriteUsage, SolidColorSkyNode,
 };
+use alexandria::gpu::VulkanAttachmentLoadOp;
 
 impl SolidColorSkyNode {
     /// Get the resources that this node writes to
@@ -14,9 +15,7 @@ impl SolidColorSkyNode {
         f(&[(
             self.output,
             FrameGraphResourceWriteUsage::ColorAttachment {
-                load_op: FrameGraphResourceLoadOp::Clear {
-                    color: self.color.with_alpha(1.0),
-                },
+                load_op: VulkanAttachmentLoadOp::Clear,
             },
         )])
     }

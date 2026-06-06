@@ -1,9 +1,9 @@
-use crate::render::{FrameGraph, RenderData, frame_graph::FrameGraphResourcesPool};
+use crate::render::{
+    FrameGraph, RenderData,
+    frame_graph::{FrameGraphResourceBuilder, FrameGraphStructure},
+};
 use alexandria::{
-    gpu::{
-        VulkanAccessFlags, VulkanCommandBuffer, VulkanFormat, VulkanImageLayout, VulkanImageView,
-        VulkanPipelineStageFlags,
-    },
+    gpu::{VulkanCommandBuffer, VulkanImageView},
     math::Vector2u,
 };
 
@@ -14,29 +14,50 @@ impl FrameGraph {
         data: &RenderData,
         swapchain_image: &VulkanImageView,
         swapchain_image_size: Vector2u,
-        swapchain_image_format: VulkanFormat,
         command_buffer: &mut VulkanCommandBuffer,
-        resource_pool: &mut FrameGraphResourcesPool,
-    ) -> (
-        VulkanPipelineStageFlags,
-        VulkanAccessFlags,
-        VulkanImageLayout,
     ) {
-        // Reset the frame graph
-        self.nodes.clear();
-        let mut resources = resource_pool.begin();
-
-        // Build the frame graph for this frame
-        let swapchain_image = self.build(
-            data,
+        // Setup the external resources
+        let mut resource_builder = FrameGraphResourceBuilder::new(
+            &mut self.external_resources,
             swapchain_image,
             swapchain_image_size,
-            swapchain_image_format,
-            &mut resources,
         );
-        self.compile();
-        self.execute(data, command_buffer, &resources);
 
-        resources[swapchain_image].state()
+        // See if we need to recompile the frame graph, and do it if needed
+        let structure = Some(FrameGraphStructure::from_data(data));
+        let resources = if self.structure != structure {
+            self.structure = structure;
+
+            FrameGraph::build(
+                self.structure.as_ref().unwrap(),
+                &mut resource_builder,
+                &mut self.nodes,
+            );
+
+            let mut resources = resource_builder.finish();
+
+            FrameGraph::compile(
+                &self.nodes,
+                &mut resources,
+                &mut self.pipeline_barrier_indices,
+                &mut self.pipeline_barriers,
+            );
+
+            resources
+        } else {
+            resource_builder.finish()
+        };
+
+        // Execute the frame graph
+        FrameGraph::execute(
+            data,
+            &resources,
+            &self.nodes,
+            &self.pipeline_barrier_indices,
+            &self.pipeline_barriers,
+            &mut self.image_barriers,
+            &mut self.color_attachments,
+            command_buffer,
+        );
     }
 }

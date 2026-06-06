@@ -1,15 +1,19 @@
-use crate::render::frame_graph::resources::resource::FrameGraphResourceState;
+use crate::render::frame_graph::FrameGraphResourceState;
 use alexandria::gpu::{VulkanAccessFlags, VulkanImageLayout, VulkanPipelineStageFlags};
 
 impl FrameGraphResourceState {
-    /// Get the current state of the resource as a tuple of (stage mask, access mask, layout)
-    pub fn get(
-        &self,
-    ) -> (
-        VulkanPipelineStageFlags,
-        VulkanAccessFlags,
-        VulkanImageLayout,
-    ) {
-        (self.stage_mask, self.access_mask, self.layout)
+    /// Get the current stage mask of the resource
+    pub fn stage_mask(&self) -> VulkanPipelineStageFlags {
+        self.stage_mask
+    }
+
+    /// Get the current access mask of the resource
+    pub fn access_mask(&self) -> VulkanAccessFlags {
+        self.access_mask
+    }
+
+    /// Get the current layout of the resource
+    pub fn layout(&self) -> VulkanImageLayout {
+        self.layout
     }
 }

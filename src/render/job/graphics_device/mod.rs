@@ -1,7 +1,4 @@
-use crate::{
-    logging::Logger,
-    render::{FrameGraph, FrameGraphResourcesPool},
-};
+use crate::{logging::Logger, render::FrameGraph};
 use adapter_info::VulkanAdapterInfo;
 use alexandria::{
     Id,
@@ -42,7 +39,4 @@ pub(in crate::render::job) struct GraphicsDevice {
 
     /// The frame graph, which can be built and executed to render frames
     frame_graph: FrameGraph,
-
-    /// The pool of resources the frame graph can use to register resources for rendering
-    frame_graph_resources_pool: FrameGraphResourcesPool,
 }

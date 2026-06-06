@@ -1,26 +1,23 @@
-use crate::render::frame_graph::{FrameGraphResource, FrameGraphResourceId, FrameGraphResources};
+use crate::render::frame_graph::{
+    FrameGraphExternalResource, FrameGraphResource, FrameGraphResourceId, FrameGraphResources,
+};
 
 impl<'a> FrameGraphResources<'a> {
     /// Get a reference to a resource by its ID
-    pub fn get(&self, id: FrameGraphResourceId) -> Option<&FrameGraphResource<'a>> {
+    pub fn get<'b>(&'b self, id: FrameGraphResourceId) -> FrameGraphResource<'a, 'b> {
         if id.is_external() {
-            self.get_external(id)
+            FrameGraphResource::External(self.get_external(id))
         } else {
-            self.get_transient(id)
+            todo!("transient resources are not yet implemented")
         }
     }
 
     /// Get a reference to an external resource by its ID
-    pub fn get_external(&self, id: FrameGraphResourceId) -> Option<&FrameGraphResource<'a>> {
-        assert!(id.is_external());
-
-        self.external.get(id.index())
-    }
-
-    /// Get a reference to a transient resource by its ID
-    pub fn get_transient(&self, id: FrameGraphResourceId) -> Option<&FrameGraphResource<'a>> {
-        assert!(id.is_transient());
-
-        self.transient.get(id.index())
+    pub fn get_external<'b>(
+        &'b self,
+        id: FrameGraphResourceId,
+    ) -> &'b FrameGraphExternalResource<'a> {
+        debug_assert!(id.is_external());
+        &self.external[id.index()]
     }
 }

@@ -5,13 +5,7 @@ use crate::{
         job::{GraphicsDevice, Swapchain},
     },
 };
-use alexandria::{
-    gpu::{
-        VK_QUEUE_FAMILY_IGNORED, VulkanImageAspectFlag, VulkanImageLayout,
-        VulkanImageMemoryBarrier, VulkanPipelineStageFlag,
-    },
-    math::Vector2u,
-};
+use alexandria::math::Vector2u;
 
 impl<'surface> Swapchain<'surface> {
     /// Get the context for the next frame, or true if the swapchain is out of date and needs
@@ -54,36 +48,18 @@ impl<'surface> Swapchain<'surface> {
         };
 
         // Build and execute the frame graph for this frame
-        let (old_stage_mask, old_access_mask, old_layout) = device.build_and_run_frame_graph(
+        device.build_and_run_frame_graph(
             render_data,
             &self.image_views[image_index as usize],
             self.size,
             frame_index,
         );
 
-        let command_buffer = device.command_buffer(frame_index);
-
-        // Transition the swapchain image to the present layout
-        let color_attachment = VulkanImageMemoryBarrier::new(
-            old_stage_mask,
-            old_access_mask,
-            VulkanPipelineStageFlag::BottomOfPipe,
-            0,
-            old_layout,
-            VulkanImageLayout::PresentSrcKhr,
-            VK_QUEUE_FAMILY_IGNORED,
-            VK_QUEUE_FAMILY_IGNORED,
-            &self.swapchain.images()[image_index as usize],
-            VulkanImageAspectFlag::Color,
-            0,
-            1,
-            0,
-            1,
-        );
-        command_buffer.cmd_pipeline_barrier2(0, &[], &[], &[color_attachment]);
-
         // End the command buffer
-        command_buffer.end().map_err(Error::new_inner)?;
+        device
+            .command_buffer(frame_index)
+            .end()
+            .map_err(Error::new_inner)?;
 
         // Submit the command buffer for execution
         device.submit(

@@ -1,7 +1,7 @@
 use crate::render::frame_graph::{
-    FrameGraphResourceId, FrameGraphResourceLoadOp, FrameGraphResourceWriteUsage,
-    UnlitForwardRenderNode,
+    FrameGraphResourceId, FrameGraphResourceWriteUsage, UnlitForwardRenderNode,
 };
+use alexandria::gpu::VulkanAttachmentLoadOp;
 
 impl UnlitForwardRenderNode {
     /// Get the resources that this node writes to
@@ -15,7 +15,7 @@ impl UnlitForwardRenderNode {
         f(&[(
             self.output,
             FrameGraphResourceWriteUsage::ColorAttachment {
-                load_op: FrameGraphResourceLoadOp::Load,
+                load_op: VulkanAttachmentLoadOp::Load,
             },
         )])
     }

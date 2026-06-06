@@ -6,12 +6,12 @@ macro_rules! nodes {
         $(
             mod $module;
 
-            pub(in crate::render) use $module::$type;
+            pub(in crate::render::frame_graph) use $module::$type;
         )*
 
         /// A single node in the frame graph
         #[derive(Debug)]
-        pub(in crate::render) enum FrameGraphNode {$(
+        pub(in crate::render::frame_graph) enum FrameGraphNode {$(
             $(#[$meta])*
             $name($type),
         )*}

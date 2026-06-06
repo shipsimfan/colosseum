@@ -2,7 +2,7 @@ use crate::{
     Error, Result, info,
     logging::Logger,
     render::{
-        FrameGraph, FrameGraphResourcesPool,
+        FrameGraph,
         job::{GraphicsDevice, graphics_device::VulkanAdapterInfo},
     },
     warning,
@@ -59,7 +59,6 @@ impl GraphicsDevice {
             command_buffers: Vec::new(),
             swapchain_format: adapter.swapchain_format(),
             frame_graph: FrameGraph::new(),
-            frame_graph_resources_pool: FrameGraphResourcesPool::new(),
         })
     }
 }

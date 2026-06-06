@@ -1,11 +1,13 @@
 use alexandria::gpu::{VulkanAccessFlags, VulkanImageLayout, VulkanPipelineStageFlags};
 
+mod default;
 mod get;
 mod new;
-mod set;
+mod transition;
 
 /// The current state of a resource
-pub(in crate::render::frame_graph::resources::resource) struct FrameGraphResourceState {
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(in crate::render::frame_graph) struct FrameGraphResourceState {
     /// The current stage mask for the resource
     stage_mask: VulkanPipelineStageFlags,
 

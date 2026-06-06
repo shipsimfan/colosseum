@@ -1,6 +1,9 @@
 use crate::render::{
     FrameGraph, RenderData,
-    frame_graph::{FrameGraphResourceWriteUsage, FrameGraphResources},
+    frame_graph::{
+        ArenaBuffer, FrameGraphNode, FrameGraphPipelineBarrier, FrameGraphResourceId,
+        FrameGraphResourceState, FrameGraphResourceWriteUsage, FrameGraphResources,
+    },
 };
 use alexandria::{
     gpu::{
@@ -8,70 +11,72 @@ use alexandria::{
         VulkanImageMemoryBarrier, VulkanPipelineStageFlag, VulkanRenderingAttachmentInfo,
         VulkanResolveModeFlag,
     },
-    math::Vector2i,
+    math::{Color4u, Linear, Vector2i},
 };
 
 impl FrameGraph {
     /// Execute the frame graph, rendering a frame
     pub(in crate::render::frame_graph) fn execute(
-        &mut self,
         data: &RenderData,
-        cmd_buffer: &mut VulkanCommandBuffer,
         resources: &FrameGraphResources,
+        nodes: &[FrameGraphNode],
+
+        pipeline_barrier_indices: &[(usize, usize)],
+        pipeline_barriers: &[FrameGraphPipelineBarrier],
+
+        image_barriers: &mut ArenaBuffer<VulkanImageMemoryBarrier<'static>>,
+        color_attachments: &mut ArenaBuffer<VulkanRenderingAttachmentInfo<'static>>,
+        cmd_buffer: &mut VulkanCommandBuffer,
     ) {
-        // Convert `'static` buffers to `'_` buffers for use in the command buffer
-        let image_barriers: &mut Vec<VulkanImageMemoryBarrier<'_>> =
-            unsafe { std::mem::transmute(&mut self.image_barriers_buffer) };
-        let color_attachments: &mut Vec<VulkanRenderingAttachmentInfo<'_>> =
-            unsafe { std::mem::transmute(&mut self.color_attachments_buffer) };
+        let mut current_pipeline_barrier_index = 0;
+        let mut current_pipeline_barrier = 0;
 
+        // Execute each node
+        //
         // TODO: execute nodes in topological order
-        for node in &self.nodes {
-            // TODO: Implement a proper resource state tracking system to minimize unnecessary pipeline barriers and make correct resource transitions
+        for (index, node) in nodes.iter().enumerate() {
+            // Collect any pipeline barriers needed for this node and execute them
+            if current_pipeline_barrier_index < pipeline_barrier_indices.len()
+                && pipeline_barrier_indices[current_pipeline_barrier_index].0 == index
+            {
+                let mut image_barriers = image_barriers.arena();
+                for _ in 0..pipeline_barrier_indices[current_pipeline_barrier_index].1 {
+                    let barrier = &pipeline_barriers
+                        [current_pipeline_barrier + current_pipeline_barrier_index];
+                    image_barriers.push(barrier.barrier(resources));
+                }
 
-            // Create barriers and attachment infos for all output resources of the node, and ensure that they all have the same size
+                cmd_buffer.cmd_pipeline_barrier2(0, &[], &[], image_barriers.as_slice());
+
+                current_pipeline_barrier +=
+                    pipeline_barrier_indices[current_pipeline_barrier_index].1;
+                current_pipeline_barrier_index += 1;
+            }
+
+            // Create attachment infos for all output resources of the node
+            let mut color_attachments = color_attachments.arena();
             let resource_size = node.write_resources(|write_resources| {
-                let resource_size = resources[write_resources[0].0].size();
                 for (id, usage) in write_resources {
-                    let resource = &resources[*id];
-                    debug_assert!(
-                        resource.size() == resource_size,
-                        "all output resources of a node must have the same size"
-                    );
+                    let resource = resources.get(*id);
 
                     match usage {
                         FrameGraphResourceWriteUsage::ColorAttachment { load_op } => {
-                            if let Some(barrier) = resource.barrier(
-                                VulkanImageLayout::ColorAttachmentOptimal,
-                                VulkanPipelineStageFlag::ColorAttachmentOutput,
-                                VulkanAccessFlag::ColorAttachmentWrite,
-                            ) {
-                                image_barriers.push(barrier);
-                            }
-
-                            let (load_op, clear_value) = load_op.to_vk();
                             color_attachments.push(VulkanRenderingAttachmentInfo::new(
                                 resource.image_view(),
                                 VulkanImageLayout::ColorAttachmentOptimal,
                                 VulkanResolveModeFlag::None,
                                 None,
                                 VulkanImageLayout::Undefined,
-                                load_op,
+                                *load_op,
                                 VulkanAttachmentStoreOp::Store,
-                                clear_value,
+                                Color4u::<Linear>::new(0, 0, 0, 0),
                             ));
                         }
                     }
                 }
 
-                resource_size
+                resources.get(write_resources[0].0).size()
             });
-
-            // Place the pipeline barriers
-            if image_barriers.len() > 0 {
-                cmd_buffer.cmd_pipeline_barrier2(0, &[], &[], image_barriers);
-            }
-            image_barriers.clear();
 
             // Begin rendering
             if color_attachments.len() > 0 {
@@ -81,16 +86,34 @@ impl FrameGraph {
                     resource_size,
                     1,
                     0,
-                    color_attachments,
+                    color_attachments.as_slice(),
                     None,
                     None,
                 );
             }
-            color_attachments.clear();
 
+            // Execute the node
             node.execute(data, cmd_buffer);
 
+            // End rendering
             cmd_buffer.cmd_end_rendering();
+        }
+
+        // Queue a final barrier to transition the swapchain image to the present layout
+        if let Some(present_barrier) = FrameGraphPipelineBarrier::new(
+            FrameGraphResourceId::SWAPCHAIN_IMAGE,
+            resources
+                .get(FrameGraphResourceId::SWAPCHAIN_IMAGE)
+                .state()
+                .clone(),
+            FrameGraphResourceState::new(
+                VulkanPipelineStageFlag::ColorAttachmentOutput,
+                VulkanAccessFlag::ColorAttachmentWrite,
+                VulkanImageLayout::PresentSrcKhr,
+            ),
+        ) {
+            let image_barrier = present_barrier.barrier(resources);
+            cmd_buffer.cmd_pipeline_barrier2(0, &[], &[], &[image_barrier]);
         }
     }
 }
