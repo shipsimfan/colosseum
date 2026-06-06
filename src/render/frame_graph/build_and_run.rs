@@ -1,6 +1,9 @@
 use crate::render::{FrameGraph, RenderData, frame_graph::FrameGraphResourcesPool};
 use alexandria::{
-    gpu::{VulkanCommandBuffer, VulkanFormat, VulkanImageView},
+    gpu::{
+        VulkanAccessFlags, VulkanCommandBuffer, VulkanFormat, VulkanImageLayout, VulkanImageView,
+        VulkanPipelineStageFlags,
+    },
     math::Vector2u,
 };
 
@@ -14,13 +17,17 @@ impl FrameGraph {
         swapchain_image_format: VulkanFormat,
         command_buffer: &mut VulkanCommandBuffer,
         resource_pool: &mut FrameGraphResourcesPool,
+    ) -> (
+        VulkanPipelineStageFlags,
+        VulkanAccessFlags,
+        VulkanImageLayout,
     ) {
         // Reset the frame graph
         self.nodes.clear();
         let mut resources = resource_pool.begin();
 
         // Build the frame graph for this frame
-        self.build(
+        let swapchain_image = self.build(
             data,
             swapchain_image,
             swapchain_image_size,
@@ -29,5 +36,7 @@ impl FrameGraph {
         );
         self.compile();
         self.execute(data, command_buffer, &resources);
+
+        resources[swapchain_image].state()
     }
 }

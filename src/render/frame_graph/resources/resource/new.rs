@@ -1,8 +1,11 @@
-use crate::render::frame_graph::FrameGraphResource;
+use crate::render::frame_graph::{
+    FrameGraphResource, resources::resource::FrameGraphResourceState,
+};
 use alexandria::{
-    gpu::{VulkanFormat, VulkanImageLayout, VulkanImageView, VulkanPipelineStageFlag},
+    gpu::{VulkanFormat, VulkanImageView},
     math::Vector2u,
 };
+use std::cell::RefCell;
 
 impl<'a> FrameGraphResource<'a> {
     /// Create a new [`FrameGraphResource`] for an external resource, such as the swapchain image
@@ -15,9 +18,7 @@ impl<'a> FrameGraphResource<'a> {
             image_view: image_view.into(),
             size,
             format,
-            stage_mask: VulkanPipelineStageFlag::ColorAttachmentOutput.into(),
-            access_mask: 0.into(),
-            layout: VulkanImageLayout::Undefined,
+            state: RefCell::new(FrameGraphResourceState::new()),
         }
     }
 }

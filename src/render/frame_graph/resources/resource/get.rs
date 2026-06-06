@@ -1,6 +1,9 @@
 use crate::render::frame_graph::FrameGraphResource;
 use alexandria::{
-    gpu::{VulkanFormat, VulkanImageView},
+    gpu::{
+        VulkanAccessFlags, VulkanFormat, VulkanImageLayout, VulkanImageView,
+        VulkanPipelineStageFlags,
+    },
     math::Vector2u,
 };
 
@@ -18,5 +21,15 @@ impl<'a> FrameGraphResource<'a> {
     /// Get the format of the resource
     pub const fn format(&self) -> VulkanFormat {
         self.format
+    }
+
+    pub fn state(
+        &self,
+    ) -> (
+        VulkanPipelineStageFlags,
+        VulkanAccessFlags,
+        VulkanImageLayout,
+    ) {
+        self.state.borrow().get()
     }
 }

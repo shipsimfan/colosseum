@@ -17,6 +17,8 @@ mod drop;
 mod get;
 mod get_adapters;
 mod new;
+mod present;
+mod submit;
 
 /// The graphics device is responsible for managing the Vulkan device and related resources
 pub(in crate::render::job) struct GraphicsDevice {

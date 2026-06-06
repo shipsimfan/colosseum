@@ -1,9 +1,9 @@
 use crate::{
     logging::Logger,
-    render::RenderData,
+    render::{RenderData, Skybox},
     update::{Inputs, Scene, UpdateContext},
 };
-use alexandria::math::{Color3f, Linear, Vector2u};
+use alexandria::math::Vector2u;
 use std::time::Duration;
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
@@ -32,9 +32,14 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         self.should_exit
     }
 
-    /// Get the color to clear the screen with before rendering
-    pub fn clear_color(&self) -> Color3f<Linear> {
-        self.render_data.clear_color()
+    /// Get a reference to the skybox used for this update
+    pub fn skybox(&self) -> &Skybox {
+        self.render_data.skybox()
+    }
+
+    /// Get a mutable reference to the clear color used for this update
+    pub fn skybox_mut(&mut self) -> &mut Skybox {
+        self.render_data.skybox_mut()
     }
 
     /// Get the current set of inputs for the game

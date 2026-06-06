@@ -33,7 +33,7 @@ impl FrameGraph {
             let resource_size = node.write_resources(|write_resources| {
                 let resource_size = resources[write_resources[0].0].size();
                 for (id, usage) in write_resources {
-                    let resource = &mut resources[*id];
+                    let resource = &resources[*id];
                     debug_assert!(
                         resource.size() == resource_size,
                         "all output resources of a node must have the same size"

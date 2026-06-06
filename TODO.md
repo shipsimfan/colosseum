@@ -1,32 +1,33 @@
 # ToDo
- 1. Add File I/O thread
- 2. Make settings load + save asynchronous
- 3. Update display settings when window changes and initialization
- 4. Add frame graph system
- 5. Add unlit mesh rendering 
- 6. Add mesh primitives
- 7. Add ECS system
- 8. Add custom shader support
- 9. Add post processing system
- 10. Add render scale
- 11. Add mesh loading
- 12. Add texture loading
- 13. Add material system
- 14. Add lighting system
- 15. Add shadow mapping
- 16. Add deferred rendering
- 17. Add anti-aliasing
- 18. Add physics system
- 19. Add collision system
- 20. Add audio system
- 21. Add mouse support
- 22. Add gamepad support
- 23. Add other input support
+ 1. Fix minimize issue
+ 2. Add File I/O thread
+ 3. Make settings load + save asynchronous
+ 4. Update display settings when window changes and initialization
+ 5. Add frame graph system
+ 6. Add unlit mesh rendering 
+ 7. Add mesh primitives
+ 8. Add ECS system
+ 9. Add custom shader support
+ 10. Add post processing system
+ 11. Add render scale
+ 12. Add mesh loading
+ 13. Add texture loading
+ 14. Add material system
+ 15. Add lighting system
+ 16. Add shadow mapping
+ 17. Add deferred rendering
+ 18. Add anti-aliasing
+ 19. Add physics system
+ 20. Add collision system
+ 21. Add audio system
+ 22. Add mouse support
+ 23. Add gamepad support
+ 24. Add other input support
   - Joystick
   - Throttle
   - Wheel
   - Pedals
   - VR controllers
- 24. Add input translation system
- 25. Add multiple keyboard support
- 26. Add multiple mouse support
+ 25. Add input translation system
+ 26. Add multiple keyboard support
+ 27. Add multiple mouse support

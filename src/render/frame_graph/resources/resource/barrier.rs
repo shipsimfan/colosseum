@@ -7,17 +7,25 @@ use alexandria::gpu::{
 impl<'a> FrameGraphResource<'a> {
     /// Create a [`VulkanImageMemoryBarrier`] to transition this resource to the requested layout, stage mask, and access mask
     pub fn barrier<'b, F1: Into<VulkanPipelineStageFlags>, F2: Into<VulkanAccessFlags>>(
-        &'b mut self,
+        &'b self,
         new_layout: VulkanImageLayout,
         new_stage_mask: F1,
         new_access_mask: F2,
     ) -> VulkanImageMemoryBarrier<'b> {
+        let new_stage_mask = new_stage_mask.into();
+        let new_access_mask = new_access_mask.into();
+
+        let (old_stage_mask, old_access_mask, old_layout) =
+            self.state
+                .borrow_mut()
+                .transition(new_stage_mask, new_access_mask, new_layout);
+
         VulkanImageMemoryBarrier::new(
-            self.stage_mask,
-            self.access_mask,
+            old_stage_mask,
+            old_access_mask,
             new_stage_mask,
             new_access_mask,
-            self.layout,
+            old_layout,
             new_layout,
             VK_QUEUE_FAMILY_IGNORED,
             VK_QUEUE_FAMILY_IGNORED,

@@ -4,7 +4,7 @@ use crate::render::frame_graph::{
 
 impl SolidColorSkyNode {
     /// Get the resources that this node writes to
-    pub fn write_resources<
+    pub(in crate::render::frame_graph) fn write_resources<
         T,
         F: FnOnce(&[(FrameGraphResourceId, FrameGraphResourceWriteUsage)]) -> T,
     >(

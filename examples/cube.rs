@@ -58,7 +58,7 @@ impl colosseum::update::Scene for CubeScene {
             self.color
         };
 
-        context.set_clear_color(self.color.into_rgb());
+        context.set_skybox(self.color.into_rgb());
         Ok(())
     }
 }

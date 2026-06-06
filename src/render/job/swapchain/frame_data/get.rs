@@ -1,15 +1,15 @@
 use crate::render::job::swapchain::FrameData;
-use alexandria::gpu::VulkanSemaphore;
+use alexandria::gpu::{VulkanFence, VulkanSemaphore};
 
 impl FrameData {
-    /// Get the semaphore that signals when the swapchain image has been acquired and the GPU can
-    /// begin rendering this frame
-    pub fn acquire_image_semaphore(&mut self) -> &mut VulkanSemaphore {
-        &mut self.acquire_image_semaphore
-    }
-
-    /// Get the semaphore that signals when rendering is complete for this frame
-    pub fn render_complete_semaphore(&self) -> &VulkanSemaphore {
-        &self.render_complete_semaphore
+    /// Get all the semaphores and the fence for this frame, which are needed for submitting the command buffer
+    pub fn semaphores_and_fence(
+        &mut self,
+    ) -> (&mut VulkanSemaphore, &VulkanSemaphore, &mut VulkanFence) {
+        (
+            &mut self.acquire_image_semaphore,
+            &self.render_complete_semaphore,
+            &mut self.draw_fence,
+        )
     }
 }

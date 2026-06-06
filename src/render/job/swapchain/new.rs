@@ -66,7 +66,7 @@ impl<'surface> Swapchain<'surface> {
             frame_data.push(FrameData::new(&device)?);
         }
 
-        device.reserve_command_buffers(image_views.len());
+        device.reserve_command_buffers(image_views.len())?;
 
         debug!(
             device.logger(),

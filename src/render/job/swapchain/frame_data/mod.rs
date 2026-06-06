@@ -2,7 +2,6 @@ use alexandria::gpu::{VulkanFence, VulkanSemaphore};
 
 mod get;
 mod new;
-mod submit;
 mod wait_for_draw_finish;
 
 /// The per-frame data for the swapchain

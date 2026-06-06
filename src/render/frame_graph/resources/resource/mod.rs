@@ -1,10 +1,10 @@
-use alexandria::{
-    gpu::{VulkanAccessFlags, VulkanFormat, VulkanImageLayout, VulkanPipelineStageFlags},
-    math::Vector2u,
-};
+use alexandria::{gpu::VulkanFormat, math::Vector2u};
 use kind::FrameGraphResourceKind;
+use state::FrameGraphResourceState;
+use std::cell::RefCell;
 
 mod kind;
+mod state;
 
 mod barrier;
 mod deref;
@@ -22,12 +22,6 @@ pub(in crate::render::frame_graph) struct FrameGraphResource<'a> {
     /// The format of the resource
     format: VulkanFormat,
 
-    /// The current stage mask for the resource
-    stage_mask: VulkanPipelineStageFlags,
-
-    /// The current access mask for the resource
-    access_mask: VulkanAccessFlags,
-
-    /// The current layout of the resource
-    layout: VulkanImageLayout,
+    /// The current state of the resource
+    state: RefCell<FrameGraphResourceState>,
 }

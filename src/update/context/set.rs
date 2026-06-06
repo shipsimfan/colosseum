@@ -1,5 +1,7 @@
-use crate::update::{Scene, UpdateContext};
-use alexandria::math::{Color3f, Linear};
+use crate::{
+    render::Skybox,
+    update::{Scene, UpdateContext},
+};
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Set whether the game should exit after this update
@@ -12,8 +14,8 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         self.next_scene = Some(next_scene);
     }
 
-    /// Set the color to clear the screen with before rendering
-    pub fn set_clear_color(&mut self, clear_color: Color3f<Linear>) {
-        self.render_data.set_clear_color(clear_color);
+    /// Set the skybox to use for this update
+    pub fn set_skybox<S: Into<Skybox>>(&mut self, skybox: S) {
+        self.render_data.set_skybox(skybox);
     }
 }
