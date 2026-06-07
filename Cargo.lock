@@ -5,6 +5,7 @@ version = 4
 [[package]]
 name = "alexandria"
 version = "0.3.0"
+source = "git+https://github.com/shipsimfan/alexandria#c6d6f9936a47e4782dd53125a57428368a4ed7bb"
 dependencies = [
  "alexandria-macros",
  "data-format",
@@ -18,6 +19,7 @@ dependencies = [
 [[package]]
 name = "alexandria-macros"
 version = "0.3.0"
+source = "git+https://github.com/shipsimfan/alexandria#c6d6f9936a47e4782dd53125a57428368a4ed7bb"
 dependencies = [
  "proc-macro-util",
 ]
