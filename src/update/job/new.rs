@@ -1,5 +1,6 @@
 use crate::{
     Result,
+    file_io::FileIo,
     logging::Logger,
     render::RenderData,
     update::{InitialScene, Inputs, Scene, UpdateContext, UpdateJob},
@@ -15,6 +16,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         logger: &Logger,
         settings: &'a mut Game::SettingsCache,
         render_data: &mut RenderData,
+        file_io: FileIo,
     ) -> Result<Option<UpdateJob<'a, Game>>> {
         let inputs = Inputs::new();
 
@@ -25,6 +27,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             settings,
             render_data,
             &inputs,
+            &file_io,
         );
 
         let mut initial_scene: Box<dyn Scene<Game = Game>> = Box::new(
@@ -45,6 +48,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             logger: logger.logger("scenes"),
             settings,
             inputs,
+            file_io,
         }))
     }
 }

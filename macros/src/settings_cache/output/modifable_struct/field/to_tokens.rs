@@ -11,7 +11,7 @@ impl<'a> ToTokens for SettingsCacheOutputModifiableStructField<'a> {
 
         to_tokens! { generator
             #attributes
-            #name: #r#type,
+            #name: (#r#type, bool),
         }
     }
 }

@@ -6,7 +6,7 @@ impl<'a> ToTokens for SettingsCacheOutputLoadFnField<'a> {
         let SettingsCacheOutputLoadFnField { name } = self;
 
         to_tokens! { generator
-            #name: unsafe { ::colosseum::settings::SettingsGroup::load(path, &logger)? },
+            #name: unsafe { ::colosseum::settings::SettingsGroup::load(path, &logger, &file_io)? },
         }
     }
 }

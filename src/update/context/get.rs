@@ -1,4 +1,5 @@
 use crate::{
+    file_io::FileIo,
     logging::Logger,
     render::{RenderData, Skybox},
     update::{Inputs, Scene, UpdateContext},
@@ -45,6 +46,11 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Get the current set of inputs for the game
     pub fn inputs(&self) -> &Inputs {
         self.inputs
+    }
+
+    /// Get a reference to the file I/O system
+    pub fn file_io(&self) -> &FileIo {
+        self.file_io
     }
 
     /// Get the render data for this update

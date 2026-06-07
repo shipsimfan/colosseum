@@ -5,7 +5,7 @@ use proc_macro_util::tokens::Identifier;
 use std::borrow::Cow;
 
 impl<'a> SettingsCacheOutputGetterFns<'a> {
-    /// Create a new [`SettingsCacheOutputGetterFns`] from a [`SettingsCacheInput`]
+    /// Create a new [`SettingsCacheOutputGetterFns`] from [`SettingsCacheInputField`]s
     pub fn from_input<I: Into<Cow<'a, Identifier>>>(
         name: I,
         fields: &[SettingsCacheInputField<'a>],

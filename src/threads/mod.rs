@@ -1,5 +1,7 @@
 use std::sync::{Arc, Mutex};
-use thread::Thread;
+use thread::*;
+
+pub(crate) mod single_value_channel;
 
 mod shared_state;
 mod thread;
@@ -11,7 +13,8 @@ mod new;
 mod set_event_queue;
 mod spawn;
 
-pub(crate) use shared_state::GlobalSharedState;
+pub(crate) use shared_state::*;
+pub(crate) use single_value_channel::*;
 
 /// Tracks all running threads on the system
 pub(crate) struct ThreadManager {

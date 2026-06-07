@@ -44,8 +44,8 @@ impl Wsi {
         let mut builder = context
             .window()
             .create_window(format!("{} v{}", game_name, game_version));
-        builder.size(display_settings.resolution).resizable();
-        if display_settings.fullscreen {
+        builder.size(display_settings.resolution()).resizable();
+        if display_settings.fullscreen() {
             builder.fullscreen();
         }
 

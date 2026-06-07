@@ -1,6 +1,6 @@
 use crate::{
     Error, GlobalSharedState, Result, debug, error,
-    threads::{Thread, thread::ThreadSharedState},
+    threads::{Thread, single_value_channel},
 };
 use std::sync::Arc;
 
@@ -15,16 +15,15 @@ impl Thread {
         f: F1,
         on_kill: F2,
     ) -> Result<Thread> {
-        let thread_shared_state = Arc::new(ThreadSharedState::new(name.clone()));
-        let child_shared_state = thread_shared_state.clone();
+        let (result_sender, result_receiver) = single_value_channel::create(true)?;
 
+        let child_name = name.clone();
         let join_handle = std::thread::Builder::new()
             .name(name.clone())
             .spawn(move || {
                 debug!(
                     global_shared_state.logger(),
-                    "Started thread \"{}\"",
-                    child_shared_state.name()
+                    "Started thread \"{}\"", child_name
                 );
 
                 let result = f(&global_shared_state);
@@ -32,18 +31,15 @@ impl Thread {
                 match &result {
                     Ok(()) => debug!(
                         global_shared_state.logger(),
-                        "Thread \"{}\" completed successfully",
-                        child_shared_state.name(),
+                        "Thread \"{}\" completed successfully", child_name,
                     ),
                     Err(error) => error!(
                         global_shared_state.logger(),
-                        "Thread \"{}\" ended with error: {}",
-                        child_shared_state.name(),
-                        error
+                        "Thread \"{}\" ended with error: {}", child_name, error
                     ),
                 }
 
-                child_shared_state.kill(result);
+                result_sender.send(result).unwrap();
                 global_shared_state.kill();
             })
             .map_err(|error| {
@@ -52,7 +48,7 @@ impl Thread {
 
         Ok(Thread {
             join_handle,
-            shared_state: thread_shared_state,
+            result: result_receiver,
             on_kill: Box::new(on_kill),
         })
     }

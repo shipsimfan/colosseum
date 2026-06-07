@@ -12,15 +12,15 @@ impl GraphicsDevice {
         surface: &VulkanSurface,
         logger: Option<&Logger>,
     ) -> Result<Vec<VulkanAdapterInfo<'instance>>> {
-        let adapters = instance.enumerate_adapters().map_err(Error::new_inner)?;
+        let mut adapters = instance.enumerate_adapters().map_err(Error::new_inner)?;
+        adapters.sort();
 
-        let mut adapters: Vec<_> = adapters
+        let adapters: Vec<_> = adapters
             .into_iter()
             .filter_map(|adapter| {
                 VulkanAdapterInfo::is_compatible_adapter(adapter, surface, logger).transpose()
             })
             .collect::<Result<_>>()?;
-        adapters.sort_by(|a, b| b.cmp(a));
         Ok(adapters)
     }
 }

@@ -1,7 +1,5 @@
-use shared_state::ThreadSharedState;
-use std::{sync::Arc, thread::JoinHandle};
-
-mod shared_state;
+use crate::{Result, SingleValueReceiver};
+use std::thread::JoinHandle;
 
 mod join;
 mod new;
@@ -11,8 +9,8 @@ pub(in crate::threads) struct Thread {
     /// The join handle for the thread
     join_handle: JoinHandle<()>,
 
-    /// The state shared between the thread and the thread manager
-    shared_state: Arc<ThreadSharedState>,
+    /// The result of the thread, if it has finished
+    result: SingleValueReceiver<Result<()>>,
 
     /// The function to call to kill the thread
     on_kill: Box<dyn FnOnce()>,

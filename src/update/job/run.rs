@@ -1,6 +1,7 @@
 use crate::{
     InputEvent, Result, Window, debug,
     render::RenderData,
+    settings::{ModifiableSettingsCache, SettingsCache},
     update::{UpdateContext, UpdateJob},
 };
 use alexandria::math::Vector2u;
@@ -15,6 +16,18 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         render_data: &mut RenderData,
         window: &Window,
     ) -> Result<bool> {
+        // Update the settings if the window size has changed
+        if self.settings.display_settings().resolution() != Some(window_size)
+            && !self.settings.is_saving()
+        {
+            let mut new_settings = self.settings.begin_modify();
+            new_settings
+                .display_settings_mut()
+                .set_resolution(window_size);
+
+            self.settings.save(&new_settings);
+        }
+
         // Process input events
         self.inputs.reset();
         while let Some(input) = window.next_input() {
@@ -36,6 +49,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             self.settings,
             render_data,
             &self.inputs,
+            &self.file_io,
         );
 
         // Handle any pending scene changes before updating the current scene

@@ -1,5 +1,5 @@
 use crate::{
-    Error, ThreadManager, logging::LogController, run::log_metadata::log_metadata,
+    Error, ThreadManager, file_io::FileIo, logging::LogController, run::log_metadata::log_metadata,
     settings::SettingsCache,
 };
 use argparse::Command;
@@ -70,11 +70,17 @@ fn do_run<Game: crate::Game>(
         &options.colosseum_options().logging_options,
     )?;
 
+    // Start the file I/O thread
+    let file_io = FileIo::new(&thread_manager)?;
+
     // Load settings and save them back
     let mut settings = <Game::SettingsCache as SettingsCache>::load(
         &options.colosseum_options().settings_path.as_path(),
         log_controller.logger("settings"),
+        &file_io,
     )?;
+    let new_settings = settings.begin_modify();
+    settings.save(&new_settings);
 
     // Create the core WSI components
     let (mut wsi, vulkan_instance, surface, inputs) = Wsi::new(
@@ -84,9 +90,6 @@ fn do_run<Game: crate::Game>(
         settings.display_settings(),
     )?;
     thread_manager.set_event_queue(wsi.event_queue().clone());
-
-    let new_settings = settings.begin_modify();
-    settings.save(&new_settings)?;
 
     // Start the game thread
     let window = wsi.window(inputs);
@@ -102,6 +105,7 @@ fn do_run<Game: crate::Game>(
                 window,
                 init_logger,
                 log_controller,
+                file_io,
             )
         },
         || {},

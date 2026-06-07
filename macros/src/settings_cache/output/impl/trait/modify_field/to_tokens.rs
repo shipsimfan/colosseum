@@ -8,7 +8,7 @@ impl<'a> ToTokens for SettingsCacheOutputTraitModifyField<'a> {
         let name2 = name.clone();
 
         to_tokens! { generator
-            #name: self.#name2.clone(),
+            #name: (self.#name2.clone(), false),
         }
     }
 }

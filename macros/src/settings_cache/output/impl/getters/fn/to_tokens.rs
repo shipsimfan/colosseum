@@ -9,8 +9,8 @@ impl<'a> ToTokens for SettingsCacheOutputGetterFn<'a> {
         let name3 = name.clone();
 
         to_tokens! { generator
-            #[doc = ::std::concat!("Get a reference to the `", ::std::stringify!(#name2), "` settings group")]
-            pub fn #name(&self) -> &#r#type {
+            #[doc = ::std::concat!("Get a reference to the `", ::std::stringify!(#name), "` settings group")]
+            pub fn #name2(&self) -> &#r#type {
                 &self.#name3
             }
         }

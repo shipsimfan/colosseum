@@ -10,6 +10,9 @@ pub struct SettingsCacheOutputSetterFn<'a> {
     /// The name of the setter function to produce
     fn_name: Identifier,
 
+    /// The name of the mutable getter function to produce
+    mut_fn_name: Identifier,
+
     /// The name of the field to produce a setter function for
     field_name: Cow<'a, Identifier>,
 

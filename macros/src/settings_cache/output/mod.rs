@@ -24,7 +24,7 @@ pub struct SettingsCacheOutput<'a> {
     r#trait: SettingsCacheOutputTrait<'a>,
 
     /// The getter functions for the modifiable struct
-    modifiable_getters: SettingsCacheOutputGetterFns<'a>,
+    modifiable_getters: SettingsCacheOutputModifiableGetterFns<'a>,
 
     /// The setter functions for the modifiable struct
     setters: SettingsCacheOutputSetterFns<'a>,

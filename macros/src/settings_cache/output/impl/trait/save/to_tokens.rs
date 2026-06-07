@@ -6,10 +6,12 @@ impl<'a> ToTokens for SettingsCacheOutputSaveFn<'a> {
         let SettingsCacheOutputSaveFn { fields } = self;
 
         to_tokens! { generator
-            fn save(&mut self, new_settings: &Self::Modifiable) -> ::colosseum::Result<()> {
-                #fields
+            fn save(&mut self, new_settings: &Self::Modifiable) {
+                if self.is_saving() {
+                    panic!("cannot save settings while a save is already in progress");
+                }
 
-                Ok(())
+                #fields
             }
         }
     }

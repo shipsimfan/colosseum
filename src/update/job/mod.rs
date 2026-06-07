@@ -1,4 +1,5 @@
 use crate::{
+    file_io::FileIo,
     logging::Logger,
     update::{Inputs, Scene},
 };
@@ -22,4 +23,7 @@ pub(crate) struct UpdateJob<'a, Game: crate::Game> {
 
     /// The current set of inputs for the game
     inputs: Inputs,
+
+    /// The access for performing asynchronous file I/O operations
+    file_io: FileIo,
 }

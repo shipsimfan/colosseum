@@ -7,6 +7,7 @@
 #![warn(rustdoc::broken_intra_doc_links)]
 #![feature(box_into_inner)]
 
+pub mod file_io;
 pub mod logging;
 pub mod render;
 pub mod settings;

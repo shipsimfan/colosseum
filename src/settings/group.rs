@@ -1,4 +1,9 @@
-use crate::{Error, Result, info, logging::Logger};
+use crate::{
+    Error, Result,
+    file_io::{FileIo, WriteFullFile},
+    info,
+    logging::Logger,
+};
 use data_format::{Deserialize, Serialize};
 use std::path::Path;
 
@@ -24,7 +29,7 @@ pub trait SettingsGroup: for<'de> Deserialize<'de> + Serialize + Send + Clone + 
     ///
     /// Games should not directly call this function. Use the settings cache to read settings
     /// correctly.
-    unsafe fn load(path: &Path, logger: &Logger) -> Result<Self> {
+    unsafe fn load(path: &Path, logger: &Logger, file_io: &FileIo) -> Result<Self> {
         let path = path.join(format!("{}.json", Self::FILE_NAME));
         if !path.exists() {
             info!(
@@ -36,9 +41,7 @@ pub trait SettingsGroup: for<'de> Deserialize<'de> + Serialize + Send + Clone + 
             return Ok(Self::default());
         }
 
-        let file = std::fs::read(&path).map_err(|error| {
-            Error::new_with(format!("unable to load \"{}\"", path.display()), error)
-        })?;
+        let file = file_io.read_full_file_blocking(path.clone())?;
 
         let settings_group = json::from_bytes(&file).map_err(|error| {
             Error::new_with(format!("unable to load \"{}\"", path.display()), error)
@@ -58,39 +61,17 @@ pub trait SettingsGroup: for<'de> Deserialize<'de> + Serialize + Send + Clone + 
     ///
     /// Games should not directly call this function. Use the settings cache to save settings
     /// correctly.
-    unsafe fn save(&self, path: &Path, logger: &Logger) -> Result<()> {
-        std::fs::create_dir_all(path).map_err(|error| {
-            Error::new_with(format!("unable to create \"{}\"", path.display()), error)
-        })?;
-
+    unsafe fn save(&self, path: &Path, logger: &Logger, file_io: &FileIo) -> WriteFullFile {
         let path = path.join(format!("{}.json", Self::FILE_NAME));
-        let file = std::fs::OpenOptions::new()
-            .write(true)
-            .create(true)
-            .truncate(true)
-            .open(&path)
-            .map_err(|error| {
-                Error::new_with(format!("unable to save \"{}\"", path.display()), error)
-            })?;
 
-        match json::to_write_pretty(self, file) {
-            Ok(()) => Ok(()),
-            Err(json::SerializeError::IO(error)) => Err(Error::new_with(
-                format!("unable to save \"{}\"", path.display()),
-                error,
-            )),
-            Err(json::SerializeError::Custom(error)) => Err(Error::new_with(
-                format!("unable to save \"{}\"", path.display()),
-                error,
-            )),
-        }?;
+        let data = json::to_bytes_pretty(self).unwrap();
 
         info!(
             logger,
-            "Saved \"{}\" settings to \"{}\"",
+            "Saving \"{}\" settings to \"{}\"",
             Self::PRETTY_NAME,
             path.display()
         );
-        Ok(())
+        file_io.write_full_file(path, data)
     }
 }

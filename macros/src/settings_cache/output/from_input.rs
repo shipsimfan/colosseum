@@ -1,7 +1,7 @@
 use crate::settings_cache::{
     SettingsCacheInput, SettingsCacheOutput, SettingsCacheOutputGetterFns,
-    SettingsCacheOutputModifiableStruct, SettingsCacheOutputSetterFns, SettingsCacheOutputStruct,
-    SettingsCacheOutputTrait,
+    SettingsCacheOutputModifiableGetterFns, SettingsCacheOutputModifiableStruct,
+    SettingsCacheOutputSetterFns, SettingsCacheOutputStruct, SettingsCacheOutputTrait,
 };
 
 impl<'a> SettingsCacheOutput<'a> {
@@ -11,7 +11,7 @@ impl<'a> SettingsCacheOutput<'a> {
             r#trait: SettingsCacheOutputTrait::from_input(&input),
             getters: SettingsCacheOutputGetterFns::from_input(input.name.clone(), &input.fields),
             modifiable_struct: SettingsCacheOutputModifiableStruct::from_input(&input),
-            modifiable_getters: SettingsCacheOutputGetterFns::from_input(
+            modifiable_getters: SettingsCacheOutputModifiableGetterFns::from_input(
                 input.modifiable_name.clone(),
                 &input.fields,
             ),
