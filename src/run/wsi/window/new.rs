@@ -1,4 +1,5 @@
-use crate::{InputEvent, Window, run::wsi::SharedWindow};
+use crate::{InputEvent, UserEvent, Window, run::wsi::SharedWindow};
+use alexandria::EventQueue;
 use std::sync::{Arc, mpsc::Receiver};
 
 impl Window {
@@ -6,7 +7,12 @@ impl Window {
     pub(in crate::run::wsi) fn new(
         shared: Arc<SharedWindow>,
         inputs: Receiver<InputEvent>,
+        event_queue: EventQueue<UserEvent>,
     ) -> Window {
-        Window { shared, inputs }
+        Window {
+            shared,
+            inputs,
+            event_queue,
+        }
     }
 }

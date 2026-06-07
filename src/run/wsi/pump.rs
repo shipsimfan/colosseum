@@ -1,4 +1,4 @@
-use crate::{Error, InputEvent, Result, debug, run::Wsi};
+use crate::{Error, InputEvent, Key, Result, UserEvent, debug, run::Wsi};
 use alexandria::{Event, EventKind, math::Vector2u};
 
 impl Wsi {
@@ -19,26 +19,66 @@ impl Wsi {
     }
 
     /// Handle a single event
-    fn handle_event(&mut self, event: Event<()>) -> Result<bool> {
+    fn handle_event(&mut self, event: Event<UserEvent>) -> Result<bool> {
         match event.kind {
             EventKind::Quit | EventKind::WindowCloseRequest { .. } => {
                 debug!(&self.logger, "Received quit event");
                 return Ok(false);
             }
-            EventKind::WindowResized { id: _, new_size } => {
-                self.shared_window
-                    .set_size(Vector2u::new(new_size.x as _, new_size.y as _));
+
+            EventKind::WindowMoved { new_position, .. } => {
+                self.shared_window.set_position(new_position);
             }
-            EventKind::KeyDown { key_code, .. } => {
+            EventKind::WindowResized { new_size, .. } => {
+                if !self.window.is_minimized() {
+                    self.shared_window
+                        .set_size(Vector2u::new(new_size.x as _, new_size.y as _))?;
+                }
+            }
+            EventKind::WindowMinimized { .. } => {
+                self.shared_window.set_size(Vector2u::new(0, 0))?;
+            }
+            EventKind::WindowRestored { .. } => {
+                let new_size = self.window.size();
+                self.shared_window.set_size(new_size)?;
+                self.shared_window.set_maximized(false);
+            }
+            EventKind::WindowEnteredFullscreen { .. } => {
+                self.shared_window.set_fullscreen(true);
+            }
+            EventKind::WindowLeftFullscreen { .. } => {
+                self.shared_window.set_fullscreen(false);
+            }
+            EventKind::WindowMaximized { .. } => {
+                self.shared_window.set_maximized(true);
+            }
+
+            EventKind::KeyDown {
+                key_code, key_mod, ..
+            } => {
                 self.input_sender
                     .send(InputEvent::KeyDown { key: key_code })
                     .ok();
+
+                if key_code == Key::F4 && key_mod.alt() {
+                    return Ok(false);
+                }
             }
             EventKind::KeyUp { key_code, .. } => {
                 self.input_sender
                     .send(InputEvent::KeyUp { key: key_code })
                     .ok();
             }
+
+            EventKind::User(UserEvent::SetFullscreen) => {
+                self.window.set_fullscreen(true).map_err(Error::new_inner)?;
+            }
+            EventKind::User(UserEvent::UnsetFullscreen) => {
+                self.window
+                    .set_fullscreen(false)
+                    .map_err(Error::new_inner)?;
+            }
+
             _ => {}
         }
 

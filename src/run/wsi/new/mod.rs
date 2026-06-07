@@ -1,5 +1,5 @@
 use crate::{
-    Error, InputEvent, Result, debug,
+    Error, InputEvent, Result, UserEvent, debug,
     logging::Logger,
     run::{Wsi, wsi::SharedWindow},
     settings::DisplaySettings,
@@ -7,7 +7,6 @@ use crate::{
 use alexandria::{
     AlexandriaContext,
     gpu::{VulkanInstance, VulkanSurface, VulkanVersion},
-    math::Vector2u,
 };
 use std::{
     str::FromStr,
@@ -33,7 +32,7 @@ impl Wsi {
         display_settings: &DisplaySettings,
     ) -> Result<(Wsi, VulkanInstance, VulkanSurface, Receiver<InputEvent>)> {
         // Create the Alexandria context
-        let (context, event_pump) = AlexandriaContext::builder()
+        let (context, event_pump) = AlexandriaContext::<UserEvent>::builder()
             .gpu()
             .window()
             .create()
@@ -44,16 +43,27 @@ impl Wsi {
         let mut builder = context
             .window()
             .create_window(format!("{} v{}", game_name, game_version));
-        builder.size(display_settings.resolution()).resizable();
+        builder
+            .position(display_settings.position())
+            .size(display_settings.resolution())
+            .resizable()
+            .bordered();
         if display_settings.fullscreen() {
             builder.fullscreen();
+        }
+        if display_settings.maximized() {
+            builder.maximized();
         }
 
         let window = builder.create().map_err(Error::new_inner)?;
 
         // Create the shared window state
-        let size = window.size();
-        let shared_window = Arc::new(SharedWindow::new(Vector2u::new(size.x as _, size.y as _)));
+        let shared_window = Arc::new(SharedWindow::new(
+            window.position(),
+            window.size(),
+            window.is_fullscreen(),
+            window.is_maximized(),
+        )?);
 
         // Create the Vulkan instance and check for validation layers
         let vulkan_logger = logger.logger("vulkan");
@@ -88,6 +98,7 @@ impl Wsi {
                 logger: logger.logger("wsi"),
                 context,
                 event_pump,
+                window,
                 shared_window,
                 input_sender,
                 #[cfg(debug_assertions)]

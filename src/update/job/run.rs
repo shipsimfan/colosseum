@@ -17,15 +17,47 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         window: &Window,
     ) -> Result<bool> {
         // Update the settings if the window size has changed
-        if self.settings.display_settings().resolution() != Some(window_size)
-            && !self.settings.is_saving()
-        {
-            let mut new_settings = self.settings.begin_modify();
-            new_settings
-                .display_settings_mut()
-                .set_resolution(window_size);
+        if !self.settings.is_saving() {
+            let window_fullscreen = window.fullscreen();
+            if window_fullscreen {
+                if !self.settings.display_settings().fullscreen() {
+                    let mut new_settings = self.settings.begin_modify();
+                    new_settings.display_settings_mut().set_fullscreen(true);
+                    self.settings.save(&new_settings);
+                }
+            } else {
+                let window_maximized = window.maximized();
+                if window_maximized {
+                    if !self.settings.display_settings().maximized()
+                        || self.settings.display_settings().fullscreen()
+                    {
+                        let mut new_settings = self.settings.begin_modify();
+                        new_settings.display_settings_mut().set_maximized(true);
+                        new_settings
+                            .display_settings_mut()
+                            .set_fullscreen(window_fullscreen);
+                        self.settings.save(&new_settings);
+                    }
+                } else {
+                    let window_position = window.position();
 
-            self.settings.save(&new_settings);
+                    if self.settings.display_settings().position() != Some(window_position)
+                        || self.settings.display_settings().resolution() != Some(window_size)
+                        || self.settings.display_settings().maximized()
+                        || self.settings.display_settings().fullscreen()
+                    {
+                        let mut new_settings = self.settings.begin_modify();
+                        let display_settings = new_settings.display_settings_mut();
+
+                        display_settings.set_position(window_position);
+                        display_settings.set_resolution(window_size);
+                        display_settings.set_fullscreen(window_fullscreen);
+                        display_settings.set_maximized(window_maximized);
+
+                        self.settings.save(&new_settings);
+                    }
+                }
+            }
         }
 
         // Process input events
@@ -50,6 +82,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             render_data,
             &self.inputs,
             &self.file_io,
+            window,
         );
 
         // Handle any pending scene changes before updating the current scene

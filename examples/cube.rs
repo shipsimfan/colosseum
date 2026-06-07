@@ -59,6 +59,15 @@ impl colosseum::update::Scene for CubeScene {
         };
 
         context.set_skybox(self.color.into_rgb());
+
+        if context.inputs().key_down(colosseum::Key::F11) {
+            if context.settings().display().fullscreen() {
+                context.unset_fullscreen()?;
+            } else {
+                context.set_fullscreen()?;
+            }
+        }
+
         Ok(())
     }
 }

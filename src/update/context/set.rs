@@ -1,4 +1,5 @@
 use crate::{
+    Result,
     render::Skybox,
     update::{Scene, UpdateContext},
 };
@@ -17,5 +18,15 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Set the skybox to use for this update
     pub fn set_skybox<S: Into<Skybox>>(&mut self, skybox: S) {
         self.render_data.set_skybox(skybox);
+    }
+
+    /// Set the window to fullscreen mode
+    pub fn set_fullscreen(&self) -> Result<()> {
+        self.window.set_fullscreen()
+    }
+
+    /// Unset the window from fullscreen mode
+    pub fn unset_fullscreen(&self) -> Result<()> {
+        self.window.unset_fullscreen()
     }
 }

@@ -1,4 +1,5 @@
 use crate::{
+    Window,
     file_io::FileIo,
     logging::Logger,
     render::RenderData,
@@ -17,6 +18,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         render_data: &'a mut RenderData,
         inputs: &'a Inputs,
         file_io: &'a FileIo,
+        window: &'a Window,
     ) -> UpdateContext<'a, Game> {
         UpdateContext {
             delta_time,
@@ -28,6 +30,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
             render_data,
             inputs,
             file_io,
+            window,
         }
     }
 }

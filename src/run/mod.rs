@@ -10,10 +10,12 @@ mod game;
 mod log_metadata;
 mod r#macro;
 mod options;
+mod user_event;
 mod wsi;
 
 pub use options::*;
 
+pub(crate) use user_event::*;
 pub(crate) use wsi::*;
 
 /// Begins the game engine with the provided options, quiting the application based on the result
@@ -93,6 +95,7 @@ fn do_run<Game: crate::Game>(
 
     // Start the game thread
     let window = wsi.window(inputs);
+    let shared_window = wsi.shared_window().clone();
     thread_manager.spawn(
         "Game".to_string(),
         move |shared_state| {
@@ -108,7 +111,9 @@ fn do_run<Game: crate::Game>(
                 file_io,
             )
         },
-        || {},
+        move || {
+            shared_window.restored_notify().notify().ok();
+        },
     )?;
 
     // Run the WSI event loop

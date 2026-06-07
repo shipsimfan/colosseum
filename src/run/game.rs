@@ -7,7 +7,10 @@ use crate::{
     settings::SettingsCache,
     update::UpdateJob,
 };
-use alexandria::gpu::{VulkanInstance, VulkanSurface};
+use alexandria::{
+    gpu::{VulkanInstance, VulkanSurface},
+    math::Vector2u,
+};
 use std::{sync::Arc, time::Instant};
 
 /// Run the main game thread
@@ -40,6 +43,7 @@ pub(in crate::run) fn run<Game: crate::Game>(
         &mut settings,
         &mut render_data,
         file_io,
+        &window,
     )? {
         Some(job) => job,
         None => {
@@ -52,6 +56,15 @@ pub(in crate::run) fn run<Game: crate::Game>(
     // the game should exit
     let mut last_time = Instant::now();
     while shared_state.is_running() {
+        // Get the window size for this frame atomically
+        window_size = window.size();
+        if window_size == Vector2u::ZERO {
+            window.wait_for_restore()?;
+            last_time = Instant::now(); // Reset the timer to avoid a large delta time after restoring the window
+            continue;
+        }
+
+        // Reset per-frame data
         render_data.reset();
         log_controller.frame();
 
@@ -59,9 +72,6 @@ pub(in crate::run) fn run<Game: crate::Game>(
         let current_time = Instant::now();
         let delta_time = current_time - last_time;
         last_time = current_time;
-
-        // Get the window size for this frame atomically
-        window_size = window.size();
 
         // Update and render the frame
         if !update_job.run(window_size, delta_time, &mut render_data, &window)? {

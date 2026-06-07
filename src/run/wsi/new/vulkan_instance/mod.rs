@@ -1,4 +1,4 @@
-use crate::{Error, Result, logging::Logger};
+use crate::{Error, Result, UserEvent, logging::Logger};
 use alexandria::{
     cargo_vulkan_version,
     gpu::{GpuSubsystem, VulkanInstance, VulkanVersion},
@@ -20,7 +20,7 @@ pub(in crate::run::wsi::new) fn create(
     logger: &Logger,
     game_name: &str,
     game_version: VulkanVersion,
-    window: &Window<()>,
+    window: &Window<UserEvent>,
 ) -> Result<(VulkanInstance, bool)> {
     let (layers, extensions, create_debug_messenger) = get_layers_and_extensions(gpu, logger)?;
 

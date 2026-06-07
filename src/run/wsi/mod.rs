@@ -1,7 +1,7 @@
-use crate::logging::Logger;
+use crate::{UserEvent, logging::Logger};
 #[cfg(debug_assertions)]
 use alexandria::gpu::VulkanDebugMessenger;
-use alexandria::{AlexandriaContext, EventPump};
+use alexandria::{AlexandriaContext, EventPump, window::Window as AlexandriaWindow};
 #[cfg(debug_assertions)]
 use new::VulkanDebugCallbacks;
 use std::sync::{Arc, mpsc::Sender};
@@ -21,10 +21,13 @@ pub(in crate::run) struct Wsi {
     logger: Logger,
 
     /// The Alexandria context
-    context: AlexandriaContext<()>,
+    context: AlexandriaContext<UserEvent>,
 
     /// The event pump for the Alexandria context
-    event_pump: EventPump<()>,
+    event_pump: EventPump<UserEvent>,
+
+    /// The window used by the WSI thread
+    window: AlexandriaWindow<UserEvent>,
 
     /// The shared state of the window
     shared_window: Arc<SharedWindow>,

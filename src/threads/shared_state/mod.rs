@@ -1,4 +1,4 @@
-use crate::logging::Logger;
+use crate::{UserEvent, logging::Logger};
 use alexandria::EventQueue;
 use std::sync::{Mutex, atomic::AtomicBool};
 
@@ -16,5 +16,5 @@ pub(crate) struct GlobalSharedState {
     logger: Logger,
 
     /// The event queue to push a quit event to
-    event_queue: Mutex<Option<EventQueue<()>>>,
+    event_queue: Mutex<Option<EventQueue<UserEvent>>>,
 }

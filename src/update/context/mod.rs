@@ -1,4 +1,5 @@
 use crate::{
+    Window,
     file_io::FileIo,
     logging::Logger,
     render::RenderData,
@@ -39,4 +40,7 @@ pub struct UpdateContext<'a, Game: crate::Game> {
 
     /// The access for performing asynchronous file I/O operations
     file_io: &'a FileIo,
+
+    /// The window being rendered into
+    window: &'a Window,
 }
