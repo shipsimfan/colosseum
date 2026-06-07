@@ -12,8 +12,7 @@ impl GraphicsDevice {
         surface: &VulkanSurface,
         logger: Option<&Logger>,
     ) -> Result<Vec<VulkanAdapterInfo<'instance>>> {
-        let mut adapters = instance.enumerate_adapters().map_err(Error::new_inner)?;
-        adapters.sort();
+        let adapters = instance.enumerate_adapters().map_err(Error::new_inner)?;
 
         let adapters: Vec<_> = adapters
             .into_iter()
