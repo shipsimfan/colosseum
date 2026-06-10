@@ -6,7 +6,7 @@ use alexandria::{
     gpu::{
         VulkanComponentMapping, VulkanCompositeAlphaFlag, VulkanImageAspectFlag,
         VulkanImageUsageFlag, VulkanImageViewType, VulkanPresentMode, VulkanSharingMode,
-        VulkanSurface, VulkanSurfaceTransformFlag,
+        VulkanSurface,
     },
     math::Vector2u,
 };
@@ -20,6 +20,13 @@ impl<'surface> Swapchain<'surface> {
         size: Vector2u,
         device: &mut GraphicsDevice,
     ) -> Result<Swapchain<'surface>> {
+        let capabilities = device
+            .surface_capabilities(surface)
+            .map_err(Error::new_inner)?;
+        let size = capabilities
+            .current_extent()
+            .unwrap_or(capabilities.clamp_image_extent(size));
+
         let swapchain_format = device.swapchain_format();
         let swapchain = device
             .create_swapchain(
@@ -33,7 +40,7 @@ impl<'surface> Swapchain<'surface> {
                 VulkanImageUsageFlag::ColorAttachment,
                 VulkanSharingMode::Exclusive,
                 &[],
-                VulkanSurfaceTransformFlag::IdentityKhr,
+                capabilities.current_transform(),
                 VulkanCompositeAlphaFlag::OpaqueKhr,
                 VulkanPresentMode::FIFOKhr,
                 true,

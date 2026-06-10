@@ -31,12 +31,6 @@ impl<'surface> Swapchain<'surface> {
             return Ok(true);
         }
 
-        // Begin the command buffer for the frame
-        device
-            .command_buffer(frame_index)
-            .begin()
-            .map_err(Error::new_inner)?;
-
         // Acquire the next image to render into
         let image_index = match self
             .swapchain
@@ -46,6 +40,12 @@ impl<'surface> Swapchain<'surface> {
             Some(image_index) => image_index,
             None => return Ok(true),
         };
+
+        // Begin the command buffer for the frame
+        device
+            .command_buffer(frame_index)
+            .begin()
+            .map_err(Error::new_inner)?;
 
         // Build and execute the frame graph for this frame
         device.build_and_run_frame_graph(

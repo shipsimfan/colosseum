@@ -36,6 +36,15 @@ struct CubeSettings {}
 struct CubeScene {
     /// A color that shifts over time to demonstrate the update loop
     color: colosseum::math::ColorHsv<f32, colosseum::math::Linear>,
+
+    /// A count of the number of frames that have been rendered
+    frames: usize,
+
+    /// The amount of time that has passed since the last display of FPS
+    fps_timer: f32,
+
+    /// The logger for the cube example
+    logger: colosseum::logging::Logger,
 }
 
 impl colosseum::update::Scene for CubeScene {
@@ -68,6 +77,14 @@ impl colosseum::update::Scene for CubeScene {
             }
         }
 
+        self.frames += 1;
+        self.fps_timer += context.delta_time().as_secs_f32();
+        if self.fps_timer >= 1.0 {
+            colosseum::info!(self.logger, "FPS: {}", self.frames);
+            self.frames = 0;
+            self.fps_timer = self.fps_timer.fract();
+        }
+
         Ok(())
     }
 }
@@ -75,10 +92,13 @@ impl colosseum::update::Scene for CubeScene {
 impl colosseum::update::InitialScene for CubeScene {
     fn new(
         _: &CubeOptions,
-        _: &mut colosseum::update::UpdateContext<Cube>,
+        context: &mut colosseum::update::UpdateContext<Cube>,
     ) -> colosseum::Result<Self> {
         Ok(CubeScene {
             color: colosseum::math::ColorHsv::RED,
+            frames: 0,
+            fps_timer: 0.0,
+            logger: context.logger("cube"),
         })
     }
 }
