@@ -77,17 +77,11 @@ pub(in crate::run) fn log_metadata<Game: crate::Game>(
     );
 
     // Log operating system info
-    #[cfg(not(all(target_os = "linux", not(debug_assertions))))]
-    let version =
-        alexandria::system::os_version().map_err(|error| Error::new_inner(error.to_string()))?;
-    #[cfg(all(target_os = "linux", not(debug_assertions)))]
-    let version = "UNAVAILABLE";
-
     info!(
         logger,
         "Operating System: {} ({})",
         alexandria::system::os_name(),
-        version
+        alexandria::system::os_version().map_err(|error| Error::new_inner(error.to_string()))?
     );
 
     // Log CPU
