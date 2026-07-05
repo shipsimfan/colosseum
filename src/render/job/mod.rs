@@ -5,6 +5,7 @@ use swapchain::Swapchain;
 mod graphics_device;
 mod swapchain;
 
+mod get;
 mod new;
 mod run;
 

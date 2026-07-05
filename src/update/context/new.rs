@@ -2,11 +2,15 @@ use crate::{
     Window,
     file_io::FileIo,
     logging::Logger,
-    render::RenderData,
+    render::{Material, RenderData, Shader},
     update::{Inputs, UpdateContext},
 };
-use alexandria::math::Vector2u;
-use std::time::Duration;
+use alexandria::{
+    SlotMap,
+    gpu::{VulkanDevice, VulkanFormat, VulkanPipelineLayout},
+    math::Vector2u,
+};
+use std::{sync::Arc, time::Duration};
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Create a new update context
@@ -15,10 +19,16 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         window_size: Vector2u,
         logger: &'a Logger,
         settings: &'a mut Game::SettingsCache,
-        render_data: &'a mut RenderData,
         inputs: &'a Inputs,
         file_io: &'a FileIo,
         window: &'a Window,
+
+        render_data: &'a mut RenderData,
+        device: &'a VulkanDevice,
+        swapchain_format: VulkanFormat,
+        pipeline_layout: &'a VulkanPipelineLayout,
+        shaders: &'a mut SlotMap<Arc<Shader>>,
+        materials: &'a mut SlotMap<Material>,
     ) -> UpdateContext<'a, Game> {
         UpdateContext {
             delta_time,
@@ -27,10 +37,16 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
             settings,
             should_exit: false,
             next_scene: None,
-            render_data,
             inputs,
             file_io,
             window,
+
+            render_data,
+            device,
+            swapchain_format,
+            pipeline_layout,
+            shaders,
+            materials,
         }
     }
 }

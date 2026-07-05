@@ -1,5 +1,12 @@
 colosseum::run!(Cube);
 
+colosseum::render::compile_shader!(
+    /// A shader which renders a single triangle
+    pub const TRIANGLE_SHADER = "triangle.slang",
+    vert_main,
+    frag_main
+);
+
 /// The cube example
 struct Cube;
 
@@ -45,6 +52,12 @@ struct CubeScene {
 
     /// The logger for the cube example
     logger: colosseum::logging::Logger,
+
+    /// The material used to render the cube
+    material: colosseum::Id<colosseum::render::Material>,
+
+    /// Should the cube be rendered?
+    render_state: bool,
 }
 
 impl colosseum::update::Scene for CubeScene {
@@ -54,6 +67,7 @@ impl colosseum::update::Scene for CubeScene {
         &mut self,
         context: &mut colosseum::update::UpdateContext<Cube>,
     ) -> colosseum::Result<()> {
+        // Shift the color over time based on user input
         let amount = context.delta_time().as_secs_f32() / 5.0;
         self.color = if context.inputs().key(colosseum::Key::Left)
             || context.inputs().key(colosseum::Key::A)
@@ -69,6 +83,7 @@ impl colosseum::update::Scene for CubeScene {
 
         context.set_skybox(self.color.into_rgb());
 
+        // Toggle fullscreen mode when the user presses F11
         if context.inputs().key_down(colosseum::Key::F11) {
             if context.settings().display().fullscreen() {
                 context.unset_fullscreen()?;
@@ -77,6 +92,15 @@ impl colosseum::update::Scene for CubeScene {
             }
         }
 
+        // Render the cube
+        if context.inputs().key_down(colosseum::Key::V) {
+            self.render_state = !self.render_state;
+        }
+        if self.render_state {
+            context.add_renderable(self.material);
+        }
+
+        // Display the FPS every second
         self.frames += 1;
         self.fps_timer += context.delta_time().as_secs_f32();
         if self.fps_timer >= 1.0 {
@@ -94,11 +118,16 @@ impl colosseum::update::InitialScene for CubeScene {
         _: &CubeOptions,
         context: &mut colosseum::update::UpdateContext<Cube>,
     ) -> colosseum::Result<Self> {
+        let shader = context.create_shader(&TRIANGLE_SHADER)?;
+        let material = context.create_material(shader)?;
+
         Ok(CubeScene {
             color: colosseum::math::ColorHsv::RED,
             frames: 0,
             fps_timer: 0.0,
             logger: context.logger("cube"),
+            material,
+            render_state: true,
         })
     }
 }

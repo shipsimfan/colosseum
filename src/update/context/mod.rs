@@ -2,14 +2,21 @@ use crate::{
     Window,
     file_io::FileIo,
     logging::Logger,
-    render::RenderData,
+    render::{Material, RenderData, Shader},
     update::{Inputs, Scene},
 };
-use alexandria::math::Vector2u;
-use std::time::Duration;
+use alexandria::{
+    SlotMap,
+    gpu::{VulkanDevice, VulkanFormat, VulkanPipelineLayout},
+    math::Vector2u,
+};
+use std::{sync::Arc, time::Duration};
 
+mod add;
+mod create;
 mod get;
 mod new;
+mod remove;
 mod set;
 
 /// The context passed to scenes during the update phase of the game loop
@@ -26,9 +33,6 @@ pub struct UpdateContext<'a, Game: crate::Game> {
     /// The current settings cache, so the game can read settings
     settings: &'a mut Game::SettingsCache,
 
-    /// The data that will be used for rendering
-    render_data: &'a mut RenderData,
-
     /// Whether the game should exit after this update
     should_exit: bool,
 
@@ -43,4 +47,24 @@ pub struct UpdateContext<'a, Game: crate::Game> {
 
     /// The window being rendered into
     window: &'a Window,
+
+    /** Render Objects **/
+
+    /// The data to be sent to the render job for rendering
+    render_data: &'a mut RenderData,
+
+    /// The device used to create render objects
+    device: &'a VulkanDevice,
+
+    /// The format of the swapchain being used
+    swapchain_format: VulkanFormat,
+
+    /// The pipeline layout used by materials
+    pipeline_layout: &'a VulkanPipelineLayout,
+
+    /// The shaders that have been registered
+    shaders: &'a mut SlotMap<Arc<Shader>>,
+
+    /// The materials that have been registered
+    materials: &'a mut SlotMap<Material>,
 }

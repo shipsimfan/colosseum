@@ -5,7 +5,6 @@
 #![deny(rustdoc::unescaped_backticks)]
 #![deny(rustdoc::redundant_explicit_links)]
 #![warn(rustdoc::broken_intra_doc_links)]
-#![feature(box_into_inner)]
 
 pub mod file_io;
 pub mod logging;
@@ -24,4 +23,4 @@ pub use run::*;
 
 pub(crate) use threads::*;
 
-pub use alexandria::{input::KeyCode as Key, math};
+pub use alexandria::{Id, input::KeyCode as Key, math};

@@ -21,10 +21,15 @@ macro_rules! nodes {
             pub(in crate::render::frame_graph) fn execute(
                 &self,
                 render_data: &RenderData,
+                swapchain_size: Vector2u,
                 cmd_buffer: &mut VulkanCommandBuffer,
+
+                materials: &SlotMap<RenderMaterial>,
             ) {
                 match self {$(
-                        FrameGraphNode::$name(node) => node.execute(render_data, cmd_buffer),
+                    FrameGraphNode::$name(node) => {
+                        node.execute(render_data, swapchain_size, cmd_buffer, materials)
+                    }
                 )*}
             }
 

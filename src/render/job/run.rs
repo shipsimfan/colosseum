@@ -9,7 +9,7 @@ impl<'surface> RenderJob<'surface> {
     pub(crate) fn run(
         self,
         window_size: Vector2u,
-        render_data: &RenderData,
+        render_data: &mut RenderData,
     ) -> Result<RenderJob<'surface>> {
         Ok(match self {
             RenderJob::RecreateSwapchain {

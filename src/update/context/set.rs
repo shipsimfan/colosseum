@@ -17,7 +17,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
 
     /// Set the skybox to use for this update
     pub fn set_skybox<S: Into<Skybox>>(&mut self, skybox: S) {
-        self.render_data.set_skybox(skybox);
+        self.render_data.skybox = skybox.into();
     }
 
     /// Set the window to fullscreen mode

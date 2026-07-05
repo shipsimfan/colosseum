@@ -1,8 +1,14 @@
 use crate::{
     file_io::FileIo,
     logging::Logger,
+    render::{Material, Shader},
     update::{Inputs, Scene},
 };
+use alexandria::{
+    SlotMap,
+    gpu::{VulkanDevice, VulkanFormat, VulkanPipelineLayout},
+};
+use std::sync::Arc;
 
 mod new;
 mod run;
@@ -26,4 +32,21 @@ pub(crate) struct UpdateJob<'a, Game: crate::Game> {
 
     /// The access for performing asynchronous file I/O operations
     file_io: FileIo,
+
+    /** Render Objects **/
+
+    /// The device to use to create render objects
+    device: VulkanDevice,
+
+    /// The format of the swapchain being used
+    swapchain_format: VulkanFormat,
+
+    /// The pipeline layout used by materials
+    pipeline_layout: VulkanPipelineLayout,
+
+    /// The shaders that have been registered
+    shaders: SlotMap<Arc<Shader>>,
+
+    /// The materials that have been registered
+    materials: SlotMap<Material>,
 }

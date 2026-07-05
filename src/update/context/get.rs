@@ -1,10 +1,10 @@
 use crate::{
     file_io::FileIo,
     logging::Logger,
-    render::{RenderData, Skybox},
+    render::{Material, RenderData, Skybox},
     update::{Inputs, Scene, UpdateContext},
 };
-use alexandria::math::Vector2u;
+use alexandria::{Id, math::Vector2u};
 use std::time::Duration;
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
@@ -35,12 +35,22 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
 
     /// Get a reference to the skybox used for this update
     pub fn skybox(&self) -> &Skybox {
-        self.render_data.skybox()
+        &self.render_data.skybox
     }
 
     /// Get a mutable reference to the clear color used for this update
     pub fn skybox_mut(&mut self) -> &mut Skybox {
-        self.render_data.skybox_mut()
+        &mut self.render_data.skybox
+    }
+
+    /// Get a reference to a registered [`Material`]
+    pub fn material(&self, material: Id<Material>) -> &Material {
+        &self.materials[material]
+    }
+
+    /// Get a mutable reference to a registered [`Material`]
+    pub fn material_mut(&mut self, material: Id<Material>) -> &mut Material {
+        &mut self.materials[material]
     }
 
     /// Get the current set of inputs for the game

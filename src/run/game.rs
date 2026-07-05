@@ -41,9 +41,11 @@ pub(in crate::run) fn run<Game: crate::Game>(
         window_size,
         &logger,
         &mut settings,
-        &mut render_data,
         file_io,
         &window,
+        &mut render_data,
+        render_job.device(),
+        render_job.swapchain_format(),
     )? {
         Some(job) => job,
         None => {
@@ -78,7 +80,7 @@ pub(in crate::run) fn run<Game: crate::Game>(
             info!(logger, "Update job requested exit");
             break;
         }
-        render_job = render_job.run(window_size, &render_data)?;
+        render_job = render_job.run(window_size, &mut render_data)?;
     }
 
     Ok(())

@@ -1,13 +1,15 @@
-use crate::render::{RenderData, Skybox};
+use crate::render::{Material, MaterialChange, RenderData};
+use alexandria::Id;
+use std::vec::Drain;
 
 impl RenderData {
-    /// Get a reference to the skybox to render
-    pub fn skybox(&self) -> &Skybox {
-        &self.skybox
+    /// Returns a drain iterator over the material changes in the render data
+    pub(in crate::render) fn material_changes<'a>(&'a mut self) -> Drain<'a, MaterialChange> {
+        self.material_changes.drain(..)
     }
 
-    /// Get a mutable reference to the skybox to render
-    pub fn skybox_mut(&mut self) -> &mut Skybox {
-        &mut self.skybox
+    /// Get the list of renderable objects in the render data
+    pub(in crate::render) fn renderables(&self) -> &[Id<Material>] {
+        &self.renderables
     }
 }

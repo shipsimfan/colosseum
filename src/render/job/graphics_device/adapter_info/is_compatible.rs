@@ -5,7 +5,8 @@ use crate::{
     warning,
 };
 use alexandria::gpu::{
-    VulkanAdapter, VulkanDeviceFeatures, VulkanDeviceVulkan13Features, VulkanFormat, VulkanSurface,
+    VulkanAdapter, VulkanDeviceExtendedDynamicStateFeatures, VulkanDeviceFeatures,
+    VulkanDeviceVulkan11Features, VulkanDeviceVulkan13Features, VulkanFormat, VulkanSurface,
 };
 
 impl<'instance> VulkanAdapterInfo<'instance> {
@@ -25,17 +26,43 @@ impl<'instance> VulkanAdapterInfo<'instance> {
         }
 
         // Determine if the adapter has the supported features
+        let mut vulkan_11_features = VulkanDeviceVulkan11Features::default();
         let mut vulkan_13_features = VulkanDeviceVulkan13Features::default();
+        let mut extended_dynamic_state = VulkanDeviceExtendedDynamicStateFeatures::default();
         adapter.get_features([
             &mut VulkanDeviceFeatures::default() as _,
+            &mut vulkan_11_features as _,
             &mut vulkan_13_features as _,
+            &mut extended_dynamic_state as _,
         ]);
+
+        if !vulkan_11_features.shader_draw_parameters() {
+            if let Some(logger) = logger {
+                warning!(
+                    logger,
+                    "Adapter \"{}\" rejected because it does not support required Vulkan 1.1 features",
+                    adapter.name()
+                );
+            }
+            return Ok(None);
+        }
 
         if !vulkan_13_features.synchronization2() || !vulkan_13_features.dynamic_rendering() {
             if let Some(logger) = logger {
                 warning!(
                     logger,
                     "Adapter \"{}\" rejected because it does not support required Vulkan 1.3 features",
+                    adapter.name()
+                );
+            }
+            return Ok(None);
+        }
+
+        if !extended_dynamic_state.extended_dynamic_state() {
+            if let Some(logger) = logger {
+                warning!(
+                    logger,
+                    "Adapter \"{}\" rejected because it does not support required Vulkan extended dynamic state features",
                     adapter.name()
                 );
             }

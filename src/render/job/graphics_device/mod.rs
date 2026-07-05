@@ -1,13 +1,17 @@
-use crate::{logging::Logger, render::FrameGraph};
+use crate::{
+    logging::Logger,
+    render::{FrameGraph, RenderMaterial},
+};
 use adapter_info::VulkanAdapterInfo;
 use alexandria::{
-    Id,
+    Id, SlotMap,
     gpu::{VulkanCommandBuffer, VulkanCommandPool, VulkanDevice, VulkanFormat, VulkanQueue},
 };
 
 mod adapter_info;
 
 mod allocate_command_buffer;
+mod apply_changes;
 mod build_and_run_frame_graph;
 mod deref;
 mod drop;
@@ -39,4 +43,9 @@ pub(in crate::render::job) struct GraphicsDevice {
 
     /// The frame graph, which can be built and executed to render frames
     frame_graph: FrameGraph,
+
+    /** Objects created by the update job **/
+
+    /// The materials that have been created
+    materials: SlotMap<RenderMaterial>,
 }

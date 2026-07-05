@@ -1,28 +1,27 @@
 # ToDo
- 1. Add unlit mesh rendering 
+ 1. Add ECS system
  2. Add mesh primitives
- 3. Add ECS system
- 4. Add custom shader support
- 5. Add post processing system
- 6. Add render scale
- 7. Add mesh loading
- 8. Add texture loading
- 9. Add material system
- 10. Add lighting system
- 11. Add shadow mapping
- 12. Add deferred rendering
- 13. Add anti-aliasing
- 14. Add physics system
- 15. Add collision system
- 16. Add audio system
- 17. Add mouse support
- 18. Add gamepad support
- 19. Add other input support
+ 3. Add custom shader support
+ 4. Add post processing system
+ 5. Add render scale
+ 6. Add mesh loading
+ 7. Add texture loading
+ 8. Add material system
+ 9. Add lighting system
+ 10. Add shadow mapping
+ 11. Add deferred rendering
+ 12. Add anti-aliasing
+ 13. Add physics system
+ 14. Add collision system
+ 15. Add audio system
+ 16. Add mouse support
+ 17. Add gamepad support
+ 18. Add other input support
    - Joystick
    - Throttle
    - Wheel
    - Pedals
    - VR controllers
- 20. Add input translation system
- 21. Add multiple keyboard support
- 22. Add multiple mouse support
+ 19. Add input translation system
+ 20. Add multiple keyboard support
+ 21. Add multiple mouse support

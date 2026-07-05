@@ -16,6 +16,7 @@ impl GraphicsDevice {
             swapchain_image,
             swapchain_image_size,
             &mut self.command_pool[self.command_buffers[frame_index]],
+            &self.materials,
         )
     }
 }

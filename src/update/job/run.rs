@@ -79,10 +79,15 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             window_size,
             &self.logger,
             self.settings,
-            render_data,
             &self.inputs,
             &self.file_io,
             window,
+            render_data,
+            &self.device,
+            self.swapchain_format,
+            &self.pipeline_layout,
+            &mut self.shaders,
+            &mut self.materials,
         );
 
         // Handle any pending scene changes before updating the current scene

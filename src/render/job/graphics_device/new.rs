@@ -7,9 +7,13 @@ use crate::{
     },
     warning,
 };
-use alexandria::gpu::{
-    VulkanCommandPoolCreateFlag, VulkanDeviceExtension, VulkanDeviceVulkan13Features,
-    VulkanInstance, VulkanQueueCreateInfo, VulkanSurface,
+use alexandria::{
+    SlotMap,
+    gpu::{
+        VulkanCommandPoolCreateFlag, VulkanDeviceExtendedDynamicStateFeatures,
+        VulkanDeviceExtension, VulkanDeviceVulkan11Features, VulkanDeviceVulkan13Features,
+        VulkanInstance, VulkanQueueCreateInfo, VulkanSurface,
+    },
 };
 
 impl GraphicsDevice {
@@ -33,10 +37,15 @@ impl GraphicsDevice {
                 adapter.graphics_queue_family_index(),
                 &[1.0],
             ))
+            .feature(&mut VulkanDeviceVulkan11Features::default().enable_shader_draw_parameters())
             .feature(
                 &mut VulkanDeviceVulkan13Features::default()
                     .enable_synchronization2()
                     .enable_dynamic_rendering(),
+            )
+            .feature(
+                &mut VulkanDeviceExtendedDynamicStateFeatures::default()
+                    .enable_extended_dynamic_state(),
             )
             .create()
             .map_err(Error::new_inner)?;
@@ -59,6 +68,8 @@ impl GraphicsDevice {
             command_buffers: Vec::new(),
             swapchain_format: adapter.swapchain_format(),
             frame_graph: FrameGraph::new(),
+
+            materials: SlotMap::new(),
         })
     }
 }
