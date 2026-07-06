@@ -2,7 +2,7 @@ use crate::{
     file_io::FileIo,
     logging::Logger,
     render::{Material, Shader},
-    update::{Inputs, Scene},
+    update::{ECS, Inputs, Scene},
 };
 use alexandria::{
     SlotMap,
@@ -32,6 +32,9 @@ pub(crate) struct UpdateJob<'a, Game: crate::Game> {
 
     /// The access for performing asynchronous file I/O operations
     file_io: FileIo,
+
+    /// The ECS system for the game
+    ecs: ECS,
 
     /** Render Objects **/
 

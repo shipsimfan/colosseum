@@ -4,7 +4,9 @@ mod context;
 mod input;
 mod job;
 mod scene;
+mod ecs;
 
+pub use ecs::*; 
 pub use context::*;
 pub use input::*;
 pub use scene::*;

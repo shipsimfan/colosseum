@@ -3,7 +3,7 @@ use crate::{
     file_io::FileIo,
     logging::Logger,
     render::RenderData,
-    update::{InitialScene, Inputs, Scene, UpdateContext, UpdateJob},
+    update::{ECS, InitialScene, Inputs, Scene, UpdateContext, UpdateJob},
 };
 use alexandria::{
     SlotMap,
@@ -29,6 +29,9 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         // Create the initial set of inputs for the game
         let inputs = Inputs::new();
 
+        // Create the ECS system for the game
+        let mut ecs = ECS::new();
+
         // Create the pipeline layout that will be used by materials
         let pipeline_layout = device
             .create_pipeline_layout(0, None, &[])
@@ -46,6 +49,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             settings,
             &inputs,
             &file_io,
+            &mut ecs,
             window,
             render_data,
             device,
@@ -75,6 +79,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             settings,
             inputs,
             file_io,
+            ecs,
 
             device: device.clone(),
             swapchain_format,

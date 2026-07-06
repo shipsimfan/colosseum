@@ -3,7 +3,7 @@ use crate::{
     file_io::FileIo,
     logging::Logger,
     render::{Material, RenderData, Shader},
-    update::{Inputs, Scene},
+    update::{ECS, Inputs, Scene},
 };
 use alexandria::{
     SlotMap,
@@ -17,6 +17,7 @@ mod create;
 mod get;
 mod new;
 mod remove;
+mod scene_reset;
 mod set;
 
 /// The context passed to scenes during the update phase of the game loop
@@ -44,6 +45,9 @@ pub struct UpdateContext<'a, Game: crate::Game> {
 
     /// The access for performing asynchronous file I/O operations
     file_io: &'a FileIo,
+
+    /// The ECS system for the game
+    ecs: &'a mut ECS,
 
     /// The window being rendered into
     window: &'a Window,

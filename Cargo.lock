@@ -63,16 +63,16 @@ dependencies = [
 
 [[package]]
 name = "data-format"
-version = "1.1.1"
-source = "git+https://github.com/shipsimfan/lib-data-format#527fccd4e2f6fbc039824314478230b1346c8b43"
+version = "1.2.0"
+source = "git+https://github.com/shipsimfan/lib-data-format#38d368e72582aa7a2075734f4fabf41f7f28b97f"
 dependencies = [
- "macros 1.1.1",
+ "macros 1.2.0",
 ]
 
 [[package]]
 name = "json"
-version = "2.1.1"
-source = "git+https://github.com/shipsimfan/lib-json#74b6991eb90a2bb0c24354e7dd3f87c37b27a5bd"
+version = "2.2.0"
+source = "git+https://github.com/shipsimfan/lib-json#0d66b1dd2cc5c38153927963628c8cad19a5b841"
 dependencies = [
  "data-format",
  "lct-streams",
@@ -98,8 +98,8 @@ source = "git+https://github.com/shipsimfan/lib-linux#7a460a8976840718d4ba695c41
 
 [[package]]
 name = "macros"
-version = "1.1.1"
-source = "git+https://github.com/shipsimfan/lib-data-format#527fccd4e2f6fbc039824314478230b1346c8b43"
+version = "1.2.0"
+source = "git+https://github.com/shipsimfan/lib-data-format#38d368e72582aa7a2075734f4fabf41f7f28b97f"
 dependencies = [
  "proc-macro-util",
 ]

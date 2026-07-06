@@ -3,7 +3,7 @@ use crate::{
     file_io::FileIo,
     logging::Logger,
     render::{Material, RenderData, Shader},
-    update::{Inputs, UpdateContext},
+    update::{ECS, Inputs, UpdateContext},
 };
 use alexandria::{
     SlotMap,
@@ -21,6 +21,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         settings: &'a mut Game::SettingsCache,
         inputs: &'a Inputs,
         file_io: &'a FileIo,
+        ecs: &'a mut ECS,
         window: &'a Window,
 
         render_data: &'a mut RenderData,
@@ -39,6 +40,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
             next_scene: None,
             inputs,
             file_io,
+            ecs,
             window,
 
             render_data,
