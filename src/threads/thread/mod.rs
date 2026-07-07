@@ -14,4 +14,7 @@ pub(in crate::threads) struct Thread {
 
     /// The function to call to kill the thread
     on_kill: Box<dyn FnOnce()>,
+
+    /// The name of the thread
+    name: String,
 }

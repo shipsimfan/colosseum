@@ -9,7 +9,7 @@ impl ThreadManager {
 
         let mut threads = self.threads.lock().unwrap();
         for thread in threads.drain(..).rev() {
-            if let Err(error) = thread.join() {
+            if let Err(error) = thread.join(self.shared_state.logger()) {
                 errors.push(error);
             }
         }

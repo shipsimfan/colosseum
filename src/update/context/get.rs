@@ -2,7 +2,7 @@ use crate::{
     file_io::FileIo,
     logging::Logger,
     render::{Material, RenderData, Skybox},
-    update::{Inputs, Scene, UpdateContext},
+    update::{ECS, Inputs, Scene, UpdateContext},
 };
 use alexandria::{Id, math::Vector2u};
 use std::time::Duration;
@@ -31,6 +31,16 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Get if the game should exit after this update
     pub fn should_exit(&self) -> bool {
         self.should_exit
+    }
+
+    /// Get a reference to the ECS system
+    pub fn ecs(&self) -> &ECS {
+        &self.ecs
+    }
+
+    /// Get a mutable reference to the ECS system
+    pub fn ecs_mut(&mut self) -> &mut ECS {
+        &mut self.ecs
     }
 
     /// Get a reference to the skybox used for this update

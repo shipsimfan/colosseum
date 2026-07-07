@@ -1,3 +1,5 @@
+use std::panic::PanicHookInfo;
+
 mod display;
 mod error;
 mod from;

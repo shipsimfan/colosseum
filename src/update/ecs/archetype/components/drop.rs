@@ -7,7 +7,7 @@ impl Drop for Components {
             return;
         }
 
-        for i in 0..self.count {
+        for i in 0..self.length {
             let ptr = unsafe { self.ptr.add(i * self.layout.size()) };
             unsafe { (self.drop_fn)(ptr) };
         }

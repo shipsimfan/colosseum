@@ -10,9 +10,9 @@ publish = false
 colosseum-build.path = "build"
 colosseum-macros.path = "macros"
 
-alexandria = { git = "https://github.com/shipsimfan/alexandria", features = [
+alexandria = { path = "../alexandria", features = [
     "data-format",
-] }
+] } #git = "https://github.com/shipsimfan/alexandria"
 
 argparse.git = "https://github.com/shipsimfan/lib-argparse"
 data-format.git = "https://github.com/shipsimfan/lib-data-format"

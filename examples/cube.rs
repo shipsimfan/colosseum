@@ -118,14 +118,84 @@ impl colosseum::update::InitialScene for CubeScene {
         _: &CubeOptions,
         context: &mut colosseum::update::UpdateContext<Cube>,
     ) -> colosseum::Result<Self> {
+        let logger = context.logger("cube");
+
         let shader = context.create_shader(&TRIANGLE_SHADER)?;
         let material = context.create_material(shader)?;
+
+        let mut entities = Vec::new();
+        for i in 1usize..=10 {
+            let entity = context.ecs_mut().create_entity();
+            colosseum::debug!(logger, "Created entity {}: {}", i, entity);
+
+            assert_eq!(
+                *context
+                    .ecs()
+                    .get::<colosseum::Id<colosseum::update::Entity>>(entity),
+                entity
+            );
+
+            if i % 2 == 0 {
+                context.ecs_mut().add_component(entity, i);
+                colosseum::debug!(logger, "Added integer to entity {}", entity);
+            } else {
+                context.ecs_mut().add_component(entity, i as f32);
+                colosseum::debug!(logger, "Added float to entity {}", entity);
+            }
+
+            if i % 3 == 0 {
+                context.ecs_mut().add_component(entity, i.to_string());
+                colosseum::debug!(logger, "Added string to entity {}", entity);
+            }
+
+            entities.push(entity);
+        }
+
+        let last_entity = entities.pop().unwrap();
+        context.ecs_mut().remove_entity(last_entity);
+        assert!(
+            context
+                .ecs()
+                .try_get::<colosseum::Id<colosseum::update::Entity>>(last_entity)
+                .is_none()
+        );
+        colosseum::debug!(
+            logger,
+            "Removed entity {}: {}",
+            entities.len() + 1,
+            last_entity
+        );
+
+        for i in 0..entities.len() / 2 {
+            context.ecs_mut().remove_entity(entities[i]);
+            colosseum::debug!(logger, "Removed entity {}: {}", i + 1, entities[i]);
+        }
+
+        colosseum::debug!(
+            logger,
+            "Remaining entities: {}",
+            context.ecs().num_entities()
+        );
+
+        for entity in context.ecs().entities() {
+            colosseum::debug!(logger, "Remaining entity: {} ", entity);
+
+            if let Some(i) = context.ecs().try_get::<usize>(entity) {
+                colosseum::debug!(logger, "Entity {} has integer: {}", entity, i);
+            }
+            if let Some(f) = context.ecs().try_get::<f32>(entity) {
+                colosseum::debug!(logger, "Entity {} has float: {}", entity, f);
+            }
+            if let Some(s) = context.ecs().try_get::<String>(entity) {
+                colosseum::debug!(logger, "Entity {} has string: {}", entity, s);
+            }
+        }
 
         Ok(CubeScene {
             color: colosseum::math::ColorHsv::RED,
             frames: 0,
             fps_timer: 0.0,
-            logger: context.logger("cube"),
+            logger,
             material,
             render_state: true,
         })

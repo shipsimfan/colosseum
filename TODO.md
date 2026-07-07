@@ -1,27 +1,36 @@
 # ToDo
  1. Add ECS system
- 2. Add mesh primitives
- 3. Add custom shader support
- 4. Add post processing system
- 5. Add render scale
- 6. Add mesh loading
- 7. Add texture loading
- 8. Add material system
- 9. Add lighting system
- 10. Add shadow mapping
- 11. Add deferred rendering
- 12. Add anti-aliasing
- 13. Add physics system
- 14. Add collision system
- 15. Add audio system
- 16. Add mouse support
- 17. Add gamepad support
- 18. Add other input support
+   1. Add removing components
+   2. Add adding systems
+   3. Add removing systems
+   4. Add executing systems
+   5. Add system phases (pre-update, ad-hoc, post-update, render)
+ 2. Separate update job render objects into its own structure `UpdateRenderObjects` for cleaner separation
+ 3. Add `RenderObjects` to the render job for easier passing to nodes
+ 4. Add mesh support
+ 5. Add mesh primitives
+ 6. Add custom shader support
+ 7. Add post processing system
+ 8. Add render scale
+ 9. Add mesh loading
+ 10. Add texture loading
+ 11. Add material system
+ 12. Add lighting system
+ 13. Add shadow mapping
+ 14. Add deferred rendering
+ 15. Add anti-aliasing
+ 16. Add physics system
+ 17. Add collision system
+ 18. Add audio system
+ 19. Add mouse support
+ 20. Add gamepad support
+ 21. Add other input support
    - Joystick
    - Throttle
    - Wheel
    - Pedals
    - VR controllers
- 19. Add input translation system
- 20. Add multiple keyboard support
- 21. Add multiple mouse support
+ 22. Add input translation system
+ 23. Add multiple keyboard support
+ 24. Add multiple mouse support
+ 25. Add dependency support for ECS systems

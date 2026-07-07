@@ -8,7 +8,7 @@ impl ArchetypeSet {
     /// Create a new [`ArchetypeSet`]
     pub fn new() -> ArchetypeSet {
         let entity_component = Components::new::<Id<Entity>>();
-        let entity_archetype = Archetype::new_one(entity_component);
+        let entity_archetype = Archetype::new(vec![entity_component]);
 
         ArchetypeSet {
             archetypes: vec![entity_archetype],
