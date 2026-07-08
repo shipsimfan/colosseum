@@ -21,6 +21,9 @@ pub(crate) struct UpdateJob<'a, Game: crate::Game> {
     /// The scene to transition to at the start of the next frame, if any
     next_scene: Option<Box<dyn Scene<Game = Game>>>,
 
+    /// Is the next scene the first scene of the game?
+    first_scene: bool,
+
     /// A logger to use during the update phase
     logger: Logger,
 

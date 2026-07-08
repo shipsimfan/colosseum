@@ -12,11 +12,6 @@ impl Components {
         self.length
     }
 
-    /// Get the size of a single component in bytes
-    pub fn size(&self) -> usize {
-        self.layout.size()
-    }
-
     /// Get a reference to the component of type `T` for the entity at the given `entity_index`
     pub fn get<T: 'static>(&self, entity_index: usize) -> &T {
         debug_assert_eq!(self.type_id, TypeId::of::<T>());
@@ -33,6 +28,22 @@ impl Components {
 
         let ptr = unsafe { self.ptr.add(entity_index * self.element_size) };
         unsafe { ptr.cast::<T>().as_mut() }.unwrap()
+    }
+
+    /// Get a reference to the component data of type `T` for all entities in this component data
+    pub fn get_all<T: 'static>(&self) -> &[T] {
+        debug_assert_eq!(self.type_id, TypeId::of::<T>());
+
+        let ptr = self.ptr.cast::<T>();
+        unsafe { std::slice::from_raw_parts(ptr, self.length) }
+    }
+
+    /// Get a mutable reference to the component data of type `T` for all entities in this component data
+    pub fn get_all_mut<T: 'static>(&mut self) -> &mut [T] {
+        debug_assert_eq!(self.type_id, TypeId::of::<T>());
+
+        let ptr = self.ptr.cast::<T>();
+        unsafe { std::slice::from_raw_parts_mut(ptr, self.length) }
     }
 
     /// Get the bytes of the component data for the entity at the given `entity_index`

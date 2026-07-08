@@ -26,6 +26,7 @@ impl Components {
             type_id: TypeId::of::<T>(),
             element_size,
             layout,
+            type_name: std::any::type_name::<T>(),
             drop_fn: |ptr| unsafe { std::ptr::drop_in_place(ptr as *mut T) },
         }
     }
@@ -42,6 +43,7 @@ impl Components {
             type_id: self.type_id,
             element_size: self.element_size,
             layout: self.layout,
+            type_name: self.type_name,
             drop_fn: self.drop_fn,
         }
     }

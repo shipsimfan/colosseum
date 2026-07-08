@@ -1,17 +1,23 @@
+use crate::logging::Logger;
 use alexandria::SlotMap;
 use archetype::*;
 
 mod archetype;
 mod entity;
+mod system;
 
 mod add_component;
 mod create_entity;
+mod execute_system;
 mod get;
 mod new;
+mod register_system;
+mod remove_component;
 mod remove_entity;
 mod scene_reset;
 
 pub use entity::*;
+pub use system::*;
 
 /// The container for the Entity Component System (ECS) system
 pub struct ECS {
@@ -20,6 +26,8 @@ pub struct ECS {
 
     /// The set of archetypes in the ECS system
     archetypes: ArchetypeSet,
+
+    logger: Logger,
 }
 
 /// Convert a reference to a value of type `T` into a byte slice

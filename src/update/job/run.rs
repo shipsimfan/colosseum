@@ -105,9 +105,13 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             }
 
             // Switch to the next scene and activate it
-            debug!(self.logger, "changing scene");
             self.scene = next_scene;
-            update_context.scene_reset();
+            if self.first_scene {
+                self.first_scene = false;
+            } else {
+                debug!(self.logger, "changing scene");
+                update_context.scene_reset();
+            }
             self.scene.on_active(&mut update_context);
 
             // Check if the game should exit or if a new scene was set during activation

@@ -1,10 +1,9 @@
 # ToDo
  1. Add ECS system
-   1. Add removing components
-   2. Add adding systems
-   3. Add removing systems
-   4. Add executing systems
-   5. Add system phases (pre-update, ad-hoc, post-update, render)
+   1. Add adding systems
+   2. Add removing systems
+   3. Add executing systems
+   4. Add system phases (pre-update, ad-hoc, post-update, render)
  2. Separate update job render objects into its own structure `UpdateRenderObjects` for cleaner separation
  3. Add `RenderObjects` to the render job for easier passing to nodes
  4. Add mesh support

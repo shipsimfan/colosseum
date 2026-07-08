@@ -1,3 +1,4 @@
+use crate::logging::Logger;
 use components::*;
 use std::any::TypeId;
 
@@ -11,6 +12,7 @@ mod push;
 mod swap_remove;
 
 pub(in crate::update::ecs) use set::*;
+pub(in crate::update::ecs) use swap_remove::*;
 
 /// An archetype in the Entity Component System (ECS) system, which is a collection of entities
 /// that share the same set of components
@@ -26,4 +28,6 @@ pub(in crate::update::ecs) struct Archetype {
 
     /// The indices of the archetypes that exist from removing a component from this archetype
     prev_archetypes: Vec<(TypeId, usize)>,
+
+    logger: Logger,
 }

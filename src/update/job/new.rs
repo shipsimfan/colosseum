@@ -30,7 +30,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         let inputs = Inputs::new();
 
         // Create the ECS system for the game
-        let mut ecs = ECS::new();
+        let mut ecs = ECS::new(logger);
 
         // Create the pipeline layout that will be used by materials
         let pipeline_layout = device
@@ -75,6 +75,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         Ok(Some(UpdateJob {
             scene: Box::new(EmptyScene(PhantomData)),
             next_scene: Some(initial_scene),
+            first_scene: true,
             logger: logger.logger("scenes"),
             settings,
             inputs,

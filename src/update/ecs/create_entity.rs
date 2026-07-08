@@ -1,4 +1,7 @@
-use crate::update::{ECS, Entity, ecs::to_slice};
+use crate::{
+    debug,
+    update::{ECS, Entity, ecs::to_slice},
+};
 use alexandria::Id;
 use std::any::TypeId;
 
@@ -14,6 +17,8 @@ impl ECS {
 
         // Insert the entity into the default archetype
         self.archetypes[DEFAULT_ARCHETYPE].push([(to_slice(&id), TypeId::of::<Id<Entity>>())]);
+
+        debug!(self.logger, "Created new entity: {}", id);
 
         id
     }

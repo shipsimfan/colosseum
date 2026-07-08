@@ -2,13 +2,15 @@ use crate::update::ecs::archetype::Components;
 
 impl Components {
     /// Remove a component from the component data using the swap-remove method
-    pub fn swap_remove(&mut self, index: usize) {
+    pub fn swap_remove(&mut self, index: usize, drop: bool) {
         debug_assert!(index < self.length, "component index out of bounds");
 
         self.length -= 1;
 
         let target_ptr = unsafe { self.ptr.add(index * self.element_size) };
-        unsafe { (self.drop_fn)(target_ptr) };
+        if drop {
+            unsafe { (self.drop_fn)(target_ptr) };
+        }
 
         if index == self.length {
             return;

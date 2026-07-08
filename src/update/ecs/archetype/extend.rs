@@ -9,6 +9,6 @@ impl Archetype {
         }
         components.push(new_component);
 
-        Archetype::new(components)
+        Archetype::new(components, &self.logger)
     }
 }

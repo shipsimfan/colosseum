@@ -1,4 +1,7 @@
-use crate::update::{Entity, ecs::Archetype};
+use crate::update::{
+    Entity,
+    ecs::{Archetype, archetype::Components},
+};
 use alexandria::Id;
 use std::any::TypeId;
 
@@ -45,6 +48,22 @@ impl Archetype {
         None
     }
 
+    /// Get a reference to the component data of type `T` for all entities in this archetype
+    pub fn get_all_at<T: 'static>(&self, index: usize) -> &[T] {
+        self.components[index].get_all()
+    }
+
+    /// Get a mutable reference to the component data of type `T` for all entities in this archetype
+    pub fn get_all_at_mut<T: 'static>(&mut self, index: usize) -> &mut [T] {
+        debug_assert_ne!(
+            TypeId::of::<T>(),
+            TypeId::of::<Id<Entity>>(),
+            "cannot get mutable reference to Id<Entity> component"
+        );
+
+        self.components[index].get_all_mut()
+    }
+
     /// Get the set of component data for the entity at the given `entity_index`
     pub fn get_entity_data<'a>(
         &'a self,
@@ -53,6 +72,14 @@ impl Archetype {
         self.components
             .iter()
             .map(move |components| (components.get_bytes(entity_index), components.type_id()))
+    }
+
+    /// Get a mutable reference to a set of [`Components`]
+    pub fn get_disjoint_components_mut<const N: usize>(
+        &mut self,
+        indices: [usize; N],
+    ) -> [&mut Components; N] {
+        self.components.get_disjoint_mut(indices).unwrap()
     }
 
     /// Get the index of the archetype that extends this archetype with the given `type_id`
@@ -75,7 +102,7 @@ impl Archetype {
     }
 
     /// Get the index of the archetype that is this archetype without the given `type_id`
-    pub fn previous_archetype(&self, type_id: TypeId) -> Option<usize> {
+    pub fn prev_archetype(&self, type_id: TypeId) -> Option<usize> {
         debug_assert!(
             self.component_ids.contains(&type_id),
             "cannot get previous archetype for a component that does not exist in this archetype"
