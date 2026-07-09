@@ -16,7 +16,7 @@ pub(in crate::update::ecs) use swap_remove::*;
 
 /// An archetype in the Entity Component System (ECS) system, which is a collection of entities
 /// that share the same set of components
-pub(in crate::update::ecs) struct Archetype {
+pub struct Archetype {
     /// The IDs of the components that are associated with this archetype
     component_ids: Box<[TypeId]>,
 

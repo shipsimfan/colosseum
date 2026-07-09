@@ -214,43 +214,24 @@ impl colosseum::update::InitialScene for CubeScene {
         context.ecs_mut().add_component(entity_b, 78f32);
         context.ecs_mut().add_component(entity_b, 12usize);
 
-        type Components<'a> = (&'a [colosseum::Id<colosseum::update::Entity>], &'a [f32]);
-        const TYPE_IDS: [std::any::TypeId; 2] = [
-            std::any::TypeId::of::<colosseum::Id<colosseum::update::Entity>>(),
-            std::any::TypeId::of::<f32>(),
-        ];
-        const TYPE_COUNT: usize = TYPE_IDS.len();
-
         let system_logger = logger.clone();
-        let system = context
-            .ecs_mut()
-            .register_ad_hoc_system(colosseum::update::System::new(Box::new(
-                move |archetypes: &mut [Archetype], indices: &[usize]| {
-                    let archetype_count = indices.len() / (TYPE_COUNT + 1);
-                    for i in 0..archetype_count {
-                        let archetype_index = indices[i * (TYPE_COUNT + 1)];
-                        let component_indices =
-                            &indices[i * (TYPE_COUNT + 1) + 1..(i + 1) * (TYPE_COUNT + 1)];
+        let system = context.ecs_mut().register_system(
+            colosseum::update::SystemPhase::AdHoc,
+            colosseum::system!(|i: colosseum::Id<colosseum::update::Entity>, f: f32| {
+                for index in 0..i.len() {
+                    colosseum::debug!(
+                        system_logger,
+                        "Ad-hoc system: Entity {} has float {}",
+                        i[index],
+                        f[index]
+                    );
+                    f[index] *= 2.0;
+                }
+            }),
+        );
 
-                        let archetype = &mut archetypes[archetype_index];
-                        let component_set = (
-                            archetype.get_all_at(indices[0]),
-                            archetype.get_all_at(indices[1]),
-                        );
-
-                        (|(i, f): Components| {
-                            for index in 0..i.len() {
-                                colosseum::debug!(
-                                    system_logger,
-                                    "Ad-hoc system: Entity {} has float {}",
-                                    i[index],
-                                    f[index]
-                                );
-                            }
-                        })(component_set);
-                    }
-                },
-            )));
+        context.ecs_mut().execute_system(system);
+        context.ecs_mut().execute_system(system);
 
         Ok(CubeScene {
             color: colosseum::math::ColorHsv::RED,

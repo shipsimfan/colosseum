@@ -16,7 +16,11 @@ pub(in crate::update::ecs) enum DropType {
 
 impl Archetype {
     /// Remove an entity from the archetype using the swap-remove method, returning the ID of the entity that was swapped into the removed entity's position, if any
-    pub fn swap_remove(&mut self, entity_index: usize, drop: DropType) -> Option<Id<Entity>> {
+    pub(in crate::update::ecs) fn swap_remove(
+        &mut self,
+        entity_index: usize,
+        drop: DropType,
+    ) -> Option<Id<Entity>> {
         debug_assert!(
             entity_index < self.components[0].len(),
             "entity index out of bounds"

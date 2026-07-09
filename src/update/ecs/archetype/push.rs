@@ -3,7 +3,10 @@ use std::any::TypeId;
 
 impl Archetype {
     /// Push a new entity into the archetype with the specified component data
-    pub fn push<'a, I: IntoIterator<Item = (&'a [u8], TypeId)>>(&mut self, component_data: I) {
+    pub(in crate::update::ecs) fn push<'a, I: IntoIterator<Item = (&'a [u8], TypeId)>>(
+        &mut self,
+        component_data: I,
+    ) {
         let mut i = 0;
         for (data, type_id) in component_data {
             let index = self

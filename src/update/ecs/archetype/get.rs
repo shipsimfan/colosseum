@@ -7,17 +7,22 @@ use std::any::TypeId;
 
 impl Archetype {
     /// Get the number of entities in this archetype
-    pub fn len(&self) -> usize {
+    pub(in crate::update::ecs) fn len(&self) -> usize {
         self.components[0].len()
     }
 
     /// Get the component IDs of this archetype
-    pub fn component_ids(&self) -> &[TypeId] {
+    pub(in crate::update::ecs) fn component_ids(&self) -> &[TypeId] {
         &self.component_ids
     }
 
+    /// Get the components of this archetype
+    pub(in crate::update::ecs) fn components(&self) -> &[Components] {
+        &self.components
+    }
+
     /// Get a component of type `T` for the entity at the given `entity_index`
-    pub fn get<T: 'static>(&self, entity_index: usize) -> Option<&T> {
+    pub(in crate::update::ecs) fn get<T: 'static>(&self, entity_index: usize) -> Option<&T> {
         let type_id = TypeId::of::<T>();
 
         for components in &self.components {
@@ -30,7 +35,10 @@ impl Archetype {
     }
 
     /// Get a mutable component of type `T` for the entity at the given `entity_index`
-    pub fn get_mut<T: 'static>(&mut self, entity_index: usize) -> Option<&mut T> {
+    pub(in crate::update::ecs) fn get_mut<T: 'static>(
+        &mut self,
+        entity_index: usize,
+    ) -> Option<&mut T> {
         let type_id = TypeId::of::<T>();
 
         debug_assert_ne!(
@@ -47,25 +55,8 @@ impl Archetype {
 
         None
     }
-
-    /// Get a reference to the component data of type `T` for all entities in this archetype
-    pub fn get_all_at<T: 'static>(&self, index: usize) -> &[T] {
-        self.components[index].get_all()
-    }
-
-    /// Get a mutable reference to the component data of type `T` for all entities in this archetype
-    pub fn get_all_at_mut<T: 'static>(&mut self, index: usize) -> &mut [T] {
-        debug_assert_ne!(
-            TypeId::of::<T>(),
-            TypeId::of::<Id<Entity>>(),
-            "cannot get mutable reference to Id<Entity> component"
-        );
-
-        self.components[index].get_all_mut()
-    }
-
     /// Get the set of component data for the entity at the given `entity_index`
-    pub fn get_entity_data<'a>(
+    pub(in crate::update::ecs) fn get_entity_data<'a>(
         &'a self,
         entity_index: usize,
     ) -> impl Iterator<Item = (&'a [u8], TypeId)> {
@@ -83,7 +74,7 @@ impl Archetype {
     }
 
     /// Get the index of the archetype that extends this archetype with the given `type_id`
-    pub fn next_archetype(&self, type_id: TypeId) -> Option<usize> {
+    pub(in crate::update::ecs) fn next_archetype(&self, type_id: TypeId) -> Option<usize> {
         #[cfg(debug_assertions)]
         for component_id in &self.component_ids {
             debug_assert_ne!(
@@ -102,7 +93,7 @@ impl Archetype {
     }
 
     /// Get the index of the archetype that is this archetype without the given `type_id`
-    pub fn prev_archetype(&self, type_id: TypeId) -> Option<usize> {
+    pub(in crate::update::ecs) fn prev_archetype(&self, type_id: TypeId) -> Option<usize> {
         debug_assert!(
             self.component_ids.contains(&type_id),
             "cannot get previous archetype for a component that does not exist in this archetype"

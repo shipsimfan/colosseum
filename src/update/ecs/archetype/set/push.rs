@@ -61,8 +61,14 @@ impl ArchetypeSet {
         }
 
         // Register the new archetype with all existing systems
+        for system in &mut self.pre_update_systems {
+            system.register_archetype(new_archetype_index, &new_archetype);
+        }
         for system in &mut self.ad_hoc_systems {
-            system.register_archetype(new_archetype_index, &new_archetype.component_ids);
+            system.register_archetype(new_archetype_index, &new_archetype);
+        }
+        for system in &mut self.post_update_systems {
+            system.register_archetype(new_archetype_index, &new_archetype);
         }
 
         debug!(

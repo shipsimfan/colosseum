@@ -8,7 +8,7 @@ mod push;
 mod swap_remove;
 
 /// The data associated with a single component on an archetype in the Entity Component System (ECS) system
-pub(in crate::update::ecs) struct Components {
+pub struct Components {
     /// The pointer to the component data
     ptr: *mut u8,
 

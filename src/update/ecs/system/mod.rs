@@ -1,13 +1,16 @@
 use crate::update::ecs::Archetype;
 use std::any::TypeId;
 
-//mod component_set;
+mod id;
+mod r#macro;
+mod phase;
 
 mod execute;
 mod new;
 mod register_archetype;
 
-//pub use component_set::*;
+pub use id::*;
+pub use phase::*;
 
 /// A system in the ECS framework, which operates on a set of components and performs some logic on
 /// them
@@ -23,5 +26,5 @@ pub struct System {
     indices: Vec<usize>,
 
     /// The system itself
-    system: Box<dyn FnMut(&mut [Archetype], &[usize])>,
+    system: Box<dyn Fn(&mut [Archetype], &[usize])>,
 }

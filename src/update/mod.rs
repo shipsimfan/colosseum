@@ -4,10 +4,11 @@ mod context;
 mod input;
 mod job;
 mod scene;
-mod ecs;
 
-pub use ecs::*; 
+pub mod ecs;
+
 pub use context::*;
+pub use ecs::{ECS, Entity, SystemId, SystemPhase};
 pub use input::*;
 pub use scene::*;
 

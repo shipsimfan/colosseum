@@ -1,11 +1,7 @@
 # ToDo
- 1. Add ECS system
-   1. Add adding systems
-   2. Add removing systems
-   3. Add executing systems
-   4. Add system phases (pre-update, ad-hoc, post-update, render)
- 2. Separate update job render objects into its own structure `UpdateRenderObjects` for cleaner separation
- 3. Add `RenderObjects` to the render job for easier passing to nodes
+ 1. Separate update job render objects into its own structure `UpdateRenderObjects` for cleaner separation
+ 2. Add `RenderObjects` to the render job for easier passing to nodes
+ 3. Create `Renderer` component and `render` render system which takes `UpdateRenderObjects` and `RenderData`
  4. Add mesh support
  5. Add mesh primitives
  6. Add custom shader support
@@ -32,4 +28,4 @@
  22. Add input translation system
  23. Add multiple keyboard support
  24. Add multiple mouse support
- 25. Add dependency support for ECS systems
+ 25. Add resource and dependency support for ECS systems

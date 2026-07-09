@@ -1,6 +1,8 @@
+//! Definitions for the Entity Component System (ECS) system
+
 use crate::logging::Logger;
 use alexandria::SlotMap;
-use archetype::*;
+use system::System;
 
 mod archetype;
 mod entity;
@@ -15,9 +17,11 @@ mod register_system;
 mod remove_component;
 mod remove_entity;
 mod scene_reset;
+mod unregister_system;
 
+pub use archetype::*;
 pub use entity::*;
-pub use system::*;
+pub use system::{SystemId, SystemPhase};
 
 /// The container for the Entity Component System (ECS) system
 pub struct ECS {
