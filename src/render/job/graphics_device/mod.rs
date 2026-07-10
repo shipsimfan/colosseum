@@ -1,10 +1,10 @@
 use crate::{
     logging::Logger,
-    render::{FrameGraph, RenderMaterial},
+    render::{FrameGraph, RenderObjects},
 };
 use adapter_info::VulkanAdapterInfo;
 use alexandria::{
-    Id, SlotMap,
+    Id,
     gpu::{VulkanCommandBuffer, VulkanCommandPool, VulkanDevice, VulkanFormat, VulkanQueue},
 };
 
@@ -44,8 +44,6 @@ pub(in crate::render::job) struct GraphicsDevice {
     /// The frame graph, which can be built and executed to render frames
     frame_graph: FrameGraph,
 
-    /** Objects created by the update job **/
-
-    /// The materials that have been created
-    materials: SlotMap<RenderMaterial>,
+    /// The render objects that have been created by the update job
+    render_objects: RenderObjects,
 }

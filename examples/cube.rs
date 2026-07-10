@@ -54,7 +54,10 @@ struct CubeScene {
     logger: colosseum::logging::Logger,
 
     /// The material used to render the cube
-    material: colosseum::Id<colosseum::render::Material>,
+    material: colosseum::render::MaterialId,
+
+    /// The ID of the renderable cube
+    cube: colosseum::Id<colosseum::update::Entity>,
 
     /// Should the cube be rendered?
     render_state: bool,
@@ -95,9 +98,16 @@ impl colosseum::update::Scene for CubeScene {
         // Render the cube
         if context.inputs().key_down(colosseum::Key::V) {
             self.render_state = !self.render_state;
-        }
-        if self.render_state {
-            context.add_renderable(self.material);
+            if self.render_state {
+                context.ecs_mut().add_component(
+                    self.cube,
+                    colosseum::update::components::Renderer::new(self.material),
+                );
+            } else {
+                context
+                    .ecs_mut()
+                    .remove_component::<colosseum::update::components::Renderer>(self.cube);
+            }
         }
 
         // Display the FPS every second
@@ -120,118 +130,14 @@ impl colosseum::update::InitialScene for CubeScene {
     ) -> colosseum::Result<Self> {
         let logger = context.logger("cube");
 
-        let shader = context.create_shader(&TRIANGLE_SHADER)?;
-        let material = context.create_material(shader)?;
+        let shader =
+            context.create_shader(colosseum::render::ShaderKind::Unlit, &TRIANGLE_SHADER)?;
+        let material =
+            context.create_material(colosseum::render::MaterialKind::UnlitOpaque, shader)?;
 
-        let mut entities = Vec::new();
-        for i in 1usize..=10 {
-            let entity = context.ecs_mut().create_entity();
-            colosseum::debug!(logger, "Created entity {}: {}", i, entity);
-
-            assert_eq!(
-                *context
-                    .ecs()
-                    .get::<colosseum::Id<colosseum::update::Entity>>(entity),
-                entity
-            );
-
-            if i % 2 == 0 {
-                context.ecs_mut().add_component(entity, i);
-                colosseum::debug!(logger, "Added integer to entity {}", entity);
-            } else {
-                context.ecs_mut().add_component(entity, i as f32);
-                colosseum::debug!(logger, "Added float to entity {}", entity);
-            }
-
-            if i % 3 == 0 {
-                context.ecs_mut().add_component(entity, i.to_string());
-                colosseum::debug!(logger, "Added string to entity {}", entity);
-            }
-
-            entities.push(entity);
-        }
-
-        let last_entity = entities.pop().unwrap();
-        context.ecs_mut().remove_entity(last_entity);
-        assert!(
-            context
-                .ecs()
-                .try_get::<colosseum::Id<colosseum::update::Entity>>(last_entity)
-                .is_none()
-        );
-        colosseum::debug!(
-            logger,
-            "Removed entity {}: {}",
-            entities.len() + 1,
-            last_entity
-        );
-
-        for i in 0..entities.len() / 2 {
-            context.ecs_mut().remove_entity(entities[i]);
-            colosseum::debug!(logger, "Removed entity {}: {}", i + 1, entities[i]);
-        }
-
-        colosseum::debug!(
-            logger,
-            "Remaining entities: {}",
-            context.ecs().num_entities()
-        );
-
-        let mut remove_string = None;
-        for entity in context.ecs().entities() {
-            colosseum::debug!(logger, "Remaining entity: {} ", entity);
-
-            if let Some(i) = context.ecs().try_get::<usize>(entity) {
-                colosseum::debug!(logger, "Entity {} has integer: {}", entity, i);
-            }
-            if let Some(f) = context.ecs().try_get::<f32>(entity) {
-                colosseum::debug!(logger, "Entity {} has float: {}", entity, f);
-            }
-            if let Some(s) = context.ecs().try_get::<String>(entity) {
-                colosseum::debug!(logger, "Entity {} has string: {}", entity, s);
-                remove_string = Some(entity);
-            }
-        }
-
-        let remove_string =
-            remove_string.expect("There should be at least one entity with a string component");
-        context.ecs_mut().remove_component::<String>(remove_string);
-        assert!(
-            context.ecs().try_get::<String>(remove_string).is_none(),
-            "The string component should have been removed from the entity"
-        );
-        colosseum::debug!(
-            logger,
-            "Removed string component from entity {}",
-            remove_string
-        );
-
-        let entity_a = context.ecs_mut().create_entity();
-        context.ecs_mut().add_component(entity_a, 43usize);
-        context.ecs_mut().add_component(entity_a, 65f32);
-
-        let entity_b = context.ecs_mut().create_entity();
-        context.ecs_mut().add_component(entity_b, 78f32);
-        context.ecs_mut().add_component(entity_b, 12usize);
-
-        let system_logger = logger.clone();
-        let system = context.ecs_mut().register_system(
-            colosseum::update::SystemPhase::AdHoc,
-            colosseum::system!(|i: colosseum::Id<colosseum::update::Entity>, f: f32| {
-                for index in 0..i.len() {
-                    colosseum::debug!(
-                        system_logger,
-                        "Ad-hoc system: Entity {} has float {}",
-                        i[index],
-                        f[index]
-                    );
-                    f[index] *= 2.0;
-                }
-            }),
-        );
-
-        context.ecs_mut().execute_system(system);
-        context.ecs_mut().execute_system(system);
+        let ecs = context.ecs_mut();
+        let cube = ecs.create_entity();
+        ecs.add_component(cube, colosseum::update::components::Renderer::new(material));
 
         Ok(CubeScene {
             color: colosseum::math::ColorHsv::RED,
@@ -239,6 +145,7 @@ impl colosseum::update::InitialScene for CubeScene {
             fps_timer: 0.0,
             logger,
             material,
+            cube,
             render_state: true,
         })
     }

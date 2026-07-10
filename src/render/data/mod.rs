@@ -1,7 +1,7 @@
 use crate::render::Material;
 use alexandria::Id;
 
-mod material_change;
+mod render_object_change;
 mod skybox;
 
 mod add;
@@ -12,16 +12,19 @@ mod scene_reset;
 
 pub use skybox::*;
 
-pub(crate) use material_change::*;
+pub(crate) use render_object_change::*;
 
 /// The data required to execute a render job
 pub(crate) struct RenderData {
     /// The skybox to render
     pub skybox: Skybox,
 
-    /// The changes to the set of materials in the scene
-    material_changes: Vec<MaterialChange>,
+    /// The changes to the render objects in use
+    render_object_changes: Vec<RenderObjectChange>,
 
-    /// The set of renderable objects in the scene
-    renderables: Vec<Id<Material>>,
+    /// The set of unlit opaque renderable objects in the scene
+    ///
+    /// These renderables are rendered in a single pass, and do not require any lighting
+    /// calculations or transparency
+    unlit_opaque_renderables: Vec<Id<Material>>,
 }

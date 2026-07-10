@@ -1,6 +1,6 @@
 use crate::update::ecs::{Archetype, System};
 
-impl System {
+impl<ExtraData> System<ExtraData> {
     /// Optionally register an archetype with this system to be used during execution
     pub(in crate::update::ecs) fn register_archetype(
         &mut self,

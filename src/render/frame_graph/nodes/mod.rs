@@ -1,8 +1,8 @@
 use crate::render::{
-    RenderData, RenderMaterial,
+    RenderData, RenderObjects,
     frame_graph::{FrameGraphResourceId, FrameGraphResourceWriteUsage},
 };
-use alexandria::{SlotMap, gpu::VulkanCommandBuffer, math::Vector2u};
+use alexandria::{gpu::VulkanCommandBuffer, math::Vector2u};
 use r#macro::nodes;
 
 mod r#macro;

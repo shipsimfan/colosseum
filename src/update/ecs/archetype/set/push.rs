@@ -70,6 +70,9 @@ impl ArchetypeSet {
         for system in &mut self.post_update_systems {
             system.register_archetype(new_archetype_index, &new_archetype);
         }
+        for system in &mut self.rendering_systems {
+            system.register_archetype(new_archetype_index, &new_archetype);
+        }
 
         debug!(
             self.logger,

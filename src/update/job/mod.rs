@@ -1,14 +1,8 @@
 use crate::{
     file_io::FileIo,
     logging::Logger,
-    render::{Material, Shader},
-    update::{ECS, Inputs, Scene},
+    update::{ECS, Inputs, Scene, UpdateRenderObjects},
 };
-use alexandria::{
-    SlotMap,
-    gpu::{VulkanDevice, VulkanFormat, VulkanPipelineLayout},
-};
-use std::sync::Arc;
 
 mod new;
 mod run;
@@ -39,20 +33,6 @@ pub(crate) struct UpdateJob<'a, Game: crate::Game> {
     /// The ECS system for the game
     ecs: ECS,
 
-    /** Render Objects **/
-
-    /// The device to use to create render objects
-    device: VulkanDevice,
-
-    /// The format of the swapchain being used
-    swapchain_format: VulkanFormat,
-
-    /// The pipeline layout used by materials
-    pipeline_layout: VulkanPipelineLayout,
-
-    /// The shaders that have been registered
-    shaders: SlotMap<Arc<Shader>>,
-
-    /// The materials that have been registered
-    materials: SlotMap<Material>,
+    /// The render objects that have been created and are being used by the game
+    render_objects: UpdateRenderObjects,
 }

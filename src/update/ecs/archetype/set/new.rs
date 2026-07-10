@@ -2,6 +2,7 @@ use crate::{
     logging::Logger,
     update::{
         Entity,
+        components::Renderer,
         ecs::{Archetype, ArchetypeSet, archetype::Components},
     },
 };
@@ -13,7 +14,7 @@ impl ArchetypeSet {
         let entity_component = Components::new::<Id<Entity>>();
         let entity_archetype = Archetype::new(vec![entity_component], &logger);
 
-        let rendering_systems = vec![];
+        let rendering_systems = vec![Renderer::system()];
 
         ArchetypeSet {
             archetypes: vec![entity_archetype],

@@ -5,8 +5,8 @@ impl RenderData {
     pub fn new() -> RenderData {
         RenderData {
             skybox: Skybox::default(),
-            material_changes: Vec::new(),
-            renderables: Vec::new(),
+            render_object_changes: Vec::new(),
+            unlit_opaque_renderables: Vec::new(),
         }
     }
 }

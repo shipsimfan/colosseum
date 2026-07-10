@@ -84,11 +84,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             &mut self.ecs,
             window,
             render_data,
-            &self.device,
-            self.swapchain_format,
-            &self.pipeline_layout,
-            &mut self.shaders,
-            &mut self.materials,
+            &mut self.render_objects,
         );
 
         // Handle any pending scene changes before updating the current scene
@@ -129,7 +125,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         update_context.ecs_mut().execute_pre_update_systems();
         self.scene.update(&mut update_context)?;
         update_context.ecs_mut().execute_post_update_systems();
-        update_context.ecs_mut().execute_rendering_systems();
+        update_context.execute_rendering_systems();
 
         // Check if the game should exit or if a new scene was set during the update
         if update_context.should_exit() {

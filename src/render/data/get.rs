@@ -1,15 +1,17 @@
-use crate::render::{Material, MaterialChange, RenderData};
+use crate::render::{Material, RenderData, RenderObjectChange};
 use alexandria::Id;
 use std::vec::Drain;
 
 impl RenderData {
-    /// Returns a drain iterator over the material changes in the render data
-    pub(in crate::render) fn material_changes<'a>(&'a mut self) -> Drain<'a, MaterialChange> {
-        self.material_changes.drain(..)
+    /// Returns a drain iterator over the render object changes in the render data
+    pub(in crate::render) fn render_object_changes<'a>(
+        &'a mut self,
+    ) -> Drain<'a, RenderObjectChange> {
+        self.render_object_changes.drain(..)
     }
 
-    /// Get the list of renderable objects in the render data
-    pub(in crate::render) fn renderables(&self) -> &[Id<Material>] {
-        &self.renderables
+    /// Get the list of unlit opaque renderable objects in the render data
+    pub(in crate::render) fn unlit_opaque_renderables(&self) -> &[Id<Material>] {
+        &self.unlit_opaque_renderables
     }
 }

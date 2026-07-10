@@ -1,12 +1,11 @@
 use crate::{
-    Error, Result, Window,
+    Result, Window,
     file_io::FileIo,
     logging::Logger,
     render::RenderData,
-    update::{ECS, InitialScene, Inputs, Scene, UpdateContext, UpdateJob},
+    update::{ECS, InitialScene, Inputs, Scene, UpdateContext, UpdateJob, UpdateRenderObjects},
 };
 use alexandria::{
-    SlotMap,
     gpu::{VulkanDevice, VulkanFormat},
     math::Vector2u,
 };
@@ -32,14 +31,8 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         // Create the ECS system for the game
         let mut ecs = ECS::new(logger);
 
-        // Create the pipeline layout that will be used by materials
-        let pipeline_layout = device
-            .create_pipeline_layout(0, None, &[])
-            .map_err(Error::new_inner)?;
-
-        // Create the graphics resources that will be used by the update job and passed to the initial scene
-        let mut shaders = SlotMap::new();
-        let mut materials = SlotMap::new();
+        // Create the render objects
+        let mut render_objects = UpdateRenderObjects::new(device, swapchain_format)?;
 
         // Create the update context that will be passed to the initial scene
         let mut update_context = UpdateContext::new(
@@ -52,11 +45,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             &mut ecs,
             window,
             render_data,
-            device,
-            swapchain_format,
-            &pipeline_layout,
-            &mut shaders,
-            &mut materials,
+            &mut render_objects,
         );
 
         // Create the initial scene for the game
@@ -81,12 +70,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             inputs,
             file_io,
             ecs,
-
-            device: device.clone(),
-            swapchain_format,
-            pipeline_layout,
-            shaders,
-            materials,
+            render_objects,
         }))
     }
 }

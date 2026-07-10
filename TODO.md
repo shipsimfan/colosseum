@@ -1,31 +1,30 @@
 # ToDo
- 1. Separate update job render objects into its own structure `UpdateRenderObjects` for cleaner separation
- 2. Add `RenderObjects` to the render job for easier passing to nodes
- 3. Create `Renderer` component and `render` render system which takes `UpdateRenderObjects` and `RenderData`
- 4. Add mesh support
- 5. Add mesh primitives
- 6. Add custom shader support
- 7. Add post processing system
- 8. Add render scale
- 9. Add mesh loading
- 10. Add texture loading
- 11. Add material system
- 12. Add lighting system
- 13. Add shadow mapping
- 14. Add deferred rendering
- 15. Add anti-aliasing
- 16. Add physics system
- 17. Add collision system
- 18. Add audio system
- 19. Add mouse support
- 20. Add gamepad support
- 21. Add other input support
+ 1. Add mesh support
+ 2. Add depth support
+ 3. Add mesh primitives
+ 4. Add custom shader support
+ 5. Add post processing system
+ 6. Add render scale
+ 7. Add mesh loading
+ 8. Add texture loading
+ 9. Add material system
+ 10. Add lighting system
+ 11. Add shadow mapping
+ 12. Add deferred rendering
+ 13. Add anti-aliasing
+ 14. Add physics system
+ 15. Add collision system
+ 16. Add audio system
+ 17. Add mouse support
+ 18. Add gamepad support
+ 19. Add other input support
    - Joystick
    - Throttle
    - Wheel
    - Pedals
    - VR controllers
- 22. Add input translation system
- 23. Add multiple keyboard support
- 24. Add multiple mouse support
- 25. Add resource and dependency support for ECS systems
+ 20. Add input translation system
+ 21. Add multiple keyboard support
+ 22. Add multiple mouse support
+ 23. Add resource and dependency support for ECS systems
+ 

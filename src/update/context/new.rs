@@ -2,15 +2,11 @@ use crate::{
     Window,
     file_io::FileIo,
     logging::Logger,
-    render::{Material, RenderData, Shader},
-    update::{ECS, Inputs, UpdateContext},
+    render::RenderData,
+    update::{ECS, Inputs, UpdateContext, UpdateRenderObjects},
 };
-use alexandria::{
-    SlotMap,
-    gpu::{VulkanDevice, VulkanFormat, VulkanPipelineLayout},
-    math::Vector2u,
-};
-use std::{sync::Arc, time::Duration};
+use alexandria::math::Vector2u;
+use std::time::Duration;
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Create a new update context
@@ -23,13 +19,8 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         file_io: &'a FileIo,
         ecs: &'a mut ECS,
         window: &'a Window,
-
         render_data: &'a mut RenderData,
-        device: &'a VulkanDevice,
-        swapchain_format: VulkanFormat,
-        pipeline_layout: &'a VulkanPipelineLayout,
-        shaders: &'a mut SlotMap<Arc<Shader>>,
-        materials: &'a mut SlotMap<Material>,
+        render_objects: &'a mut UpdateRenderObjects,
     ) -> UpdateContext<'a, Game> {
         UpdateContext {
             delta_time,
@@ -42,13 +33,8 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
             file_io,
             ecs,
             window,
-
             render_data,
-            device,
-            swapchain_format,
-            pipeline_layout,
-            shaders,
-            materials,
+            render_objects,
         }
     }
 }

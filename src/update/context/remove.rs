@@ -1,18 +1,17 @@
 use crate::{
-    render::{Material, Shader},
+    render::{MaterialId, ShaderId},
     update::UpdateContext,
 };
-use alexandria::Id;
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
-    /// Removes a [`Shader`] from the game
-    pub fn remove_shader(&mut self, shader: Id<Shader>) {
-        self.shaders.remove(unsafe { shader.cast() });
+    /// Removes a shader from the game
+    pub fn remove_shader(&mut self, shader: ShaderId) {
+        self.render_objects.remove_shader(shader);
     }
 
-    /// Removes a [`Material`] from the game
-    pub fn remove_material(&mut self, material: Id<Material>) {
-        self.materials.remove(material);
-        self.render_data.material_change(material);
+    /// Removes a material from the game
+    pub fn remove_material(&mut self, material: MaterialId) {
+        self.render_objects
+            .remove_material(material, self.render_data);
     }
 }

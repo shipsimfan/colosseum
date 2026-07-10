@@ -1,11 +1,13 @@
 //! Items used in rendering
 
 use frame_graph::*;
+use render_objects::*;
 
 mod data;
 mod frame_graph;
 mod job;
 mod material;
+mod render_objects;
 
 pub use data::*;
 pub use material::*;

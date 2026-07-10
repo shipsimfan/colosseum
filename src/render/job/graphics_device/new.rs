@@ -2,18 +2,15 @@ use crate::{
     Error, Result, info,
     logging::Logger,
     render::{
-        FrameGraph,
+        FrameGraph, RenderObjects,
         job::{GraphicsDevice, graphics_device::VulkanAdapterInfo},
     },
     warning,
 };
-use alexandria::{
-    SlotMap,
-    gpu::{
-        VulkanCommandPoolCreateFlag, VulkanDeviceExtendedDynamicStateFeatures,
-        VulkanDeviceExtension, VulkanDeviceVulkan11Features, VulkanDeviceVulkan13Features,
-        VulkanInstance, VulkanQueueCreateInfo, VulkanSurface,
-    },
+use alexandria::gpu::{
+    VulkanCommandPoolCreateFlag, VulkanDeviceExtendedDynamicStateFeatures, VulkanDeviceExtension,
+    VulkanDeviceVulkan11Features, VulkanDeviceVulkan13Features, VulkanInstance,
+    VulkanQueueCreateInfo, VulkanSurface,
 };
 
 impl GraphicsDevice {
@@ -68,8 +65,7 @@ impl GraphicsDevice {
             command_buffers: Vec::new(),
             swapchain_format: adapter.swapchain_format(),
             frame_graph: FrameGraph::new(),
-
-            materials: SlotMap::new(),
+            render_objects: RenderObjects::new(),
         })
     }
 }

@@ -7,7 +7,7 @@ use std::sync::Arc;
 
 impl Material {
     /// Create a new [`Material`] and [`RenderMaterial`]
-    pub(crate) fn new(
+    pub fn new(
         shader: &Arc<Shader>,
         pipeline_layout: &VulkanPipelineLayout,
         swapchain_format: VulkanFormat,

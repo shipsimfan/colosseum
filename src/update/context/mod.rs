@@ -2,18 +2,14 @@ use crate::{
     Window,
     file_io::FileIo,
     logging::Logger,
-    render::{Material, RenderData, Shader},
-    update::{ECS, Inputs, Scene},
+    render::RenderData,
+    update::{ECS, Inputs, Scene, UpdateRenderObjects},
 };
-use alexandria::{
-    SlotMap,
-    gpu::{VulkanDevice, VulkanFormat, VulkanPipelineLayout},
-    math::Vector2u,
-};
-use std::{sync::Arc, time::Duration};
+use alexandria::math::Vector2u;
+use std::time::Duration;
 
-mod add;
 mod create;
+mod executre;
 mod get;
 mod new;
 mod remove;
@@ -52,23 +48,9 @@ pub struct UpdateContext<'a, Game: crate::Game> {
     /// The window being rendered into
     window: &'a Window,
 
-    /** Render Objects **/
-
     /// The data to be sent to the render job for rendering
     render_data: &'a mut RenderData,
 
-    /// The device used to create render objects
-    device: &'a VulkanDevice,
-
-    /// The format of the swapchain being used
-    swapchain_format: VulkanFormat,
-
-    /// The pipeline layout used by materials
-    pipeline_layout: &'a VulkanPipelineLayout,
-
-    /// The shaders that have been registered
-    shaders: &'a mut SlotMap<Arc<Shader>>,
-
-    /// The materials that have been registered
-    materials: &'a mut SlotMap<Material>,
+    /// The render objects that have been created and are being used by the game
+    render_objects: &'a mut UpdateRenderObjects,
 }

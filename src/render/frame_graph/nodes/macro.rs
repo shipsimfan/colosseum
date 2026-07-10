@@ -24,11 +24,11 @@ macro_rules! nodes {
                 swapchain_size: Vector2u,
                 cmd_buffer: &mut VulkanCommandBuffer,
 
-                materials: &SlotMap<RenderMaterial>,
+                render_objects: &RenderObjects,
             ) {
                 match self {$(
                     FrameGraphNode::$name(node) => {
-                        node.execute(render_data, swapchain_size, cmd_buffer, materials)
+                        node.execute(render_data, swapchain_size, cmd_buffer, render_objects)
                     }
                 )*}
             }

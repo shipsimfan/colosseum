@@ -14,7 +14,7 @@ pub use phase::*;
 
 /// A system in the ECS framework, which operates on a set of components and performs some logic on
 /// them
-pub struct System {
+pub(in crate::update) struct System<ExtraData = ()> {
     /// The type IDs of the components that the system operates on, in order
     component_type_ids: Vec<TypeId>,
 
@@ -26,5 +26,5 @@ pub struct System {
     indices: Vec<usize>,
 
     /// The system itself
-    system: Box<dyn Fn(&mut [Archetype], &[usize])>,
+    system: Box<dyn Fn(&mut [Archetype], &[usize], &mut ExtraData)>,
 }

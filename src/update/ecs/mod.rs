@@ -2,7 +2,6 @@
 
 use crate::logging::Logger;
 use alexandria::SlotMap;
-use system::System;
 
 mod archetype;
 mod entity;
@@ -22,6 +21,8 @@ mod unregister_system;
 pub use archetype::*;
 pub use entity::*;
 pub use system::{SystemId, SystemPhase};
+
+pub(in crate::update) use system::System;
 
 /// The container for the Entity Component System (ECS) system
 pub struct ECS {

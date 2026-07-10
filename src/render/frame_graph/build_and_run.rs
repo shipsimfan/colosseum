@@ -1,9 +1,8 @@
 use crate::render::{
-    FrameGraph, RenderData, RenderMaterial,
+    FrameGraph, RenderData, RenderObjects,
     frame_graph::{FrameGraphResourceBuilder, FrameGraphStructure},
 };
 use alexandria::{
-    SlotMap,
     gpu::{VulkanCommandBuffer, VulkanImageView},
     math::Vector2u,
 };
@@ -16,8 +15,7 @@ impl FrameGraph {
         swapchain_image: &VulkanImageView,
         swapchain_image_size: Vector2u,
         command_buffer: &mut VulkanCommandBuffer,
-
-        materials: &SlotMap<RenderMaterial>,
+        render_objects: &RenderObjects,
     ) {
         // Setup the external resources
         let mut resource_builder = FrameGraphResourceBuilder::new(
@@ -62,7 +60,7 @@ impl FrameGraph {
             &mut self.color_attachments,
             command_buffer,
             swapchain_image_size,
-            materials,
+            render_objects,
         );
     }
 }

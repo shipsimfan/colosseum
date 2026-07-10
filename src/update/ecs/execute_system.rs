@@ -1,4 +1,7 @@
-use crate::update::{ECS, SystemId};
+use crate::{
+    render::RenderData,
+    update::{ECS, SystemId},
+};
 
 impl ECS {
     /// Execute an ad hoc system on the archetypes in the ECS system
@@ -17,7 +20,7 @@ impl ECS {
     }
 
     /// Execute all rendering systems on the archetypes in the ECS system
-    pub(in crate::update) fn execute_rendering_systems(&mut self) {
-        self.archetypes.execute_rendering_systems();
+    pub(in crate::update) fn execute_rendering_systems(&mut self, render_data: &mut RenderData) {
+        self.archetypes.execute_rendering_systems(render_data);
     }
 }

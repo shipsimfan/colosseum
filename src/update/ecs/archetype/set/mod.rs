@@ -1,5 +1,6 @@
 use crate::{
     logging::Logger,
+    render::RenderData,
     update::ecs::{Archetype, System},
 };
 use alexandria::{PackedMap, SlotMap};
@@ -27,7 +28,7 @@ pub(in crate::update::ecs) struct ArchetypeSet {
     post_update_systems: PackedMap<System>,
 
     /// The set of systems that are run for rendering
-    rendering_systems: Vec<System>,
+    rendering_systems: Vec<System<RenderData>>,
 
     /// The logger for the ECS system
     logger: Logger,

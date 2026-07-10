@@ -1,14 +1,12 @@
 use crate::update::ecs::{Archetype, System};
 use std::any::TypeId;
 
-impl System {
+impl<ExtraData> System<ExtraData> {
     /// Create a new [`System`] over `Components`
-    #[allow(private_bounds)]
-    #[allow(private_interfaces)]
-    pub(in crate::update::ecs) fn new(
+    pub fn new(
         component_type_ids: &[TypeId],
-        system: Box<dyn Fn(&mut [Archetype], &[usize])>,
-    ) -> System {
+        system: Box<dyn Fn(&mut [Archetype], &[usize], &mut ExtraData)>,
+    ) -> System<ExtraData> {
         System {
             component_type_ids: component_type_ids.to_vec(),
             indices: Vec::new(),

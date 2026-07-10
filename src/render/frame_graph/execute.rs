@@ -1,12 +1,11 @@
 use crate::render::{
-    FrameGraph, RenderData, RenderMaterial,
+    FrameGraph, RenderData, RenderObjects,
     frame_graph::{
         ArenaBuffer, FrameGraphNode, FrameGraphPipelineBarrier, FrameGraphResourceId,
         FrameGraphResourceState, FrameGraphResourceWriteUsage, FrameGraphResources,
     },
 };
 use alexandria::{
-    SlotMap,
     gpu::{
         VulkanAccessFlag, VulkanAttachmentStoreOp, VulkanCommandBuffer, VulkanImageLayout,
         VulkanImageMemoryBarrier, VulkanPipelineStageFlag, VulkanRenderingAttachmentInfo,
@@ -30,7 +29,7 @@ impl FrameGraph {
         cmd_buffer: &mut VulkanCommandBuffer,
 
         swapchain_size: Vector2u,
-        materials: &SlotMap<RenderMaterial>,
+        render_objects: &RenderObjects,
     ) {
         let mut current_pipeline_barrier_index = 0;
         let mut current_pipeline_barrier = 0;
@@ -97,7 +96,7 @@ impl FrameGraph {
             }
 
             // Execute the node
-            node.execute(data, swapchain_size, cmd_buffer, materials);
+            node.execute(data, swapchain_size, cmd_buffer, render_objects);
 
             // End rendering
             cmd_buffer.cmd_end_rendering();

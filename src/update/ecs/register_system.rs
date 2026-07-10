@@ -9,7 +9,7 @@ impl ECS {
     pub fn register_system(
         &mut self,
         phase: SystemPhase,
-        system: (&[TypeId], Box<dyn Fn(&mut [Archetype], &[usize])>),
+        system: (&[TypeId], Box<dyn Fn(&mut [Archetype], &[usize], &mut ())>),
     ) -> SystemId {
         self.archetypes
             .register_system(phase, System::new(system.0, system.1))
