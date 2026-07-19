@@ -1,15 +1,16 @@
 use crate::{
     Error, GlobalSharedState, Result,
     render::{
-        GpuTransferQueue, Vertex,
+        CreatedRenderObject, GpuTransferQueue, Vertex,
         transfer::{GpuTransferCommand, StagingBuffer},
     },
 };
 use alexandria::gpu::{
-    VulkanBufferCopy, VulkanCommandBufferLevel, VulkanCommandBufferSubmitInfo,
-    VulkanCommandPoolCreateFlag, VulkanDevice, VulkanQueue, VulkanSubmitInfo,
+    VulkanBuffer, VulkanBufferCopy, VulkanCommandBuffer, VulkanCommandBufferLevel,
+    VulkanCommandBufferSubmitInfo, VulkanCommandPoolCreateFlag, VulkanDevice, VulkanFence,
+    VulkanQueue, VulkanSubmitInfo,
 };
-use std::sync::mpsc::Receiver;
+use std::sync::mpsc::{Receiver, Sender};
 
 const INITIAL_STAGING_BUFFER_CAPACITY: usize = 64;
 
@@ -20,6 +21,7 @@ impl GpuTransferQueue {
         device: VulkanDevice,
         mut queue: VulkanQueue,
         staging_memory_type: usize,
+        created_objects: Sender<CreatedRenderObject>,
     ) -> Result<()> {
         // Create the transfer command pool and command buffer
         let mut command_pool = device
@@ -58,8 +60,7 @@ impl GpuTransferQueue {
                 GpuTransferCommand::Mesh {
                     mesh,
                     shared_state,
-                    vertex_buffer,
-                    index_buffer,
+                    render_mesh,
                 } => {
                     let vertex_staging_buffer = vertex_staging_buffer
                         .set(mesh.vertices())
@@ -73,60 +74,69 @@ impl GpuTransferQueue {
                             error
                         })?;
 
-                    command_buffer.begin().map_err(|error| {
+                    copy_buffers(
+                        command_buffer,
+                        &mut queue,
+                        &mut fence,
+                        &[
+                            (
+                                vertex_staging_buffer,
+                                render_mesh.vertex_buffer(),
+                                (mesh.vertices().len() * std::mem::size_of::<Vertex>()) as u64,
+                            ),
+                            (
+                                index_staging_buffer,
+                                render_mesh.index_buffer(),
+                                (mesh.indices().len() * std::mem::size_of::<u32>()) as u64,
+                            ),
+                        ],
+                    )
+                    .map_err(|error| {
                         shared_state.complete().ok();
-                        Error::new_inner(error)
-                    })?;
-                    command_buffer.cmd_copy_buffer(
-                        vertex_staging_buffer,
-                        &vertex_buffer,
-                        &[VulkanBufferCopy::new(
-                            0,
-                            0,
-                            (mesh.vertices().len() * std::mem::size_of::<Vertex>()) as u64,
-                        )],
-                    );
-                    command_buffer.cmd_copy_buffer(
-                        index_staging_buffer,
-                        &index_buffer,
-                        &[VulkanBufferCopy::new(
-                            0,
-                            0,
-                            (mesh.indices().len() * std::mem::size_of::<u32>()) as u64,
-                        )],
-                    );
-                    command_buffer.end().map_err(|error| {
-                        shared_state.complete().ok();
-                        Error::new_inner(error)
+                        error
                     })?;
 
-                    queue
-                        .submit(
-                            &[VulkanSubmitInfo::new(
-                                0,
-                                &[],
-                                &[VulkanCommandBufferSubmitInfo::new(command_buffer, 0)],
-                                &[],
-                            )],
-                            Some(&mut fence),
-                        )
-                        .map_err(|error| {
-                            shared_state.complete().ok();
-                            Error::new_inner(error)
-                        })?;
-
-                    fence.wait(u64::MAX).map_err(|error| {
-                        shared_state.complete().ok();
-                        Error::new_inner(error)
-                    })?;
+                    created_objects
+                        .send(CreatedRenderObject::Mesh(render_mesh))
+                        .ok();
 
                     shared_state.complete()?;
-
-                    todo!("Transfer the buffers to the render job");
                 }
             }
         }
 
         Ok(())
     }
+}
+
+fn copy_buffers(
+    command_buffer: &mut VulkanCommandBuffer,
+    queue: &mut VulkanQueue,
+    fence: &mut VulkanFence,
+    buffers: &[(&VulkanBuffer, &VulkanBuffer, u64)],
+) -> Result<()> {
+    // Recored the copy commands
+    command_buffer.begin().map_err(Error::new_inner)?;
+    for (src, dst, size) in buffers {
+        command_buffer.cmd_copy_buffer(src, dst, &[VulkanBufferCopy::new(0, 0, *size)]);
+    }
+    command_buffer.end().map_err(Error::new_inner)?;
+
+    // Submit the copy commands
+    queue
+        .submit(
+            &[VulkanSubmitInfo::new(
+                0,
+                &[],
+                &[VulkanCommandBufferSubmitInfo::new(command_buffer, 0)],
+                &[],
+            )],
+            Some(fence),
+        )
+        .map_err(Error::new_inner)?;
+
+    // Wait for the copy commands to complete
+    fence.wait(u64::MAX).map_err(Error::new_inner)?;
+
+    Ok(())
 }

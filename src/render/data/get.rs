@@ -1,4 +1,4 @@
-use crate::render::{Material, RenderData, RenderObjectChange};
+use crate::render::{Material, Mesh, RenderData, RenderObjectChange};
 use alexandria::Id;
 use std::vec::Drain;
 
@@ -11,7 +11,7 @@ impl RenderData {
     }
 
     /// Get the list of unlit opaque renderable objects in the render data
-    pub(in crate::render) fn unlit_opaque_renderables(&self) -> &[Id<Material>] {
+    pub(in crate::render) fn unlit_opaque_renderables(&self) -> &[(Id<Material>, Id<Mesh>)] {
         &self.unlit_opaque_renderables
     }
 }

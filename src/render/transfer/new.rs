@@ -1,7 +1,9 @@
+use crate::{
+    Result, ThreadManager,
+    render::{CreatedRenderObject, GpuTransferQueue},
+};
 use alexandria::gpu::{VulkanDevice, VulkanQueue};
-
-use crate::{Result, ThreadManager, render::GpuTransferQueue};
-use std::sync::mpsc::channel;
+use std::sync::mpsc::{Sender, channel};
 
 impl GpuTransferQueue {
     /// Create a new [`GpuTransferQueue`]
@@ -10,6 +12,7 @@ impl GpuTransferQueue {
         device: VulkanDevice,
         device_queue: VulkanQueue,
         staging_memory_type: usize,
+        created_objects: Sender<CreatedRenderObject>,
     ) -> Result<GpuTransferQueue> {
         let (queue, receiver) = channel();
 
@@ -22,6 +25,7 @@ impl GpuTransferQueue {
                     device,
                     device_queue,
                     staging_memory_type,
+                    created_objects,
                 )
             },
             || {},

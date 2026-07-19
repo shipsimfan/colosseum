@@ -2,7 +2,7 @@ use crate::render::Shader;
 use alexandria::gpu::VulkanPipeline;
 use std::sync::Arc;
 
-mod get;
+mod bind;
 mod new;
 
 /// A material being used in rendering

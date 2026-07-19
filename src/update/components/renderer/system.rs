@@ -11,9 +11,8 @@ impl Renderer {
             system_with_extra_data!(|render_data: RenderData, renderer: Renderer| {
                 for renderer in renderer {
                     match renderer.material.kind() {
-                        MaterialKind::UnlitOpaque => {
-                            render_data.add_unlit_opaque_renderable(renderer.material.id())
-                        }
+                        MaterialKind::UnlitOpaque => render_data
+                            .add_unlit_opaque_renderable(renderer.material.id(), renderer.mesh),
                     }
                 }
             });

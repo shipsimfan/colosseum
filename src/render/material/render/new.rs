@@ -1,6 +1,6 @@
 use crate::{
     Error, Result,
-    render::{RenderMaterial, Shader},
+    render::{RenderMaterial, Shader, Vertex},
 };
 use alexandria::{
     gpu::{
@@ -43,7 +43,10 @@ impl RenderMaterial {
         let viewport_state = VulkanPipelineViewportStateCreateInfo::new_dynamic(1, 1);
 
         // Setup the vertex input and input assembly states
-        let vertex_input_state = VulkanPipelineVertexInputStateCreateInfo::new(&[], &[]);
+        let vertex_input_state = VulkanPipelineVertexInputStateCreateInfo::new(
+            &Vertex::ATTRIBUTE_DESCRIPTORS,
+            &Vertex::BINDING_DESCRIPTORS,
+        );
         let input_assembly_state = VulkanPipelineInputAssemblyStateCreateInfo::new(
             VulkanPrimitiveTopology::TriangleList,
             false,

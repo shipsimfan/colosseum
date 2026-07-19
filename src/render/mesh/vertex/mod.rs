@@ -1,5 +1,6 @@
 use alexandria::math::{Color3f, Linear, Vector3f};
 
+mod descriptors;
 mod get;
 mod new;
 mod set;

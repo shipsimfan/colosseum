@@ -1,20 +1,18 @@
 use crate::{
     Error, Result,
     render::{
-        GpuTransferQueue, Mesh, MeshTransfer,
+        GpuTransferQueue, Mesh, MeshTransfer, RenderMesh,
         transfer::{GpuTransferCommand, SharedGpuTransferData},
     },
 };
-use alexandria::gpu::VulkanBuffer;
 use std::sync::Arc;
 
 impl GpuTransferQueue {
     /// Transfer a mesh to the GPU
-    pub fn transfer_mesh(
+    pub(in crate::render) fn transfer_mesh(
         &mut self,
         mesh: &Arc<Mesh>,
-        vertex_buffer: VulkanBuffer,
-        index_buffer: VulkanBuffer,
+        render_mesh: RenderMesh,
     ) -> Result<MeshTransfer> {
         let shared_state = SharedGpuTransferData::new()?;
         let transfer = MeshTransfer::new(shared_state.clone());
@@ -23,8 +21,7 @@ impl GpuTransferQueue {
             .send(GpuTransferCommand::Mesh {
                 mesh: mesh.clone(),
                 shared_state,
-                vertex_buffer,
-                index_buffer,
+                render_mesh,
             })
             .map_err(|_| Error::new("transfer queue closed"))?;
 

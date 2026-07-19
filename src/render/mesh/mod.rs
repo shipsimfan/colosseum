@@ -1,9 +1,12 @@
+mod render;
 mod vertex;
 
 mod get;
 mod new;
 
 pub use vertex::*;
+
+pub(in crate::render) use render::*;
 
 /// A mesh is a collection of vertices and indices that define a 3D object
 pub struct Mesh {

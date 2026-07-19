@@ -75,6 +75,9 @@ struct CubeScene {
     /// The material used to render the cube
     material: colosseum::render::MaterialId,
 
+    /// The mesh used to render the cube
+    mesh: colosseum::Id<colosseum::render::Mesh>,
+
     /// The ID of the renderable cube
     cube: colosseum::Id<colosseum::update::Entity>,
 
@@ -120,7 +123,7 @@ impl colosseum::update::Scene for CubeScene {
             if self.render_state {
                 context.ecs_mut().add_component(
                     self.cube,
-                    colosseum::update::components::Renderer::new(self.material),
+                    colosseum::update::components::Renderer::new(self.material, self.mesh),
                 );
             } else {
                 context
@@ -158,7 +161,10 @@ impl colosseum::update::InitialScene for CubeScene {
 
         let ecs = context.ecs_mut();
         let cube = ecs.create_entity();
-        ecs.add_component(cube, colosseum::update::components::Renderer::new(material));
+        ecs.add_component(
+            cube,
+            colosseum::update::components::Renderer::new(material, mesh),
+        );
 
         Ok(CubeScene {
             color: colosseum::math::ColorHsv::RED,
@@ -166,6 +172,7 @@ impl colosseum::update::InitialScene for CubeScene {
             fps_timer: 0.0,
             logger,
             material,
+            mesh,
             cube,
             render_state: true,
         })

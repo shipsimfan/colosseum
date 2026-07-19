@@ -63,11 +63,13 @@ impl GraphicsDevice {
             .map_err(Error::new_inner)?;
 
         // Create the transfer queue
+        let (created_objects_sender, created_objects) = std::sync::mpsc::channel();
         let transfer_queue = GpuTransferQueue::new(
             thread_manager,
             device.clone(),
             queues.swap_remove(0),
             adapter.staging_buffer_memory_index(),
+            created_objects_sender,
         )?;
 
         Ok((
@@ -81,6 +83,7 @@ impl GraphicsDevice {
                 frame_graph: FrameGraph::new(),
                 render_objects: RenderObjects::new(),
                 device_local_memory_type: adapter.device_local_buffer_memory_index(),
+                created_objects,
             },
             transfer_queue,
         ))

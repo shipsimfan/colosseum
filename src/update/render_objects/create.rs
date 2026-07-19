@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use crate::{
     Error, Result,
     render::{
@@ -84,7 +86,9 @@ impl UpdateRenderObjects {
             vertices,
             indices,
             vertex_buffer,
+            vertex_memory.clone(),
             index_buffer,
+            index_memory.clone(),
             &mut self.transfer_queue,
         )?;
         let id = self.meshes.insert((mesh, vertex_memory, index_memory));
@@ -98,7 +102,7 @@ fn create_buffer(
     size: u64,
     usage: VulkanBufferUsageFlag,
     memory_type: usize,
-) -> Result<(VulkanBuffer, VulkanDeviceMemory)> {
+) -> Result<(VulkanBuffer, Arc<VulkanDeviceMemory>)> {
     let mut buffer = device
         .create_buffer(
             0,
@@ -116,5 +120,5 @@ fn create_buffer(
 
     buffer.bind_memory(&memory, 0).map_err(Error::new_inner)?;
 
-    Ok((buffer, memory))
+    Ok((buffer, Arc::new(memory)))
 }

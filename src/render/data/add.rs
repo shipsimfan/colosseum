@@ -1,4 +1,4 @@
-use crate::render::{Material, RenderData, RenderObjectChange};
+use crate::render::{Material, Mesh, RenderData, RenderObjectChange};
 use alexandria::Id;
 
 impl RenderData {
@@ -8,7 +8,7 @@ impl RenderData {
     }
 
     /// Add a new unlit opaque renderable object to the render data
-    pub fn add_unlit_opaque_renderable(&mut self, material: Id<Material>) {
-        self.unlit_opaque_renderables.push(material);
+    pub fn add_unlit_opaque_renderable(&mut self, material: Id<Material>, mesh: Id<Mesh>) {
+        self.unlit_opaque_renderables.push((material, mesh));
     }
 }

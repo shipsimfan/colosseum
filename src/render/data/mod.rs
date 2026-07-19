@@ -1,4 +1,4 @@
-use crate::render::Material;
+use crate::render::{Material, Mesh};
 use alexandria::Id;
 
 mod render_object_change;
@@ -26,5 +26,5 @@ pub(crate) struct RenderData {
     ///
     /// These renderables are rendered in a single pass, and do not require any lighting
     /// calculations or transparency
-    unlit_opaque_renderables: Vec<Id<Material>>,
+    unlit_opaque_renderables: Vec<(Id<Material>, Id<Mesh>)>,
 }

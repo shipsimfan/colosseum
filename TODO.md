@@ -1,5 +1,5 @@
 # ToDo
- 1. Use meshes in rendering
+ 1. Add coordinated freeing of meshes
  2. Add quad mesh primitive
  3. Implement solid color skybox render node
  4. Add cameras and transforms

@@ -1,8 +1,12 @@
-use crate::{render::MaterialId, update::components::Renderer};
+use crate::{
+    render::{MaterialId, Mesh},
+    update::components::Renderer,
+};
+use alexandria::Id;
 
 impl Renderer {
     /// Create a new [`Renderer`] component
-    pub fn new(material: MaterialId) -> Renderer {
-        Renderer { material }
+    pub fn new(material: MaterialId, mesh: Id<Mesh>) -> Renderer {
+        Renderer { material, mesh }
     }
 }

@@ -27,7 +27,7 @@ pub(crate) struct UpdateRenderObjects {
     device_local_memory_type: usize,
 
     /// The meshes that have been registered
-    meshes: SlotMap<(Arc<Mesh>, VulkanDeviceMemory, VulkanDeviceMemory)>,
+    meshes: SlotMap<(Arc<Mesh>, Arc<VulkanDeviceMemory>, Arc<VulkanDeviceMemory>)>,
 
     /// The unlit shaders that have been registered
     ///

@@ -1,5 +1,4 @@
-use crate::render::{Mesh, transfer::SharedGpuTransferData};
-use alexandria::gpu::VulkanBuffer;
+use crate::render::{Mesh, RenderMesh, transfer::SharedGpuTransferData};
 use std::sync::Arc;
 
 /// Transfer something to the GPU
@@ -12,10 +11,7 @@ pub(in crate::render::transfer) enum GpuTransferCommand {
         /// The shared state for the transfer
         shared_state: Arc<SharedGpuTransferData>,
 
-        /// The buffer to use for the vertex data
-        vertex_buffer: VulkanBuffer,
-
-        /// The buffer to use for the index data
-        index_buffer: VulkanBuffer,
+        /// The allocated GPU buffers
+        render_mesh: RenderMesh,
     },
 }

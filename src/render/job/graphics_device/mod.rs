@@ -1,12 +1,13 @@
 use crate::{
     logging::Logger,
-    render::{FrameGraph, RenderObjects},
+    render::{CreatedRenderObject, FrameGraph, RenderObjects},
 };
 use adapter_info::VulkanAdapterInfo;
 use alexandria::{
     Id,
     gpu::{VulkanCommandBuffer, VulkanCommandPool, VulkanDevice, VulkanFormat, VulkanQueue},
 };
+use std::sync::mpsc::Receiver;
 
 mod adapter_info;
 
@@ -49,4 +50,7 @@ pub(in crate::render::job) struct GraphicsDevice {
 
     /// The device local memory type index to use for rendering
     device_local_memory_type: usize,
+
+    /// The queue for transferred resources ready to be used by the render job
+    created_objects: Receiver<CreatedRenderObject>,
 }

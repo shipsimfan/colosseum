@@ -1,4 +1,5 @@
-use crate::render::MaterialId;
+use crate::render::{MaterialId, Mesh};
+use alexandria::Id;
 
 mod get;
 mod new;
@@ -9,4 +10,7 @@ mod system;
 pub struct Renderer {
     /// The material used to render the object
     material: MaterialId,
+
+    /// The mesh used to render the object
+    mesh: Id<Mesh>,
 }

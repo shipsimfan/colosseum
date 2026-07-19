@@ -1,6 +1,6 @@
 use crate::render::{RenderData, RenderObjects, frame_graph::UnlitForwardRenderNode};
 use alexandria::{
-    gpu::{VulkanCommandBuffer, VulkanPipelineBindPoint, VulkanViewport},
+    gpu::{VulkanCommandBuffer, VulkanViewport},
     math::{Recti, Vector2, Vector2u},
 };
 
@@ -26,10 +26,14 @@ impl UnlitForwardRenderNode {
         cmd_buffer.cmd_set_viewport(0, &[viewport]);
         cmd_buffer.cmd_set_scissor(0, &[scissor]);
 
-        for &material in render_data.unlit_opaque_renderables() {
-            let material = &render_objects.unlit_opaque_material(material);
-            cmd_buffer.cmd_bind_pipeline(VulkanPipelineBindPoint::Graphics, material.pipeline());
-            cmd_buffer.cmd_draw(3, 1, 0, 0);
+        for &(material, mesh) in render_data.unlit_opaque_renderables() {
+            let material = render_objects.unlit_opaque_material(material);
+            let mesh = render_objects.mesh(mesh);
+
+            material.bind(cmd_buffer);
+            mesh.bind(cmd_buffer);
+
+            cmd_buffer.cmd_draw(mesh.index_count(), 1, 0, 0);
         }
     }
 }
