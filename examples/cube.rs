@@ -1,3 +1,5 @@
+#![feature(const_trait_impl)]
+
 colosseum::run!(Cube);
 
 colosseum::render::compile_shader!(
@@ -6,6 +8,23 @@ colosseum::render::compile_shader!(
     vert_main,
     frag_main
 );
+
+const VERTICES: &[colosseum::render::Vertex] = &[
+    colosseum::render::Vertex::new(
+        colosseum::math::Vector3f::new(0.0, -0.5, 0.0),
+        colosseum::math::Color3f::<colosseum::math::Linear>::new(1.0, 0.0, 0.0),
+    ),
+    colosseum::render::Vertex::new(
+        colosseum::math::Vector3f::new(0.5, 0.5, 0.0),
+        colosseum::math::Color3f::<colosseum::math::Linear>::new(0.0, 1.0, 0.0),
+    ),
+    colosseum::render::Vertex::new(
+        colosseum::math::Vector3f::new(-0.5, 0.5, 0.0),
+        colosseum::math::Color3f::<colosseum::math::Linear>::new(0.0, 0.0, 1.0),
+    ),
+];
+
+const INDICES: &[u32] = &[0, 1, 2];
 
 /// The cube example
 struct Cube;
@@ -134,6 +153,8 @@ impl colosseum::update::InitialScene for CubeScene {
             context.create_shader(colosseum::render::ShaderKind::Unlit, &TRIANGLE_SHADER)?;
         let material =
             context.create_material(colosseum::render::MaterialKind::UnlitOpaque, shader)?;
+        let (mesh, transfer) = context.create_mesh(VERTICES.to_vec(), INDICES.to_vec())?;
+        transfer.wait(None)?;
 
         let ecs = context.ecs_mut();
         let cube = ecs.create_entity();

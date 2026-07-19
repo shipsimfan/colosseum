@@ -13,7 +13,7 @@ pub(in crate::threads) struct Thread {
     result: SingleValueReceiver<Result<()>>,
 
     /// The function to call to kill the thread
-    on_kill: Box<dyn FnOnce()>,
+    on_kill: Box<dyn FnOnce() + Send>,
 
     /// The name of the thread
     name: String,

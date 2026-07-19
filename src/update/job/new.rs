@@ -2,7 +2,7 @@ use crate::{
     Result, Window,
     file_io::FileIo,
     logging::Logger,
-    render::RenderData,
+    render::{GpuTransferQueue, RenderData},
     update::{ECS, InitialScene, Inputs, Scene, UpdateContext, UpdateJob, UpdateRenderObjects},
 };
 use alexandria::{
@@ -24,6 +24,8 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         render_data: &mut RenderData,
         device: &VulkanDevice,
         swapchain_format: VulkanFormat,
+        transfer_queue: GpuTransferQueue,
+        device_local_memory_type: usize,
     ) -> Result<Option<UpdateJob<'a, Game>>> {
         // Create the initial set of inputs for the game
         let inputs = Inputs::new();
@@ -32,7 +34,12 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         let mut ecs = ECS::new(logger);
 
         // Create the render objects
-        let mut render_objects = UpdateRenderObjects::new(device, swapchain_format)?;
+        let mut render_objects = UpdateRenderObjects::new(
+            device,
+            swapchain_format,
+            transfer_queue,
+            device_local_memory_type,
+        )?;
 
         // Create the update context that will be passed to the initial scene
         let mut update_context = UpdateContext::new(

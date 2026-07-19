@@ -1,4 +1,4 @@
-use crate::{Error, Result, update::UpdateRenderObjects};
+use crate::{Error, Result, render::GpuTransferQueue, update::UpdateRenderObjects};
 use alexandria::{
     SlotMap,
     gpu::{VulkanDevice, VulkanFormat},
@@ -9,6 +9,8 @@ impl UpdateRenderObjects {
     pub(in crate::update) fn new(
         device: &VulkanDevice,
         swapchain_format: VulkanFormat,
+        transfer_queue: GpuTransferQueue,
+        device_local_memory_type: usize,
     ) -> Result<UpdateRenderObjects> {
         let pipeline_layout = device
             .create_pipeline_layout(0, None, &[])
@@ -18,8 +20,11 @@ impl UpdateRenderObjects {
             device: device.clone(),
             swapchain_format,
             pipeline_layout,
+            meshes: SlotMap::new(),
             unlit_shaders: SlotMap::new(),
             unlit_opaque_materials: SlotMap::new(),
+            transfer_queue,
+            device_local_memory_type,
         })
     }
 }

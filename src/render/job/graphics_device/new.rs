@@ -1,8 +1,8 @@
 use crate::{
-    Error, Result, info,
+    Error, Result, ThreadManager, info,
     logging::Logger,
     render::{
-        FrameGraph, RenderObjects,
+        FrameGraph, GpuTransferQueue, RenderObjects,
         job::{GraphicsDevice, graphics_device::VulkanAdapterInfo},
     },
     warning,
@@ -20,7 +20,8 @@ impl GraphicsDevice {
         instance: &VulkanInstance,
         surface: &VulkanSurface,
         logger: &Logger,
-    ) -> Result<GraphicsDevice> {
+        thread_manager: &ThreadManager,
+    ) -> Result<(GraphicsDevice, GpuTransferQueue)> {
         let logger = logger.logger("vulkan");
 
         // Select the adapter
@@ -32,6 +33,10 @@ impl GraphicsDevice {
             .extension(VulkanDeviceExtension::Swapchain)
             .queue(VulkanQueueCreateInfo::new(
                 adapter.graphics_queue_family_index(),
+                &[1.0],
+            ))
+            .queue(VulkanQueueCreateInfo::new(
+                adapter.transfer_queue_family_index(),
                 &[1.0],
             ))
             .feature(&mut VulkanDeviceVulkan11Features::default().enable_shader_draw_parameters())
@@ -57,16 +62,28 @@ impl GraphicsDevice {
             )
             .map_err(Error::new_inner)?;
 
-        Ok(GraphicsDevice {
-            logger: logger.clone(),
-            device,
-            queue,
-            command_pool,
-            command_buffers: Vec::new(),
-            swapchain_format: adapter.swapchain_format(),
-            frame_graph: FrameGraph::new(),
-            render_objects: RenderObjects::new(),
-        })
+        // Create the transfer queue
+        let transfer_queue = GpuTransferQueue::new(
+            thread_manager,
+            device.clone(),
+            queues.swap_remove(0),
+            adapter.staging_buffer_memory_index(),
+        )?;
+
+        Ok((
+            GraphicsDevice {
+                logger: logger.clone(),
+                device,
+                queue,
+                command_pool,
+                command_buffers: Vec::new(),
+                swapchain_format: adapter.swapchain_format(),
+                frame_graph: FrameGraph::new(),
+                render_objects: RenderObjects::new(),
+                device_local_memory_type: adapter.device_local_buffer_memory_index(),
+            },
+            transfer_queue,
+        ))
     }
 }
 
@@ -78,7 +95,7 @@ fn select_adapter<'instance>(
     logger: &Logger,
 ) -> Result<VulkanAdapterInfo<'instance>> {
     // Get compatible adapters
-    let mut adapters = GraphicsDevice::get_adapters(instance, surface, Some(&logger))?;
+    let mut adapters = GraphicsDevice::get_adapters(instance, surface, &logger)?;
     if adapters.len() == 0 {
         return Err(Error::new("no compatible graphics adapters found"));
     }
@@ -128,7 +145,7 @@ fn select_adapter<'instance>(
         logger,
         "Selected graphics adapter \"{}\" ({}, {})",
         adapter.name(),
-        adapter.vram(),
+        adapter.device_local_vram(),
         adapter.uuid()
     );
     Ok(adapter)

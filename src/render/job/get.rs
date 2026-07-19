@@ -17,4 +17,12 @@ impl<'surface> RenderJob<'surface> {
             RenderJob::RecreateSwapchain { device, .. } => device.swapchain_format(),
         }
     }
+
+    /// Get the device local memory type index to use for rendering
+    pub(crate) fn device_local_memory_type(&self) -> usize {
+        match self {
+            RenderJob::Rendering { device, .. } => device.device_local_memory_type(),
+            RenderJob::RecreateSwapchain { device, .. } => device.device_local_memory_type(),
+        }
+    }
 }

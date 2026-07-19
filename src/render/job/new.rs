@@ -1,8 +1,8 @@
 use crate::{
-    Result,
+    Result, ThreadManager,
     logging::Logger,
     render::{
-        RenderJob,
+        GpuTransferQueue, RenderJob,
         job::{GraphicsDevice, Swapchain},
     },
 };
@@ -19,11 +19,13 @@ impl<'surface> RenderJob<'surface> {
         surface: &'surface mut VulkanSurface,
         size: Vector2u,
         logger: &Logger,
-    ) -> Result<RenderJob<'surface>> {
-        let mut device = GraphicsDevice::new(adapter, instance, surface, logger)?;
+        thread_manager: &ThreadManager,
+    ) -> Result<(RenderJob<'surface>, GpuTransferQueue)> {
+        let (mut device, transfer_queue) =
+            GraphicsDevice::new(adapter, instance, surface, logger, thread_manager)?;
 
         let swapchain = Swapchain::new(surface, size, &mut device)?;
 
-        Ok(RenderJob::Rendering { device, swapchain })
+        Ok((RenderJob::Rendering { device, swapchain }, transfer_queue))
     }
 }

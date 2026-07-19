@@ -8,6 +8,8 @@
 #![allow(incomplete_features)]
 #![feature(generic_const_exprs)]
 #![feature(generic_const_items)]
+#![feature(const_trait_impl)]
+#![feature(const_convert)]
 
 pub mod file_io;
 pub mod logging;
@@ -26,4 +28,4 @@ pub use run::*;
 
 pub(crate) use threads::*;
 
-pub use alexandria::{Id, input::KeyCode as Key, math};
+pub use alexandria::{Id, MemorySize, Uuid, input::KeyCode as Key, math};

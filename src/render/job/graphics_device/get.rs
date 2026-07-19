@@ -16,4 +16,9 @@ impl GraphicsDevice {
     pub fn command_buffer(&mut self, index: usize) -> &mut VulkanCommandBuffer {
         &mut self.command_pool[self.command_buffers[index]]
     }
+
+    /// Get the device local memory type index to use for rendering
+    pub fn device_local_memory_type(&self) -> usize {
+        self.device_local_memory_type
+    }
 }

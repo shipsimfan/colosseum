@@ -1,7 +1,7 @@
-use crate::render::{Material, Shader};
+use crate::render::{GpuTransferQueue, Material, Mesh, Shader};
 use alexandria::{
     SlotMap,
-    gpu::{VulkanDevice, VulkanFormat, VulkanPipelineLayout},
+    gpu::{VulkanDevice, VulkanDeviceMemory, VulkanFormat, VulkanPipelineLayout},
 };
 use std::sync::Arc;
 
@@ -19,6 +19,15 @@ pub(crate) struct UpdateRenderObjects {
 
     /// The pipeline layout used by materials
     pipeline_layout: VulkanPipelineLayout,
+
+    /// The queue for transfering data to the GPU
+    transfer_queue: GpuTransferQueue,
+
+    /// The memory type index for device local buffers
+    device_local_memory_type: usize,
+
+    /// The meshes that have been registered
+    meshes: SlotMap<(Arc<Mesh>, VulkanDeviceMemory, VulkanDeviceMemory)>,
 
     /// The unlit shaders that have been registered
     ///

@@ -1,8 +1,11 @@
 use crate::{
     Result,
-    render::{MaterialId, MaterialKind, ShaderCode, ShaderId, ShaderKind},
+    render::{
+        MaterialId, MaterialKind, Mesh, MeshTransfer, ShaderCode, ShaderId, ShaderKind, Vertex,
+    },
     update::UpdateContext,
 };
+use alexandria::Id;
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Create a new shader
@@ -18,5 +21,16 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     pub fn create_material(&mut self, kind: MaterialKind, shader: ShaderId) -> Result<MaterialId> {
         self.render_objects
             .create_material(kind, shader, self.render_data)
+    }
+
+    /// Create a new mesh
+    ///
+    /// The mesh cannot be used in rendering until the [`MeshTransfer`] has completed
+    pub fn create_mesh(
+        &mut self,
+        vertices: Vec<Vertex>,
+        indices: Vec<u32>,
+    ) -> Result<(Id<Mesh>, MeshTransfer)> {
+        self.render_objects.create_mesh(vertices, indices)
     }
 }

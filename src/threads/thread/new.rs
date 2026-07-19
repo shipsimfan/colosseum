@@ -8,7 +8,7 @@ impl Thread {
     /// Create a new thread with the provided name
     pub fn new<
         F1: 'static + FnOnce(&GlobalSharedState) -> Result<()> + Send,
-        F2: 'static + FnOnce(),
+        F2: 'static + FnOnce() + Send,
     >(
         name: String,
         global_shared_state: Arc<GlobalSharedState>,

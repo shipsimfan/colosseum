@@ -46,4 +46,7 @@ pub(in crate::render::job) struct GraphicsDevice {
 
     /// The render objects that have been created by the update job
     render_objects: RenderObjects,
+
+    /// The device local memory type index to use for rendering
+    device_local_memory_type: usize,
 }

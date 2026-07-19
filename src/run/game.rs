@@ -1,5 +1,5 @@
 use crate::{
-    GlobalSharedState, Result, Window,
+    GlobalSharedState, Result, ThreadManager, Window,
     file_io::FileIo,
     info,
     logging::{LogController, Logger},
@@ -24,15 +24,17 @@ pub(in crate::run) fn run<Game: crate::Game>(
     logger: Logger,
     log_controller: Arc<LogController>,
     file_io: FileIo,
+    thread_manager: Arc<ThreadManager>,
 ) -> Result<()> {
     // Initialize the render and update jobs
     let mut window_size = window.size();
-    let mut render_job = RenderJob::new(
+    let (mut render_job, transfer_queue) = RenderJob::new(
         settings.display_settings().adapter().as_deref(),
         &instance,
         &mut surface,
         window_size,
         &logger,
+        &thread_manager,
     )?;
     let mut render_data = RenderData::new();
 
@@ -46,6 +48,8 @@ pub(in crate::run) fn run<Game: crate::Game>(
         &mut render_data,
         render_job.device(),
         render_job.swapchain_format(),
+        transfer_queue,
+        render_job.device_local_memory_type(),
     )? {
         Some(job) => job,
         None => {

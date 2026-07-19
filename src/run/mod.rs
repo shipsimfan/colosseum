@@ -96,6 +96,7 @@ fn do_run<Game: crate::Game>(
     // Start the game thread
     let window = wsi.window(inputs);
     let shared_window = wsi.shared_window().clone();
+    let child_thread_manager = thread_manager.clone();
     thread_manager.spawn(
         "Game".to_string(),
         move |shared_state| {
@@ -109,6 +110,7 @@ fn do_run<Game: crate::Game>(
                 init_logger,
                 log_controller,
                 file_io,
+                child_thread_manager,
             )
         },
         move || {

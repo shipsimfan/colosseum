@@ -4,7 +4,7 @@ impl ThreadManager {
     /// Spawn a new thread
     pub fn spawn<
         F1: 'static + FnOnce(&GlobalSharedState) -> Result<()> + Send,
-        F2: 'static + FnOnce(),
+        F2: 'static + FnOnce() + Send,
     >(
         &self,
         name: String,

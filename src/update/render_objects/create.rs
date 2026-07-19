@@ -1,9 +1,16 @@
 use crate::{
-    Result,
+    Error, Result,
     render::{
-        Material, MaterialId, MaterialKind, RenderData, Shader, ShaderCode, ShaderId, ShaderKind,
+        Material, MaterialId, MaterialKind, Mesh, MeshTransfer, RenderData, Shader, ShaderCode,
+        ShaderId, ShaderKind, Vertex,
     },
     update::UpdateRenderObjects,
+};
+use alexandria::{
+    Id,
+    gpu::{
+        VulkanBuffer, VulkanBufferUsageFlag, VulkanDevice, VulkanDeviceMemory, VulkanSharingMode,
+    },
 };
 
 impl UpdateRenderObjects {
@@ -51,4 +58,63 @@ impl UpdateRenderObjects {
         };
         Ok(MaterialId::new(kind, id))
     }
+
+    /// Create a new mesh
+    ///
+    /// The mesh cannot be used in rendering until the [`MeshTransfer`] has completed
+    pub fn create_mesh(
+        &mut self,
+        vertices: Vec<Vertex>,
+        indices: Vec<u32>,
+    ) -> Result<(Id<Mesh>, MeshTransfer)> {
+        let (vertex_buffer, vertex_memory) = create_buffer(
+            &self.device,
+            (vertices.len() * std::mem::size_of::<Vertex>()) as u64,
+            VulkanBufferUsageFlag::VertexBuffer,
+            self.device_local_memory_type,
+        )?;
+        let (index_buffer, index_memory) = create_buffer(
+            &self.device,
+            (indices.len() * std::mem::size_of::<u32>()) as u64,
+            VulkanBufferUsageFlag::IndexBuffer,
+            self.device_local_memory_type,
+        )?;
+
+        let (mesh, transfer) = Mesh::new(
+            vertices,
+            indices,
+            vertex_buffer,
+            index_buffer,
+            &mut self.transfer_queue,
+        )?;
+        let id = self.meshes.insert((mesh, vertex_memory, index_memory));
+        Ok((unsafe { id.cast() }, transfer))
+    }
+}
+
+/// Create a new buffer and allocate memory for it
+fn create_buffer(
+    device: &VulkanDevice,
+    size: u64,
+    usage: VulkanBufferUsageFlag,
+    memory_type: usize,
+) -> Result<(VulkanBuffer, VulkanDeviceMemory)> {
+    let mut buffer = device
+        .create_buffer(
+            0,
+            size,
+            usage | VulkanBufferUsageFlag::TransferDst,
+            VulkanSharingMode::Exclusive,
+            &[],
+        )
+        .map_err(Error::new_inner)?;
+
+    let memory_requirements = buffer.get_memory_requirements();
+    let memory = device
+        .allocate_memory(memory_requirements.size(), memory_type)
+        .map_err(Error::new_inner)?;
+
+    buffer.bind_memory(&memory, 0).map_err(Error::new_inner)?;
+
+    Ok((buffer, memory))
 }

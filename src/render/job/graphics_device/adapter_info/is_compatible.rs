@@ -4,9 +4,12 @@ use crate::{
     render::job::{Swapchain, graphics_device::VulkanAdapterInfo},
     warning,
 };
-use alexandria::gpu::{
-    VulkanAdapter, VulkanDeviceExtendedDynamicStateFeatures, VulkanDeviceFeatures,
-    VulkanDeviceVulkan11Features, VulkanDeviceVulkan13Features, VulkanFormat, VulkanSurface,
+use alexandria::{
+    MemorySize,
+    gpu::{
+        VulkanAdapter, VulkanDeviceExtendedDynamicStateFeatures, VulkanDeviceFeatures,
+        VulkanDeviceVulkan11Features, VulkanDeviceVulkan13Features, VulkanFormat, VulkanSurface,
+    },
 };
 
 impl<'instance> VulkanAdapterInfo<'instance> {
@@ -14,103 +17,151 @@ impl<'instance> VulkanAdapterInfo<'instance> {
     pub fn is_compatible_adapter(
         adapter: VulkanAdapter<'instance>,
         surface: &VulkanSurface,
-        logger: Option<&Logger>,
+        logger: &Logger,
     ) -> Result<Option<VulkanAdapterInfo<'instance>>> {
-        if let Some(logger) = logger {
-            info!(
-                logger,
-                "Found adapter: {} ({})",
-                adapter.name(),
-                adapter.uuid()
-            );
-        }
+        let properties = adapter.get_properties();
+        let name = properties.device_name().into_owned();
+
+        info!(
+            logger,
+            "Found adapter: {} ({})",
+            name,
+            properties.pipeline_cache_uuid()
+        );
 
         // Determine if the adapter has the supported features
-        let mut vulkan_11_features = VulkanDeviceVulkan11Features::default();
-        let mut vulkan_13_features = VulkanDeviceVulkan13Features::default();
-        let mut extended_dynamic_state = VulkanDeviceExtendedDynamicStateFeatures::default();
-        adapter.get_features([
-            &mut VulkanDeviceFeatures::default() as _,
-            &mut vulkan_11_features as _,
-            &mut vulkan_13_features as _,
-            &mut extended_dynamic_state as _,
-        ]);
-
-        if !vulkan_11_features.shader_draw_parameters() {
-            if let Some(logger) = logger {
-                warning!(
-                    logger,
-                    "Adapter \"{}\" rejected because it does not support required Vulkan 1.1 features",
-                    adapter.name()
-                );
-            }
-            return Ok(None);
-        }
-
-        if !vulkan_13_features.synchronization2() || !vulkan_13_features.dynamic_rendering() {
-            if let Some(logger) = logger {
-                warning!(
-                    logger,
-                    "Adapter \"{}\" rejected because it does not support required Vulkan 1.3 features",
-                    adapter.name()
-                );
-            }
-            return Ok(None);
-        }
-
-        if !extended_dynamic_state.extended_dynamic_state() {
-            if let Some(logger) = logger {
-                warning!(
-                    logger,
-                    "Adapter \"{}\" rejected because it does not support required Vulkan extended dynamic state features",
-                    adapter.name()
-                );
-            }
+        if !has_required_features(&adapter, &name, logger) {
             return Ok(None);
         }
 
         // Determine if the adapter supports a compatible swapchain format
-        let swapchain_format = adapter
-            .swapchain_formats(surface)
-            .map_err(Error::new_inner)?
-            .into_iter()
-            .filter_map(|format| {
-                match format.color_space {
-                    Swapchain::COLOR_SPACE => (),
-                    _ => return None,
-                }
-
-                match format.format {
-                    VulkanFormat::B8G8R8A8UNorm | VulkanFormat::R8G8B8A8UNorm => {
-                        Some(format.format)
-                    }
-                    _ => None,
-                }
-            })
-            .next();
-
-        let swapchain_format = match swapchain_format {
-            Some(swapchain_format) => swapchain_format,
-            None => {
-                if let Some(logger) = logger {
-                    warning!(
-                        logger,
-                        "Adapter \"{}\" rejected because it does not support a compatible swapchain format",
-                        adapter.name()
-                    );
-                }
-                return Ok(None);
-            }
+        let swapchain_format = match find_swapchain_format(&adapter, surface, &name, logger)? {
+            Some(format) => format,
+            None => return Ok(None),
         };
 
-        // Find the best graphics queue family
-        let mut graphics_queue_family_index = None;
-        for (index, queue_family) in adapter.queue_families().iter().enumerate() {
-            // Check if the queue family supports graphics operations
-            if !queue_family.graphics() {
-                continue;
+        // Find the graphics and transfer queue families
+        let (graphics_queue_family_index, transfer_queue_family_index) =
+            match find_queue_family_indices(&adapter, surface, &properties.device_name(), logger)? {
+                Some(indices) => indices,
+                None => return Ok(None),
+            };
+
+        // Find the amount of device-local VRAM available and memory indices for staging and device-local buffers
+        let (device_local_vram, staging_buffer_memory_index, device_local_buffer_memory_index) =
+            match find_memory(&adapter, &name, logger)? {
+                Some(memory) => memory,
+                None => return Ok(None),
+            };
+
+        Ok(Some(VulkanAdapterInfo {
+            adapter,
+            name,
+            uuid: properties.pipeline_cache_uuid(),
+            r#type: properties.device_type(),
+            swapchain_format,
+            graphics_queue_family_index,
+            transfer_queue_family_index,
+            device_local_vram,
+            staging_buffer_memory_index,
+            device_local_buffer_memory_index,
+        }))
+    }
+}
+
+/// Check if the given adapter has the required features
+fn has_required_features(adapter: &VulkanAdapter, device_name: &str, logger: &Logger) -> bool {
+    let mut vulkan_11_features = VulkanDeviceVulkan11Features::default();
+    let mut vulkan_13_features = VulkanDeviceVulkan13Features::default();
+    let mut extended_dynamic_state = VulkanDeviceExtendedDynamicStateFeatures::default();
+    adapter.get_features([
+        &mut VulkanDeviceFeatures::default() as _,
+        &mut vulkan_11_features as _,
+        &mut vulkan_13_features as _,
+        &mut extended_dynamic_state as _,
+    ]);
+
+    if !vulkan_11_features.shader_draw_parameters() {
+        warning!(
+            logger,
+            "Adapter \"{}\" rejected because it does not support required Vulkan 1.1 features",
+            device_name,
+        );
+        return false;
+    }
+
+    if !vulkan_13_features.synchronization2() || !vulkan_13_features.dynamic_rendering() {
+        warning!(
+            logger,
+            "Adapter \"{}\" rejected because it does not support required Vulkan 1.3 features",
+            device_name,
+        );
+        return false;
+    }
+
+    if !extended_dynamic_state.extended_dynamic_state() {
+        warning!(
+            logger,
+            "Adapter \"{}\" rejected because it does not support required Vulkan extended dynamic state features",
+            device_name
+        );
+        return false;
+    }
+
+    true
+}
+
+/// Determine if the given adapter is compatible with the surface and suitable for rendering
+fn find_swapchain_format(
+    adapter: &VulkanAdapter,
+    surface: &VulkanSurface,
+    device_name: &str,
+    logger: &Logger,
+) -> Result<Option<VulkanFormat>> {
+    let swapchain_format = adapter
+        .swapchain_formats(surface)
+        .map_err(Error::new_inner)?
+        .into_iter()
+        .filter_map(|format| {
+            match format.color_space {
+                Swapchain::COLOR_SPACE => (),
+                _ => return None,
             }
 
+            match format.format {
+                VulkanFormat::B8G8R8A8UNorm | VulkanFormat::R8G8B8A8UNorm => Some(format.format),
+                _ => None,
+            }
+        })
+        .next();
+
+    if swapchain_format.is_none() {
+        warning!(
+            logger,
+            "Adapter \"{}\" rejected because it does not support a compatible swapchain format",
+            device_name
+        );
+    }
+
+    Ok(swapchain_format)
+}
+
+/// Find the graphics and transfer queue family indices
+fn find_queue_family_indices(
+    adapter: &VulkanAdapter,
+    surface: &VulkanSurface,
+    device_name: &str,
+    logger: &Logger,
+) -> Result<Option<(u32, u32)>> {
+    let mut graphics_queue_family_index = None;
+    let mut transfer_queue_family_index = None;
+    for (index, queue_family) in adapter
+        .get_queue_family_properties()
+        .into_iter()
+        .enumerate()
+    {
+        // Check if the queue family supports graphics operations
+        if graphics_queue_family_index.is_none() && queue_family.graphics() {
             // Determine if the queue family supports the surface
             let index = index as u32;
             if !adapter
@@ -121,25 +172,91 @@ impl<'instance> VulkanAdapterInfo<'instance> {
             }
 
             graphics_queue_family_index = Some(index);
-            break;
+        } else if transfer_queue_family_index.is_none()
+            && queue_family.transfer()
+            && !(queue_family.graphics() || queue_family.compute())
+        {
+            transfer_queue_family_index = Some(index as u32);
         }
 
-        Ok(match graphics_queue_family_index {
-            Some(graphics_queue_family_index) => Some(VulkanAdapterInfo {
-                adapter,
-                swapchain_format,
-                graphics_queue_family_index,
-            }),
-            None => {
-                if let Some(logger) = logger {
-                    warning!(
-                        logger,
-                        "Adapter \"{}\" rejected because it does not have a compatible graphics queue family",
-                        adapter.name()
-                    );
-                }
-                None
-            }
-        })
+        if graphics_queue_family_index.is_some() && transfer_queue_family_index.is_some() {
+            break;
+        }
     }
+
+    let graphics_queue_family_index = match graphics_queue_family_index {
+        Some(graphics_queue_family_index) => graphics_queue_family_index,
+        None => {
+            warning!(
+                logger,
+                "Adapter \"{}\" rejected because it does not have a compatible graphics queue family",
+                device_name,
+            );
+            return Ok(None);
+        }
+    };
+    let transfer_queue_family_index = match transfer_queue_family_index {
+        Some(transfer_queue_family_index) => transfer_queue_family_index,
+        None => {
+            warning!(
+                logger,
+                "Adapter \"{}\" rejected because it does not have a compatible transfer queue family",
+                device_name,
+            );
+            return Ok(None);
+        }
+    };
+
+    Ok(Some((
+        graphics_queue_family_index,
+        transfer_queue_family_index,
+    )))
+}
+
+/// Find the amount of device-local VRAM available and memory indices for staging and device-local buffers
+fn find_memory(
+    adapter: &VulkanAdapter,
+    device_name: &str,
+    logger: &Logger,
+) -> Result<Option<(MemorySize, usize, usize)>> {
+    let mut device_local = None;
+    let mut staging = None;
+
+    let memory_properties = adapter.get_memory_properties();
+    for (index, memory_type) in memory_properties.memory_types().into_iter().enumerate() {
+        if memory_type.host_visible() && memory_type.host_coherent() {
+            staging = Some(index);
+        } else if memory_type.device_local() {
+            device_local = Some((
+                memory_properties.memory_heaps()[memory_type.heap_index()].size(),
+                index,
+            ));
+        }
+    }
+
+    let (device_local_size, device_local_index) = match device_local {
+        Some(device_local) => device_local,
+        None => {
+            warning!(
+                logger,
+                "Adapter \"{}\" rejected because it does not have a device-local memory type",
+                device_name,
+            );
+            return Ok(None);
+        }
+    };
+
+    let staging_index = match staging {
+        Some(staging) => staging,
+        None => {
+            warning!(
+                logger,
+                "Adapter \"{}\" rejected because it does not have a host-visible memory type for staging buffers",
+                device_name,
+            );
+            return Ok(None);
+        }
+    };
+
+    Ok(Some((device_local_size, staging_index, device_local_index)))
 }

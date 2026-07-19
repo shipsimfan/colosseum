@@ -10,7 +10,7 @@ impl GraphicsDevice {
     pub(in crate::render::job::graphics_device) fn get_adapters<'instance>(
         instance: &'instance VulkanInstance,
         surface: &VulkanSurface,
-        logger: Option<&Logger>,
+        logger: &Logger,
     ) -> Result<Vec<VulkanAdapterInfo<'instance>>> {
         let adapters = instance.enumerate_adapters().map_err(Error::new_inner)?;
 
