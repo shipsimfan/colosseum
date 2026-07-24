@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use crate::{
     Error, Result,
     render::{
@@ -10,9 +8,7 @@ use crate::{
 };
 use alexandria::{
     Id,
-    gpu::{
-        VulkanBuffer, VulkanBufferUsageFlag, VulkanDevice, VulkanDeviceMemory, VulkanSharingMode,
-    },
+    gpu::{VulkanBufferUsageFlag, VulkanSharingMode},
 };
 
 impl UpdateRenderObjects {
@@ -69,56 +65,52 @@ impl UpdateRenderObjects {
         vertices: Vec<Vertex>,
         indices: Vec<u32>,
     ) -> Result<(Id<Mesh>, MeshTransfer)> {
-        let (vertex_buffer, vertex_memory) = create_buffer(
-            &self.device,
-            (vertices.len() * std::mem::size_of::<Vertex>()) as u64,
-            VulkanBufferUsageFlag::VertexBuffer,
-            self.device_local_memory_type,
-        )?;
-        let (index_buffer, index_memory) = create_buffer(
-            &self.device,
-            (indices.len() * std::mem::size_of::<u32>()) as u64,
-            VulkanBufferUsageFlag::IndexBuffer,
-            self.device_local_memory_type,
-        )?;
+        // Create the vertex and index buffers
+        let mut vertex_buffer = self
+            .device
+            .create_buffer(
+                0,
+                vertices.len() as u64 * std::mem::size_of::<Vertex>() as u64,
+                VulkanBufferUsageFlag::VertexBuffer | VulkanBufferUsageFlag::TransferDst,
+                VulkanSharingMode::Exclusive,
+                &[],
+            )
+            .map_err(Error::new_inner)?;
+        let mut index_buffer = self
+            .device
+            .create_buffer(
+                0,
+                indices.len() as u64 * std::mem::size_of::<u32>() as u64,
+                VulkanBufferUsageFlag::IndexBuffer | VulkanBufferUsageFlag::TransferDst,
+                VulkanSharingMode::Exclusive,
+                &[],
+            )
+            .map_err(Error::new_inner)?;
 
+        // Allocate memory for the vertex and index buffers
+        let vertex_memory_requirements = vertex_buffer.get_memory_requirements();
+        let index_memory_requirements = index_buffer.get_memory_requirements();
+        let memory_requirements = vertex_memory_requirements.extend(&index_memory_requirements);
+        let index_buffer_offset = vertex_memory_requirements
+            .size()
+            .next_multiple_of(index_memory_requirements.alignment())
+            as u32;
+
+        let memory = self.mesh_allocator.allocate(&memory_requirements)?;
+        memory.bind_buffer(&mut vertex_buffer, 0)?;
+        memory.bind_buffer(&mut index_buffer, index_buffer_offset)?;
+
+        // Create the mesh
         let (mesh, transfer) = Mesh::new(
             vertices,
             indices,
             vertex_buffer,
-            vertex_memory.clone(),
             index_buffer,
-            index_memory.clone(),
+            memory.device_memory().clone(),
+            index_buffer_offset,
             &mut self.transfer_queue,
         )?;
-        let id = self.meshes.insert((mesh, vertex_memory, index_memory));
+        let id = self.meshes.insert((mesh, memory));
         Ok((unsafe { id.cast() }, transfer))
     }
-}
-
-/// Create a new buffer and allocate memory for it
-fn create_buffer(
-    device: &VulkanDevice,
-    size: u64,
-    usage: VulkanBufferUsageFlag,
-    memory_type: usize,
-) -> Result<(VulkanBuffer, Arc<VulkanDeviceMemory>)> {
-    let mut buffer = device
-        .create_buffer(
-            0,
-            size,
-            usage | VulkanBufferUsageFlag::TransferDst,
-            VulkanSharingMode::Exclusive,
-            &[],
-        )
-        .map_err(Error::new_inner)?;
-
-    let memory_requirements = buffer.get_memory_requirements();
-    let memory = device
-        .allocate_memory(memory_requirements.size(), memory_type)
-        .map_err(Error::new_inner)?;
-
-    buffer.bind_memory(&memory, 0).map_err(Error::new_inner)?;
-
-    Ok((buffer, Arc::new(memory)))
 }

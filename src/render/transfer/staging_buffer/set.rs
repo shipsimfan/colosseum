@@ -1,7 +1,7 @@
 use crate::{Result, render::transfer::StagingBuffer};
 use alexandria::gpu::VulkanBuffer;
 
-impl<T> StagingBuffer<T> {
+impl<'a, T> StagingBuffer<'a, T> {
     /// Set the contents of the staging buffer to the specified data
     pub fn set(&mut self, data: &[T]) -> Result<&VulkanBuffer> {
         if data.len() > self.capacity {

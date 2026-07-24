@@ -13,5 +13,8 @@ pub(in crate::render::transfer) enum GpuTransferCommand {
 
         /// The allocated GPU buffers
         render_mesh: RenderMesh,
+
+        /// The offset of the index buffer within the destination buffer
+        index_buffer_offset: u32,
     },
 }

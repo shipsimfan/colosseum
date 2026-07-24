@@ -68,7 +68,7 @@ impl GraphicsDevice {
             thread_manager,
             device.clone(),
             queues.swap_remove(0),
-            adapter.staging_buffer_memory_index(),
+            adapter.memory_properties().clone(),
             created_objects_sender,
         )?;
 
@@ -82,7 +82,7 @@ impl GraphicsDevice {
                 swapchain_format: adapter.swapchain_format(),
                 frame_graph: FrameGraph::new(),
                 render_objects: RenderObjects::new(),
-                device_local_memory_type: adapter.device_local_buffer_memory_index(),
+                memory_properties: adapter.memory_properties().clone(),
                 created_objects,
             },
             transfer_queue,

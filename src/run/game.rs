@@ -49,7 +49,7 @@ pub(in crate::run) fn run<Game: crate::Game>(
         render_job.device(),
         render_job.swapchain_format(),
         transfer_queue,
-        render_job.device_local_memory_type(),
+        render_job.memory_properties().clone(),
     )? {
         Some(job) => job,
         None => {

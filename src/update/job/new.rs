@@ -6,10 +6,10 @@ use crate::{
     update::{ECS, InitialScene, Inputs, Scene, UpdateContext, UpdateJob, UpdateRenderObjects},
 };
 use alexandria::{
-    gpu::{VulkanDevice, VulkanFormat},
+    gpu::{VulkanAdapterMemoryProperties, VulkanDevice, VulkanFormat},
     math::Vector2u,
 };
-use std::{marker::PhantomData, time::Duration};
+use std::{marker::PhantomData, sync::Arc, time::Duration};
 
 impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
     /// Create a new update job
@@ -25,7 +25,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         device: &VulkanDevice,
         swapchain_format: VulkanFormat,
         transfer_queue: GpuTransferQueue,
-        device_local_memory_type: usize,
+        memory_properties: Arc<VulkanAdapterMemoryProperties>,
     ) -> Result<Option<UpdateJob<'a, Game>>> {
         // Create the initial set of inputs for the game
         let inputs = Inputs::new();
@@ -34,12 +34,8 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         let mut ecs = ECS::new(logger);
 
         // Create the render objects
-        let mut render_objects = UpdateRenderObjects::new(
-            device,
-            swapchain_format,
-            transfer_queue,
-            device_local_memory_type,
-        )?;
+        let mut render_objects =
+            UpdateRenderObjects::new(device, swapchain_format, transfer_queue, memory_properties)?;
 
         // Create the update context that will be passed to the initial scene
         let mut update_context = UpdateContext::new(

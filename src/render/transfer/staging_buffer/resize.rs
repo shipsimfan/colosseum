@@ -1,16 +1,17 @@
 use crate::{Error, Result, render::transfer::StagingBuffer};
 use alexandria::gpu::{
-    VulkanBuffer, VulkanBufferUsageFlag, VulkanDevice, VulkanMappedMemory, VulkanSharingMode,
+    VulkanAdapterMemoryProperties, VulkanBuffer, VulkanBufferUsageFlag, VulkanDevice,
+    VulkanMappedMemory, VulkanMemoryPropertyFlag, VulkanSharingMode,
 };
 
-impl<T> StagingBuffer<T> {
+impl<'a, T> StagingBuffer<'a, T> {
     /// Resize the staging buffer to the specified capacity
     pub(in crate::render::transfer::staging_buffer) fn resize(
         &mut self,
         new_capacity: usize,
     ) -> Result<()> {
         let (buffer, memory) =
-            StagingBuffer::allocate(&self.device, self.memory_type, new_capacity)?;
+            StagingBuffer::allocate(&self.device, self.memory_properties, new_capacity)?;
 
         self.buffer = buffer;
         self.memory = memory;
@@ -22,7 +23,7 @@ impl<T> StagingBuffer<T> {
     /// Allocate a new staging buffer with the specified capacity
     pub(in crate::render::transfer::staging_buffer) fn allocate(
         device: &VulkanDevice,
-        memory_type: usize,
+        memory_properties: &VulkanAdapterMemoryProperties,
         capacity: usize,
     ) -> Result<(VulkanBuffer, VulkanMappedMemory<T>)> {
         let size = capacity as u64 * std::mem::size_of::<T>() as u64;
@@ -40,6 +41,8 @@ impl<T> StagingBuffer<T> {
 
         // Allocate the memory for the buffer
         let memory_requirements = buffer.get_memory_requirements();
+        let memory_type =
+            find_memory_type(memory_properties, memory_requirements.memory_type_bits())?;
         let memory = device
             .allocate_memory(memory_requirements.size(), memory_type)
             .map_err(Error::new_inner)?;
@@ -54,4 +57,23 @@ impl<T> StagingBuffer<T> {
 
         Ok((buffer, memory))
     }
+}
+
+fn find_memory_type(
+    memory_properties: &VulkanAdapterMemoryProperties,
+    type_filter: u32,
+) -> Result<usize> {
+    for (i, memory_type) in memory_properties.memory_types().iter().enumerate() {
+        if (type_filter & (1 << i)) != 0
+            && memory_type.flags().contains(
+                VulkanMemoryPropertyFlag::HostVisible | VulkanMemoryPropertyFlag::HostCoherent,
+            )
+        {
+            return Ok(i);
+        }
+    }
+
+    Err(Error::new(
+        "unable to find a suitable memory type for a staging buffer",
+    ))
 }

@@ -1,7 +1,7 @@
 use crate::render::{GpuTransferQueue, Material, Mesh, Shader};
 use alexandria::{
     SlotMap,
-    gpu::{VulkanDevice, VulkanDeviceMemory, VulkanFormat, VulkanPipelineLayout},
+    gpu::{VulkanDevice, VulkanFormat, VulkanPipelineLayout},
 };
 use std::sync::Arc;
 
@@ -10,6 +10,8 @@ mod allocator;
 mod create;
 mod new;
 mod remove;
+
+pub(crate) use allocator::*;
 
 /// The representations of the render objects in the update phase
 pub(crate) struct UpdateRenderObjects {
@@ -25,11 +27,11 @@ pub(crate) struct UpdateRenderObjects {
     /// The queue for transfering data to the GPU
     transfer_queue: GpuTransferQueue,
 
-    /// The memory type index for device local buffers
-    device_local_memory_type: usize,
+    /// The allocator to use for meshes
+    mesh_allocator: GpuAllocator,
 
     /// The meshes that have been registered
-    meshes: SlotMap<(Arc<Mesh>, Arc<VulkanDeviceMemory>, Arc<VulkanDeviceMemory>)>,
+    meshes: SlotMap<(Arc<Mesh>, GpuAllocatedMemory)>,
 
     /// The unlit shaders that have been registered
     ///

@@ -1,5 +1,9 @@
 use crate::render::job::graphics_device::VulkanAdapterInfo;
-use alexandria::{MemorySize, Uuid, gpu::VulkanFormat};
+use alexandria::{
+    MemorySize, Uuid,
+    gpu::{VulkanAdapterMemoryProperties, VulkanFormat},
+};
+use std::sync::Arc;
 
 impl<'instance> VulkanAdapterInfo<'instance> {
     /// Get the name of this adapter
@@ -32,13 +36,8 @@ impl<'instance> VulkanAdapterInfo<'instance> {
         self.transfer_queue_family_index
     }
 
-    /// Get the memory type index for staging buffers that this adapter supports
-    pub fn staging_buffer_memory_index(&self) -> usize {
-        self.staging_buffer_memory_index
-    }
-
-    /// Get the memory type index for device-local buffers that this adapter supports
-    pub fn device_local_buffer_memory_index(&self) -> usize {
-        self.device_local_buffer_memory_index
+    /// Get the memory properties of this adapter
+    pub fn memory_properties(&self) -> &Arc<VulkanAdapterMemoryProperties> {
+        &self.memory_properties
     }
 }

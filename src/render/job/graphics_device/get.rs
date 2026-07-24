@@ -1,5 +1,6 @@
 use crate::{logging::Logger, render::job::GraphicsDevice};
-use alexandria::gpu::{VulkanCommandBuffer, VulkanFormat};
+use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanCommandBuffer, VulkanFormat};
+use std::sync::Arc;
 
 impl GraphicsDevice {
     /// Get the logger for this graphics device
@@ -17,8 +18,8 @@ impl GraphicsDevice {
         &mut self.command_pool[self.command_buffers[index]]
     }
 
-    /// Get the device local memory type index to use for rendering
-    pub fn device_local_memory_type(&self) -> usize {
-        self.device_local_memory_type
+    /// Get the memory properties of the adapter for this graphics device
+    pub fn memory_properties(&self) -> &Arc<VulkanAdapterMemoryProperties> {
+        &self.memory_properties
     }
 }

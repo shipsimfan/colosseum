@@ -11,21 +11,15 @@ impl Mesh {
         vertices: Vec<Vertex>,
         indices: Vec<u32>,
         vertex_buffer: VulkanBuffer,
-        vertex_buffer_memory: Arc<VulkanDeviceMemory>,
         index_buffer: VulkanBuffer,
-        index_buffer_memory: Arc<VulkanDeviceMemory>,
+        memory: Arc<VulkanDeviceMemory>,
+        index_buffer_offset: u32,
         transfer_queue: &mut GpuTransferQueue,
     ) -> Result<(Arc<Mesh>, MeshTransfer)> {
         let mesh = Arc::new(Mesh { vertices, indices });
-        let render_mesh = RenderMesh::new(
-            vertex_buffer,
-            vertex_buffer_memory,
-            index_buffer,
-            index_buffer_memory,
-            mesh.indices.len(),
-        );
+        let render_mesh = RenderMesh::new(vertex_buffer, index_buffer, memory, mesh.indices.len());
 
-        let transfer = transfer_queue.transfer_mesh(&mesh, render_mesh)?;
+        let transfer = transfer_queue.transfer_mesh(&mesh, render_mesh, index_buffer_offset)?;
 
         Ok((mesh, transfer))
     }

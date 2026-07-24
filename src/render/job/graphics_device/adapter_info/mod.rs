@@ -1,7 +1,8 @@
 use alexandria::{
     MemorySize, Uuid,
-    gpu::{VulkanAdapter, VulkanAdapterType, VulkanFormat},
+    gpu::{VulkanAdapter, VulkanAdapterMemoryProperties, VulkanAdapterType, VulkanFormat},
 };
+use std::sync::Arc;
 
 mod deref;
 mod eq;
@@ -35,9 +36,6 @@ pub(in crate::render::job::graphics_device) struct VulkanAdapterInfo<'instance> 
     /// The amount of device-local VRAM available on this adapter, in bytes
     device_local_vram: MemorySize,
 
-    /// The memory index for staging buffers on this adapter
-    staging_buffer_memory_index: usize,
-
-    /// The memory index for device-local buffers on this adapter
-    device_local_buffer_memory_index: usize,
+    /// The memory properties of this adapter
+    memory_properties: Arc<VulkanAdapterMemoryProperties>,
 }

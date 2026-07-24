@@ -11,6 +11,7 @@ use alexandria::{
         VulkanDeviceVulkan11Features, VulkanDeviceVulkan13Features, VulkanFormat, VulkanSurface,
     },
 };
+use std::sync::Arc;
 
 impl<'instance> VulkanAdapterInfo<'instance> {
     /// Is adapter compatible with the surface and suitable for rendering?
@@ -47,12 +48,16 @@ impl<'instance> VulkanAdapterInfo<'instance> {
                 None => return Ok(None),
             };
 
-        // Find the amount of device-local VRAM available and memory indices for staging and device-local buffers
-        let (device_local_vram, staging_buffer_memory_index, device_local_buffer_memory_index) =
-            match find_memory(&adapter, &name, logger)? {
-                Some(memory) => memory,
-                None => return Ok(None),
-            };
+        // Get the memory properties of the adapter and the total amount of device-local VRAM available
+        let memory_properties = Arc::new(adapter.get_memory_properties());
+        let mut device_local_vram = 0;
+        for memory_type in memory_properties.memory_types() {
+            if memory_type.device_local() {
+                device_local_vram +=
+                    *memory_properties.memory_heaps()[memory_type.heap_index()].size();
+            }
+        }
+        let device_local_vram = MemorySize::new(device_local_vram);
 
         Ok(Some(VulkanAdapterInfo {
             adapter,
@@ -63,8 +68,7 @@ impl<'instance> VulkanAdapterInfo<'instance> {
             graphics_queue_family_index,
             transfer_queue_family_index,
             device_local_vram,
-            staging_buffer_memory_index,
-            device_local_buffer_memory_index,
+            memory_properties,
         }))
     }
 }
@@ -211,52 +215,4 @@ fn find_queue_family_indices(
         graphics_queue_family_index,
         transfer_queue_family_index,
     )))
-}
-
-/// Find the amount of device-local VRAM available and memory indices for staging and device-local buffers
-fn find_memory(
-    adapter: &VulkanAdapter,
-    device_name: &str,
-    logger: &Logger,
-) -> Result<Option<(MemorySize, usize, usize)>> {
-    let mut device_local = None;
-    let mut staging = None;
-
-    let memory_properties = adapter.get_memory_properties();
-    for (index, memory_type) in memory_properties.memory_types().into_iter().enumerate() {
-        if memory_type.host_visible() && memory_type.host_coherent() {
-            staging = Some(index);
-        } else if memory_type.device_local() {
-            device_local = Some((
-                memory_properties.memory_heaps()[memory_type.heap_index()].size(),
-                index,
-            ));
-        }
-    }
-
-    let (device_local_size, device_local_index) = match device_local {
-        Some(device_local) => device_local,
-        None => {
-            warning!(
-                logger,
-                "Adapter \"{}\" rejected because it does not have a device-local memory type",
-                device_name,
-            );
-            return Ok(None);
-        }
-    };
-
-    let staging_index = match staging {
-        Some(staging) => staging,
-        None => {
-            warning!(
-                logger,
-                "Adapter \"{}\" rejected because it does not have a host-visible memory type for staging buffers",
-                device_name,
-            );
-            return Ok(None);
-        }
-    };
-
-    Ok(Some((device_local_size, staging_index, device_local_index)))
 }

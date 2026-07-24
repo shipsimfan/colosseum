@@ -5,9 +5,12 @@ use crate::{
 use adapter_info::VulkanAdapterInfo;
 use alexandria::{
     Id,
-    gpu::{VulkanCommandBuffer, VulkanCommandPool, VulkanDevice, VulkanFormat, VulkanQueue},
+    gpu::{
+        VulkanAdapterMemoryProperties, VulkanCommandBuffer, VulkanCommandPool, VulkanDevice,
+        VulkanFormat, VulkanQueue,
+    },
 };
-use std::sync::mpsc::Receiver;
+use std::sync::{Arc, mpsc::Receiver};
 
 mod adapter_info;
 
@@ -48,8 +51,8 @@ pub(in crate::render::job) struct GraphicsDevice {
     /// The render objects that have been created by the update job
     render_objects: RenderObjects,
 
-    /// The device local memory type index to use for rendering
-    device_local_memory_type: usize,
+    /// The memory properties of the adapter
+    memory_properties: Arc<VulkanAdapterMemoryProperties>,
 
     /// The queue for transferred resources ready to be used by the render job
     created_objects: Receiver<CreatedRenderObject>,

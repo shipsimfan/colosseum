@@ -13,6 +13,7 @@ impl GpuTransferQueue {
         &mut self,
         mesh: &Arc<Mesh>,
         render_mesh: RenderMesh,
+        index_buffer_offset: u32,
     ) -> Result<MeshTransfer> {
         let shared_state = SharedGpuTransferData::new()?;
         let transfer = MeshTransfer::new(shared_state.clone());
@@ -22,6 +23,7 @@ impl GpuTransferQueue {
                 mesh: mesh.clone(),
                 shared_state,
                 render_mesh,
+                index_buffer_offset,
             })
             .map_err(|_| Error::new("transfer queue closed"))?;
 

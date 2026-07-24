@@ -1,5 +1,6 @@
 use crate::render::RenderJob;
-use alexandria::gpu::{VulkanDevice, VulkanFormat};
+use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice, VulkanFormat};
+use std::sync::Arc;
 
 impl<'surface> RenderJob<'surface> {
     /// Get the device to use for rendering
@@ -18,11 +19,11 @@ impl<'surface> RenderJob<'surface> {
         }
     }
 
-    /// Get the device local memory type index to use for rendering
-    pub(crate) fn device_local_memory_type(&self) -> usize {
+    /// Get the memory properties of the adapter to use for rendering
+    pub(crate) fn memory_properties(&self) -> &Arc<VulkanAdapterMemoryProperties> {
         match self {
-            RenderJob::Rendering { device, .. } => device.device_local_memory_type(),
-            RenderJob::RecreateSwapchain { device, .. } => device.device_local_memory_type(),
+            RenderJob::Rendering { device, .. } => device.memory_properties(),
+            RenderJob::RecreateSwapchain { device, .. } => device.memory_properties(),
         }
     }
 }
