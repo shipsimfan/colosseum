@@ -5,6 +5,8 @@ use alexandria::{
 };
 use std::sync::Arc;
 
+mod allocator;
+
 mod create;
 mod new;
 mod remove;
