@@ -1,12 +1,16 @@
-use crate::render::transfer::SharedGpuTransferData;
-use std::sync::Arc;
+use crate::{
+    SingleValueReceiver,
+    render::{Mesh, RenderMesh},
+    update::GpuAllocatedMemory,
+};
 
 mod is_complete;
 mod new;
+mod take;
 mod wait;
 
 /// The state of a mesh transfer
 pub struct MeshTransfer {
-    /// The shared state for the transfer
-    shared_state: Arc<SharedGpuTransferData>,
+    /// The receiver for a single value
+    receiver: SingleValueReceiver<(Mesh, RenderMesh, GpuAllocatedMemory)>,
 }

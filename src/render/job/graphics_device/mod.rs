@@ -1,6 +1,6 @@
 use crate::{
     logging::Logger,
-    render::{CreatedRenderObject, FrameGraph, RenderObjects},
+    render::{FrameGraph, RenderObjects},
 };
 use adapter_info::VulkanAdapterInfo;
 use alexandria::{
@@ -10,7 +10,7 @@ use alexandria::{
         VulkanFormat, VulkanQueue,
     },
 };
-use std::sync::{Arc, mpsc::Receiver};
+use std::sync::Arc;
 
 mod adapter_info;
 
@@ -53,7 +53,4 @@ pub(in crate::render::job) struct GraphicsDevice {
 
     /// The memory properties of the adapter
     memory_properties: Arc<VulkanAdapterMemoryProperties>,
-
-    /// The queue for transferred resources ready to be used by the render job
-    created_objects: Receiver<CreatedRenderObject>,
 }

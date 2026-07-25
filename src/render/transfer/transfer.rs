@@ -1,27 +1,27 @@
 use crate::{
     Error, Result,
-    render::{
-        GpuTransferQueue, Mesh, MeshTransfer, RenderMesh,
-        transfer::{GpuTransferCommand, SharedGpuTransferData},
-    },
+    render::{GpuTransferQueue, Mesh, MeshTransfer, RenderMesh, transfer::GpuTransferCommand},
+    single_value_channel,
+    update::GpuAllocatedMemory,
 };
-use std::sync::Arc;
 
 impl GpuTransferQueue {
     /// Transfer a mesh to the GPU
     pub(in crate::render) fn transfer_mesh(
         &mut self,
-        mesh: &Arc<Mesh>,
+        mesh: Mesh,
         render_mesh: RenderMesh,
+        allocation: GpuAllocatedMemory,
     ) -> Result<MeshTransfer> {
-        let shared_state = SharedGpuTransferData::new()?;
-        let transfer = MeshTransfer::new(shared_state.clone());
+        let (sender, receiver) = single_value_channel::create(true)?;
+        let transfer = MeshTransfer::new(receiver);
 
         self.queue
             .send(GpuTransferCommand::Mesh {
-                mesh: mesh.clone(),
-                shared_state,
+                mesh,
                 render_mesh,
+                allocation,
+                sender,
             })
             .map_err(|_| Error::new("transfer queue closed"))?;
 

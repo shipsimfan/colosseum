@@ -1,9 +1,9 @@
 use crate::{
     Result,
     render::{Mesh, MeshTransfer, RenderMesh, Vertex, transfer::GpuTransferQueue},
+    update::GpuAllocatedMemory,
 };
-use alexandria::gpu::{VulkanBuffer, VulkanDeviceMemory};
-use std::sync::Arc;
+use alexandria::gpu::VulkanBuffer;
 
 impl Mesh {
     /// Create a new [`Mesh`]
@@ -12,14 +12,19 @@ impl Mesh {
         indices: Vec<u32>,
         vertex_buffer: VulkanBuffer,
         index_buffer: VulkanBuffer,
-        memory: Arc<VulkanDeviceMemory>,
+        allocation: GpuAllocatedMemory,
         transfer_queue: &mut GpuTransferQueue,
-    ) -> Result<(Arc<Mesh>, MeshTransfer)> {
-        let mesh = Arc::new(Mesh { vertices, indices });
-        let render_mesh = RenderMesh::new(vertex_buffer, index_buffer, memory, mesh.indices.len());
+    ) -> Result<MeshTransfer> {
+        let mesh = Mesh { vertices, indices };
+        let render_mesh = RenderMesh::new(
+            vertex_buffer,
+            index_buffer,
+            allocation.device_memory().clone(),
+            mesh.indices.len(),
+        );
 
-        let transfer = transfer_queue.transfer_mesh(&mesh, render_mesh)?;
+        let transfer = transfer_queue.transfer_mesh(mesh, render_mesh, allocation)?;
 
-        Ok((mesh, transfer))
+        Ok(transfer)
     }
 }

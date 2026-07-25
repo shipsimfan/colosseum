@@ -1,4 +1,8 @@
-use crate::render::{MaterialId, MaterialKind, RenderMaterial};
+use crate::{
+    render::{MaterialId, MaterialKind, Mesh, RenderMaterial, RenderMesh},
+    update::GpuAllocatedMemory,
+};
+use alexandria::Id;
 
 mod apply;
 mod from;
@@ -20,5 +24,22 @@ pub(crate) enum RenderObjectChange {
     RemoveMaterial {
         /// The material that was removed
         material: MaterialId,
+    },
+
+    /** Mesh Changes **/
+
+    /// A new mesh has been added
+    AddMesh {
+        /// The mesh that was added
+        mesh: RenderMesh,
+    },
+
+    /// A mesh has been removed
+    RemoveMesh {
+        /// The mesh that was removed
+        mesh: Id<Mesh>,
+
+        /// The allocated memory that was used by the mesh, which can be freed
+        memory: GpuAllocatedMemory,
     },
 }

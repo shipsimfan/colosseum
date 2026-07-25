@@ -1,11 +1,14 @@
-use crate::render::{MeshTransfer, transfer::SharedGpuTransferData};
-use std::sync::Arc;
+use crate::{
+    SingleValueReceiver,
+    render::{Mesh, MeshTransfer, RenderMesh},
+    update::GpuAllocatedMemory,
+};
 
 impl MeshTransfer {
     /// Create a new [`MeshTransfer`]
     pub(in crate::render::transfer) fn new(
-        shared_state: Arc<SharedGpuTransferData>,
+        receiver: SingleValueReceiver<(Mesh, RenderMesh, GpuAllocatedMemory)>,
     ) -> MeshTransfer {
-        MeshTransfer { shared_state }
+        MeshTransfer { receiver }
     }
 }

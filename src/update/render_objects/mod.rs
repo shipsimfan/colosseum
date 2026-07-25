@@ -7,6 +7,8 @@ use std::sync::Arc;
 
 mod allocator;
 
+mod apply;
+mod complete;
 mod create;
 mod new;
 mod remove;
@@ -31,7 +33,7 @@ pub(crate) struct UpdateRenderObjects {
     mesh_allocator: GpuAllocator,
 
     /// The meshes that have been registered
-    meshes: SlotMap<(Arc<Mesh>, GpuAllocatedMemory)>,
+    meshes: SlotMap<(Mesh, GpuAllocatedMemory)>,
 
     /// The unlit shaders that have been registered
     ///

@@ -8,6 +8,7 @@ use crate::{
 use alexandria::math::Vector2u;
 use std::time::Duration;
 
+mod complete;
 mod create;
 mod executre;
 mod get;

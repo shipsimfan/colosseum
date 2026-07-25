@@ -16,6 +16,11 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         render_data: &mut RenderData,
         window: &Window,
     ) -> Result<bool> {
+        // Free any comfirmed resources that are no longer in use
+        for removal in render_data.confirmed_removals() {
+            self.render_objects.apply_removal(removal);
+        }
+
         // Update the settings if the window size has changed
         if !self.settings.is_saving() {
             let window_fullscreen = window.fullscreen();

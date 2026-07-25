@@ -4,7 +4,7 @@ use std::sync::Arc;
 
 impl RenderMesh {
     /// Create a new [`RenderMesh`]
-    pub fn new(
+    pub(in crate::render) fn new(
         vertex_buffer: VulkanBuffer,
         index_buffer: VulkanBuffer,
         memory: Arc<VulkanDeviceMemory>,

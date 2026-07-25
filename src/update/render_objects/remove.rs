@@ -1,7 +1,8 @@
 use crate::{
-    render::{MaterialId, MaterialKind, RenderData, ShaderId, ShaderKind},
+    render::{MaterialId, MaterialKind, Mesh, RenderData, ShaderId, ShaderKind},
     update::UpdateRenderObjects,
 };
+use alexandria::Id;
 
 impl UpdateRenderObjects {
     /// Removes a shader from the game
@@ -17,5 +18,12 @@ impl UpdateRenderObjects {
             MaterialKind::UnlitOpaque => self.unlit_opaque_materials.remove(material.id()),
         };
         render_data.add_render_object_change(material);
+    }
+
+    /// Remove a mesh from the game
+    pub fn remove_mesh(&mut self, mesh: Id<Mesh>, render_data: &mut RenderData) {
+        if let Some((_, memory)) = self.meshes.remove(unsafe { mesh.cast() }) {
+            render_data.add_render_object_change((mesh, memory));
+        }
     }
 }

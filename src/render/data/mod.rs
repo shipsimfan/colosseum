@@ -1,10 +1,12 @@
 use crate::render::{Material, Mesh};
 use alexandria::Id;
 
+mod remove_confirm;
 mod render_object_change;
 mod skybox;
 
 mod add;
+mod apply;
 mod get;
 mod new;
 mod reset;
@@ -12,6 +14,7 @@ mod scene_reset;
 
 pub use skybox::*;
 
+pub(crate) use remove_confirm::*;
 pub(crate) use render_object_change::*;
 
 /// The data required to execute a render job
@@ -21,6 +24,9 @@ pub(crate) struct RenderData {
 
     /// The changes to the render objects in use
     render_object_changes: Vec<RenderObjectChange>,
+
+    /// The objects whose removals have been confirmed, and the memory can be freed
+    confirmed_removals: Vec<RenderObjectRemoveConfirm>,
 
     /// The set of unlit opaque renderable objects in the scene
     ///

@@ -23,14 +23,20 @@ impl<T> SingleValueReceiver<T> {
             .expect("value is not available to be taken")
     }
 
-    /// Wait until the value is available and then take it from the channel
-    pub fn wait(self) -> Result<T, Error> {
+    /// Wait until the value is available without taking it from the channel
+    pub fn wait_no_take(&self) -> Result<(), Error> {
         self.shared_state
             .notify
             .as_ref()
             .unwrap()
             .wait(None)
             .map_err(Error::new_inner)?;
+        Ok(())
+    }
+
+    /// Wait until the value is available and then take it from the channel
+    pub fn wait(self) -> Result<T, Error> {
+        self.wait_no_take()?;
         Ok(self.take())
     }
 }

@@ -6,6 +6,7 @@ impl RenderData {
         RenderData {
             skybox: Skybox::default(),
             render_object_changes: Vec::new(),
+            confirmed_removals: Vec::new(),
             unlit_opaque_renderables: Vec::new(),
         }
     }

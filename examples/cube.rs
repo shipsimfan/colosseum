@@ -156,8 +156,10 @@ impl colosseum::update::InitialScene for CubeScene {
             context.create_shader(colosseum::render::ShaderKind::Unlit, &TRIANGLE_SHADER)?;
         let material =
             context.create_material(colosseum::render::MaterialKind::UnlitOpaque, shader)?;
-        let (mesh, transfer) = context.create_mesh(VERTICES.to_vec(), INDICES.to_vec())?;
-        transfer.wait(None)?;
+
+        let transfer = context.create_mesh(VERTICES.to_vec(), INDICES.to_vec())?;
+        transfer.wait()?;
+        let mesh = context.complete_mesh(transfer);
 
         let ecs = context.ecs_mut();
         let cube = ecs.create_entity();

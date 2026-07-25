@@ -1,13 +1,11 @@
-use crate::render::{Material, Mesh, RenderData, RenderObjectChange};
+use crate::render::{Material, Mesh, RenderData, RenderObjectRemoveConfirm};
 use alexandria::Id;
 use std::vec::Drain;
 
 impl RenderData {
-    /// Returns a drain iterator over the render object changes in the render data
-    pub(in crate::render) fn render_object_changes<'a>(
-        &'a mut self,
-    ) -> Drain<'a, RenderObjectChange> {
-        self.render_object_changes.drain(..)
+    /// Returns a drain iterator over the confirmed removals in the render data
+    pub fn confirmed_removals<'a>(&'a mut self) -> Drain<'a, RenderObjectRemoveConfirm> {
+        self.confirmed_removals.drain(..)
     }
 
     /// Get the list of unlit opaque renderable objects in the render data

@@ -2,7 +2,7 @@ use crate::{
     Error, GlobalSharedState, Result, debug,
     logging::Logger,
     render::{
-        CreatedRenderObject, GpuTransferQueue, Vertex,
+        GpuTransferQueue, Vertex,
         transfer::{GpuTransferCommand, StagingBuffer},
     },
 };
@@ -11,10 +11,7 @@ use alexandria::gpu::{
     VulkanCommandBufferLevel, VulkanCommandBufferSubmitInfo, VulkanCommandPoolCreateFlag,
     VulkanDevice, VulkanFence, VulkanQueue, VulkanSubmitInfo,
 };
-use std::sync::{
-    Arc,
-    mpsc::{Receiver, Sender},
-};
+use std::sync::{Arc, mpsc::Receiver};
 
 const INITIAL_STAGING_BUFFER_CAPACITY: usize = 64;
 
@@ -25,7 +22,6 @@ impl GpuTransferQueue {
         device: VulkanDevice,
         mut queue: VulkanQueue,
         memory_properties: Arc<VulkanAdapterMemoryProperties>,
-        created_objects: Sender<CreatedRenderObject>,
         logger: Logger,
     ) -> Result<()> {
         // Create the transfer command pool and command buffer
@@ -67,20 +63,12 @@ impl GpuTransferQueue {
             match command {
                 GpuTransferCommand::Mesh {
                     mesh,
-                    shared_state,
                     render_mesh,
+                    allocation,
+                    sender,
                 } => {
-                    let vertex_staging_buffer = vertex_staging_buffer
-                        .set(mesh.vertices())
-                        .map_err(|error| {
-                            shared_state.complete().ok();
-                            error
-                        })?;
-                    let index_staging_buffer =
-                        index_staging_buffer.set(mesh.indices()).map_err(|error| {
-                            shared_state.complete().ok();
-                            error
-                        })?;
+                    let vertex_staging_buffer = vertex_staging_buffer.set(mesh.vertices())?;
+                    let index_staging_buffer = index_staging_buffer.set(mesh.indices())?;
 
                     copy_buffers(
                         command_buffer,
@@ -100,17 +88,9 @@ impl GpuTransferQueue {
                                 (mesh.indices().len() * std::mem::size_of::<u32>()) as u64,
                             ),
                         ],
-                    )
-                    .map_err(|error| {
-                        shared_state.complete().ok();
-                        error
-                    })?;
+                    )?;
 
-                    created_objects
-                        .send(CreatedRenderObject::Mesh(render_mesh))
-                        .ok();
-
-                    shared_state.complete()?;
+                    sender.send((mesh, render_mesh, allocation))?;
                 }
             }
         }

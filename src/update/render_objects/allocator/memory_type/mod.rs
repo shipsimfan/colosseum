@@ -2,6 +2,7 @@ use crate::update::render_objects::allocator::GpuMemoryChunk;
 use alexandria::gpu::VulkanDevice;
 
 mod allocate;
+mod free;
 mod new;
 mod supports;
 

@@ -8,6 +8,7 @@ mod chunk;
 mod memory_type;
 
 mod allocate;
+mod free;
 mod new;
 
 pub(crate) use allocated_memory::*;

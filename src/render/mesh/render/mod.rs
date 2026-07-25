@@ -6,7 +6,7 @@ mod get;
 mod new;
 
 /// A mesh on the GPU in the renderer
-pub(in crate::render) struct RenderMesh {
+pub(crate) struct RenderMesh {
     /// The buffer for the vertices of the mesh
     vertex_buffer: VulkanBuffer,
 

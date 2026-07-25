@@ -63,13 +63,11 @@ impl GraphicsDevice {
             .map_err(Error::new_inner)?;
 
         // Create the transfer queue
-        let (created_objects_sender, created_objects) = std::sync::mpsc::channel();
         let transfer_queue = GpuTransferQueue::new(
             thread_manager,
             device.clone(),
             queues.swap_remove(0),
             adapter.memory_properties().clone(),
-            created_objects_sender,
             &logger,
         )?;
 
@@ -84,7 +82,6 @@ impl GraphicsDevice {
                 frame_graph: FrameGraph::new(),
                 render_objects: RenderObjects::new(),
                 memory_properties: adapter.memory_properties().clone(),
-                created_objects,
             },
             transfer_queue,
         ))
