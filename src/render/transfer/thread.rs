@@ -1,5 +1,6 @@
 use crate::{
-    Error, GlobalSharedState, Result,
+    Error, GlobalSharedState, Result, debug,
+    logging::Logger,
     render::{
         CreatedRenderObject, GpuTransferQueue, Vertex,
         transfer::{GpuTransferCommand, StagingBuffer},
@@ -25,6 +26,7 @@ impl GpuTransferQueue {
         mut queue: VulkanQueue,
         memory_properties: Arc<VulkanAdapterMemoryProperties>,
         created_objects: Sender<CreatedRenderObject>,
+        logger: Logger,
     ) -> Result<()> {
         // Create the transfer command pool and command buffer
         let mut command_pool = device
@@ -56,7 +58,10 @@ impl GpuTransferQueue {
         while shared_state.is_running() {
             let command = match receiver.recv() {
                 Ok(command) => command,
-                Err(_) => break,
+                Err(_) => {
+                    debug!(&logger, "Transfer thread exiting due to channel closure");
+                    break;
+                }
             };
 
             match command {
@@ -64,7 +69,6 @@ impl GpuTransferQueue {
                     mesh,
                     shared_state,
                     render_mesh,
-                    index_buffer_offset,
                 } => {
                     let vertex_staging_buffer = vertex_staging_buffer
                         .set(mesh.vertices())
@@ -92,7 +96,7 @@ impl GpuTransferQueue {
                             (
                                 index_staging_buffer,
                                 render_mesh.index_buffer(),
-                                index_buffer_offset,
+                                0,
                                 (mesh.indices().len() * std::mem::size_of::<u32>()) as u64,
                             ),
                         ],
@@ -110,6 +114,8 @@ impl GpuTransferQueue {
                 }
             }
         }
+
+        debug!(&logger, "Transfer thread exiting");
 
         Ok(())
     }

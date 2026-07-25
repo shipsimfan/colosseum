@@ -70,6 +70,7 @@ impl GraphicsDevice {
             queues.swap_remove(0),
             adapter.memory_properties().clone(),
             created_objects_sender,
+            &logger,
         )?;
 
         Ok((

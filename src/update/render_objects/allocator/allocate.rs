@@ -1,8 +1,11 @@
 use crate::{
-    Result,
-    update::render_objects::{GpuAllocatedMemory, GpuAllocator},
+    Error, Result,
+    update::render_objects::{GpuAllocatedMemory, GpuAllocator, allocator::GpuMemoryType},
 };
-use alexandria::gpu::VulkanMemoryRequirements;
+use alexandria::gpu::{
+    VulkanAdapterMemoryProperties, VulkanMemoryPropertyFlag, VulkanMemoryRequirements,
+};
+use std::sync::Arc;
 
 impl GpuAllocator {
     /// Allocate a block of GPU memory for the given memory requirements
@@ -26,15 +29,26 @@ impl GpuAllocator {
 
         // Check if a memory type supports the given memory requirements and allocate from it
         for memory_type in &mut self.memory_types {
-            if !memory_type.supports(memory_requirements) {
-                continue;
+            if memory_type.supports(memory_requirements) {
+                return memory_type.allocate(block_index);
             }
-
-            return memory_type.allocate(block_index);
         }
 
         // If no memory type supports the given memory requirements, try to create a new one
-        todo!()
+        let memory_type_index = find_memory_type(
+            &self.memory_properties,
+            memory_requirements.memory_type_bits(),
+        )?;
+        self.memory_types.push(GpuMemoryType::new(
+            memory_type_index,
+            self.chunk_size,
+            self.min_block_size,
+            self.max_block_size,
+            self.memory_types.len() as _,
+            self.device.clone(),
+        ));
+
+        self.memory_types.last_mut().unwrap().allocate(block_index)
     }
 
     /// Allocate a dedicated block of GPU memory for the given memory requirements
@@ -42,6 +56,36 @@ impl GpuAllocator {
         &self,
         memory_requirements: &VulkanMemoryRequirements,
     ) -> Result<GpuAllocatedMemory> {
-        todo!()
+        let memory_type_index = find_memory_type(
+            &self.memory_properties,
+            memory_requirements.memory_type_bits(),
+        )?;
+
+        let device_memory = Arc::new(
+            self.device
+                .allocate_memory(memory_requirements.size(), memory_type_index as _)
+                .map_err(Error::new_inner)?,
+        );
+
+        Ok(GpuAllocatedMemory::new_dedicated(device_memory))
     }
+}
+
+fn find_memory_type(
+    memory_properties: &VulkanAdapterMemoryProperties,
+    type_filter: u32,
+) -> Result<u32> {
+    for (i, memory_type) in memory_properties.memory_types().iter().enumerate() {
+        if (type_filter & (1 << i)) != 0
+            && memory_type.flags().contains(
+                VulkanMemoryPropertyFlag::HostVisible | VulkanMemoryPropertyFlag::HostCoherent,
+            )
+        {
+            return Ok(i as _);
+        }
+    }
+
+    Err(Error::new(
+        "unable to find a suitable memory type for a buffer",
+    ))
 }

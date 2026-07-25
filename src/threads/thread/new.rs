@@ -26,6 +26,7 @@ impl Thread {
                 // Setup a panic hook to kill the thread if it panics
                 let child_shared_state = global_shared_state.clone();
                 let child_result_sender = result_sender.clone();
+                let panic_name = child_name.clone();
                 std::panic::set_hook(Box::new(move |panic_info| {
                     child_result_sender
                         .lock()
@@ -34,7 +35,7 @@ impl Thread {
                         .unwrap()
                         .send(Err(Error::new(panic_info.to_string())))
                         .unwrap();
-                    child_shared_state.kill();
+                    child_shared_state.kill(&panic_name);
                 }));
 
                 // Log that the thread has started
@@ -66,7 +67,7 @@ impl Thread {
                     .unwrap()
                     .send(result)
                     .unwrap();
-                global_shared_state.kill();
+                global_shared_state.kill(&child_name);
 
                 #[allow(unused_must_use)]
                 std::panic::take_hook();

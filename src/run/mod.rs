@@ -132,7 +132,7 @@ fn do_run<Game: crate::Game>(
     }
 
     // Cleanup all running threads
-    let mut errors = match (thread_manager.kill(), error) {
+    let mut errors = match (thread_manager.kill("main"), error) {
         (Ok(()), None) => Vec::new(),
         (Err(errors), None) => errors,
         (Ok(()), Some(error)) => vec![error],

@@ -96,6 +96,16 @@ impl UpdateRenderObjects {
             .next_multiple_of(index_memory_requirements.alignment())
             as u32;
 
+        println!(
+            "({}, {}) ({}, {}) ({}, {})",
+            vertex_memory_requirements.size(),
+            vertex_memory_requirements.alignment(),
+            index_memory_requirements.size(),
+            index_memory_requirements.alignment(),
+            memory_requirements.size(),
+            memory_requirements.alignment()
+        );
+
         let memory = self.mesh_allocator.allocate(&memory_requirements)?;
         memory.bind_buffer(&mut vertex_buffer, 0)?;
         memory.bind_buffer(&mut index_buffer, index_buffer_offset)?;
@@ -107,7 +117,6 @@ impl UpdateRenderObjects {
             vertex_buffer,
             index_buffer,
             memory.device_memory().clone(),
-            index_buffer_offset,
             &mut self.transfer_queue,
         )?;
         let id = self.meshes.insert((mesh, memory));

@@ -3,6 +3,7 @@ use std::sync::Arc;
 
 mod bind;
 mod get;
+mod new;
 
 pub(crate) struct GpuAllocatedMemory {
     /// The Vulkan device memory that this allocated memory is using

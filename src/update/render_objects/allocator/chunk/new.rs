@@ -23,7 +23,7 @@ impl GpuMemoryChunk {
 
         GpuMemoryChunk {
             memory,
-            largest_free_block: size as usize,
+            largest_free_block: Some(num_free_lists - 1),
             free_lists,
         }
     }

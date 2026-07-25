@@ -1,5 +1,6 @@
 use crate::{
     Result, ThreadManager,
+    logging::Logger,
     render::{CreatedRenderObject, GpuTransferQueue},
 };
 use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice, VulkanQueue};
@@ -16,9 +17,11 @@ impl GpuTransferQueue {
         device_queue: VulkanQueue,
         memory_properties: Arc<VulkanAdapterMemoryProperties>,
         created_objects: Sender<CreatedRenderObject>,
+        logger: &Logger,
     ) -> Result<GpuTransferQueue> {
         let (queue, receiver) = channel();
 
+        let logger = logger.logger("gpu-transfer");
         thread_manager.spawn(
             format!("GPU Transfer"),
             move |shared_state| {
@@ -29,6 +32,7 @@ impl GpuTransferQueue {
                     device_queue,
                     memory_properties,
                     created_objects,
+                    logger,
                 )
             },
             || {},
