@@ -3,12 +3,12 @@ use alexandria::Id;
 
 impl RenderObjects {
     /// Get the mesh with the given ID
-    pub(in crate::render) fn mesh(&self, id: Id<Mesh>) -> &RenderMesh {
+    pub fn mesh(&self, id: Id<Mesh>) -> &RenderMesh {
         &self.meshes[unsafe { id.cast() }]
     }
 
     /// Get the unlit opaque material with the given ID
-    pub(in crate::render) fn unlit_opaque_material(&self, id: Id<Material>) -> &RenderMaterial {
+    pub fn unlit_opaque_material(&self, id: Id<Material>) -> &RenderMaterial {
         &self.unlit_opaque_materials[unsafe { id.cast() }]
     }
 }

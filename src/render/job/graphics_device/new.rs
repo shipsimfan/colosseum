@@ -71,6 +71,9 @@ impl GraphicsDevice {
             &logger,
         )?;
 
+        // Create the render objects
+        let render_objects = RenderObjects::new(&device)?;
+
         Ok((
             GraphicsDevice {
                 logger: logger.clone(),
@@ -80,7 +83,7 @@ impl GraphicsDevice {
                 command_buffers: Vec::new(),
                 swapchain_format: adapter.swapchain_format(),
                 frame_graph: FrameGraph::new(),
-                render_objects: RenderObjects::new(),
+                render_objects,
                 memory_properties: adapter.memory_properties().clone(),
             },
             transfer_queue,

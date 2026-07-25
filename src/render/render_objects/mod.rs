@@ -1,13 +1,21 @@
 use crate::render::{RenderMaterial, RenderMesh};
 use alexandria::SlotMap;
 
+mod fixed;
+
+mod deref;
 mod get;
 mod insert;
 mod new;
 mod remove;
 
+pub(in crate::render) use fixed::*;
+
 /// The render objects that have been created by the update job
 pub(in crate::render) struct RenderObjects {
+    /// The fixed render objects
+    fixed: FixedRenderObjects,
+
     /// The meshes that have been created
     meshes: SlotMap<RenderMesh>,
 

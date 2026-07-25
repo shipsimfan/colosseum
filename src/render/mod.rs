@@ -1,6 +1,7 @@
 //! Items used in rendering
 
 use frame_graph::*;
+use pipeline::*;
 use render_objects::*;
 
 mod data;
@@ -8,6 +9,7 @@ mod frame_graph;
 mod job;
 mod material;
 mod mesh;
+mod pipeline;
 mod render_objects;
 mod transfer;
 
