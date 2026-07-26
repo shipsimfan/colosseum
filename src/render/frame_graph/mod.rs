@@ -1,6 +1,5 @@
 use alexandria::gpu::{VulkanImageMemoryBarrier, VulkanRenderingAttachmentInfo};
 use arena::*;
-use nodes::*;
 use pipeline_barrier::*;
 use resources::*;
 use structure::*;
@@ -16,6 +15,8 @@ mod build_and_run;
 mod compile;
 mod execute;
 mod new;
+
+pub(in crate::render) use nodes::*;
 
 /// A frame graph, which can be built and executed to render a frame
 pub(in crate::render) struct FrameGraph {

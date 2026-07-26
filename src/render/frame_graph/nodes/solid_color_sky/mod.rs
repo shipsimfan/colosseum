@@ -1,5 +1,6 @@
 use crate::render::frame_graph::FrameGraphResourceId;
 
+mod create_objects;
 mod execute;
 mod new;
 mod write_resources;

@@ -1,23 +1,26 @@
 use crate::{
     Result,
-    render::{FixedRenderObjects, Shader},
+    render::{FixedRenderObjects, FrameGraphNode, Shader},
 };
-use alexandria::gpu::{VulkanDevice, compile_shader};
+use alexandria::gpu::{VulkanDevice, VulkanFormat, compile_shader};
 
 compile_shader! {
     /// The vertex shader code for the fullscreen quad shader
     const FULLSCREEN_QUAD_SHADER = "fullscreen-quad.slang",
-    main
+    vert_main
 }
 
 impl FixedRenderObjects {
     /// Create a new set of [`FixedRenderObjects`]
-    pub fn new(device: &VulkanDevice) -> Result<FixedRenderObjects> {
+    pub fn new(
+        swapchain_format: VulkanFormat,
+        device: &VulkanDevice,
+    ) -> Result<FixedRenderObjects> {
         let fullscreen_quad = Shader::new(&FULLSCREEN_QUAD_SHADER, device)?;
 
-        Ok(FixedRenderObjects {
-            fullscreen_quad,
-            pipelines: Vec::new(),
-        })
+        let mut pipelines = Vec::new();
+        FrameGraphNode::create_objects(&mut pipelines, &fullscreen_quad, swapchain_format, device)?;
+
+        Ok(FixedRenderObjects { pipelines })
     }
 }

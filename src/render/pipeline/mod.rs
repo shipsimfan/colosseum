@@ -2,6 +2,10 @@ use crate::render::Shader;
 use alexandria::gpu::{VulkanPipeline, VulkanPipelineLayout};
 use std::sync::Arc;
 
+mod bind;
+mod get;
+mod new;
+
 /// A pipeline and layout that can be used for rendering objects
 pub(in crate::render) struct Pipeline {
     /// The pipeline itself

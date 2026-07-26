@@ -72,7 +72,7 @@ impl GraphicsDevice {
         )?;
 
         // Create the render objects
-        let render_objects = RenderObjects::new(&device)?;
+        let render_objects = RenderObjects::new(adapter.swapchain_format(), &device)?;
 
         Ok((
             GraphicsDevice {

@@ -1,4 +1,7 @@
-const SHADER_FILES: &[&str] = &["src/render/render_objects/fixed/fullscreen-quad.slang"];
+const SHADER_FILES: &[&str] = &[
+    "src/render/render_objects/fixed/fullscreen-quad.slang",
+    "src/render/frame_graph/nodes/solid_color_sky/solid-color-sky.slang",
+];
 
 fn main() {
     colosseum_build::push_branch("COLOSSEUM_ENGINE_BRANCH");

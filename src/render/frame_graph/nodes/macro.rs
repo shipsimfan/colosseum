@@ -11,7 +11,8 @@ macro_rules! nodes {
 
         /// A single node in the frame graph
         #[derive(Debug)]
-        pub(in crate::render::frame_graph) enum FrameGraphNode {$(
+        #[allow(private_interfaces)]
+        pub(in crate::render) enum FrameGraphNode {$(
             $(#[$meta])*
             $name($type),
         )*}
@@ -44,6 +45,20 @@ macro_rules! nodes {
                 match self {$(
                     FrameGraphNode::$name(node) => node.write_resources(f),
                 )*}
+            }
+
+            /// Create the persistent objects that are used by nodes
+            pub(in crate::render) fn create_objects(
+                pipelines: &mut Vec<Pipeline>,
+                fullscreen_quad: &Arc<Shader>,
+                swapchain_format: VulkanFormat,
+                device: &VulkanDevice,
+            ) -> Result<()> {
+                $(
+                    $type::create_objects(pipelines, fullscreen_quad, swapchain_format, device)?;
+                )*
+
+                Ok(())
             }
         }
 
