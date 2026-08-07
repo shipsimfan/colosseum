@@ -28,31 +28,34 @@ impl GraphicsDevice {
         let adapter = select_adapter(adapter, instance, &surface, &logger)?;
 
         // Create the Vulkan device
-        let (device, mut queues) = adapter
-            .device_builder()
+        let mut vulkan_11_features =
+            VulkanDeviceVulkan11Features::default().enable_shader_draw_parameters();
+        let mut vulkan_13_features = VulkanDeviceVulkan13Features::default()
+            .enable_synchronization2()
+            .enable_dynamic_rendering();
+        let mut vulkan_extended_dynamic_state_features =
+            VulkanDeviceExtendedDynamicStateFeatures::default().enable_extended_dynamic_state();
+
+        let mut device_builder = adapter.device_builder();
+        device_builder
             .extension(VulkanDeviceExtension::Swapchain)
             .queue(VulkanQueueCreateInfo::new(
                 adapter.graphics_queue_family_index(),
                 &[1.0],
             ))
-            .queue(VulkanQueueCreateInfo::new(
-                adapter.transfer_queue_family_index(),
+            .feature(&mut vulkan_11_features)
+            .feature(&mut vulkan_13_features)
+            .feature(&mut vulkan_extended_dynamic_state_features);
+        if let Some(transfer_queue_family_index) = adapter.transfer_queue_family_index() {
+            device_builder.queue(VulkanQueueCreateInfo::new(
+                transfer_queue_family_index,
                 &[1.0],
-            ))
-            .feature(&mut VulkanDeviceVulkan11Features::default().enable_shader_draw_parameters())
-            .feature(
-                &mut VulkanDeviceVulkan13Features::default()
-                    .enable_synchronization2()
-                    .enable_dynamic_rendering(),
-            )
-            .feature(
-                &mut VulkanDeviceExtendedDynamicStateFeatures::default()
-                    .enable_extended_dynamic_state(),
-            )
-            .create()
-            .map_err(Error::new_inner)?;
+            ));
+        }
 
-        let queue = queues.swap_remove(0);
+        let (device, mut queues) = device_builder.create().map_err(Error::new_inner)?;
+
+        let mut queue = queues.swap_remove(0);
 
         // Create the command pool
         let command_pool = device
@@ -63,13 +66,23 @@ impl GraphicsDevice {
             .map_err(Error::new_inner)?;
 
         // Create the transfer queue
-        let transfer_queue = GpuTransferQueue::new(
-            thread_manager,
-            device.clone(),
-            queues.swap_remove(0),
-            adapter.memory_properties().clone(),
-            &logger,
-        )?;
+        let (transfer_queue, gpu_transfer_queue) = match adapter.transfer_queue_family_index() {
+            Some(_) => (
+                GpuTransferQueue::new_dedicated(
+                    thread_manager,
+                    &device,
+                    queues.swap_remove(0),
+                    adapter.memory_properties(),
+                    &logger,
+                )?,
+                None,
+            ),
+            None => {
+                let (transfer_queue, gpu_transfer_queue) =
+                    GpuTransferQueue::new(&device, &mut queue, adapter.memory_properties())?;
+                (transfer_queue, Some(gpu_transfer_queue))
+            }
+        };
 
         // Create the render objects
         let render_objects = RenderObjects::new(adapter.swapchain_format(), &device)?;
@@ -85,6 +98,7 @@ impl GraphicsDevice {
                 frame_graph: FrameGraph::new(),
                 render_objects,
                 memory_properties: adapter.memory_properties().clone(),
+                gpu_transfer_queue,
             },
             transfer_queue,
         ))

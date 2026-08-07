@@ -4,14 +4,14 @@ use alexandria::gpu::{
     VulkanMappedMemory, VulkanMemoryPropertyFlag, VulkanSharingMode,
 };
 
-impl<'a, T> StagingBuffer<'a, T> {
+impl<T> StagingBuffer<T> {
     /// Resize the staging buffer to the specified capacity
     pub(in crate::render::transfer::staging_buffer) fn resize(
         &mut self,
         new_capacity: usize,
     ) -> Result<()> {
         let (buffer, memory) =
-            StagingBuffer::allocate(&self.device, self.memory_properties, new_capacity)?;
+            StagingBuffer::allocate(&self.device, &self.memory_properties, new_capacity)?;
 
         self.buffer = buffer;
         self.memory = memory;

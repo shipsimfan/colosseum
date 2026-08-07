@@ -31,8 +31,8 @@ impl<'instance> VulkanAdapterInfo<'instance> {
         self.graphics_queue_family_index
     }
 
-    /// Get the index of the transfer queue family to use with this adapter
-    pub fn transfer_queue_family_index(&self) -> u32 {
+    /// Get the index of the dedicated transfer queue family to use with this adapter
+    pub fn transfer_queue_family_index(&self) -> Option<u32> {
         self.transfer_queue_family_index
     }
 

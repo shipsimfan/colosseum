@@ -17,7 +17,7 @@ impl<'surface> Swapchain<'surface> {
         device: &mut GraphicsDevice,
     ) -> Result<bool> {
         // Apply any changes to the graphics device that have been queued up
-        device.apply_changes(render_data);
+        device.apply_changes(render_data)?;
 
         // Get the next frame data
         let frame_index = self.frame_index;

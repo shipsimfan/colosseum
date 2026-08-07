@@ -30,8 +30,8 @@ pub(in crate::render::job::graphics_device) struct VulkanAdapterInfo<'instance> 
     /// The index of the graphics queue family to use with this adapter
     graphics_queue_family_index: u32,
 
-    /// The index of the transfer queue family to use with this adapter
-    transfer_queue_family_index: u32,
+    /// The index of the dedicated transfer queue family to use with this adapter
+    transfer_queue_family_index: Option<u32>,
 
     /// The amount of device-local VRAM available on this adapter, in bytes
     device_local_vram: MemorySize,

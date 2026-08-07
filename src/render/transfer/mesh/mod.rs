@@ -7,7 +7,6 @@ use crate::{
 mod is_complete;
 mod new;
 mod take;
-mod wait;
 
 /// The state of a mesh transfer
 pub struct MeshTransfer {

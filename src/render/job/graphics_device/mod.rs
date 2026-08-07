@@ -1,6 +1,6 @@
 use crate::{
     logging::Logger,
-    render::{FrameGraph, RenderObjects},
+    render::{FrameGraph, RenderGpuTransferQueue, RenderObjects},
 };
 use adapter_info::VulkanAdapterInfo;
 use alexandria::{
@@ -50,6 +50,9 @@ pub(in crate::render::job) struct GraphicsDevice {
 
     /// The render objects that have been created by the update job
     render_objects: RenderObjects,
+
+    /// The render GPU transfer queue if there is no dedicated transfer queue
+    gpu_transfer_queue: Option<RenderGpuTransferQueue>,
 
     /// The memory properties of the adapter
     memory_properties: Arc<VulkanAdapterMemoryProperties>,

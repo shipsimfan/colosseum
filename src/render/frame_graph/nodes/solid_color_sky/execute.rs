@@ -46,6 +46,6 @@ impl SolidColorSkyNode {
         );
 
         // Perform the draw
-        cmd_buffer.cmd_draw(4, 1, 0, 0);
+        cmd_buffer.cmd_draw(3, 1, 0, 0);
     }
 }

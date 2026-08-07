@@ -3,14 +3,10 @@ struct VertexOutput {
     float2 uv : TEXCOORD0;
 };
 
-static VertexOutput vertices[4] = VertexOutput[](
-    VertexOutput(float4(-1.0,  1.0, 0.0, 1.0), float2(0.0, 1.0)), // bottom-left
-    VertexOutput(float4(-1.0, -1.0, 0.0, 1.0), float2(0.0, 0.0)), // top-left
-    VertexOutput(float4( 1.0, -1.0, 0.0, 1.0), float2(1.0, 0.0)), // top-right
-    VertexOutput(float4( 1.0,  1.0, 0.0, 1.0), float2(1.0, 1.0)), // bottom-right
-);
-
 [shader("vertex")]
-VertexOutput vert_main(uint vertexID : SV_VertexID) {
-    return vertices[vertexID];
+VertexOutput vert_main(uint vertex_id : SV_VertexID) {
+    VertexOutput vertex;
+    vertex.uv = float2((vertex_id << 1) & 2, vertex_id & 2);
+    vertex.position = float4(vertex.uv * 2.0f - 1.0f, 0.0f, 1.0f);
+    return vertex;
 }

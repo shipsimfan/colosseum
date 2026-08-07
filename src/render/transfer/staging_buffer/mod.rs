@@ -1,13 +1,14 @@
 use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanBuffer, VulkanDevice, VulkanMappedMemory,
 };
+use std::sync::Arc;
 
 mod new;
 mod resize;
 mod set;
 
 /// A staging buffer for temporarily holding data before transferring it to the GPU
-pub(in crate::render::transfer) struct StagingBuffer<'a, T> {
+pub(in crate::render::transfer) struct StagingBuffer<T> {
     /// The Vulkan buffer used for staging
     buffer: VulkanBuffer,
 
@@ -21,5 +22,7 @@ pub(in crate::render::transfer) struct StagingBuffer<'a, T> {
     device: VulkanDevice,
 
     /// The memory properties of the adapter to use when resizing the staging buffer
-    memory_properties: &'a VulkanAdapterMemoryProperties,
+    memory_properties: Arc<VulkanAdapterMemoryProperties>,
 }
+
+unsafe impl<T: Send> Send for StagingBuffer<T> {}

@@ -156,7 +156,7 @@ fn find_queue_family_indices(
     surface: &VulkanSurface,
     device_name: &str,
     logger: &Logger,
-) -> Result<Option<(u32, u32)>> {
+) -> Result<Option<(u32, Option<u32>)>> {
     let mut graphics_queue_family_index = None;
     let mut transfer_queue_family_index = None;
     for (index, queue_family) in adapter
@@ -194,17 +194,6 @@ fn find_queue_family_indices(
             warning!(
                 logger,
                 "Adapter \"{}\" rejected because it does not have a compatible graphics queue family",
-                device_name,
-            );
-            return Ok(None);
-        }
-    };
-    let transfer_queue_family_index = match transfer_queue_family_index {
-        Some(transfer_queue_family_index) => transfer_queue_family_index,
-        None => {
-            warning!(
-                logger,
-                "Adapter \"{}\" rejected because it does not have a compatible transfer queue family",
                 device_name,
             );
             return Ok(None);
