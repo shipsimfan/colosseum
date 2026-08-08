@@ -6,7 +6,6 @@ use alexandria::gpu::{
     VulkanBuffer, VulkanBufferCopy, VulkanCommandBuffer, VulkanCommandBufferSubmitInfo,
     VulkanFence, VulkanQueue, VulkanSubmitInfo,
 };
-use std::sync::mpsc::TryRecvError;
 
 impl RenderGpuTransferQueue {
     /// Handle a single command from the transfer queue, returning `true` if a command was handled
@@ -14,15 +13,12 @@ impl RenderGpuTransferQueue {
         let command = if block {
             match self.receiver.recv() {
                 Ok(command) => command,
-                Err(_) => return Err(Error::new("Transfer thread exiting due to channel closure")),
+                Err(_) => return Ok(false),
             }
         } else {
             match self.receiver.try_recv() {
                 Ok(command) => command,
-                Err(TryRecvError::Empty) => return Ok(false),
-                Err(TryRecvError::Disconnected) => {
-                    return Err(Error::new("Transfer thread exiting due to channel closure"));
-                }
+                Err(_) => return Ok(false),
             }
         };
 
