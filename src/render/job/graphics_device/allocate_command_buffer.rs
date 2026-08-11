@@ -1,4 +1,7 @@
-use crate::{Error, Result, render::job::GraphicsDevice};
+use crate::{
+    Error, Result,
+    render::{RenderData, job::GraphicsDevice},
+};
 use alexandria::gpu::VulkanCommandBufferLevel;
 
 impl GraphicsDevice {
@@ -11,6 +14,12 @@ impl GraphicsDevice {
                         .allocate_command_buffer(VulkanCommandBufferLevel::Primary)
                         .map_err(Error::new_inner)?,
                 );
+            }
+        }
+
+        if self.render_data.len() < num {
+            for _ in self.render_data.len()..num {
+                self.render_data.push(RenderData::new());
             }
         }
 

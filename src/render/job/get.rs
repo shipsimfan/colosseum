@@ -4,7 +4,7 @@ use std::sync::Arc;
 
 impl<'surface> RenderJob<'surface> {
     /// Get the device to use for rendering
-    pub(crate) fn device(&self) -> &VulkanDevice {
+    pub fn device(&self) -> &VulkanDevice {
         match self {
             RenderJob::Rendering { device, .. } => device,
             RenderJob::RecreateSwapchain { device, .. } => device,
@@ -12,7 +12,7 @@ impl<'surface> RenderJob<'surface> {
     }
 
     /// Get the swapchain format to use for rendering
-    pub(crate) fn swapchain_format(&self) -> VulkanFormat {
+    pub fn swapchain_format(&self) -> VulkanFormat {
         match self {
             RenderJob::Rendering { device, .. } => device.swapchain_format(),
             RenderJob::RecreateSwapchain { device, .. } => device.swapchain_format(),
@@ -20,10 +20,17 @@ impl<'surface> RenderJob<'surface> {
     }
 
     /// Get the memory properties of the adapter to use for rendering
-    pub(crate) fn memory_properties(&self) -> &Arc<VulkanAdapterMemoryProperties> {
+    pub fn memory_properties(&self) -> &Arc<VulkanAdapterMemoryProperties> {
         match self {
             RenderJob::Rendering { device, .. } => device.memory_properties(),
             RenderJob::RecreateSwapchain { device, .. } => device.memory_properties(),
+        }
+    }
+
+    pub fn render_data(&mut self) -> &mut crate::render::RenderData {
+        match self {
+            RenderJob::Rendering { device, .. } => device.render_data(),
+            RenderJob::RecreateSwapchain { device, .. } => device.render_data(),
         }
     }
 }

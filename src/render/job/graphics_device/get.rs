@@ -1,4 +1,7 @@
-use crate::{logging::Logger, render::job::GraphicsDevice};
+use crate::{
+    logging::Logger,
+    render::{RenderData, job::GraphicsDevice},
+};
 use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanCommandBuffer, VulkanFormat};
 use std::sync::Arc;
 
@@ -21,5 +24,10 @@ impl GraphicsDevice {
     /// Get the memory properties of the adapter for this graphics device
     pub fn memory_properties(&self) -> &Arc<VulkanAdapterMemoryProperties> {
         &self.memory_properties
+    }
+
+    /// Get the current render data for the frame
+    pub fn render_data(&mut self) -> &mut RenderData {
+        &mut self.render_data[self.current_render_data]
     }
 }

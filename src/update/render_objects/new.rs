@@ -12,7 +12,7 @@ use std::sync::Arc;
 impl UpdateRenderObjects {
     /// Create a new set of [`UpdateRenderObjects`]
     pub(in crate::update) fn new(
-        device: &VulkanDevice,
+        device: VulkanDevice,
         swapchain_format: VulkanFormat,
         transfer_queue: GpuTransferQueue,
         memory_properties: Arc<VulkanAdapterMemoryProperties>,
@@ -30,7 +30,7 @@ impl UpdateRenderObjects {
         );
 
         Ok(UpdateRenderObjects {
-            device: device.clone(),
+            device,
             swapchain_format,
             pipeline_layout,
             mesh_allocator,

@@ -2,7 +2,7 @@ use crate::{
     Error, Result, ThreadManager, info,
     logging::Logger,
     render::{
-        FrameGraph, GpuTransferQueue, RenderObjects,
+        FrameGraph, GpuTransferQueue, RenderData, RenderObjects,
         job::{GraphicsDevice, graphics_device::VulkanAdapterInfo},
     },
     warning,
@@ -99,6 +99,8 @@ impl GraphicsDevice {
                 render_objects,
                 memory_properties: adapter.memory_properties().clone(),
                 gpu_transfer_queue,
+                render_data: vec![RenderData::new()],
+                current_render_data: 0,
             },
             transfer_queue,
         ))

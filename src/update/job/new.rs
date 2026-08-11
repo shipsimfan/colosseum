@@ -21,11 +21,11 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         file_io: FileIo,
         window: &Window,
 
-        render_data: &mut RenderData,
-        device: &VulkanDevice,
+        device: VulkanDevice,
         swapchain_format: VulkanFormat,
         transfer_queue: GpuTransferQueue,
         memory_properties: Arc<VulkanAdapterMemoryProperties>,
+        render_data: &mut RenderData,
     ) -> Result<Option<UpdateJob<'a, Game>>> {
         // Create the initial set of inputs for the game
         let inputs = Inputs::new();

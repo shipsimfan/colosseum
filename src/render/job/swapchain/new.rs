@@ -11,7 +11,7 @@ use alexandria::{
     math::Vector2u,
 };
 
-const MAX_FRAMES_IN_FLIGHT: usize = 3;
+const MIN_FRAMES_IN_FLIGHT: usize = 2;
 
 impl<'surface> Swapchain<'surface> {
     /// Create a new [`Swapchain`] from a [`GraphicsDevice`]
@@ -32,7 +32,7 @@ impl<'surface> Swapchain<'surface> {
             .create_swapchain(
                 0,
                 surface,
-                MAX_FRAMES_IN_FLIGHT as _,
+                MIN_FRAMES_IN_FLIGHT as _,
                 swapchain_format,
                 Swapchain::COLOR_SPACE,
                 size,

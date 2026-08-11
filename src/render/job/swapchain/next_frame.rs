@@ -1,9 +1,6 @@
 use crate::{
     Error, Result,
-    render::{
-        RenderData,
-        job::{GraphicsDevice, Swapchain},
-    },
+    render::job::{GraphicsDevice, Swapchain},
 };
 use alexandria::math::Vector2u;
 
@@ -13,16 +10,15 @@ impl<'surface> Swapchain<'surface> {
     pub fn next_frame<'frame>(
         &'frame mut self,
         size: Vector2u,
-        render_data: &mut RenderData,
         device: &mut GraphicsDevice,
     ) -> Result<bool> {
-        // Apply any changes to the graphics device that have been queued up
-        device.apply_changes(render_data)?;
-
         // Get the next frame data
         let frame_index = self.frame_index;
         let frame = &mut self.frame_data[frame_index];
         self.frame_index = (frame_index + 1) % self.image_views.len();
+
+        // Apply any changes to the graphics device that have been queued up
+        let token = device.apply_changes()?;
 
         // Wait for the previous frame to finish
         frame.wait_for_draw_finish()?;
@@ -52,7 +48,7 @@ impl<'surface> Swapchain<'surface> {
 
         // Build and execute the frame graph for this frame
         device.build_and_run_frame_graph(
-            render_data,
+            token,
             &self.image_views[image_index as usize],
             self.size,
             frame_index,

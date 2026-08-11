@@ -3,7 +3,7 @@ use crate::{
     file_io::FileIo,
     info,
     logging::{LogController, Logger},
-    render::{RenderData, RenderJob},
+    render::RenderJob,
     settings::SettingsCache,
     update::UpdateJob,
 };
@@ -36,7 +36,6 @@ pub(in crate::run) fn run<Game: crate::Game>(
         &logger,
         &thread_manager,
     )?;
-    let mut render_data = RenderData::new();
 
     let mut update_job = match UpdateJob::<Game>::new(
         &options,
@@ -45,11 +44,11 @@ pub(in crate::run) fn run<Game: crate::Game>(
         &mut settings,
         file_io,
         &window,
-        &mut render_data,
-        render_job.device(),
+        render_job.device().clone(),
         render_job.swapchain_format(),
         transfer_queue,
         render_job.memory_properties().clone(),
+        render_job.render_data(),
     )? {
         Some(job) => job,
         None => {
@@ -71,6 +70,7 @@ pub(in crate::run) fn run<Game: crate::Game>(
         }
 
         // Reset per-frame data
+        let render_data = render_job.render_data();
         render_data.reset();
         log_controller.frame();
 
@@ -80,11 +80,11 @@ pub(in crate::run) fn run<Game: crate::Game>(
         last_time = current_time;
 
         // Update and render the frame
-        if !update_job.run(window_size, delta_time, &mut render_data, &window)? {
+        if !update_job.run(window_size, delta_time, render_data, &window)? {
             info!(logger, "Update job requested exit");
             break;
         }
-        render_job = render_job.run(window_size, &mut render_data)?;
+        render_job = render_job.run(window_size)?;
     }
 
     Ok(())

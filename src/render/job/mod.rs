@@ -1,5 +1,5 @@
 use alexandria::gpu::VulkanSurface;
-use graphics_device::GraphicsDevice;
+use graphics_device::*;
 use swapchain::Swapchain;
 
 mod graphics_device;

@@ -1,16 +1,12 @@
 use crate::{
     Result,
-    render::{RenderData, RenderJob, job::Swapchain},
+    render::{RenderJob, job::Swapchain},
 };
 use alexandria::math::Vector2u;
 
 impl<'surface> RenderJob<'surface> {
     /// Run the render job, returning the next state of the job
-    pub(crate) fn run(
-        self,
-        window_size: Vector2u,
-        render_data: &mut RenderData,
-    ) -> Result<RenderJob<'surface>> {
+    pub(crate) fn run(self, window_size: Vector2u) -> Result<RenderJob<'surface>> {
         Ok(match self {
             RenderJob::RecreateSwapchain {
                 mut device,
@@ -23,7 +19,7 @@ impl<'surface> RenderJob<'surface> {
                 mut device,
                 mut swapchain,
             } => {
-                if swapchain.next_frame(window_size, render_data, &mut device)? {
+                if swapchain.next_frame(window_size, &mut device)? {
                     RenderJob::RecreateSwapchain {
                         surface: swapchain.unwrap(&device)?,
                         device,
