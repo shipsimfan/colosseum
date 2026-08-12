@@ -2,7 +2,7 @@ use crate::{
     Window,
     file_io::FileIo,
     logging::Logger,
-    render::RenderData,
+    render::{RenderData, Skybox},
     update::{ECS, Inputs, Scene, UpdateRenderObjects},
 };
 use alexandria::math::Vector2u;
@@ -10,7 +10,7 @@ use std::time::Duration;
 
 mod complete;
 mod create;
-mod executre;
+mod execute;
 mod get;
 mod new;
 mod remove;
@@ -48,6 +48,9 @@ pub struct UpdateContext<'a, Game: crate::Game> {
 
     /// The window being rendered into
     window: &'a Window,
+
+    /// The skybox currently set
+    skybox: &'a mut Skybox,
 
     /// The data to be sent to the render job for rendering
     render_data: &'a mut RenderData,

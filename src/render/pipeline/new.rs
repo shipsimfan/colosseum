@@ -40,7 +40,7 @@ impl Pipeline {
         )];
 
         let pipeline_layout = device
-            .create_pipeline_layout(0, None, &push_constant_range)
+            .create_pipeline_layout(0, &[], &push_constant_range)
             .map_err(Error::new_inner)?;
 
         // Define the shader stages
@@ -73,7 +73,7 @@ impl Pipeline {
             false,
             VulkanPolygonMode::Fill,
             VulkanCullModeFlag::Back,
-            VulkanFrontFace::Clockwise,
+            VulkanFrontFace::CounterClockwise,
             false,
             0.0,
             0.0,

@@ -1,6 +1,5 @@
 use crate::{
-    Error, Result,
-    render::GpuTransferQueue,
+    render::{FixedRenderObjects, GpuTransferQueue},
     update::{UpdateRenderObjects, render_objects::GpuAllocator},
 };
 use alexandria::{
@@ -16,11 +15,8 @@ impl UpdateRenderObjects {
         swapchain_format: VulkanFormat,
         transfer_queue: GpuTransferQueue,
         memory_properties: Arc<VulkanAdapterMemoryProperties>,
-    ) -> Result<UpdateRenderObjects> {
-        let pipeline_layout = device
-            .create_pipeline_layout(0, None, &[])
-            .map_err(Error::new_inner)?;
-
+        fixed_render_objects: Arc<FixedRenderObjects>,
+    ) -> UpdateRenderObjects {
         let mesh_allocator = GpuAllocator::new(
             16 * 1024 * 1024, // 16 MB
             256,              // 256 B
@@ -29,15 +25,15 @@ impl UpdateRenderObjects {
             device.clone(),
         );
 
-        Ok(UpdateRenderObjects {
+        UpdateRenderObjects {
             device,
+            fixed_render_objects,
             swapchain_format,
-            pipeline_layout,
             mesh_allocator,
             meshes: SlotMap::new(),
             unlit_shaders: SlotMap::new(),
             unlit_opaque_materials: SlotMap::new(),
             transfer_queue,
-        })
+        }
     }
 }

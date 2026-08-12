@@ -58,7 +58,7 @@ impl RenderMaterial {
             false,
             VulkanPolygonMode::Fill,
             VulkanCullModeFlag::Back,
-            VulkanFrontFace::Clockwise,
+            VulkanFrontFace::CounterClockwise,
             false,
             0.0,
             0.0,

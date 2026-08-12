@@ -8,10 +8,16 @@ struct VertexOutput {
     float3 color;
 };
 
+struct Camera {
+    float4x4 view_projection;
+};
+
+ConstantBuffer<Camera> camera;
+
 [shader("vertex")]
 VertexOutput vert_main(VertexInput input) {
     VertexOutput output;
-    output.position = float4(input.position, 1.0);
+    output.position = mul(camera.view_projection, float4(input.position, 1.0));
     output.color = input.color;
     return output;
 }

@@ -6,7 +6,7 @@ struct VertexOutput {
 [shader("vertex")]
 VertexOutput vert_main(uint vertex_id : SV_VertexID) {
     VertexOutput vertex;
-    vertex.uv = float2((vertex_id << 1) & 2, vertex_id & 2);
+    vertex.uv = float2(vertex_id & 2, (vertex_id << 1) & 2);
     vertex.position = float4(vertex.uv * 2.0f - 1.0f, 0.0f, 1.0f);
     return vertex;
 }

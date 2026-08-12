@@ -1,4 +1,4 @@
-use crate::render::RenderJob;
+use crate::render::{FixedRenderObjects, RenderData, RenderJob};
 use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice, VulkanFormat};
 use std::sync::Arc;
 
@@ -27,7 +27,16 @@ impl<'surface> RenderJob<'surface> {
         }
     }
 
-    pub fn render_data(&mut self) -> &mut crate::render::RenderData {
+    /// Get the fixed render objects to use for rendering
+    pub fn fixed_render_objects(&self) -> &Arc<FixedRenderObjects> {
+        match self {
+            RenderJob::Rendering { device, .. } => device.fixed_render_objects(),
+            RenderJob::RecreateSwapchain { device, .. } => device.fixed_render_objects(),
+        }
+    }
+
+    /// Get a mutable reference to the render data to use for rendering
+    pub fn render_data(&mut self) -> &mut RenderData {
         match self {
             RenderJob::Rendering { device, .. } => device.render_data(),
             RenderJob::RecreateSwapchain { device, .. } => device.render_data(),

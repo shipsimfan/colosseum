@@ -1,6 +1,8 @@
-use crate::render::{Material, Mesh};
+use crate::render::{Material, Mesh, data::doubled::DoubledRenderData};
 use alexandria::Id;
 
+mod camera;
+mod doubled;
 mod remove_confirm;
 mod render_object_change;
 mod skybox;
@@ -10,17 +12,17 @@ mod apply;
 mod get;
 mod new;
 mod reset;
-mod scene_reset;
+mod set;
 
 pub use skybox::*;
 
+pub(crate) use camera::*;
 pub(crate) use remove_confirm::*;
 pub(crate) use render_object_change::*;
 
 /// The data required to execute a render job
 pub(crate) struct RenderData {
-    /// The skybox to render
-    pub skybox: Skybox,
+    /** Render Objects **/
 
     /// The changes to the render objects in use
     render_object_changes: Vec<RenderObjectChange>,
@@ -28,9 +30,21 @@ pub(crate) struct RenderData {
     /// The objects whose removals have been confirmed, and the memory can be freed
     confirmed_removals: Vec<RenderObjectRemoveConfirm>,
 
+    /** Scene Data **/
+
+    /// The skybox to render
+    skybox: Skybox,
+
     /// The set of unlit opaque renderable objects in the scene
     ///
     /// These renderables are rendered in a single pass, and do not require any lighting
     /// calculations or transparency
     unlit_opaque_renderables: Vec<(Id<Material>, Id<Mesh>)>,
+
+    /// The render data that exists in two copies for each frame, so that one copy can be used for
+    /// rendering while the other is being updated
+    doubled: [DoubledRenderData; 2],
+
+    /// The index of the doubled render data that is currently being used for rendering
+    current_doubled_index: usize,
 }

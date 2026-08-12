@@ -41,8 +41,14 @@ impl<T> StagingBuffer<T> {
 
         // Allocate the memory for the buffer
         let memory_requirements = buffer.get_memory_requirements();
-        let memory_type =
-            find_memory_type(memory_properties, memory_requirements.memory_type_bits())?;
+        let memory_type = memory_properties
+            .find_memory_type(
+                memory_requirements.memory_type_bits(),
+                VulkanMemoryPropertyFlag::HostVisible | VulkanMemoryPropertyFlag::HostCoherent,
+            )
+            .ok_or(Error::new(
+                "unable to find a suitable memory type for a staging buffer",
+            ))?;
         let memory = device
             .allocate_memory(memory_requirements.size(), memory_type)
             .map_err(Error::new_inner)?;
@@ -57,23 +63,4 @@ impl<T> StagingBuffer<T> {
 
         Ok((buffer, memory))
     }
-}
-
-fn find_memory_type(
-    memory_properties: &VulkanAdapterMemoryProperties,
-    type_filter: u32,
-) -> Result<usize> {
-    for (i, memory_type) in memory_properties.memory_types().iter().enumerate() {
-        if (type_filter & (1 << i)) != 0
-            && memory_type.flags().contains(
-                VulkanMemoryPropertyFlag::HostVisible | VulkanMemoryPropertyFlag::HostCoherent,
-            )
-        {
-            return Ok(i);
-        }
-    }
-
-    Err(Error::new(
-        "unable to find a suitable memory type for a staging buffer",
-    ))
 }

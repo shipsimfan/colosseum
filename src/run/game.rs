@@ -48,6 +48,7 @@ pub(in crate::run) fn run<Game: crate::Game>(
         render_job.swapchain_format(),
         transfer_queue,
         render_job.memory_properties().clone(),
+        render_job.fixed_render_objects().clone(),
         render_job.render_data(),
     )? {
         Some(job) => job,

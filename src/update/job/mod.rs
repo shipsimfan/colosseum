@@ -1,6 +1,7 @@
 use crate::{
     file_io::FileIo,
     logging::Logger,
+    render::Skybox,
     update::{ECS, Inputs, Scene, UpdateRenderObjects},
 };
 
@@ -32,6 +33,9 @@ pub(crate) struct UpdateJob<'a, Game: crate::Game> {
 
     /// The ECS system for the game
     ecs: ECS,
+
+    /// The skybox to use for rendering the scene
+    skybox: Skybox,
 
     /// The render objects that have been created and are being used by the game
     render_objects: UpdateRenderObjects,

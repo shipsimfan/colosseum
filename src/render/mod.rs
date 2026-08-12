@@ -2,7 +2,6 @@
 
 use frame_graph::*;
 use pipeline::*;
-use render_objects::*;
 
 mod data;
 mod frame_graph;
@@ -19,5 +18,6 @@ pub use mesh::*;
 pub use transfer::*;
 
 pub(crate) use job::*;
+pub(crate) use render_objects::*;
 
 pub use alexandria::gpu::{VulkanShaderModuleCode as ShaderCode, compile_shader};

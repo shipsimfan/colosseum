@@ -45,12 +45,12 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
 
     /// Get a reference to the skybox used for this update
     pub fn skybox(&self) -> &Skybox {
-        &self.render_data.skybox
+        self.skybox
     }
 
     /// Get a mutable reference to the clear color used for this update
     pub fn skybox_mut(&mut self) -> &mut Skybox {
-        &mut self.render_data.skybox
+        self.skybox
     }
 
     /// Get the current set of inputs for the game

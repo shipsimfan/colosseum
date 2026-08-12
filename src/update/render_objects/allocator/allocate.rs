@@ -2,9 +2,7 @@ use crate::{
     Error, Result,
     update::render_objects::{GpuAllocatedMemory, GpuAllocator, allocator::GpuMemoryType},
 };
-use alexandria::gpu::{
-    VulkanAdapterMemoryProperties, VulkanMemoryPropertyFlag, VulkanMemoryRequirements,
-};
+use alexandria::gpu::{VulkanMemoryPropertyFlag, VulkanMemoryRequirements};
 use std::sync::Arc;
 
 impl GpuAllocator {
@@ -35,12 +33,17 @@ impl GpuAllocator {
         }
 
         // If no memory type supports the given memory requirements, try to create a new one
-        let memory_type_index = find_memory_type(
-            &self.memory_properties,
-            memory_requirements.memory_type_bits(),
-        )?;
+        let memory_type_index = self
+            .memory_properties
+            .find_memory_type(
+                memory_requirements.memory_type_bits(),
+                VulkanMemoryPropertyFlag::HostVisible | VulkanMemoryPropertyFlag::HostCoherent,
+            )
+            .ok_or(Error::new(
+                "unable to find a suitable memory type for a buffer",
+            ))?;
         self.memory_types.push(GpuMemoryType::new(
-            memory_type_index,
+            memory_type_index as _,
             self.chunk_size,
             self.min_block_size,
             self.max_block_size,
@@ -56,10 +59,15 @@ impl GpuAllocator {
         &self,
         memory_requirements: &VulkanMemoryRequirements,
     ) -> Result<GpuAllocatedMemory> {
-        let memory_type_index = find_memory_type(
-            &self.memory_properties,
-            memory_requirements.memory_type_bits(),
-        )?;
+        let memory_type_index = self
+            .memory_properties
+            .find_memory_type(
+                memory_requirements.memory_type_bits(),
+                VulkanMemoryPropertyFlag::HostVisible | VulkanMemoryPropertyFlag::HostCoherent,
+            )
+            .ok_or(Error::new(
+                "unable to find a suitable memory type for a buffer",
+            ))?;
 
         let device_memory = Arc::new(
             self.device
@@ -69,23 +77,4 @@ impl GpuAllocator {
 
         Ok(GpuAllocatedMemory::new_dedicated(device_memory))
     }
-}
-
-fn find_memory_type(
-    memory_properties: &VulkanAdapterMemoryProperties,
-    type_filter: u32,
-) -> Result<u32> {
-    for (i, memory_type) in memory_properties.memory_types().iter().enumerate() {
-        if (type_filter & (1 << i)) != 0
-            && memory_type.flags().contains(
-                VulkanMemoryPropertyFlag::HostVisible | VulkanMemoryPropertyFlag::HostCoherent,
-            )
-        {
-            return Ok(i as _);
-        }
-    }
-
-    Err(Error::new(
-        "unable to find a suitable memory type for a buffer",
-    ))
 }

@@ -1,6 +1,6 @@
-use crate::render::{RenderData, RenderObjects, frame_graph::UnlitForwardRenderNode};
+use crate::render::{MaterialKind, RenderData, RenderObjects, frame_graph::UnlitForwardRenderNode};
 use alexandria::{
-    gpu::{VulkanCommandBuffer, VulkanViewport},
+    gpu::{VulkanCommandBuffer, VulkanPipelineBindPoint, VulkanViewport},
     math::{Recti, Vector2, Vector2u},
 };
 
@@ -25,6 +25,14 @@ impl UnlitForwardRenderNode {
         let scissor = Recti::new(Vector2::ZERO, swapchain_size);
         cmd_buffer.cmd_set_viewport(0, &[viewport]);
         cmd_buffer.cmd_set_scissor(0, &[scissor]);
+
+        // Bind the camera descriptor set
+        cmd_buffer.cmd_bind_descriptor_set(
+            VulkanPipelineBindPoint::Graphics,
+            render_objects.material_pipeline_layout(MaterialKind::UnlitOpaque),
+            0,
+            render_data.camera().descriptor_set(),
+        );
 
         for &(material, mesh) in render_data.unlit_opaque_renderables() {
             let material = render_objects.unlit_opaque_material(material);

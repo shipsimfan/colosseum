@@ -30,7 +30,7 @@ impl SolidColorSkyNode {
         render_objects.pipelines()[0].bind(cmd_buffer);
 
         // Bind the push constants for the clear color
-        let clear_color = match render_data.skybox {
+        let clear_color = match render_data.skybox() {
             Skybox::SolidColor(color) => color.with_alpha(1.0),
         };
         cmd_buffer.cmd_push_constants(

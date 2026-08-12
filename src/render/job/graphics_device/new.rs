@@ -87,6 +87,14 @@ impl GraphicsDevice {
         // Create the render objects
         let render_objects = RenderObjects::new(adapter.swapchain_format(), &device)?;
 
+        // Create the initial render data
+        let render_data = vec![RenderData::new(
+            &device,
+            adapter.memory_properties(),
+            &render_objects,
+            &logger,
+        )?];
+
         Ok((
             GraphicsDevice {
                 logger: logger.clone(),
@@ -99,7 +107,7 @@ impl GraphicsDevice {
                 render_objects,
                 memory_properties: adapter.memory_properties().clone(),
                 gpu_transfer_queue,
-                render_data: vec![RenderData::new()],
+                render_data,
                 current_render_data: 0,
             },
             transfer_queue,

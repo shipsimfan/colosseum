@@ -1,5 +1,8 @@
-use crate::render::{Material, Mesh, RenderMaterial, RenderMesh, RenderObjects};
+use crate::render::{
+    FixedRenderObjects, Material, Mesh, RenderMaterial, RenderMesh, RenderObjects,
+};
 use alexandria::Id;
+use std::sync::Arc;
 
 impl RenderObjects {
     /// Get the mesh with the given ID
@@ -10,5 +13,10 @@ impl RenderObjects {
     /// Get the unlit opaque material with the given ID
     pub fn unlit_opaque_material(&self, id: Id<Material>) -> &RenderMaterial {
         &self.unlit_opaque_materials[unsafe { id.cast() }]
+    }
+
+    /// Get the fixed render objects
+    pub fn fixed(&self) -> &Arc<FixedRenderObjects> {
+        &self.fixed
     }
 }

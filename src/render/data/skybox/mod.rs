@@ -4,6 +4,7 @@ mod default;
 mod from;
 
 /// A skybox that can be rendered in the scene
+#[derive(Clone)]
 pub enum Skybox {
     /// Clear the screen to a solid color before rendering the scene
     SolidColor(Color3f<Linear>),

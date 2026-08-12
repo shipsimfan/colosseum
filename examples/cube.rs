@@ -11,16 +11,16 @@ colosseum::render::compile_shader!(
 
 const VERTICES: &[colosseum::render::Vertex] = &[
     colosseum::render::Vertex::new(
-        colosseum::math::Vector3f::new(0.0, -0.5, 0.0),
+        colosseum::math::Vector3f::new(0.0, 0.5, 3.0),
         colosseum::math::Color3f::<colosseum::math::Linear>::new(1.0, 0.0, 0.0),
     ),
     colosseum::render::Vertex::new(
-        colosseum::math::Vector3f::new(0.5, 0.5, 0.0),
-        colosseum::math::Color3f::<colosseum::math::Linear>::new(0.0, 1.0, 0.0),
+        colosseum::math::Vector3f::new(-0.5, -0.5, 3.0),
+        colosseum::math::Color3f::<colosseum::math::Linear>::new(0.0, 0.0, 1.0),
     ),
     colosseum::render::Vertex::new(
-        colosseum::math::Vector3f::new(-0.5, 0.5, 0.0),
-        colosseum::math::Color3f::<colosseum::math::Linear>::new(0.0, 0.0, 1.0),
+        colosseum::math::Vector3f::new(0.5, -0.5, 3.0),
+        colosseum::math::Color3f::<colosseum::math::Linear>::new(0.0, 1.0, 0.0),
     ),
 ];
 

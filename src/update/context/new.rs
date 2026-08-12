@@ -2,7 +2,7 @@ use crate::{
     Window,
     file_io::FileIo,
     logging::Logger,
-    render::RenderData,
+    render::{RenderData, Skybox},
     update::{ECS, Inputs, UpdateContext, UpdateRenderObjects},
 };
 use alexandria::math::Vector2u;
@@ -19,6 +19,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         file_io: &'a FileIo,
         ecs: &'a mut ECS,
         window: &'a Window,
+        skybox: &'a mut Skybox,
         render_data: &'a mut RenderData,
         render_objects: &'a mut UpdateRenderObjects,
     ) -> UpdateContext<'a, Game> {
@@ -33,6 +34,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
             file_io,
             ecs,
             window,
+            skybox,
             render_data,
             render_objects,
         }

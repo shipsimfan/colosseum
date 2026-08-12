@@ -55,7 +55,12 @@ macro_rules! nodes {
                 device: &VulkanDevice,
             ) -> Result<()> {
                 $(
-                    $type::create_objects(pipelines, fullscreen_quad, swapchain_format, device)?;
+                    $type::create_objects(
+                        pipelines,
+                        fullscreen_quad,
+                        swapchain_format,
+                        device
+                    )?;
                 )*
 
                 Ok(())

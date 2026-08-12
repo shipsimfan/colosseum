@@ -2,7 +2,7 @@ use crate::{
     Result, Window,
     file_io::FileIo,
     logging::Logger,
-    render::{GpuTransferQueue, RenderData},
+    render::{FixedRenderObjects, GpuTransferQueue, RenderData, Skybox},
     update::{ECS, InitialScene, Inputs, Scene, UpdateContext, UpdateJob, UpdateRenderObjects},
 };
 use alexandria::{
@@ -25,6 +25,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         swapchain_format: VulkanFormat,
         transfer_queue: GpuTransferQueue,
         memory_properties: Arc<VulkanAdapterMemoryProperties>,
+        fixed_render_objects: Arc<FixedRenderObjects>,
         render_data: &mut RenderData,
     ) -> Result<Option<UpdateJob<'a, Game>>> {
         // Create the initial set of inputs for the game
@@ -34,8 +35,14 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         let mut ecs = ECS::new(logger);
 
         // Create the render objects
-        let mut render_objects =
-            UpdateRenderObjects::new(device, swapchain_format, transfer_queue, memory_properties)?;
+        let mut skybox = Skybox::default();
+        let mut render_objects = UpdateRenderObjects::new(
+            device,
+            swapchain_format,
+            transfer_queue,
+            memory_properties,
+            fixed_render_objects,
+        );
 
         // Create the update context that will be passed to the initial scene
         let mut update_context = UpdateContext::new(
@@ -47,6 +54,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             &file_io,
             &mut ecs,
             window,
+            &mut skybox,
             render_data,
             &mut render_objects,
         );
@@ -73,6 +81,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             inputs,
             file_io,
             ecs,
+            skybox,
             render_objects,
         }))
     }

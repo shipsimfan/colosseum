@@ -1,5 +1,6 @@
 use crate::render::{RenderMaterial, RenderMesh};
 use alexandria::SlotMap;
+use std::sync::Arc;
 
 mod fixed;
 
@@ -9,12 +10,12 @@ mod insert;
 mod new;
 mod remove;
 
-pub(in crate::render) use fixed::*;
+pub(crate) use fixed::*;
 
 /// The render objects that have been created by the update job
 pub(in crate::render) struct RenderObjects {
     /// The fixed render objects
-    fixed: FixedRenderObjects,
+    fixed: Arc<FixedRenderObjects>,
 
     /// The meshes that have been created
     meshes: SlotMap<RenderMesh>,
