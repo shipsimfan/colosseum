@@ -3,9 +3,9 @@ use crate::{
     file_io::FileIo,
     logging::Logger,
     render::{RenderData, Skybox},
-    update::{ECS, Inputs, UpdateContext, UpdateRenderObjects},
+    update::{ECS, Entity, Inputs, UpdateContext, UpdateRenderObjects},
 };
-use alexandria::math::Vector2u;
+use alexandria::{Id, math::Vector2u};
 use std::time::Duration;
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
@@ -18,6 +18,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         inputs: &'a Inputs,
         file_io: &'a FileIo,
         ecs: &'a mut ECS,
+        active_camera: &'a mut Option<Id<Entity>>,
         window: &'a Window,
         skybox: &'a mut Skybox,
         render_data: &'a mut RenderData,
@@ -33,6 +34,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
             inputs,
             file_io,
             ecs,
+            active_camera,
             window,
             skybox,
             render_data,

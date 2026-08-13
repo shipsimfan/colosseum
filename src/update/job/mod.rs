@@ -2,8 +2,9 @@ use crate::{
     file_io::FileIo,
     logging::Logger,
     render::Skybox,
-    update::{ECS, Inputs, Scene, UpdateRenderObjects},
+    update::{ECS, Entity, Inputs, Scene, UpdateRenderObjects},
 };
+use alexandria::Id;
 
 mod new;
 mod run;
@@ -33,6 +34,9 @@ pub(crate) struct UpdateJob<'a, Game: crate::Game> {
 
     /// The ECS system for the game
     ecs: ECS,
+
+    /// The currently active camera
+    active_camera: Option<Id<Entity>>,
 
     /// The skybox to use for rendering the scene
     skybox: Skybox,

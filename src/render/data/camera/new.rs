@@ -1,6 +1,5 @@
 use crate::{
     Error, Result,
-    logging::Logger,
     render::{CameraRenderData, RenderObjects, data::camera::CameraShaderData},
 };
 use alexandria::gpu::{
@@ -15,7 +14,6 @@ impl CameraRenderData {
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,
         render_objects: &RenderObjects,
-        logger: &Logger,
     ) -> Result<CameraRenderData> {
         // Create buffer for camera shader data
         let mut buffer = device
@@ -44,7 +42,7 @@ impl CameraRenderData {
         let mut shader_data = memory
             .map(0, std::mem::size_of::<CameraShaderData>(), 0)
             .map_err(|(error, _)| Error::new_inner(error))?;
-        shader_data[0] = CameraShaderData::new(logger);
+        shader_data[0] = CameraShaderData::new();
 
         // Create a descriptor pool for the camera shader data
         let mut descriptor_pool = device

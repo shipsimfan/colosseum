@@ -6,5 +6,6 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         *self.skybox = Skybox::default();
 
         self.ecs.scene_reset();
+        *self.active_camera = None;
     }
 }

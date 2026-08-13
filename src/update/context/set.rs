@@ -1,7 +1,9 @@
+use alexandria::Id;
+
 use crate::{
     Result,
     render::Skybox,
-    update::{Scene, UpdateContext},
+    update::{Entity, Scene, UpdateContext},
 };
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
@@ -18,6 +20,11 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Set the skybox to use for this update
     pub fn set_skybox<S: Into<Skybox>>(&mut self, skybox: S) {
         *self.skybox = skybox.into();
+    }
+
+    /// Set the currently active camera
+    pub fn set_active_camera(&mut self, camera: Id<Entity>) {
+        *self.active_camera = Some(camera);
     }
 
     /// Set the window to fullscreen mode

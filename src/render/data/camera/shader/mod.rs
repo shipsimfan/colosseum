@@ -1,6 +1,7 @@
 use alexandria::math::Matrix4x4f;
 
 mod new;
+mod set;
 
 /// The data that is passed to shader programs describing the camera's view of the scene
 #[repr(C)]

@@ -45,6 +45,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         );
 
         // Create the update context that will be passed to the initial scene
+        let mut active_camera = None;
         let mut update_context = UpdateContext::new(
             Duration::ZERO,
             window_size,
@@ -53,6 +54,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             &inputs,
             &file_io,
             &mut ecs,
+            &mut active_camera,
             window,
             &mut skybox,
             render_data,
@@ -81,6 +83,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             inputs,
             file_io,
             ecs,
+            active_camera,
             skybox,
             render_objects,
         }))

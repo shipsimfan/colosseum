@@ -87,6 +87,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             &self.inputs,
             &self.file_io,
             &mut self.ecs,
+            &mut self.active_camera,
             window,
             &mut self.skybox,
             render_data,

@@ -1,5 +1,5 @@
 [workspace.package]
-version = "0.6.4"
+version = "0.7.0"
 authors = ["Lance Hart <me@lancehart.ca>"]
 edition = "2024"
 repository = "https://github.com/shipsimfan/colosseum"
@@ -10,9 +10,9 @@ publish = false
 colosseum-build.path = "build"
 colosseum-macros.path = "macros"
 
-alexandria = { path = "../alexandria", features = [
+alexandria = { git = "https://github.com/shipsimfan/alexandria", features = [
     "data-format",
-] } #  git = "https://github.com/shipsimfan/alexandria"
+] }
 
 argparse.git = "https://github.com/shipsimfan/lib-argparse"
 data-format.git = "https://github.com/shipsimfan/lib-data-format"

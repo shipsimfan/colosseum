@@ -3,9 +3,9 @@ use crate::{
     file_io::FileIo,
     logging::Logger,
     render::{RenderData, Skybox},
-    update::{ECS, Inputs, Scene, UpdateRenderObjects},
+    update::{ECS, Entity, Inputs, Scene, UpdateRenderObjects},
 };
-use alexandria::math::Vector2u;
+use alexandria::{Id, math::Vector2u};
 use std::time::Duration;
 
 mod complete;
@@ -45,6 +45,9 @@ pub struct UpdateContext<'a, Game: crate::Game> {
 
     /// The ECS system for the game
     ecs: &'a mut ECS,
+
+    /// The index of the currently active camera
+    active_camera: &'a mut Option<Id<Entity>>,
 
     /// The window being rendered into
     window: &'a Window,

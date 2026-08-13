@@ -5,6 +5,7 @@ use shader::CameraShaderData;
 
 mod get;
 mod new;
+mod set;
 mod shader;
 
 /// The data required to render a camera's view of the scene

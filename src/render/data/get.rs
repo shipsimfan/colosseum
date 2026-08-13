@@ -26,8 +26,18 @@ impl RenderData {
         self.doubled().camera()
     }
 
+    /// Get a mutable reference to the camera data for the current frame
+    pub fn camera_mut(&mut self) -> &mut CameraRenderData {
+        self.doubled_mut().camera_mut()
+    }
+
     /// Get a reference to the doubled render data that is currently being used for rendering
     fn doubled(&self) -> &DoubledRenderData {
         &self.doubled[self.current_doubled_index]
+    }
+
+    /// Get a mutable reference to the doubled render data that is currently being used for rendering
+    fn doubled_mut(&mut self) -> &mut DoubledRenderData {
+        &mut self.doubled[self.current_doubled_index]
     }
 }

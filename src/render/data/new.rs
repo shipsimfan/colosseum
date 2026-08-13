@@ -20,8 +20,8 @@ impl RenderData {
             skybox: Skybox::default(),
             unlit_opaque_renderables: Vec::new(),
             doubled: [
-                DoubledRenderData::new(device, memory_properties, render_objects, logger)?,
-                DoubledRenderData::new(device, memory_properties, render_objects, logger)?,
+                DoubledRenderData::new(device, memory_properties, render_objects)?,
+                DoubledRenderData::new(device, memory_properties, render_objects)?,
             ],
             current_doubled_index: 0,
         })

@@ -186,6 +186,10 @@ impl colosseum::update::InitialScene for CubeScene {
         let ecs = context.ecs_mut();
         let cube = ecs.create_entity();
 
+        let camera = ecs.create_entity();
+        ecs.add_component(camera, colosseum::update::components::Camera::default());
+        context.set_active_camera(camera);
+
         Ok(CubeScene {
             color: colosseum::math::ColorHsv::RED,
             frames: 0,
