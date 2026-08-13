@@ -23,7 +23,6 @@ impl GraphicsDevice {
                     &self.device,
                     &self.memory_properties,
                     &self.render_objects,
-                    &self.logger,
                 )?);
             }
         }

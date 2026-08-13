@@ -1,33 +1,31 @@
 # ToDo
- 1. Add cameras
-   1. Improve camera descriptor pool and buffer management
- 2. Add transforms
+ 1. Add transforms
    1. Add transform component
    2. Add transform support to cameras
    3. Add transform buffers to render data
    4. Add writing transform to buffer
    5. Add pushing address to shaders
- 3. Add color to materials
- 4. Add depth support
- 5. Add mesh primitives
+ 2. Add color to materials
+ 3. Add depth support
+ 4. Add mesh primitives
    1. Quad
    2. Plane
    3. Cube
    4. Sphere
- 6. Add post processing system
- 7. Add render scale
- 8. Add FXAA
- 9. Add HDR + tonemapping
- 10. Add lighting system
+ 5. Add post processing system
+ 6. Add render scale
+ 7. Add FXAA
+ 8. Add HDR + tonemapping
+ 9. Add lighting system
    1. Add lit opaque materials
    2. Directional lights
    3. Point lights
    4. Spot lights
- 11. Add shadow mapping
+ 10. Add shadow mapping
    1. Directional light shadows
    2. Point light shadows
    3. Spot light shadows
- 12. Add mesh loading
+ 11. Add mesh loading
  12. Add texture loading
  13. Add PBR material system
  14. Add bloom

@@ -1,6 +1,5 @@
 use crate::{
     Result,
-    logging::Logger,
     render::{RenderData, RenderObjects, Skybox, data::DoubledRenderData},
 };
 use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice};
@@ -11,7 +10,6 @@ impl RenderData {
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,
         render_objects: &RenderObjects,
-        logger: &Logger,
     ) -> Result<RenderData> {
         Ok(RenderData {
             render_object_changes: Vec::new(),

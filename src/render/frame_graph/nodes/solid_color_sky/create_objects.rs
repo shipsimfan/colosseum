@@ -3,7 +3,7 @@ use crate::{
     render::{Pipeline, Shader, frame_graph::SolidColorSkyNode},
 };
 use alexandria::{
-    gpu::{VulkanDescriptorSetLayout, VulkanDevice, VulkanFormat, compile_shader},
+    gpu::{VulkanDevice, VulkanFormat, compile_shader},
     math::{Color4f, Linear},
 };
 use std::sync::Arc;

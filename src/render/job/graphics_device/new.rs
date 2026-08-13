@@ -92,7 +92,6 @@ impl GraphicsDevice {
             &device,
             adapter.memory_properties(),
             &render_objects,
-            &logger,
         )?];
 
         Ok((
