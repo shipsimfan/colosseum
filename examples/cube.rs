@@ -86,6 +86,9 @@ struct CubeScene {
     /// The ID of the renderable cube
     cube: colosseum::Id<colosseum::update::Entity>,
 
+    /// The ID of the camera
+    camera: colosseum::Id<colosseum::update::Entity>,
+
     /// Should the cube be rendered?
     render_state: bool,
 }
@@ -100,11 +103,11 @@ impl colosseum::update::Scene for CubeScene {
         // Shift the color over time based on user input
         let amount = context.delta_time().as_secs_f32() / 5.0;
         self.color = if context.inputs().key(colosseum::Key::Left)
-            || context.inputs().key(colosseum::Key::A)
+            || context.inputs().key(colosseum::Key::K)
         {
             self.color.add_hue(amount)
         } else if context.inputs().key(colosseum::Key::Right)
-            || context.inputs().key(colosseum::Key::D)
+            || context.inputs().key(colosseum::Key::L)
         {
             self.color.sub_hue(amount)
         } else {
@@ -121,6 +124,35 @@ impl colosseum::update::Scene for CubeScene {
                 context.set_fullscreen()?;
             }
         }
+
+        // Move the camera based on user input
+        let mut camera_position = context
+            .ecs()
+            .get::<colosseum::update::components::Transform>(self.camera)
+            .position();
+        let camera_speed = context.delta_time().as_secs_f32();
+        if context.inputs().key(colosseum::Key::W) {
+            camera_position.z += camera_speed;
+        }
+        if context.inputs().key(colosseum::Key::S) {
+            camera_position.z -= camera_speed;
+        }
+        if context.inputs().key(colosseum::Key::A) {
+            camera_position.x -= camera_speed;
+        }
+        if context.inputs().key(colosseum::Key::D) {
+            camera_position.x += camera_speed;
+        }
+        if context.inputs().key(colosseum::Key::Q) {
+            camera_position.y += camera_speed;
+        }
+        if context.inputs().key(colosseum::Key::E) {
+            camera_position.y -= camera_speed;
+        }
+        context
+            .ecs_mut()
+            .get_mut::<colosseum::update::components::Transform>(self.camera)
+            .set_position(camera_position);
 
         // Render the cube
         let mesh = match &mut self.mesh {
@@ -188,6 +220,7 @@ impl colosseum::update::InitialScene for CubeScene {
 
         let camera = ecs.create_entity();
         ecs.add_component(camera, colosseum::update::components::Camera::default());
+        ecs.add_component(camera, colosseum::update::components::Transform::default());
         context.set_active_camera(camera);
 
         Ok(CubeScene {
@@ -198,6 +231,7 @@ impl colosseum::update::InitialScene for CubeScene {
             material,
             mesh,
             cube,
+            camera,
             render_state: true,
         })
     }

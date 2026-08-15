@@ -1,5 +1,8 @@
 use crate::{
-    update::{UpdateContext, components::Camera},
+    update::{
+        UpdateContext,
+        components::{Camera, Transform},
+    },
     warning,
 };
 use alexandria::math::Matrix4x4f;
@@ -36,12 +39,16 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
             }
         };
 
-        // TODO: Get the transform associated with the camera and combine it with the projection matrix
+        // Get the transform associated with the camera and combine it with the projection matrix
+        let view = match self.ecs.try_get_mut::<Transform>(active_camera) {
+            Some(transform) => transform.camera_matrix(),
+            None => Matrix4x4f::IDENTITY,
+        };
 
         // Set the view-projection matrix in the render data
         self.render_data
             .camera_mut()
-            .set_view_projection(projection);
+            .set_view_projection(projection * view);
         true
     }
 }

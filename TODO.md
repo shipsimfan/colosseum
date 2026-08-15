@@ -1,10 +1,8 @@
 # ToDo
  1. Add transforms
-   1. Add transform component
-   2. Add transform support to cameras
-   3. Add transform buffers to render data
-   4. Add writing transform to buffer
-   5. Add pushing address to shaders
+   1. Add transform buffers to render data
+   2. Add writing transform to buffer
+   3. Add pushing address to shaders
  2. Add color to materials
  3. Add depth support
  4. Add mesh primitives
