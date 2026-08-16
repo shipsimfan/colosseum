@@ -126,33 +126,84 @@ impl colosseum::update::Scene for CubeScene {
         }
 
         // Move the camera based on user input
-        let mut camera_position = context
-            .ecs()
-            .get::<colosseum::update::components::Transform>(self.camera)
-            .position();
-        let camera_speed = context.delta_time().as_secs_f32();
-        if context.inputs().key(colosseum::Key::W) {
-            camera_position.z += camera_speed;
+        if context.inputs().key(colosseum::Key::LeftShift)
+            | context.inputs().key(colosseum::Key::RightShift)
+        {
+            let mut camera_rotation = colosseum::math::Vector3f::ZERO;
+            let mut changed = false;
+            let camera_speed = context.delta_time().as_secs_f32();
+            if context.inputs().key(colosseum::Key::W) {
+                camera_rotation.x += camera_speed;
+                changed = true;
+            }
+            if context.inputs().key(colosseum::Key::S) {
+                camera_rotation.x -= camera_speed;
+                changed = true;
+            }
+            if context.inputs().key(colosseum::Key::A) {
+                camera_rotation.y -= camera_speed;
+                changed = true;
+            }
+            if context.inputs().key(colosseum::Key::D) {
+                camera_rotation.y += camera_speed;
+                changed = true;
+            }
+            if context.inputs().key(colosseum::Key::Q) {
+                camera_rotation.z += camera_speed;
+                changed = true;
+            }
+            if context.inputs().key(colosseum::Key::E) {
+                camera_rotation.z -= camera_speed;
+                changed = true;
+            }
+            if changed {
+                let camera_transform = context
+                    .ecs_mut()
+                    .get_mut::<colosseum::update::components::Transform>(self.camera);
+
+                camera_transform.set_rotation(
+                    colosseum::math::Quaternionf::from_euler_angles(camera_rotation)
+                        * camera_transform.rotation(),
+                );
+            }
+        } else {
+            let mut camera_position = colosseum::math::Vector3f::ZERO;
+            let mut changed = false;
+            let camera_speed = context.delta_time().as_secs_f32();
+            if context.inputs().key(colosseum::Key::W) {
+                camera_position.z += camera_speed;
+                changed = true;
+            }
+            if context.inputs().key(colosseum::Key::S) {
+                camera_position.z -= camera_speed;
+                changed = true;
+            }
+            if context.inputs().key(colosseum::Key::A) {
+                camera_position.x -= camera_speed;
+                changed = true;
+            }
+            if context.inputs().key(colosseum::Key::D) {
+                camera_position.x += camera_speed;
+                changed = true;
+            }
+            if context.inputs().key(colosseum::Key::Q) {
+                camera_position.y += camera_speed;
+                changed = true;
+            }
+            if context.inputs().key(colosseum::Key::E) {
+                camera_position.y -= camera_speed;
+                changed = true;
+            }
+            if changed {
+                let camera_tranform = context
+                    .ecs_mut()
+                    .get_mut::<colosseum::update::components::Transform>(self.camera);
+
+                camera_position = camera_tranform.rotation().rotate(camera_position);
+
+                *camera_tranform.position_mut() += camera_position;
+            }
         }
-        if context.inputs().key(colosseum::Key::S) {
-            camera_position.z -= camera_speed;
-        }
-        if context.inputs().key(colosseum::Key::A) {
-            camera_position.x -= camera_speed;
-        }
-        if context.inputs().key(colosseum::Key::D) {
-            camera_position.x += camera_speed;
-        }
-        if context.inputs().key(colosseum::Key::Q) {
-            camera_position.y += camera_speed;
-        }
-        if context.inputs().key(colosseum::Key::E) {
-            camera_position.y -= camera_speed;
-        }
-        context
-            .ecs_mut()
-            .get_mut::<colosseum::update::components::Transform>(self.camera)
-            .set_position(camera_position);
 
         // Render the cube
         let mesh = match &mut self.mesh {

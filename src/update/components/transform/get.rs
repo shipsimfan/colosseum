@@ -88,9 +88,9 @@ impl Transform {
     /// Get the matrix of the transform
     pub(in crate::update) fn matrix(&mut self) -> Matrix4x4f {
         if self.dirty || self.camera {
-            self.matrix = Matrix4x4f::from_translation(self.position)
-                * Matrix4x4f::from_rotation(self.rotation)
-                * Matrix4x4f::from_scale(self.scale);
+            self.matrix = Matrix4x4f::from_scale(self.scale)
+                * Matrix4x4f::from_rotation(-self.rotation)
+                * Matrix4x4f::from_translation(-self.position);
             self.dirty = false;
             self.camera = false;
         }
@@ -101,9 +101,9 @@ impl Transform {
     /// Get the camera matrix of the transform
     pub(in crate::update) fn camera_matrix(&mut self) -> Matrix4x4f {
         if self.dirty || !self.camera {
-            self.matrix = Matrix4x4f::from_translation(-self.position)
-                * Matrix4x4f::from_rotation(-self.rotation)
-                * Matrix4x4f::from_scale(self.scale);
+            self.matrix = Matrix4x4f::from_scale(self.scale)
+                * Matrix4x4f::from_rotation(self.rotation.conjugate())
+                * Matrix4x4f::from_translation(-self.position);
             self.dirty = false;
             self.camera = true;
         }
