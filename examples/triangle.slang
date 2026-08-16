@@ -12,12 +12,20 @@ struct Camera {
     float4x4 view_projection;
 };
 
+struct Object {
+    float4x4 model;
+};
+
 ConstantBuffer<Camera> camera;
+
+[push_constant]
+ConstantBuffer<ImmutablePtr<Object, AddressSpace.Device>> object;
 
 [shader("vertex")]
 VertexOutput vert_main(VertexInput input) {
     VertexOutput output;
-    output.position = mul(camera.view_projection, float4(input.position, 1.0));
+    float4x4 mvp = mul(camera.view_projection, object->model);
+    output.position = mul(mvp, float4(input.position, 1.0));
     output.color = input.color;
     return output;
 }

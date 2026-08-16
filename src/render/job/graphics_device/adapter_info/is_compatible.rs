@@ -7,7 +7,8 @@ use crate::{
 use alexandria::{
     MemorySize,
     gpu::{
-        VulkanAdapter, VulkanDeviceExtendedDynamicStateFeatures, VulkanDeviceFeatures,
+        VulkanAdapter, VulkanDeviceBufferDeviceAddressFeatures,
+        VulkanDeviceExtendedDynamicStateFeatures, VulkanDeviceFeatures,
         VulkanDeviceVulkan11Features, VulkanDeviceVulkan13Features, VulkanFormat, VulkanSurface,
     },
 };
@@ -77,11 +78,13 @@ impl<'instance> VulkanAdapterInfo<'instance> {
 fn has_required_features(adapter: &VulkanAdapter, device_name: &str, logger: &Logger) -> bool {
     let mut vulkan_11_features = VulkanDeviceVulkan11Features::default();
     let mut vulkan_13_features = VulkanDeviceVulkan13Features::default();
+    let mut buffer_device_address_features = VulkanDeviceBufferDeviceAddressFeatures::default();
     let mut extended_dynamic_state = VulkanDeviceExtendedDynamicStateFeatures::default();
     adapter.get_features([
         &mut VulkanDeviceFeatures::default() as _,
         &mut vulkan_11_features as _,
         &mut vulkan_13_features as _,
+        &mut buffer_device_address_features as _,
         &mut extended_dynamic_state as _,
     ]);
 
@@ -99,6 +102,15 @@ fn has_required_features(adapter: &VulkanAdapter, device_name: &str, logger: &Lo
             logger,
             "Adapter \"{}\" rejected because it does not support required Vulkan 1.3 features",
             device_name,
+        );
+        return false;
+    }
+
+    if !buffer_device_address_features.buffer_device_address() {
+        warning!(
+            logger,
+            "Adapter \"{}\" rejected because it does not support required Vulkan buffer device address features",
+            device_name
         );
         return false;
     }

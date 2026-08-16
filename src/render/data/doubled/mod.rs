@@ -1,4 +1,5 @@
-use crate::render::CameraRenderData;
+use crate::render::{CameraRenderData, data::RenderableList};
+use alexandria::math::Matrix4x4f;
 
 mod get;
 mod new;
@@ -8,4 +9,10 @@ mod new;
 pub(in crate::render::data) struct DoubledRenderData {
     /// The camera data for the current frame
     camera: CameraRenderData,
+
+    /// The set of unlit opaque renderable objects in the scene
+    ///
+    /// These renderables are rendered in a single pass, and do not require any lighting
+    /// calculations or transparency
+    unlit_opaque_renderables: RenderableList<Matrix4x4f>,
 }

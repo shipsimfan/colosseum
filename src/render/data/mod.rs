@@ -1,10 +1,11 @@
-use crate::render::{Material, Mesh, data::doubled::DoubledRenderData};
-use alexandria::Id;
+use doubled::DoubledRenderData;
+use renderable_list::RenderableList;
 
 mod camera;
 mod doubled;
 mod remove_confirm;
 mod render_object_change;
+mod renderable_list;
 mod skybox;
 
 mod add;
@@ -34,12 +35,6 @@ pub(crate) struct RenderData {
 
     /// The skybox to render
     skybox: Skybox,
-
-    /// The set of unlit opaque renderable objects in the scene
-    ///
-    /// These renderables are rendered in a single pass, and do not require any lighting
-    /// calculations or transparency
-    unlit_opaque_renderables: Vec<(Id<Material>, Id<Mesh>)>,
 
     /// The render data that exists in two copies for each frame, so that one copy can be used for
     /// rendering while the other is being updated

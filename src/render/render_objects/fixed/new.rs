@@ -2,9 +2,12 @@ use crate::{
     Error, Result,
     render::{FixedRenderObjects, FrameGraphNode, Shader},
 };
-use alexandria::gpu::{
-    VulkanDescriptorSetLayoutBinding, VulkanDescriptorType, VulkanDevice, VulkanFormat,
-    VulkanShaderStageFlag, compile_shader,
+use alexandria::{
+    gpu::{
+        GpuAddress, VulkanDescriptorSetLayoutBinding, VulkanDescriptorType, VulkanDevice,
+        VulkanFormat, VulkanPushConstantRange, VulkanShaderStageFlag, compile_shader,
+    },
+    math::Matrix4x4f,
 };
 use std::sync::Arc;
 
@@ -35,7 +38,15 @@ impl FixedRenderObjects {
 
         // Create the pipeline layout for unlit opaque rendering
         let unlit_forward_pipeline_layout = device
-            .create_pipeline_layout(0, &[&camera_data_layout], &[])
+            .create_pipeline_layout(
+                0,
+                &[&camera_data_layout],
+                &[VulkanPushConstantRange::new(
+                    VulkanShaderStageFlag::Vertex,
+                    0,
+                    std::mem::size_of::<GpuAddress<Matrix4x4f>>() as _,
+                )],
+            )
             .map_err(Error::new_inner)?;
 
         // Create the persistent objects that are used by nodes

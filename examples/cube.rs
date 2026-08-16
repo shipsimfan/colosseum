@@ -11,15 +11,15 @@ colosseum::render::compile_shader!(
 
 const VERTICES: &[colosseum::render::Vertex] = &[
     colosseum::render::Vertex::new(
-        colosseum::math::Vector3f::new(0.0, 0.5, 3.0),
+        colosseum::math::Vector3f::new(0.0, 0.5, 0.0),
         colosseum::math::Color3f::<colosseum::math::Linear>::new(1.0, 0.0, 0.0),
     ),
     colosseum::render::Vertex::new(
-        colosseum::math::Vector3f::new(-0.5, -0.5, 3.0),
+        colosseum::math::Vector3f::new(-0.5, -0.5, 0.0),
         colosseum::math::Color3f::<colosseum::math::Linear>::new(0.0, 0.0, 1.0),
     ),
     colosseum::render::Vertex::new(
-        colosseum::math::Vector3f::new(0.5, -0.5, 3.0),
+        colosseum::math::Vector3f::new(0.5, -0.5, 0.0),
         colosseum::math::Color3f::<colosseum::math::Linear>::new(0.0, 1.0, 0.0),
     ),
 ];
@@ -126,82 +126,87 @@ impl colosseum::update::Scene for CubeScene {
         }
 
         // Move the camera based on user input
-        if context.inputs().key(colosseum::Key::LeftShift)
-            | context.inputs().key(colosseum::Key::RightShift)
-        {
-            let mut camera_rotation = colosseum::math::Vector3f::ZERO;
-            let mut changed = false;
-            let camera_speed = context.delta_time().as_secs_f32();
+        let rotating = context.inputs().key(colosseum::Key::LeftShift)
+            | context.inputs().key(colosseum::Key::RightShift);
+        let changing_cube = context.inputs().key(colosseum::Key::LeftControl)
+            | context.inputs().key(colosseum::Key::RightControl);
+
+        let mut change = colosseum::math::Vector3f::ZERO;
+        let mut changed = false;
+        let speed = context.delta_time().as_secs_f32();
+        if rotating {
             if context.inputs().key(colosseum::Key::W) {
-                camera_rotation.x += camera_speed;
+                change.x += speed;
                 changed = true;
             }
             if context.inputs().key(colosseum::Key::S) {
-                camera_rotation.x -= camera_speed;
+                change.x -= speed;
                 changed = true;
             }
             if context.inputs().key(colosseum::Key::A) {
-                camera_rotation.y -= camera_speed;
+                change.y -= speed;
                 changed = true;
             }
             if context.inputs().key(colosseum::Key::D) {
-                camera_rotation.y += camera_speed;
+                change.y += speed;
                 changed = true;
             }
             if context.inputs().key(colosseum::Key::Q) {
-                camera_rotation.z += camera_speed;
+                change.z += speed;
                 changed = true;
             }
             if context.inputs().key(colosseum::Key::E) {
-                camera_rotation.z -= camera_speed;
+                change.z -= speed;
                 changed = true;
-            }
-            if changed {
-                let camera_transform = context
-                    .ecs_mut()
-                    .get_mut::<colosseum::update::components::Transform>(self.camera);
-
-                camera_transform.set_rotation(
-                    colosseum::math::Quaternionf::from_euler_angles(camera_rotation)
-                        * camera_transform.rotation(),
-                );
             }
         } else {
-            let mut camera_position = colosseum::math::Vector3f::ZERO;
-            let mut changed = false;
-            let camera_speed = context.delta_time().as_secs_f32();
             if context.inputs().key(colosseum::Key::W) {
-                camera_position.z += camera_speed;
+                change.z += speed;
                 changed = true;
             }
             if context.inputs().key(colosseum::Key::S) {
-                camera_position.z -= camera_speed;
+                change.z -= speed;
                 changed = true;
             }
             if context.inputs().key(colosseum::Key::A) {
-                camera_position.x -= camera_speed;
+                change.x -= speed;
                 changed = true;
             }
             if context.inputs().key(colosseum::Key::D) {
-                camera_position.x += camera_speed;
+                change.x += speed;
                 changed = true;
             }
             if context.inputs().key(colosseum::Key::Q) {
-                camera_position.y += camera_speed;
+                change.y += speed;
                 changed = true;
             }
             if context.inputs().key(colosseum::Key::E) {
-                camera_position.y -= camera_speed;
+                change.y -= speed;
                 changed = true;
             }
-            if changed {
-                let camera_tranform = context
-                    .ecs_mut()
-                    .get_mut::<colosseum::update::components::Transform>(self.camera);
+        }
 
-                camera_position = camera_tranform.rotation().rotate(camera_position);
+        if changed {
+            let transform = context
+                .ecs_mut()
+                .get_mut::<colosseum::update::components::Transform>(if changing_cube {
+                    self.cube
+                } else {
+                    self.camera
+                });
 
-                *camera_tranform.position_mut() += camera_position;
+            if rotating {
+                let euler = colosseum::math::Quaternionf::from_euler_angles(change);
+                let rotation = if changing_cube {
+                    transform.rotation() * euler
+                } else {
+                    euler * transform.rotation()
+                };
+
+                transform.set_rotation(rotation);
+            } else {
+                change = transform.rotation().rotate(change);
+                *transform.position_mut() += change;
             }
         }
 
@@ -268,6 +273,9 @@ impl colosseum::update::InitialScene for CubeScene {
 
         let ecs = context.ecs_mut();
         let cube = ecs.create_entity();
+        let mut transform = colosseum::update::components::Transform::default();
+        transform.set_position((0.0, 0.0, 3.0));
+        ecs.add_component(cube, transform);
 
         let camera = ecs.create_entity();
         ecs.add_component(camera, colosseum::update::components::Camera::default());

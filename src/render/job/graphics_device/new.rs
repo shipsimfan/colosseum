@@ -8,9 +8,9 @@ use crate::{
     warning,
 };
 use alexandria::gpu::{
-    VulkanCommandPoolCreateFlag, VulkanDeviceExtendedDynamicStateFeatures, VulkanDeviceExtension,
-    VulkanDeviceVulkan11Features, VulkanDeviceVulkan13Features, VulkanInstance,
-    VulkanQueueCreateInfo, VulkanSurface,
+    VulkanCommandPoolCreateFlag, VulkanDeviceBufferDeviceAddressFeatures,
+    VulkanDeviceExtendedDynamicStateFeatures, VulkanDeviceExtension, VulkanDeviceVulkan11Features,
+    VulkanDeviceVulkan13Features, VulkanInstance, VulkanQueueCreateInfo, VulkanSurface,
 };
 
 impl GraphicsDevice {
@@ -33,7 +33,9 @@ impl GraphicsDevice {
         let mut vulkan_13_features = VulkanDeviceVulkan13Features::default()
             .enable_synchronization2()
             .enable_dynamic_rendering();
-        let mut vulkan_extended_dynamic_state_features =
+        let mut buffer_device_address_features =
+            VulkanDeviceBufferDeviceAddressFeatures::default().enable_buffer_device_address();
+        let mut extended_dynamic_state_features =
             VulkanDeviceExtendedDynamicStateFeatures::default().enable_extended_dynamic_state();
 
         let mut device_builder = adapter.device_builder();
@@ -45,7 +47,8 @@ impl GraphicsDevice {
             ))
             .feature(&mut vulkan_11_features)
             .feature(&mut vulkan_13_features)
-            .feature(&mut vulkan_extended_dynamic_state_features);
+            .feature(&mut buffer_device_address_features)
+            .feature(&mut extended_dynamic_state_features);
         if let Some(transfer_queue_family_index) = adapter.transfer_queue_family_index() {
             device_builder.queue(VulkanQueueCreateInfo::new(
                 transfer_queue_family_index,

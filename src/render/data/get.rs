@@ -2,7 +2,7 @@ use crate::render::{
     CameraRenderData, Material, Mesh, RenderData, RenderObjectRemoveConfirm, Skybox,
     data::DoubledRenderData,
 };
-use alexandria::Id;
+use alexandria::{Id, gpu::GpuAddress, math::Matrix4x4f};
 use std::vec::Drain;
 
 impl RenderData {
@@ -17,8 +17,10 @@ impl RenderData {
     }
 
     /// Get the list of unlit opaque renderable objects in the render data
-    pub(in crate::render) fn unlit_opaque_renderables(&self) -> &[(Id<Material>, Id<Mesh>)] {
-        &self.unlit_opaque_renderables
+    pub(in crate::render) fn unlit_opaque_renderables(
+        &self,
+    ) -> impl Iterator<Item = (Id<Material>, Id<Mesh>, GpuAddress<Matrix4x4f>)> {
+        self.doubled().unlit_opaque_renderables().iter()
     }
 
     /// Get the camera data for the current frame
@@ -37,7 +39,7 @@ impl RenderData {
     }
 
     /// Get a mutable reference to the doubled render data that is currently being used for rendering
-    fn doubled_mut(&mut self) -> &mut DoubledRenderData {
+    pub(in crate::render::data) fn doubled_mut(&mut self) -> &mut DoubledRenderData {
         &mut self.doubled[self.current_doubled_index]
     }
 }

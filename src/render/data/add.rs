@@ -1,5 +1,5 @@
 use crate::render::{Material, Mesh, RenderData, RenderObjectChange};
-use alexandria::Id;
+use alexandria::{Id, math::Matrix4x4f};
 
 impl RenderData {
     /// Add a new [`RenderObjectChange`] to the render data
@@ -8,7 +8,14 @@ impl RenderData {
     }
 
     /// Add a new unlit opaque renderable object to the render data
-    pub fn add_unlit_opaque_renderable(&mut self, material: Id<Material>, mesh: Id<Mesh>) {
-        self.unlit_opaque_renderables.push((material, mesh));
+    pub fn add_unlit_opaque_renderable(
+        &mut self,
+        material: Id<Material>,
+        mesh: Id<Mesh>,
+        transform: Matrix4x4f,
+    ) {
+        self.doubled_mut()
+            .unlit_opaque_renderables_mut()
+            .push(material, mesh, transform);
     }
 }

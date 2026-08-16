@@ -3,8 +3,8 @@ use alexandria::math::{Quaternionf, Vector3f};
 
 impl Transform {
     /// Set the position of the [`Transform`]
-    pub fn set_position(&mut self, position: Vector3f) {
-        self.position = position;
+    pub fn set_position<V: Into<Vector3f>>(&mut self, position: V) {
+        self.position = position.into();
         self.dirty = true;
     }
 
@@ -27,8 +27,8 @@ impl Transform {
     }
 
     /// Set the rotation of the [`Transform`]
-    pub fn set_rotation(&mut self, rotation: Quaternionf) {
-        self.rotation = rotation;
+    pub fn set_rotation<Q: Into<Quaternionf>>(&mut self, rotation: Q) {
+        self.rotation = rotation.into();
         self.dirty = true;
     }
 
@@ -51,8 +51,8 @@ impl Transform {
     }
 
     /// Set the scale of the [`Transform`]
-    pub fn set_scale(&mut self, scale: Vector3f) {
-        self.scale = scale;
+    pub fn set_scale<S: Into<Vector3f>>(&mut self, scale: S) {
+        self.scale = scale.into();
         self.dirty = true;
     }
 
