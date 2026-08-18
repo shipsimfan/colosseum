@@ -10,6 +10,7 @@ mod allocator;
 mod apply;
 mod complete;
 mod create;
+mod get;
 mod new;
 mod remove;
 

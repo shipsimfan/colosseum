@@ -128,6 +128,8 @@ impl RenderMaterial {
             .map_err(Error::new_inner)?;
 
         Ok(RenderMaterial {
+            color: Color4f::WHITE,
+
             pipeline,
             shader: shader.clone(),
         })

@@ -2,7 +2,10 @@ use crate::{
     render::{MaterialId, MaterialKind, Mesh, RenderMaterial, RenderMesh},
     update::GpuAllocatedMemory,
 };
-use alexandria::Id;
+use alexandria::{
+    Id,
+    math::{Color4f, Linear},
+};
 
 mod apply;
 mod from;
@@ -18,6 +21,15 @@ pub(crate) enum RenderObjectChange {
 
         /// The material that was added
         material: RenderMaterial,
+    },
+
+    /// A material has changed color
+    ChangeMaterialColor {
+        /// The material that was changed
+        material: MaterialId,
+
+        /// The new color of the material
+        color: Color4f<Linear>,
     },
 
     /// A material has been removed

@@ -1,13 +1,10 @@
 use crate::{
     Error, Result,
-    render::{FixedRenderObjects, FrameGraphNode, Shader},
+    render::{FixedRenderObjects, FrameGraphNode, RenderMaterial, Shader},
 };
-use alexandria::{
-    gpu::{
-        GpuAddress, VulkanDescriptorSetLayoutBinding, VulkanDescriptorType, VulkanDevice,
-        VulkanFormat, VulkanPushConstantRange, VulkanShaderStageFlag, compile_shader,
-    },
-    math::Matrix4x4f,
+use alexandria::gpu::{
+    VulkanDescriptorSetLayoutBinding, VulkanDescriptorType, VulkanDevice, VulkanFormat,
+    VulkanPushConstantRange, VulkanShaderStageFlag, compile_shader,
 };
 use std::sync::Arc;
 
@@ -42,9 +39,9 @@ impl FixedRenderObjects {
                 0,
                 &[&camera_data_layout],
                 &[VulkanPushConstantRange::new(
-                    VulkanShaderStageFlag::Vertex,
+                    VulkanShaderStageFlag::Vertex | VulkanShaderStageFlag::Fragment,
                     0,
-                    std::mem::size_of::<GpuAddress<Matrix4x4f>>() as _,
+                    RenderMaterial::PUSH_CONSTANT_SIZE as _,
                 )],
             )
             .map_err(Error::new_inner)?;

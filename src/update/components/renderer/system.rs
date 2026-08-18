@@ -1,5 +1,5 @@
 use crate::{
-    render::{MaterialKind, RenderData},
+    render::{MaterialKind, ObjectData, RenderData},
     system_with_extra_data,
     update::{
         components::{Renderer, Transform},
@@ -15,12 +15,16 @@ impl Renderer {
                                      renderer: Renderer,
                                      transform: Transform| {
                 for (renderer, transform) in renderer.iter().zip(transform) {
+                    let object = ObjectData::new(transform.matrix());
+
                     match renderer.material.kind() {
-                        MaterialKind::UnlitOpaque => render_data.add_unlit_opaque_renderable(
-                            renderer.material.id(),
-                            renderer.mesh,
-                            transform.matrix(),
-                        ),
+                        MaterialKind::UnlitOpaque => render_data
+                            .add_unlit_opaque_renderable(
+                                renderer.material.id(),
+                                renderer.mesh,
+                                object,
+                            )
+                            .unwrap(),
                     }
                 }
             });

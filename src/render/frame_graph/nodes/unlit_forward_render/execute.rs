@@ -1,12 +1,7 @@
-use std::ptr::addr_of;
-
 use crate::render::{MaterialKind, RenderData, RenderObjects, frame_graph::UnlitForwardRenderNode};
 use alexandria::{
-    gpu::{
-        GpuAddress, VulkanCommandBuffer, VulkanPipelineBindPoint, VulkanShaderStageFlag,
-        VulkanViewport,
-    },
-    math::{Matrix4x4f, Recti, Vector2, Vector2u},
+    gpu::{VulkanCommandBuffer, VulkanPipelineBindPoint, VulkanViewport},
+    math::{Recti, Vector2, Vector2u},
 };
 
 impl UnlitForwardRenderNode {
@@ -44,20 +39,8 @@ impl UnlitForwardRenderNode {
             let material = render_objects.unlit_opaque_material(material);
             let mesh = render_objects.mesh(mesh);
 
-            material.bind(cmd_buffer);
+            material.bind(cmd_buffer, pipeline_layout, object_data);
             mesh.bind(cmd_buffer);
-
-            cmd_buffer.cmd_push_constants(
-                pipeline_layout,
-                VulkanShaderStageFlag::Vertex,
-                0,
-                unsafe {
-                    std::slice::from_raw_parts(
-                        addr_of!(object_data).cast(),
-                        std::mem::size_of::<GpuAddress<Matrix4x4f>>(),
-                    )
-                },
-            );
 
             cmd_buffer.cmd_draw(mesh.index_count(), 1, 0, 0);
         }

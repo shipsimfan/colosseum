@@ -3,6 +3,7 @@ use renderable_list::RenderableList;
 
 mod camera;
 mod doubled;
+mod object;
 mod remove_confirm;
 mod render_object_change;
 mod renderable_list;
@@ -18,6 +19,7 @@ mod set;
 pub use skybox::*;
 
 pub(crate) use camera::*;
+pub(crate) use object::*;
 pub(crate) use remove_confirm::*;
 pub(crate) use render_object_change::*;
 

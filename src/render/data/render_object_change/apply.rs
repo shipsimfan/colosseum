@@ -11,9 +11,13 @@ impl RenderObjectChange {
             RenderObjectChange::AddMaterial { kind, material } => {
                 render_objects.insert_material(kind, material);
             }
+            RenderObjectChange::ChangeMaterialColor { material, color } => {
+                render_objects.material_mut(material).set_color(color);
+            }
             RenderObjectChange::RemoveMaterial { material } => {
                 render_objects.remove_material(material);
             }
+
             RenderObjectChange::AddMesh { mesh } => render_objects.insert_mesh(mesh),
             RenderObjectChange::RemoveMesh { mesh, memory } => {
                 render_objects.remove_mesh(mesh);

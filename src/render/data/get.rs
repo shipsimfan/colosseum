@@ -1,8 +1,8 @@
 use crate::render::{
-    CameraRenderData, Material, Mesh, RenderData, RenderObjectRemoveConfirm, Skybox,
+    CameraRenderData, Material, Mesh, ObjectData, RenderData, RenderObjectRemoveConfirm, Skybox,
     data::DoubledRenderData,
 };
-use alexandria::{Id, gpu::GpuAddress, math::Matrix4x4f};
+use alexandria::{Id, gpu::GpuAddress};
 use std::vec::Drain;
 
 impl RenderData {
@@ -19,7 +19,7 @@ impl RenderData {
     /// Get the list of unlit opaque renderable objects in the render data
     pub(in crate::render) fn unlit_opaque_renderables(
         &self,
-    ) -> impl Iterator<Item = (Id<Material>, Id<Mesh>, GpuAddress<Matrix4x4f>)> {
+    ) -> impl Iterator<Item = (Id<Material>, Id<Mesh>, GpuAddress<ObjectData>)> {
         self.doubled().unlit_opaque_renderables().iter()
     }
 

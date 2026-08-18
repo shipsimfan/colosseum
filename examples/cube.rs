@@ -102,19 +102,25 @@ impl colosseum::update::Scene for CubeScene {
     ) -> colosseum::Result<()> {
         // Shift the color over time based on user input
         let amount = context.delta_time().as_secs_f32() / 5.0;
+        let mut color_changed = false;
         self.color = if context.inputs().key(colosseum::Key::Left)
             || context.inputs().key(colosseum::Key::K)
         {
+            color_changed = true;
             self.color.add_hue(amount)
         } else if context.inputs().key(colosseum::Key::Right)
             || context.inputs().key(colosseum::Key::L)
         {
+            color_changed = true;
             self.color.sub_hue(amount)
         } else {
             self.color
         };
 
-        context.set_skybox(self.color.into_rgb());
+        if color_changed {
+            context.set_material_color(self.material, self.color.into_rgba(1.0));
+            //context.set_skybox(self.color.into_rgb());
+        }
 
         // Toggle fullscreen mode when the user presses F11
         if context.inputs().key_down(colosseum::Key::F11) {
@@ -262,10 +268,12 @@ impl colosseum::update::InitialScene for CubeScene {
     ) -> colosseum::Result<Self> {
         let logger = context.logger("cube");
 
+        let color = colosseum::math::ColorHsv::RED;
         let shader =
             context.create_shader(colosseum::render::ShaderKind::Unlit, &TRIANGLE_SHADER)?;
         let material =
             context.create_material(colosseum::render::MaterialKind::UnlitOpaque, shader)?;
+        context.set_material_color(material, color.into_rgba(1.0));
 
         let mesh = MeshState::Loading(Some(
             context.create_mesh(VERTICES.to_vec(), INDICES.to_vec())?,
@@ -283,7 +291,7 @@ impl colosseum::update::InitialScene for CubeScene {
         context.set_active_camera(camera);
 
         Ok(CubeScene {
-            color: colosseum::math::ColorHsv::RED,
+            color,
             frames: 0,
             fps_timer: 0.0,
             logger,

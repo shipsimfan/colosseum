@@ -1,5 +1,4 @@
-use crate::render::{CameraRenderData, data::RenderableList};
-use alexandria::math::Matrix4x4f;
+use crate::render::{CameraRenderData, ObjectData, data::RenderableList};
 
 mod get;
 mod new;
@@ -14,5 +13,5 @@ pub(in crate::render::data) struct DoubledRenderData {
     ///
     /// These renderables are rendered in a single pass, and do not require any lighting
     /// calculations or transparency
-    unlit_opaque_renderables: RenderableList<Matrix4x4f>,
+    unlit_opaque_renderables: RenderableList<ObjectData>,
 }

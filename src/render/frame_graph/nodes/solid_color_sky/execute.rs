@@ -1,7 +1,7 @@
-use crate::render::{RenderData, RenderObjects, Skybox, frame_graph::SolidColorSkyNode};
+use crate::render::{RenderData, RenderObjects, Skybox, as_bytes, frame_graph::SolidColorSkyNode};
 use alexandria::{
     gpu::{VulkanCommandBuffer, VulkanShaderStageFlag, VulkanViewport},
-    math::{Color4f, Linear, Recti, Vector2, Vector2u},
+    math::{Recti, Vector2, Vector2u},
 };
 
 impl SolidColorSkyNode {
@@ -37,12 +37,7 @@ impl SolidColorSkyNode {
             render_objects.pipelines()[0].layout(),
             VulkanShaderStageFlag::Fragment,
             0,
-            unsafe {
-                std::slice::from_raw_parts(
-                    (&clear_color as *const Color4f<Linear>).cast(),
-                    std::mem::size_of::<Color4f<Linear>>(),
-                )
-            },
+            unsafe { as_bytes(&clear_color) },
         );
 
         // Perform the draw

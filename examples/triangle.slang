@@ -16,17 +16,26 @@ struct Object {
     float4x4 model;
 };
 
+struct Material {
+    float4 color;
+};
+
+struct PushConstants {
+    Material material;
+    ImmutablePtr<Object, AddressSpace.Device> object;
+};
+
 ConstantBuffer<Camera> camera;
 
 [push_constant]
-ConstantBuffer<ImmutablePtr<Object, AddressSpace.Device>> object;
+ConstantBuffer<PushConstants> pc;
 
 [shader("vertex")]
 VertexOutput vert_main(VertexInput input) {
     VertexOutput output;
-    float4x4 mvp = mul(camera.view_projection, object->model);
+    float4x4 mvp = mul(camera.view_projection, pc.object->model);
     output.position = mul(mvp, float4(input.position, 1.0));
-    output.color = input.color;
+    output.color = input.color * pc.material.color.rgb;
     return output;
 }
 

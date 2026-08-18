@@ -2,12 +2,15 @@ use crate::{
     Result,
     render::{Material, RenderMaterial, Shader},
 };
-use alexandria::gpu::{VulkanDevice, VulkanFormat, VulkanPipelineLayout};
+use alexandria::{
+    gpu::{VulkanDevice, VulkanFormat, VulkanPipelineLayout},
+    math::Color4f,
+};
 use std::sync::Arc;
 
 impl Material {
     /// Create a new [`Material`] and [`RenderMaterial`]
-    pub fn new(
+    pub(crate) fn new(
         shader: &Arc<Shader>,
         pipeline_layout: &VulkanPipelineLayout,
         swapchain_format: VulkanFormat,
@@ -16,6 +19,11 @@ impl Material {
         let render_material =
             RenderMaterial::new(shader, pipeline_layout, swapchain_format, device)?;
 
-        Ok((Material {}, render_material))
+        Ok((
+            Material {
+                color: Color4f::WHITE,
+            },
+            render_material,
+        ))
     }
 }

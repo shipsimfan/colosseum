@@ -2,11 +2,20 @@ use crate::{
     render::{MaterialId, MaterialKind, Mesh, RenderMaterial, RenderMesh, RenderObjectChange},
     update::GpuAllocatedMemory,
 };
-use alexandria::Id;
+use alexandria::{
+    Id,
+    math::{Color4f, Linear},
+};
 
 impl From<(MaterialKind, RenderMaterial)> for RenderObjectChange {
     fn from((kind, material): (MaterialKind, RenderMaterial)) -> Self {
         RenderObjectChange::AddMaterial { kind, material }
+    }
+}
+
+impl From<(MaterialId, Color4f<Linear>)> for RenderObjectChange {
+    fn from((material, color): (MaterialId, Color4f<Linear>)) -> Self {
+        RenderObjectChange::ChangeMaterialColor { material, color }
     }
 }
 
