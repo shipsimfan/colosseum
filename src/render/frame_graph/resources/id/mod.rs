@@ -12,8 +12,27 @@ pub(in crate::render::frame_graph) struct FrameGraphResourceId {
 }
 
 impl FrameGraphResourceId {
+    /// The number of bits used to store the type of the resource ID
+    const TYPE_BITS: u32 = 2;
+
+    /// The shift amount to get the type of the resource ID
+    const TYPE_SHIFT: u32 = usize::BITS - FrameGraphResourceId::TYPE_BITS;
+
+    /// The mask used to get the type of the resource ID
+    const TYPE_MASK: usize =
+        ((1 << FrameGraphResourceId::TYPE_BITS) - 1) << FrameGraphResourceId::TYPE_SHIFT;
+
+    /// The bit used to indicate that a resource ID is transient and at render scale
+    const TRANSIENT_RENDER_SCALE: usize = 0b00 << FrameGraphResourceId::TYPE_SHIFT;
+
+    /// The bit used to indicate that a resource ID is transient and at native scale
+    const TRANSIENT_NATIVE_SCALE: usize = 0b01 << FrameGraphResourceId::TYPE_SHIFT;
+
+    /// The bit used to indicate that a resource ID is transient and at a static scale
+    const TRANSIENT_STATIC_SCALE: usize = 0b10 << FrameGraphResourceId::TYPE_SHIFT;
+
     /// The bit used to indicate that a resource ID is external (e.g., from the swapchain)
-    const EXTERNAL_BIT: usize = 1 << (usize::BITS - 1);
+    const EXTERNAL: usize = 0b11 << FrameGraphResourceId::TYPE_SHIFT;
 
     /// The ID for the swapchain image, which is always an external resource with ID 0
     pub const SWAPCHAIN_IMAGE: FrameGraphResourceId = FrameGraphResourceId::new_external(0);

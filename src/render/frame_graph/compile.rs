@@ -1,17 +1,17 @@
 use crate::render::{
     FrameGraph,
     frame_graph::{
-        FrameGraphNode, FrameGraphPipelineBarrier, FrameGraphResourceState,
-        FrameGraphResourceWriteUsage, FrameGraphResources,
+        FrameGraphNode, FrameGraphPipelineBarrier, FrameGraphResourceBuilder,
+        FrameGraphResourceState, FrameGraphResourceWriteUsage,
     },
 };
 use alexandria::gpu::{VulkanAccessFlag, VulkanImageLayout, VulkanPipelineStageFlag};
 
 impl FrameGraph {
     /// Compile the frame graph, preparing it for execution
-    pub(in crate::render::frame_graph) fn compile(
+    pub(in crate::render::frame_graph) fn compile<'a>(
         nodes: &[FrameGraphNode],
-        resources: &mut FrameGraphResources,
+        resource_builder: &mut FrameGraphResourceBuilder<'a>,
 
         pipeline_barrier_indices: &mut Vec<(usize, usize)>,
         pipeline_barriers: &mut Vec<FrameGraphPipelineBarrier>,
@@ -23,26 +23,28 @@ impl FrameGraph {
         // Create a pipeline barrier for each transition needed for each node in the frame graph
         for (node_index, node) in nodes.iter().enumerate() {
             node.write_resources(|write_resources| {
-                let resource_size = resources.get(write_resources[0].0).size();
                 let mut num_barriers = 0;
                 for (id, usage) in write_resources {
-                    let resource = resources.get(*id);
-                    debug_assert!(
-                        resource.size() == resource_size,
-                        "all output resources of a node must have the same size"
-                    );
-
                     let new_state = match usage {
-                        FrameGraphResourceWriteUsage::ColorAttachment { load_op: _ } => {
+                        FrameGraphResourceWriteUsage::ColorAttachment => {
+                            resource_builder.set_color(*id);
                             FrameGraphResourceState::new(
                                 VulkanPipelineStageFlag::ColorAttachmentOutput,
                                 VulkanAccessFlag::ColorAttachmentWrite,
                                 VulkanImageLayout::ColorAttachmentOptimal,
                             )
                         }
+                        FrameGraphResourceWriteUsage::DepthAttachment => {
+                            resource_builder.set_depth(*id);
+                            FrameGraphResourceState::new(
+                                VulkanPipelineStageFlag::EarlyFragmentTests,
+                                VulkanAccessFlag::DepthStencilAttachmentWrite,
+                                VulkanImageLayout::DepthStencilAttachmentOptimal,
+                            )
+                        }
                     };
 
-                    if let Some(barrier) = resources.transition(*id, new_state) {
+                    if let Some(barrier) = resource_builder.transition(*id, new_state) {
                         pipeline_barriers.push(barrier);
                         num_barriers += 1;
                     }

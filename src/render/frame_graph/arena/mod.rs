@@ -2,6 +2,7 @@ mod buffer;
 mod r#trait;
 
 mod as_slice;
+mod deref;
 mod drop;
 mod index;
 mod len;

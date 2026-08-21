@@ -1,7 +1,10 @@
-use crate::render::{MaterialKind, RenderData, RenderObjects, frame_graph::UnlitForwardRenderNode};
+use crate::render::{
+    MaterialKind, RenderData, RenderObjects,
+    frame_graph::{FrameGraphResources, UnlitForwardRenderNode},
+};
 use alexandria::{
     gpu::{VulkanCommandBuffer, VulkanPipelineBindPoint, VulkanViewport},
-    math::{Recti, Vector2, Vector2u},
+    math::{Recti, Vector2},
 };
 
 impl UnlitForwardRenderNode {
@@ -9,20 +12,15 @@ impl UnlitForwardRenderNode {
     pub(in crate::render::frame_graph) fn execute(
         &self,
         render_data: &RenderData,
-        swapchain_size: Vector2u,
-        cmd_buffer: &mut VulkanCommandBuffer,
         render_objects: &RenderObjects,
+        resources: &FrameGraphResources,
+        cmd_buffer: &mut VulkanCommandBuffer,
     ) {
+        let size = resources.get(self.output).size();
+
         // Bind the viewport and scissor for the render pass
-        let viewport = VulkanViewport::new(
-            0.0,
-            0.0,
-            swapchain_size.x as _,
-            swapchain_size.y as _,
-            0.0,
-            1.0,
-        );
-        let scissor = Recti::new(Vector2::ZERO, swapchain_size);
+        let viewport = VulkanViewport::new(0.0, 0.0, size.x as _, size.y as _, 0.0, 1.0);
+        let scissor = Recti::new(Vector2::ZERO, size);
         cmd_buffer.cmd_set_viewport(0, &[viewport]);
         cmd_buffer.cmd_set_scissor(0, &[scissor]);
 

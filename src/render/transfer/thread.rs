@@ -15,6 +15,7 @@ impl GpuTransferQueue {
         while shared_state.is_running() {
             if !transfer_queue.handle_command(&mut queue, true)? {
                 debug!(&logger, "Transfer thread exiting due to channel closure");
+                break;
             }
         }
 

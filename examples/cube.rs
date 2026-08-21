@@ -1,5 +1,7 @@
 #![feature(const_trait_impl)]
 
+use colosseum::render::Skybox;
+
 colosseum::run!(Cube);
 
 colosseum::render::compile_shader!(
@@ -118,8 +120,8 @@ impl colosseum::update::Scene for CubeScene {
         };
 
         if color_changed {
-            context.set_material_color(self.material, self.color.into_rgba(1.0));
-            //context.set_skybox(self.color.into_rgb());
+            //context.set_material_color(self.material, self.color.into_rgba(1.0));
+            context.set_skybox(self.color.into_rgb());
         }
 
         // Toggle fullscreen mode when the user presses F11
@@ -273,7 +275,8 @@ impl colosseum::update::InitialScene for CubeScene {
             context.create_shader(colosseum::render::ShaderKind::Unlit, &TRIANGLE_SHADER)?;
         let material =
             context.create_material(colosseum::render::MaterialKind::UnlitOpaque, shader)?;
-        context.set_material_color(material, color.into_rgba(1.0));
+        //context.set_material_color(material, color.into_rgba(1.0));
+        context.set_skybox(Skybox::SolidColor(color.into_rgb()));
 
         let mesh = MeshState::Loading(Some(
             context.create_mesh(VERTICES.to_vec(), INDICES.to_vec())?,

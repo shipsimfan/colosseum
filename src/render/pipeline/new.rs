@@ -7,12 +7,12 @@ use alexandria::{
         VulkanBlendFactor, VulkanBlendOp, VulkanColorComponentFlag, VulkanCullModeFlag,
         VulkanDevice, VulkanDynamicState, VulkanFormat, VulkanFrontFace, VulkanLogicOp,
         VulkanPipelineColorBlendAttachmentState, VulkanPipelineColorBlendStateCreateInfo,
-        VulkanPipelineDynamicStateCreateInfo, VulkanPipelineInputAssemblyStateCreateInfo,
-        VulkanPipelineMultisampleStateCreateInfo, VulkanPipelineRasterizationStateCreateInfo,
-        VulkanPipelineRenderingCreateInfo, VulkanPipelineShaderStageCreateInfo,
-        VulkanPipelineVertexInputStateCreateInfo, VulkanPipelineViewportStateCreateInfo,
-        VulkanPolygonMode, VulkanPrimitiveTopology, VulkanPushConstantRange, VulkanSampleCountFlag,
-        VulkanShaderStageFlag,
+        VulkanPipelineDepthStencilStateCreateInfo, VulkanPipelineDynamicStateCreateInfo,
+        VulkanPipelineInputAssemblyStateCreateInfo, VulkanPipelineMultisampleStateCreateInfo,
+        VulkanPipelineRasterizationStateCreateInfo, VulkanPipelineRenderingCreateInfo,
+        VulkanPipelineShaderStageCreateInfo, VulkanPipelineVertexInputStateCreateInfo,
+        VulkanPipelineViewportStateCreateInfo, VulkanPolygonMode, VulkanPrimitiveTopology,
+        VulkanPushConstantRange, VulkanSampleCountFlag, VulkanShaderStageFlag,
     },
     math::{Color4f, Linear},
 };
@@ -24,6 +24,7 @@ impl Pipeline {
         fullscreen_quad: &Arc<Shader>,
         fragment_shader: &Arc<Shader>,
         push_constant_size: usize,
+        depth_stencil_state: Option<&VulkanPipelineDepthStencilStateCreateInfo>,
         swapchain_format: VulkanFormat,
         device: &VulkanDevice,
     ) -> Result<Pipeline> {
@@ -119,7 +120,11 @@ impl Pipeline {
                 [&mut VulkanPipelineRenderingCreateInfo::new(
                     0,
                     &[swapchain_format],
-                    VulkanFormat::Undefined,
+                    if depth_stencil_state.is_none() {
+                        VulkanFormat::Undefined
+                    } else {
+                        VulkanFormat::D32SFloat
+                    },
                     VulkanFormat::Undefined,
                 ) as _],
                 None,
@@ -131,7 +136,7 @@ impl Pipeline {
                 Some(&viewport_state),
                 Some(&rasterization_state),
                 Some(&multisample_state),
-                None,
+                depth_stencil_state,
                 Some(&color_blend_state),
                 Some(&dynamic_state),
                 Some(&pipeline_layout),

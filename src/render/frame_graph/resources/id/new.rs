@@ -6,25 +6,54 @@ impl FrameGraphResourceId {
         id: usize,
     ) -> FrameGraphResourceId {
         debug_assert!(
-            id < FrameGraphResourceId::EXTERNAL_BIT,
+            id < FrameGraphResourceId::TYPE_MASK,
             "external resource ID too large"
         );
 
         FrameGraphResourceId {
-            id: id | FrameGraphResourceId::EXTERNAL_BIT,
+            id: id | FrameGraphResourceId::EXTERNAL,
         }
     }
 
-    /// Create a new [`FrameGraphResourceId`] for a transient resource, which is managed by the
-    /// frame graph
-    pub(in crate::render::frame_graph::resources) const fn new_transient(
+    /// Create a new [`FrameGraphResourceId`] for a transient resource at render scale
+    pub(in crate::render::frame_graph::resources) const fn new_transient_render_scale(
         id: usize,
     ) -> FrameGraphResourceId {
         debug_assert!(
-            id < FrameGraphResourceId::EXTERNAL_BIT,
-            "transient resource ID too large"
+            id < FrameGraphResourceId::TYPE_MASK,
+            "render scale transient resource ID too large"
         );
 
-        FrameGraphResourceId { id }
+        FrameGraphResourceId {
+            id: id | FrameGraphResourceId::TRANSIENT_RENDER_SCALE,
+        }
+    }
+
+    /// Create a new [`FrameGraphResourceId`] for a transient resource at native scale
+    pub(in crate::render::frame_graph::resources) const fn new_transient_native_scale(
+        id: usize,
+    ) -> FrameGraphResourceId {
+        debug_assert!(
+            id < FrameGraphResourceId::TYPE_MASK,
+            "native scale transient resource ID too large"
+        );
+
+        FrameGraphResourceId {
+            id: id | FrameGraphResourceId::TRANSIENT_NATIVE_SCALE,
+        }
+    }
+
+    /// Create a new [`FrameGraphResourceId`] for a transient resource at static scale
+    pub(in crate::render::frame_graph::resources) const fn new_transient_static_scale(
+        id: usize,
+    ) -> FrameGraphResourceId {
+        debug_assert!(
+            id < FrameGraphResourceId::TYPE_MASK,
+            "static scale transient resource ID too large"
+        );
+
+        FrameGraphResourceId {
+            id: id | FrameGraphResourceId::TRANSIENT_STATIC_SCALE,
+        }
     }
 }

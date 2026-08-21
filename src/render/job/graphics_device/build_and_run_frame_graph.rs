@@ -1,4 +1,7 @@
-use crate::render::job::{GraphicsDevice, RenderToken};
+use crate::{
+    Result,
+    render::job::{GraphicsDevice, RenderToken},
+};
 use alexandria::{gpu::VulkanImageView, math::Vector2u};
 
 impl GraphicsDevice {
@@ -7,16 +10,19 @@ impl GraphicsDevice {
     pub fn build_and_run_frame_graph(
         &mut self,
         token: RenderToken,
-        swapchain_image: &VulkanImageView,
-        swapchain_image_size: Vector2u,
+        swapchain_size: Vector2u,
+        swapchain_color_attachment: &VulkanImageView,
         frame_index: usize,
-    ) {
+    ) -> Result<()> {
         self.frame_graph.build_and_run(
             &self.render_data[token.frame_index()],
-            swapchain_image,
-            swapchain_image_size,
-            &mut self.command_pool[self.command_buffers[frame_index]],
             &self.render_objects,
+            swapchain_size,
+            swapchain_color_attachment.image(),
+            swapchain_color_attachment,
+            &mut self.command_pool[self.command_buffers[frame_index]],
+            &self.memory_properties,
+            &self.device,
         )
     }
 }

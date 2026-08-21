@@ -10,4 +10,7 @@ mod write_resources;
 pub(in crate::render) struct SolidColorSkyNode {
     /// The ID of the output color attachment
     output: FrameGraphResourceId,
+
+    /// The depth buffer to use for depth testing
+    depth_buffer: FrameGraphResourceId,
 }

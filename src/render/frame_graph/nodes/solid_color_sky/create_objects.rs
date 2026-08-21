@@ -3,7 +3,10 @@ use crate::{
     render::{Pipeline, Shader, frame_graph::SolidColorSkyNode},
 };
 use alexandria::{
-    gpu::{VulkanDevice, VulkanFormat, compile_shader},
+    gpu::{
+        VulkanCompareOp, VulkanDevice, VulkanFormat, VulkanPipelineDepthStencilStateCreateInfo,
+        VulkanStencilOp, compile_shader,
+    },
     math::{Color4f, Linear},
 };
 use std::sync::Arc;
@@ -25,10 +28,36 @@ impl SolidColorSkyNode {
 
         let shader = Shader::new(&FRAGMENT_SHADER, device)?;
 
+        let depth_stencil_state = VulkanPipelineDepthStencilStateCreateInfo::new(
+            0,
+            true,
+            false,
+            VulkanCompareOp::LessOrEqual,
+            false,
+            false,
+            VulkanStencilOp::Keep,
+            VulkanStencilOp::Keep,
+            VulkanStencilOp::Keep,
+            VulkanCompareOp::Always,
+            0,
+            0,
+            0,
+            VulkanStencilOp::Keep,
+            VulkanStencilOp::Keep,
+            VulkanStencilOp::Keep,
+            VulkanCompareOp::Always,
+            0,
+            0,
+            0,
+            0.0,
+            1.0,
+        );
+
         let pipeline = Pipeline::new_post_process(
             fullscreen_quad,
             &shader,
             std::mem::size_of::<Color4f<Linear>>(),
+            Some(&depth_stencil_state),
             swapchain_format,
             device,
         )?;

@@ -4,15 +4,16 @@ use crate::{
 };
 use alexandria::{
     gpu::{
-        VulkanBlendFactor, VulkanBlendOp, VulkanColorComponentFlag, VulkanCullModeFlag,
-        VulkanDevice, VulkanDynamicState, VulkanFormat, VulkanFrontFace, VulkanLogicOp,
-        VulkanPipelineColorBlendAttachmentState, VulkanPipelineColorBlendStateCreateInfo,
+        VulkanBlendFactor, VulkanBlendOp, VulkanColorComponentFlag, VulkanCompareOp,
+        VulkanCullModeFlag, VulkanDevice, VulkanDynamicState, VulkanFormat, VulkanFrontFace,
+        VulkanLogicOp, VulkanPipelineColorBlendAttachmentState,
+        VulkanPipelineColorBlendStateCreateInfo, VulkanPipelineDepthStencilStateCreateInfo,
         VulkanPipelineDynamicStateCreateInfo, VulkanPipelineInputAssemblyStateCreateInfo,
         VulkanPipelineLayout, VulkanPipelineMultisampleStateCreateInfo,
         VulkanPipelineRasterizationStateCreateInfo, VulkanPipelineRenderingCreateInfo,
         VulkanPipelineShaderStageCreateInfo, VulkanPipelineVertexInputStateCreateInfo,
         VulkanPipelineViewportStateCreateInfo, VulkanPolygonMode, VulkanPrimitiveTopology,
-        VulkanSampleCountFlag, VulkanShaderStageFlag,
+        VulkanSampleCountFlag, VulkanShaderStageFlag, VulkanStencilOp,
     },
     math::{Color4f, Linear},
 };
@@ -76,6 +77,32 @@ impl RenderMaterial {
             false,
         );
 
+        // Create the depth stencil state
+        let depth_stencil_state = VulkanPipelineDepthStencilStateCreateInfo::new(
+            0,
+            true,
+            true,
+            VulkanCompareOp::Less,
+            false,
+            false,
+            VulkanStencilOp::Keep,
+            VulkanStencilOp::Keep,
+            VulkanStencilOp::Keep,
+            VulkanCompareOp::Always,
+            0,
+            0,
+            0,
+            VulkanStencilOp::Keep,
+            VulkanStencilOp::Keep,
+            VulkanStencilOp::Keep,
+            VulkanCompareOp::Always,
+            0,
+            0,
+            0,
+            0.0,
+            1.0,
+        );
+
         // Create the color blend state
         let color_blend_attachment = [VulkanPipelineColorBlendAttachmentState::new(
             false,
@@ -104,7 +131,7 @@ impl RenderMaterial {
                 [&mut VulkanPipelineRenderingCreateInfo::new(
                     0,
                     &[swapchain_format],
-                    VulkanFormat::Undefined,
+                    VulkanFormat::D32SFloat,
                     VulkanFormat::Undefined,
                 ) as _],
                 None,
@@ -116,7 +143,7 @@ impl RenderMaterial {
                 Some(&viewport_state),
                 Some(&rasterization_state),
                 Some(&multisample_state),
-                None,
+                Some(&depth_stencil_state),
                 Some(&color_blend_state),
                 Some(&dynamic_state),
                 Some(pipeline_layout),

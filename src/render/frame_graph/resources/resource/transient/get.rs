@@ -1,25 +1,33 @@
-use crate::render::frame_graph::{FrameGraphExternalResource, FrameGraphResourceState};
+use crate::render::frame_graph::FrameGraphTransientResource;
 use alexandria::{
-    gpu::{VulkanAttachmentLoadOp, VulkanImage, VulkanImageAspectFlags, VulkanImageView},
+    gpu::{
+        VulkanAttachmentLoadOp, VulkanImage, VulkanImageAspectFlags, VulkanImageView,
+        VulkanMemoryRequirements,
+    },
     math::Vector2u,
 };
 
-impl<'a> FrameGraphExternalResource<'a> {
+impl FrameGraphTransientResource {
     /// Get the size of the resource, in pixels
-    pub(in crate::render::frame_graph::resources) fn size(&self) -> Vector2u {
+    pub(in crate::render::frame_graph::resources::resource) fn size(&self) -> Vector2u {
         self.size
     }
 
     /// Get the image associated with this resource
-    pub(in crate::render::frame_graph::resources::resource) fn image(&self) -> &'a VulkanImage {
-        self.image
+    pub(in crate::render::frame_graph::resources::resource) fn image(&self) -> &VulkanImage {
+        &self.image
     }
 
     /// Get the image view for a resource
     pub(in crate::render::frame_graph::resources::resource) fn image_view(
         &self,
-    ) -> &'a VulkanImageView {
-        self.image_view
+    ) -> &VulkanImageView {
+        self.image_view.as_ref().unwrap()
+    }
+
+    /// Get the memory requirements for this resource
+    pub fn memory_requirements(&self) -> &VulkanMemoryRequirements {
+        &self.memory_requirements
     }
 
     /// Get the aspect mask for a resource
@@ -37,10 +45,5 @@ impl<'a> FrameGraphExternalResource<'a> {
             unsafe { *self.used.get() = true };
             VulkanAttachmentLoadOp::Clear
         }
-    }
-
-    /// Get the current state of the resource
-    pub(in crate::render::frame_graph) fn state(&self) -> &FrameGraphResourceState {
-        &self.state
     }
 }

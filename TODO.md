@@ -1,27 +1,27 @@
 # ToDo
  1. Make default unlit opaque shader
- 2. Add depth support
- 3. Add mesh primitives
+ 2. Add mesh primitives
    1. Quad
    2. Plane
    3. Cube
    4. Sphere
- 4. Add post processing system
- 5. Add render scale
- 6. Add FXAA
- 7. Add HDR + tonemapping
- 8. Add lighting system
+ 3. Add render scale
+ 4. Add FXAA
+ 5. Add HDR + tonemapping
+ 6. Add lighting system
    1. Add lit opaque materials
    2. Directional lights
    3. Point lights
    4. Spot lights
- 9. Add shadow mapping
+ 7. Add shadow mapping
    1. Directional light shadows
    2. Point light shadows
    3. Spot light shadows
- 10. Add mesh loading
- 11. Add texture loading
- 12. Add PBR material system
+ 8. Add mesh loading
+ 9. Add texture loading
+ 10. Add PBR material system
+ 11. Add transient texture aliasing system
+ 12. Add post processing system
  13. Add bloom
  14. Add deferred rendering
  15. Add physics system

@@ -4,8 +4,8 @@ version = 4
 
 [[package]]
 name = "alexandria"
-version = "0.8.1"
-source = "git+https://github.com/shipsimfan/alexandria#a0c6d64b9afbb26d92a40447059f53b2463696a0"
+version = "0.11.1"
+source = "git+https://github.com/shipsimfan/alexandria#2714d78089d5fae55d9da1d2c919c990fd1d6e59"
 dependencies = [
  "alexandria-macros",
  "data-format",
@@ -19,8 +19,8 @@ dependencies = [
 
 [[package]]
 name = "alexandria-macros"
-version = "0.8.1"
-source = "git+https://github.com/shipsimfan/alexandria#a0c6d64b9afbb26d92a40447059f53b2463696a0"
+version = "0.11.1"
+source = "git+https://github.com/shipsimfan/alexandria#2714d78089d5fae55d9da1d2c919c990fd1d6e59"
 dependencies = [
  "proc-macro-util",
 ]
@@ -35,7 +35,7 @@ dependencies = [
 
 [[package]]
 name = "colosseum"
-version = "0.9.0"
+version = "0.10.0"
 dependencies = [
  "alexandria",
  "argparse",
@@ -48,7 +48,7 @@ dependencies = [
 
 [[package]]
 name = "colosseum-build"
-version = "0.9.0"
+version = "0.10.0"
 dependencies = [
  "alexandria",
  "time",
@@ -56,7 +56,7 @@ dependencies = [
 
 [[package]]
 name = "colosseum-macros"
-version = "0.9.0"
+version = "0.10.0"
 dependencies = [
  "proc-macro-util",
 ]

@@ -49,10 +49,10 @@ impl<'surface> Swapchain<'surface> {
         // Build and execute the frame graph for this frame
         device.build_and_run_frame_graph(
             token,
-            &self.image_views[image_index as usize],
             self.size,
+            &self.image_views[image_index as usize],
             frame_index,
-        );
+        )?;
 
         // End the command buffer
         device
