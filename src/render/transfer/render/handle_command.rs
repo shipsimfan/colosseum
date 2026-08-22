@@ -1,6 +1,6 @@
 use crate::{
     Error, Result,
-    render::{RenderGpuTransferQueue, Vertex, transfer::GpuTransferCommand},
+    render::{Mesh, RenderGpuTransferQueue, RenderMesh, Vertex, transfer::GpuTransferCommand},
 };
 use alexandria::gpu::{
     VulkanBuffer, VulkanBufferCopy, VulkanCommandBuffer, VulkanCommandBufferSubmitInfo,
@@ -22,8 +22,6 @@ impl RenderGpuTransferQueue {
             }
         };
 
-        let command_buffer = &mut self.command_pool[self.command_buffer_id];
-
         match command {
             GpuTransferCommand::Mesh {
                 mesh,
@@ -31,34 +29,45 @@ impl RenderGpuTransferQueue {
                 allocation,
                 sender,
             } => {
-                let vertex_staging_buffer = self.vertex_staging_buffer.set(mesh.vertices())?;
-                let index_staging_buffer = self.index_staging_buffer.set(mesh.indices())?;
-
-                copy_buffers(
-                    command_buffer,
-                    queue,
-                    &mut self.fence,
-                    &[
-                        (
-                            vertex_staging_buffer,
-                            render_mesh.vertex_buffer(),
-                            0,
-                            (mesh.vertices().len() * std::mem::size_of::<Vertex>()) as u64,
-                        ),
-                        (
-                            index_staging_buffer,
-                            render_mesh.index_buffer(),
-                            0,
-                            (mesh.indices().len() * std::mem::size_of::<u32>()) as u64,
-                        ),
-                    ],
-                )?;
-
+                self.transfer_mesh(&mesh, &render_mesh, queue)?;
                 sender.send((mesh, render_mesh, allocation))?;
             }
         }
 
         Ok(true)
+    }
+
+    /// Transfer a mesh to the GPU
+    pub(in crate::render::transfer::render) fn transfer_mesh(
+        &mut self,
+        mesh: &Mesh,
+        render_mesh: &RenderMesh,
+        queue: &mut VulkanQueue,
+    ) -> Result<()> {
+        let command_buffer = &mut self.command_pool[self.command_buffer_id];
+
+        let vertex_staging_buffer = self.vertex_staging_buffer.set(mesh.vertices())?;
+        let index_staging_buffer = self.index_staging_buffer.set(mesh.indices())?;
+
+        copy_buffers(
+            command_buffer,
+            queue,
+            &mut self.fence,
+            &[
+                (
+                    vertex_staging_buffer,
+                    render_mesh.vertex_buffer(),
+                    0,
+                    (mesh.vertices().len() * std::mem::size_of::<Vertex>()) as u64,
+                ),
+                (
+                    index_staging_buffer,
+                    render_mesh.index_buffer(),
+                    0,
+                    (mesh.indices().len() * std::mem::size_of::<u32>()) as u64,
+                ),
+            ],
+        )
     }
 }
 

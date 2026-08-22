@@ -4,13 +4,6 @@ use colosseum::render::Skybox;
 
 colosseum::run!(Cube);
 
-colosseum::render::compile_shader!(
-    /// A shader which renders a single triangle
-    pub const TRIANGLE_SHADER = "triangle.slang",
-    vert_main,
-    frag_main
-);
-
 const VERTICES: &[colosseum::render::Vertex] = &[
     colosseum::render::Vertex::new(
         colosseum::math::Vector3f::new(0.0, 0.5, 0.0),
@@ -205,11 +198,7 @@ impl colosseum::update::Scene for CubeScene {
 
             if rotating {
                 let euler = colosseum::math::Quaternionf::from_euler_angles(change);
-                let rotation = if changing_cube {
-                    transform.rotation() * euler
-                } else {
-                    euler * transform.rotation()
-                };
+                let rotation = transform.rotation() * euler;
 
                 transform.set_rotation(rotation);
             } else {
@@ -271,8 +260,7 @@ impl colosseum::update::InitialScene for CubeScene {
         let logger = context.logger("cube");
 
         let color = colosseum::math::ColorHsv::RED;
-        let shader =
-            context.create_shader(colosseum::render::ShaderKind::Unlit, &TRIANGLE_SHADER)?;
+        let shader = context.default_unlit_shader();
         let material =
             context.create_material(colosseum::render::MaterialKind::UnlitOpaque, shader)?;
         //context.set_material_color(material, color.into_rgba(1.0));

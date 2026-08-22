@@ -42,7 +42,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             transfer_queue,
             memory_properties,
             fixed_render_objects,
-        );
+        )?;
 
         // Create the update context that will be passed to the initial scene
         let mut active_camera = None;

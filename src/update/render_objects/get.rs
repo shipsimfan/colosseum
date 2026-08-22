@@ -1,9 +1,14 @@
 use crate::{
-    render::{Material, MaterialId, MaterialKind},
+    render::{Material, MaterialId, MaterialKind, ShaderId},
     update::UpdateRenderObjects,
 };
 
 impl UpdateRenderObjects {
+    /// Get the ID of the default unlit shader
+    pub fn default_unlit_shader(&self) -> ShaderId {
+        self.default_unlit_shader
+    }
+
     /// Get a reference to the material with the given ID
     pub fn get_material(&self, id: MaterialId) -> Option<&Material> {
         match id.kind() {

@@ -1,7 +1,7 @@
 use crate::{
     file_io::FileIo,
     logging::Logger,
-    render::{Material, MaterialId, RenderData, Skybox},
+    render::{Material, MaterialId, RenderData, ShaderId, Skybox},
     update::{ECS, Inputs, Scene, UpdateContext},
 };
 use alexandria::math::{Color4f, Linear, Vector2u};
@@ -61,6 +61,11 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Get a reference to the file I/O system
     pub fn file_io(&self) -> &FileIo {
         self.file_io
+    }
+
+    /// Get the default unlit shader
+    pub fn default_unlit_shader(&self) -> ShaderId {
+        self.render_objects.default_unlit_shader()
     }
 
     /// Try to get a reference to a material, returning [`None`] if it doesn't exist

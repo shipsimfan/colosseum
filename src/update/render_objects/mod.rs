@@ -1,4 +1,4 @@
-use crate::render::{FixedRenderObjects, GpuTransferQueue, Material, Mesh, Shader};
+use crate::render::{FixedRenderObjects, GpuTransferQueue, Material, Mesh, Shader, ShaderId};
 use alexandria::{
     SlotMap,
     gpu::{VulkanDevice, VulkanFormat},
@@ -40,6 +40,9 @@ pub(crate) struct UpdateRenderObjects {
     ///
     /// These shaders are run in a forward pass without lighting information
     unlit_shaders: SlotMap<Arc<Shader>>,
+
+    /// The ID of the default unlit shader to use when no other shader is specified
+    default_unlit_shader: ShaderId,
 
     /// The unlit opaque materials that have been registered
     ///
