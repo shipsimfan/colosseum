@@ -40,7 +40,7 @@ impl UnlitForwardRenderNode {
             material.bind(cmd_buffer, pipeline_layout, object_data);
             mesh.bind(cmd_buffer);
 
-            cmd_buffer.cmd_draw(mesh.index_count(), 1, 0, 0);
+            cmd_buffer.cmd_draw_indexed(mesh.index_count(), 1, 0, 0, 0);
         }
     }
 }

@@ -1,6 +1,6 @@
 use crate::render::{FixedRenderObjects, GpuTransferQueue, Material, Mesh, Shader, ShaderId};
 use alexandria::{
-    SlotMap,
+    Id, SlotMap,
     gpu::{VulkanDevice, VulkanFormat},
 };
 use std::sync::Arc;
@@ -48,4 +48,19 @@ pub(crate) struct UpdateRenderObjects {
     ///
     /// These materials are used in a forward pass without lighting information or transparency
     unlit_opaque_materials: SlotMap<Material>,
+
+    /// The ID of the quad primitive mesh
+    quad: Id<Mesh>,
+
+    /// The ID of the plane primitive mesh
+    plane: Id<Mesh>,
+
+    /// The ID of the cube primitive mesh
+    cube: Id<Mesh>,
+
+    /// The ID of the sphere primitive mesh
+    sphere: Id<Mesh>,
+
+    /// The ID of the cylinder primitive mesh
+    cylinder: Id<Mesh>,
 }

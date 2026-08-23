@@ -2,14 +2,11 @@ use crate::{
     Result, Window,
     file_io::FileIo,
     logging::Logger,
-    render::{FixedRenderObjects, GpuTransferQueue, RenderData, Skybox},
+    render::{GpuTransferQueue, RenderJob, Skybox},
     update::{ECS, InitialScene, Inputs, Scene, UpdateContext, UpdateJob, UpdateRenderObjects},
 };
-use alexandria::{
-    gpu::{VulkanAdapterMemoryProperties, VulkanDevice, VulkanFormat},
-    math::Vector2u,
-};
-use std::{marker::PhantomData, sync::Arc, time::Duration};
+use alexandria::math::Vector2u;
+use std::{marker::PhantomData, time::Duration};
 
 impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
     /// Create a new update job
@@ -21,12 +18,8 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         file_io: FileIo,
         window: &Window,
 
-        device: VulkanDevice,
-        swapchain_format: VulkanFormat,
         transfer_queue: GpuTransferQueue,
-        memory_properties: Arc<VulkanAdapterMemoryProperties>,
-        fixed_render_objects: Arc<FixedRenderObjects>,
-        render_data: &mut RenderData,
+        render_job: &mut RenderJob,
     ) -> Result<Option<UpdateJob<'a, Game>>> {
         // Create the initial set of inputs for the game
         let inputs = Inputs::new();
@@ -36,13 +29,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
 
         // Create the render objects
         let mut skybox = Skybox::default();
-        let mut render_objects = UpdateRenderObjects::new(
-            device,
-            swapchain_format,
-            transfer_queue,
-            memory_properties,
-            fixed_render_objects,
-        )?;
+        let mut render_objects = UpdateRenderObjects::new(transfer_queue, render_job)?;
 
         // Create the update context that will be passed to the initial scene
         let mut active_camera = None;
@@ -57,7 +44,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             &mut active_camera,
             window,
             &mut skybox,
-            render_data,
+            render_job.render_data(),
             &mut render_objects,
         );
 

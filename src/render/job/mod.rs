@@ -8,6 +8,7 @@ mod swapchain;
 mod get;
 mod new;
 mod run;
+mod wait_for_transfer;
 
 /// The persistent state of the render job
 #[allow(private_interfaces)]

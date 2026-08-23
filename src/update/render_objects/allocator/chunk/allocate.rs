@@ -21,7 +21,8 @@ impl GpuMemoryChunk {
             let mut j = i;
             while j > block_index {
                 let offset = self.free_lists[j].pop().unwrap();
-                self.free_lists[j - 1].push(offset + (1 << (j - 1)));
+                let next_offset = offset + (1 << (j as u32 + self.min_block_size_log2 - 1));
+                self.free_lists[j - 1].push(next_offset);
                 self.free_lists[j - 1].push(offset);
 
                 if j == self.largest_free_block.unwrap() && self.free_lists[j].len() == 0 {

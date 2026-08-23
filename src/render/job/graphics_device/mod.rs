@@ -25,6 +25,7 @@ mod get_adapters;
 mod new;
 mod present;
 mod submit;
+mod wait_for_transfer;
 
 pub(in crate::render::job) use render_token::*;
 

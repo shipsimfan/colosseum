@@ -99,6 +99,7 @@ fn copy_buffers(
 
     // Wait for the copy commands to complete
     fence.wait(u64::MAX).map_err(Error::new_inner)?;
+    fence.reset().map_err(Error::new_inner)?;
 
     Ok(())
 }

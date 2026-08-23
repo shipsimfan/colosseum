@@ -4,23 +4,6 @@ use colosseum::render::Skybox;
 
 colosseum::run!(Cube);
 
-const VERTICES: &[colosseum::render::Vertex] = &[
-    colosseum::render::Vertex::new(
-        colosseum::math::Vector3f::new(0.0, 0.5, 0.0),
-        colosseum::math::Color3f::<colosseum::math::Linear>::new(1.0, 0.0, 0.0),
-    ),
-    colosseum::render::Vertex::new(
-        colosseum::math::Vector3f::new(-0.5, -0.5, 0.0),
-        colosseum::math::Color3f::<colosseum::math::Linear>::new(0.0, 0.0, 1.0),
-    ),
-    colosseum::render::Vertex::new(
-        colosseum::math::Vector3f::new(0.5, -0.5, 0.0),
-        colosseum::math::Color3f::<colosseum::math::Linear>::new(0.0, 1.0, 0.0),
-    ),
-];
-
-const INDICES: &[u32] = &[0, 1, 2];
-
 /// The cube example
 struct Cube;
 
@@ -53,11 +36,6 @@ impl colosseum::GameOptions<Cube> for CubeOptions {
 #[colosseum::settings::settings_cache]
 struct CubeSettings {}
 
-enum MeshState {
-    Loading(Option<colosseum::render::MeshTransfer>),
-    Ready(colosseum::Id<colosseum::render::Mesh>),
-}
-
 /// The initial scene for the cube example
 struct CubeScene {
     /// A color that shifts over time to demonstrate the update loop
@@ -76,7 +54,7 @@ struct CubeScene {
     material: colosseum::render::MaterialId,
 
     /// The mesh used to render the cube
-    mesh: MeshState,
+    mesh: colosseum::Id<colosseum::render::Mesh>,
 
     /// The ID of the renderable cube
     cube: colosseum::Id<colosseum::update::Entity>,
@@ -208,29 +186,12 @@ impl colosseum::update::Scene for CubeScene {
         }
 
         // Render the cube
-        let mesh = match &mut self.mesh {
-            MeshState::Loading(transfer) => {
-                if !transfer.as_ref().unwrap().is_complete() {
-                    return Ok(());
-                }
-
-                let mesh = context.complete_mesh(transfer.take().unwrap());
-                context.ecs_mut().add_component(
-                    self.cube,
-                    colosseum::update::components::Renderer::new(self.material, mesh),
-                );
-                self.mesh = MeshState::Ready(mesh);
-                mesh
-            }
-            &mut MeshState::Ready(mesh) => mesh,
-        };
-
         if context.inputs().key_down(colosseum::Key::V) {
             self.render_state = !self.render_state;
             if self.render_state {
                 context.ecs_mut().add_component(
                     self.cube,
-                    colosseum::update::components::Renderer::new(self.material, mesh),
+                    colosseum::update::components::Renderer::new(self.material, self.mesh),
                 );
             } else {
                 context
@@ -266,15 +227,17 @@ impl colosseum::update::InitialScene for CubeScene {
         //context.set_material_color(material, color.into_rgba(1.0));
         context.set_skybox(Skybox::SolidColor(color.into_rgb()));
 
-        let mesh = MeshState::Loading(Some(
-            context.create_mesh(VERTICES.to_vec(), INDICES.to_vec())?,
-        ));
+        let mesh = context.cube();
 
         let ecs = context.ecs_mut();
         let cube = ecs.create_entity();
         let mut transform = colosseum::update::components::Transform::default();
         transform.set_position((0.0, 0.0, 3.0));
         ecs.add_component(cube, transform);
+        ecs.add_component(
+            cube,
+            colosseum::update::components::Renderer::new(material, mesh),
+        );
 
         let camera = ecs.create_entity();
         ecs.add_component(camera, colosseum::update::components::Camera::default());

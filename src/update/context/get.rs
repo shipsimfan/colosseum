@@ -1,10 +1,13 @@
 use crate::{
     file_io::FileIo,
     logging::Logger,
-    render::{Material, MaterialId, RenderData, ShaderId, Skybox},
+    render::{Material, MaterialId, Mesh, RenderData, ShaderId, Skybox},
     update::{ECS, Inputs, Scene, UpdateContext},
 };
-use alexandria::math::{Color4f, Linear, Vector2u};
+use alexandria::{
+    Id,
+    math::{Color4f, Linear, Vector2u},
+};
 use std::time::Duration;
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
@@ -84,6 +87,31 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
             material.set_color(color);
             self.render_data.add_render_object_change((id, color));
         }
+    }
+
+    /// Get the quad primitive
+    pub fn quad(&self) -> Id<Mesh> {
+        self.render_objects.quad()
+    }
+
+    /// Get the plane primitive
+    pub fn plane(&self) -> Id<Mesh> {
+        self.render_objects.plane()
+    }
+
+    /// Get the cube primitive
+    pub fn cube(&self) -> Id<Mesh> {
+        self.render_objects.cube()
+    }
+
+    /// Get the sphere primitive
+    pub fn sphere(&self) -> Id<Mesh> {
+        self.render_objects.sphere()
+    }
+
+    /// Get the cylinder primitive
+    pub fn cylinder(&self) -> Id<Mesh> {
+        self.render_objects.cylinder()
     }
 
     /// Get the render data for this update
