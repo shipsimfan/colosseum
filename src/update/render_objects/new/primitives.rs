@@ -23,8 +23,8 @@ pub(in crate::update::render_objects::new) const CUBE_VERTICES: &[Vertex] = &[
     Vertex::new((1.0, -1.0, -1.0), (1.0, 1.0, 1.0)),
 ];
 pub(in crate::update::render_objects::new) const CUBE_INDICES: &[u32] = &[
-    0, 2, 1, 1, 2, 3, 4, 5, 6, 5, 7, 6, 0, 1, 4, 1, 5, 4, 2, 6, 3, 3, 6, 7, 0, 4, 2, 2, 4, 6, 1, 3,
-    5, 3, 7, 5,
+    0, 1, 2, 1, 3, 2, 4, 6, 5, 5, 6, 7, 0, 4, 1, 1, 4, 5, 2, 3, 6, 3, 7, 6, 0, 2, 4, 2, 6, 4, 1, 5,
+    3, 3, 5, 7,
 ];
 
 /// Generate a plane primitive mesh
@@ -90,9 +90,9 @@ pub(in crate::update::render_objects::new) fn sphere() -> (Vec<Vertex>, Vec<u32>
     ];
 
     let mut indices = vec![
-        0, 11, 5, 0, 5, 1, 0, 1, 7, 0, 7, 10, 0, 10, 11, 1, 5, 9, 5, 11, 4, 11, 10, 2, 10, 7, 6, 7,
-        1, 8, 3, 9, 4, 3, 4, 2, 3, 2, 6, 3, 6, 8, 3, 8, 9, 4, 9, 5, 2, 4, 11, 6, 2, 10, 8, 6, 7, 9,
-        8, 1,
+        0, 5, 11, 0, 1, 5, 0, 7, 1, 0, 10, 7, 0, 11, 10, 1, 9, 5, 5, 4, 11, 11, 2, 10, 10, 6, 7, 7,
+        8, 1, 3, 4, 9, 3, 2, 4, 3, 6, 2, 3, 8, 6, 3, 9, 8, 4, 5, 9, 2, 11, 4, 6, 10, 2, 8, 7, 6, 9,
+        1, 8,
     ];
 
     let mut midpoint_cache = BTreeMap::new();
@@ -107,7 +107,7 @@ pub(in crate::update::render_objects::new) fn sphere() -> (Vec<Vertex>, Vec<u32>
             let bc = midpoint(b, c, &mut vertices, &mut midpoint_cache);
             let ca = midpoint(c, a, &mut vertices, &mut midpoint_cache);
 
-            new_indices.extend_from_slice(&[a, ab, ca, b, bc, ab, c, ca, bc, ab, bc, ca]);
+            new_indices.extend_from_slice(&[a, ca, ab, b, ab, bc, c, bc, ca, ab, ca, bc]);
         }
 
         indices = new_indices;
@@ -163,22 +163,22 @@ pub(in crate::update::render_objects::new) fn cylinder() -> (Vec<Vertex>, Vec<u3
 
         // Side faces
         indices.push(i as u32 * 2);
-        indices.push(next as u32 * 2);
         indices.push(i as u32 * 2 + 1);
+        indices.push(next as u32 * 2);
 
         indices.push(next as u32 * 2);
-        indices.push(next as u32 * 2 + 1);
         indices.push(i as u32 * 2 + 1);
+        indices.push(next as u32 * 2 + 1);
 
         // Top face
         indices.push(SEGMENTS as u32 * 2);
-        indices.push(next as u32 * 2);
         indices.push(i as u32 * 2);
+        indices.push(next as u32 * 2);
 
         // Bottom face
         indices.push(SEGMENTS as u32 * 2 + 1);
-        indices.push(i as u32 * 2 + 1);
         indices.push(next as u32 * 2 + 1);
+        indices.push(i as u32 * 2 + 1);
     }
 
     (vertices, indices)

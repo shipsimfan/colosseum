@@ -227,7 +227,7 @@ impl colosseum::update::InitialScene for CubeScene {
         //context.set_material_color(material, color.into_rgba(1.0));
         context.set_skybox(Skybox::SolidColor(color.into_rgb()));
 
-        let mesh = context.cube();
+        let mesh = context.cylinder();
 
         let ecs = context.ecs_mut();
         let cube = ecs.create_entity();
