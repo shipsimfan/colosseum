@@ -3,7 +3,7 @@ use crate::render::frame_graph::FrameGraphResourceId;
 mod create_objects;
 mod execute;
 mod new;
-mod write_resources;
+mod usages;
 
 /// Draws a solid color to the output, which can be used as the sky in a scene
 #[derive(Debug)]

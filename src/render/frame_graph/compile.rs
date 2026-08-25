@@ -2,7 +2,7 @@ use crate::render::{
     FrameGraph,
     frame_graph::{
         FrameGraphNode, FrameGraphPipelineBarrier, FrameGraphResourceBuilder,
-        FrameGraphResourceState, FrameGraphResourceWriteUsage,
+        FrameGraphResourceState, FrameGraphResourceUsage,
     },
 };
 use alexandria::gpu::{VulkanAccessFlag, VulkanImageLayout, VulkanPipelineStageFlag};
@@ -22,11 +22,11 @@ impl FrameGraph {
 
         // Create a pipeline barrier for each transition needed for each node in the frame graph
         for (node_index, node) in nodes.iter().enumerate() {
-            node.write_resources(|write_resources| {
+            node.usages(|write_resources| {
                 let mut num_barriers = 0;
                 for (id, usage) in write_resources {
                     let new_state = match usage {
-                        FrameGraphResourceWriteUsage::ColorAttachment => {
+                        FrameGraphResourceUsage::ColorAttachment => {
                             resource_builder.set_color(*id);
                             FrameGraphResourceState::new(
                                 VulkanPipelineStageFlag::ColorAttachmentOutput,
@@ -34,7 +34,7 @@ impl FrameGraph {
                                 VulkanImageLayout::ColorAttachmentOptimal,
                             )
                         }
-                        FrameGraphResourceWriteUsage::DepthAttachment => {
+                        FrameGraphResourceUsage::DepthAttachment => {
                             resource_builder.set_depth(*id);
                             FrameGraphResourceState::new(
                                 VulkanPipelineStageFlag::EarlyFragmentTests,

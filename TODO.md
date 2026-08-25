@@ -1,5 +1,11 @@
 # ToDo
  1. Add render scale
+   1. Add `TransferSrc` and `TransferDst` usages
+   2. Add render scale to render data
+   3. Add render scale to settings
+   4. Add setting of render scale in update
+   5. Add passing of render scale to resources
+   6. Add render scale node
  2. Add FXAA
  3. Add HDR + tonemapping
  4. Add lighting system

@@ -2,7 +2,7 @@ use crate::render::{
     FrameGraph, RenderData, RenderObjects,
     frame_graph::{
         ArenaBuffer, FrameGraphNode, FrameGraphPipelineBarrier, FrameGraphResourceId,
-        FrameGraphResourceState, FrameGraphResourceWriteUsage, FrameGraphResources,
+        FrameGraphResourceState, FrameGraphResourceUsage, FrameGraphResources,
     },
 };
 use alexandria::{
@@ -59,13 +59,13 @@ impl FrameGraph {
             let mut color_attachments = color_attachments.arena();
             let mut depth_attachment = None;
             let mut render_area = Vector2u::ZERO;
-            node.write_resources(|write_resources| {
+            node.usages(|write_resources| {
                 for (id, usage) in write_resources {
                     let (resource, load_op) = resources.get_with_op(*id);
                     render_area = resource.size();
 
                     match usage {
-                        FrameGraphResourceWriteUsage::ColorAttachment => {
+                        FrameGraphResourceUsage::ColorAttachment => {
                             color_attachments.push(VulkanRenderingAttachmentInfo::new(
                                 resource.image_view(),
                                 VulkanImageLayout::ColorAttachmentOptimal,
@@ -77,7 +77,7 @@ impl FrameGraph {
                                 Color4f::<Linear>::new(0.0, 0.0, 0.0, 0.0),
                             ));
                         }
-                        FrameGraphResourceWriteUsage::DepthAttachment => {
+                        FrameGraphResourceUsage::DepthAttachment => {
                             depth_attachment = Some(VulkanRenderingAttachmentInfo::new(
                                 resource.image_view(),
                                 VulkanImageLayout::DepthAttachmentOptimal,
@@ -94,7 +94,8 @@ impl FrameGraph {
             });
 
             // Begin rendering
-            if color_attachments.len() > 0 {
+            let render_pass = color_attachments.len() > 0 || depth_attachment.is_some();
+            if render_pass {
                 cmd_buffer.cmd_begin_rendering(
                     0,
                     Vector2i::ZERO,
@@ -111,7 +112,9 @@ impl FrameGraph {
             node.execute(data, render_objects, resources, cmd_buffer);
 
             // End rendering
-            cmd_buffer.cmd_end_rendering();
+            if render_pass {
+                cmd_buffer.cmd_end_rendering();
+            }
         }
 
         // Queue a final barrier to transition the swapchain image to the present layout

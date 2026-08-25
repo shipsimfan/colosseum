@@ -33,16 +33,16 @@ macro_rules! nodes {
                 )*}
             }
 
-            /// Get the resources that this node writes to
-            pub(in crate::render::frame_graph) fn write_resources<
+            /// Get the usage types for the resources that this node uses
+            pub(in crate::render::frame_graph) fn usages<
                 T,
-                F: FnOnce(&[(FrameGraphResourceId, FrameGraphResourceWriteUsage)]) -> T,
+                F: FnOnce(&[(FrameGraphResourceId, FrameGraphResourceUsage)]) -> T,
             >(
                 &self,
                 f: F,
             ) -> T {
                 match self {$(
-                    FrameGraphNode::$name(node) => node.write_resources(f),
+                    FrameGraphNode::$name(node) => node.usages(f),
                 )*}
             }
 

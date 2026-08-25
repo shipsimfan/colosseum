@@ -2,7 +2,7 @@ use crate::{
     Result,
     render::{
         Pipeline, RenderData, RenderObjects, Shader,
-        frame_graph::{FrameGraphResourceId, FrameGraphResourceWriteUsage, FrameGraphResources},
+        frame_graph::{FrameGraphResourceId, FrameGraphResourceUsage, FrameGraphResources},
     },
 };
 use alexandria::gpu::{VulkanCommandBuffer, VulkanDevice, VulkanFormat};

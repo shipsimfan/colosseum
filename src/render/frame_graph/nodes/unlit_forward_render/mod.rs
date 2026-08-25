@@ -3,7 +3,7 @@ use crate::render::frame_graph::FrameGraphResourceId;
 mod create_objects;
 mod execute;
 mod new;
-mod write_resources;
+mod usages;
 
 /// A node that renders unlit objects using a forward rendering pipeline
 #[derive(Debug)]
