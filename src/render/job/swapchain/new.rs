@@ -37,7 +37,7 @@ impl<'surface> Swapchain<'surface> {
                 Swapchain::COLOR_SPACE,
                 size,
                 1,
-                VulkanImageUsageFlag::ColorAttachment,
+                VulkanImageUsageFlag::ColorAttachment | VulkanImageUsageFlag::TransferDst,
                 VulkanSharingMode::Exclusive,
                 &[],
                 capabilities.current_transform(),

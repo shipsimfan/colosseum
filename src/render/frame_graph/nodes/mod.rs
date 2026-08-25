@@ -12,6 +12,9 @@ use std::sync::Arc;
 mod r#macro;
 
 nodes![
+    /// A node that changes the render scale of the input image and outputs it to a new image
+    render_scale::RenderScale(RenderScaleNode),
+
     /// A node that clears the screen to a solid color
     solid_color_sky::SolidColorSky(SolidColorSkyNode),
 

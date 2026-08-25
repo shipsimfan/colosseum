@@ -42,6 +42,22 @@ impl FrameGraph {
                                 VulkanImageLayout::DepthStencilAttachmentOptimal,
                             )
                         }
+                        FrameGraphResourceUsage::TransferDst => {
+                            resource_builder.set_transfer_dst(*id);
+                            FrameGraphResourceState::new(
+                                VulkanPipelineStageFlag::Blit,
+                                VulkanAccessFlag::TransferWrite,
+                                VulkanImageLayout::TransferDstOptimal,
+                            )
+                        }
+                        FrameGraphResourceUsage::TransferSrc => {
+                            resource_builder.set_transfer_src(*id);
+                            FrameGraphResourceState::new(
+                                VulkanPipelineStageFlag::Blit,
+                                VulkanAccessFlag::TransferRead,
+                                VulkanImageLayout::TransferSrcOptimal,
+                            )
+                        }
                     };
 
                     if let Some(barrier) = resource_builder.transition(*id, new_state) {

@@ -17,6 +17,12 @@ pub(in crate::render::frame_graph) struct FrameGraphDynamicTransientResourceInfo
     /// Is this resource a depth resource?
     is_depth: bool,
 
+    /// Is this resource a transfer destination resource?
+    is_transfer_dst: bool,
+
+    /// Is this resource a transfer source resource?
+    is_transfer_src: bool,
+
     /// The current state of the resource
     state: FrameGraphResourceState,
 }

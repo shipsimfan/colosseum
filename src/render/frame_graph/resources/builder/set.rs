@@ -26,4 +26,30 @@ impl<'a> FrameGraphResourceBuilder<'a> {
 
         // Do nothing for external resources
     }
+
+    /// Mark that a resource will be used as a transfer destination
+    pub fn set_transfer_dst(&mut self, id: FrameGraphResourceId) {
+        if id.is_transient_render_scale() {
+            self.transient_render_scale[id.index()].set_transfer_dst();
+        } else if id.is_transient_native_scale() {
+            todo!("transient native scale resources are not yet implemented")
+        } else if id.is_transient_static_scale() {
+            todo!("transient static resources are not yet implemented")
+        }
+
+        // Do nothing for external resources
+    }
+
+    /// Mark that a resource will be used as a transfer source
+    pub fn set_transfer_src(&mut self, id: FrameGraphResourceId) {
+        if id.is_transient_render_scale() {
+            self.transient_render_scale[id.index()].set_transfer_src();
+        } else if id.is_transient_native_scale() {
+            todo!("transient native scale resources are not yet implemented")
+        } else if id.is_transient_static_scale() {
+            todo!("transient static resources are not yet implemented")
+        }
+
+        // Do nothing for external resources
+    }
 }

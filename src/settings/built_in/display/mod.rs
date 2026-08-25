@@ -23,4 +23,7 @@ pub struct DisplaySettings {
 
     /// The name or UUID of the adapter to use for rendering
     adapter: Option<String>,
+
+    /// The render scale to use for rendering
+    render_scale: f32,
 }

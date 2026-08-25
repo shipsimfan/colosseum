@@ -15,6 +15,7 @@ impl RenderData {
         Ok(RenderData {
             render_object_changes: Vec::new(),
             confirmed_removals: Vec::new(),
+            render_scale: 1.0,
 
             skybox: Skybox::default(),
             doubled: [

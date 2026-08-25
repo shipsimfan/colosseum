@@ -21,4 +21,9 @@ impl DisplaySettings {
     pub(crate) fn set_maximized(&mut self, maximized: bool) {
         self.maximized = maximized;
     }
+
+    /// Set the render scale to use for rendering
+    pub(crate) fn set_render_scale(&mut self, render_scale: f32) {
+        self.render_scale = render_scale;
+    }
 }

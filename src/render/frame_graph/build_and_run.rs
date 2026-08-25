@@ -47,6 +47,7 @@ impl FrameGraph {
         if self.structure != structure {
             self.structure = structure;
             self.last_swapchain_size = swapchain_size;
+            self.last_render_scale = data.render_scale();
             self.transient_epoch += 1;
 
             FrameGraph::build(
@@ -66,8 +67,11 @@ impl FrameGraph {
                 .get_external(FrameGraphResourceId::SWAPCHAIN_IMAGE)
                 .state()
                 .clone();
-        } else if self.last_swapchain_size != swapchain_size {
+        } else if self.last_swapchain_size != swapchain_size
+            || self.last_render_scale != data.render_scale()
+        {
             self.last_swapchain_size = swapchain_size;
+            self.last_render_scale = data.render_scale();
             self.transient_epoch += 1;
         }
 
@@ -79,7 +83,7 @@ impl FrameGraph {
             resources.resize(
                 &transient_render_scale_info,
                 swapchain_size,
-                1.0,
+                data.render_scale(),
                 memory_properties,
                 device,
                 self.transient_epoch,

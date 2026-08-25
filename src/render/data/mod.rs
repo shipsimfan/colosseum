@@ -33,6 +33,11 @@ pub(crate) struct RenderData {
     /// The objects whose removals have been confirmed, and the memory can be freed
     confirmed_removals: Vec<RenderObjectRemoveConfirm>,
 
+    /** Render Settings **/
+
+    /// The scale to render the scene at
+    render_scale: f32,
+
     /** Scene Data **/
 
     /// The skybox to render

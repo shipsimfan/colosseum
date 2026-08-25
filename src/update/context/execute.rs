@@ -1,4 +1,5 @@
 use crate::{
+    settings::SettingsCache,
     update::{
         UpdateContext,
         components::{Camera, Transform},
@@ -10,6 +11,8 @@ use alexandria::math::Matrix4x4f;
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Execute all rendering systems on the archetypes in the ECS system
     pub(in crate::update) fn execute_rendering_systems(&mut self) {
+        self.render_data
+            .set_render_scale(self.settings.display_settings().render_scale());
         self.render_data.set_skybox(self.skybox.clone());
         if !self.update_camera() {
             warning!(self.logger, "no active camera set");

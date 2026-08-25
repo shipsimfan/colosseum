@@ -20,6 +20,12 @@ impl FrameGraphDynamicTransientResourceInfo {
         if self.is_depth {
             flags |= VulkanImageUsageFlag::DepthStencilAttachment;
         }
+        if self.is_transfer_dst {
+            flags |= VulkanImageUsageFlag::TransferDst;
+        }
+        if self.is_transfer_src {
+            flags |= VulkanImageUsageFlag::TransferSrc;
+        }
 
         flags
     }

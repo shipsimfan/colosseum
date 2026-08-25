@@ -10,6 +10,7 @@ impl FrameGraph {
         FrameGraph {
             structure: None,
             last_swapchain_size: Vector2u::ZERO,
+            last_render_scale: 0.0,
             swapchain_final_state: FrameGraphResourceState::default(),
             transient_epoch: 0,
 

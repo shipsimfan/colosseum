@@ -3,6 +3,7 @@ use alexandria::Id;
 use crate::{
     Result,
     render::Skybox,
+    settings::{ModifiableSettingsCache, SettingsCache},
     update::{Entity, Scene, UpdateContext},
 };
 
@@ -15,6 +16,15 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Set the next scene to switch to at the start of the next frame
     pub fn set_next_scene(&mut self, next_scene: Box<dyn Scene<Game = Game>>) {
         self.next_scene = Some(next_scene);
+    }
+
+    /// Set the render scale to use for this update
+    pub fn set_render_scale(&mut self, render_scale: f32) {
+        let mut settings = self.settings.begin_modify();
+        settings
+            .display_settings_mut()
+            .set_render_scale(render_scale);
+        self.settings.save(&settings);
     }
 
     /// Set the skybox to use for this update

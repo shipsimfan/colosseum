@@ -89,6 +89,8 @@ impl FrameGraph {
                                 Color4f::<Linear>::new(1.0, 1.0, 1.0, 1.0),
                             ));
                         }
+                        FrameGraphResourceUsage::TransferDst
+                        | FrameGraphResourceUsage::TransferSrc => {}
                     }
                 }
             });

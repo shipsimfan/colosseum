@@ -11,6 +11,11 @@ impl RenderData {
         self.confirmed_removals.drain(..)
     }
 
+    /// Get the render scale for the current frame
+    pub(in crate::render) fn render_scale(&self) -> f32 {
+        self.render_scale
+    }
+
     /// Get a reference to the skybox that should be rendered in the current frame
     pub(in crate::render) fn skybox(&self) -> &Skybox {
         &self.skybox

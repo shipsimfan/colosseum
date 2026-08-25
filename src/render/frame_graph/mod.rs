@@ -29,6 +29,9 @@ pub(in crate::render) struct FrameGraph {
     /// The last swapchain size used to build the frame graph
     last_swapchain_size: Vector2u,
 
+    /// The last render scale used to build the frame graph
+    last_render_scale: f32,
+
     /// The final state of the swapchain image after executing the frame graph
     swapchain_final_state: FrameGraphResourceState,
 

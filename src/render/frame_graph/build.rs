@@ -2,7 +2,7 @@ use crate::render::{
     FrameGraph,
     frame_graph::{
         FrameGraphNode, FrameGraphResourceBuilder, FrameGraphResourceId, FrameGraphStructure,
-        UnlitForwardRenderNode,
+        RenderScaleNode, UnlitForwardRenderNode,
     },
 };
 use alexandria::gpu::VulkanFormat;
@@ -22,14 +22,21 @@ impl FrameGraph {
         // Create a common depth buffer
         let depth_buffer = resources.create_render_scale_transient(VulkanFormat::D32SFloat);
 
+        // Select the 3d color output
+        let color_output = if structure.has_render_scale() {
+            resources.create_render_scale_transient(VulkanFormat::R8G8B8A8UNorm)
+        } else {
+            FrameGraphResourceId::SWAPCHAIN_IMAGE
+        };
+
         // Add nodes to the frame graph
-        nodes.push(
-            UnlitForwardRenderNode::new(FrameGraphResourceId::SWAPCHAIN_IMAGE, depth_buffer).into(),
-        );
-        nodes.push(
-            structure
-                .skybox()
-                .create_node(FrameGraphResourceId::SWAPCHAIN_IMAGE, depth_buffer),
-        );
+        nodes.push(UnlitForwardRenderNode::new(color_output, depth_buffer).into());
+        nodes.push(structure.skybox().create_node(color_output, depth_buffer));
+
+        if structure.has_render_scale() {
+            nodes.push(
+                RenderScaleNode::new(color_output, FrameGraphResourceId::SWAPCHAIN_IMAGE).into(),
+            );
+        }
     }
 }

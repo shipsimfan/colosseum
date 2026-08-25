@@ -26,4 +26,9 @@ impl DisplaySettings {
     pub fn adapter(&self) -> Option<&str> {
         self.adapter.as_deref()
     }
+
+    /// Get the render scale to use for rendering
+    pub fn render_scale(&self) -> f32 {
+        self.render_scale
+    }
 }
