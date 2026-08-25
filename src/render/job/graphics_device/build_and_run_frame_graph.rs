@@ -20,6 +20,7 @@ impl GraphicsDevice {
             swapchain_size,
             swapchain_color_attachment.image(),
             swapchain_color_attachment,
+            &mut self.transient_buffers[frame_index],
             &mut self.command_pool[self.command_buffers[frame_index]],
             &self.memory_properties,
             &self.device,

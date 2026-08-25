@@ -104,6 +104,7 @@ impl GraphicsDevice {
                 queue,
                 command_pool,
                 command_buffers: Vec::new(),
+                transient_buffers: Vec::new(),
                 swapchain_format: adapter.swapchain_format(),
                 frame_graph: FrameGraph::new(),
                 render_objects,

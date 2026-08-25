@@ -1,6 +1,6 @@
 use crate::{
     Error, Result,
-    render::{RenderData, job::GraphicsDevice},
+    render::{FrameGraphTransientBuffer, RenderData, job::GraphicsDevice},
 };
 use alexandria::gpu::VulkanCommandBufferLevel;
 
@@ -24,6 +24,13 @@ impl GraphicsDevice {
                     &self.memory_properties,
                     &self.render_objects,
                 )?);
+            }
+        }
+
+        if self.transient_buffers.len() < num {
+            for _ in self.transient_buffers.len()..num {
+                self.transient_buffers
+                    .push(FrameGraphTransientBuffer::new());
             }
         }
 

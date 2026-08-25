@@ -1,7 +1,7 @@
 use crate::{
     Result,
     render::{
-        FrameGraph, RenderData, RenderObjects,
+        FrameGraph, FrameGraphTransientBuffer, RenderData, RenderObjects,
         frame_graph::{
             FrameGraphResourceBuilder, FrameGraphResourceId, FrameGraphResources,
             FrameGraphStructure,
@@ -27,6 +27,8 @@ impl FrameGraph {
         swapchain_image: &VulkanImage,
         swapchain_color_attachment: &VulkanImageView,
 
+        transient_buffer: &mut FrameGraphTransientBuffer,
+
         cmd_buffer: &mut VulkanCommandBuffer,
         memory_properties: &VulkanAdapterMemoryProperties,
         device: &VulkanDevice,
@@ -44,7 +46,8 @@ impl FrameGraph {
         let structure = Some(FrameGraphStructure::from_data(data));
         if self.structure != structure {
             self.structure = structure;
-            self.last_swapchain_size = Vector2u::ZERO;
+            self.last_swapchain_size = swapchain_size;
+            self.transient_epoch += 1;
 
             FrameGraph::build(
                 self.structure.as_ref().unwrap(),
@@ -63,23 +66,23 @@ impl FrameGraph {
                 .get_external(FrameGraphResourceId::SWAPCHAIN_IMAGE)
                 .state()
                 .clone();
-        };
+        } else if self.last_swapchain_size != swapchain_size {
+            self.last_swapchain_size = swapchain_size;
+            self.transient_epoch += 1;
+        }
+
         let (external, transient_render_scale_info) = resource_builder.finish();
-        let mut resources = FrameGraphResources::new(
-            external,
-            &mut self.transient_render_scale,
-            &mut self.transient_render_scale_memory,
-        );
+        let mut resources = FrameGraphResources::new(external, transient_buffer);
 
         // See if we need to resize
-        if self.last_swapchain_size != swapchain_size {
-            self.last_swapchain_size = swapchain_size;
+        if resources.needs_resize(self.transient_epoch) {
             resources.resize(
                 &transient_render_scale_info,
                 swapchain_size,
                 1.0,
                 memory_properties,
                 device,
+                self.transient_epoch,
             )?;
         }
 

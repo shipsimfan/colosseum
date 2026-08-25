@@ -1,10 +1,9 @@
 use alexandria::{
-    gpu::{VulkanDeviceMemory, VulkanImageMemoryBarrier, VulkanRenderingAttachmentInfo},
+    gpu::{VulkanImageMemoryBarrier, VulkanRenderingAttachmentInfo},
     math::Vector2u,
 };
 use arena::*;
 use pipeline_barrier::*;
-use resources::*;
 use structure::*;
 
 mod arena;
@@ -20,6 +19,7 @@ mod execute;
 mod new;
 
 pub(in crate::render) use nodes::*;
+pub(in crate::render) use resources::*;
 
 /// A frame graph, which can be built and executed to render a frame
 pub(in crate::render) struct FrameGraph {
@@ -32,6 +32,9 @@ pub(in crate::render) struct FrameGraph {
     /// The final state of the swapchain image after executing the frame graph
     swapchain_final_state: FrameGraphResourceState,
 
+    /// The current transient epoch
+    transient_epoch: u64,
+
     /** Build Members **/
 
     /// The nodes that have been added to the frame graph
@@ -42,12 +45,6 @@ pub(in crate::render) struct FrameGraph {
 
     /// The info describing the transient resources that are at the render scale
     transient_render_scale_info: Vec<FrameGraphDynamicTransientResourceInfo>,
-
-    /// The transient resources that are at the render scale
-    transient_render_scale: Vec<FrameGraphTransientResource>,
-
-    /// The memory for the transient render scale resources
-    transient_render_scale_memory: Option<VulkanDeviceMemory>,
 
     /** Compile Members **/
 

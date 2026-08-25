@@ -1,6 +1,8 @@
 use crate::{
     logging::Logger,
-    render::{FrameGraph, RenderData, RenderGpuTransferQueue, RenderObjects},
+    render::{
+        FrameGraph, FrameGraphTransientBuffer, RenderData, RenderGpuTransferQueue, RenderObjects,
+    },
 };
 use adapter_info::VulkanAdapterInfo;
 use alexandria::{
@@ -45,6 +47,9 @@ pub(in crate::render::job) struct GraphicsDevice {
 
     /// The command buffers that have been allocated in the pool
     command_buffers: Vec<Id<VulkanCommandBuffer>>,
+
+    /// The transient buffers that have been allocated for temporary data during rendering
+    transient_buffers: Vec<FrameGraphTransientBuffer>,
 
     /// The format of the swapchain images, which is determined when creating the swapchain
     swapchain_format: VulkanFormat,

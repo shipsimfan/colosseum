@@ -21,6 +21,7 @@ impl<'a> FrameGraphResources<'a> {
         render_scale: f32,
         memory_properties: &VulkanAdapterMemoryProperties,
         device: &VulkanDevice,
+        new_epoch: u64,
     ) -> Result<()> {
         // Clear the transient resources
         self.transient_render_scale.clear();
@@ -63,6 +64,7 @@ impl<'a> FrameGraphResources<'a> {
         }
 
         *self.transient_render_scale_memory = Some(memory);
+        *self.epoch = new_epoch;
 
         Ok(())
     }
