@@ -34,7 +34,7 @@ impl RenderScaleNode {
                 1,
                 [
                     Vector3i::ZERO,
-                    Vector3i::new(src.size().x as _, src.size().y as _, 0),
+                    Vector3i::new(src.size().x as _, src.size().y as _, 1),
                 ],
                 VulkanImageAspectFlag::Color,
                 0,
@@ -42,10 +42,10 @@ impl RenderScaleNode {
                 1,
                 [
                     Vector3i::ZERO,
-                    Vector3i::new(dst.size().x as _, dst.size().y as _, 0),
+                    Vector3i::new(dst.size().x as _, dst.size().y as _, 1),
                 ],
             )],
-            VulkanFilter::Nearest,
+            VulkanFilter::Linear,
         );
     }
 }

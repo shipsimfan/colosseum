@@ -11,6 +11,7 @@ impl FrameGraph {
     /// Build the frame graph for a single frame
     pub(in crate::render::frame_graph) fn build<'a>(
         structure: &FrameGraphStructure,
+        swapchain_format: VulkanFormat,
 
         resources: &mut FrameGraphResourceBuilder<'a>,
         nodes: &mut Vec<FrameGraphNode>,
@@ -24,7 +25,7 @@ impl FrameGraph {
 
         // Select the 3d color output
         let color_output = if structure.has_render_scale() {
-            resources.create_render_scale_transient(VulkanFormat::R8G8B8A8UNorm)
+            resources.create_render_scale_transient(swapchain_format)
         } else {
             FrameGraphResourceId::SWAPCHAIN_IMAGE
         };

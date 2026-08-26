@@ -10,8 +10,8 @@ use crate::{
 };
 use alexandria::{
     gpu::{
-        VulkanAdapterMemoryProperties, VulkanCommandBuffer, VulkanDevice, VulkanImage,
-        VulkanImageView,
+        VulkanAdapterMemoryProperties, VulkanCommandBuffer, VulkanDevice, VulkanFormat,
+        VulkanImage, VulkanImageView,
     },
     math::Vector2u,
 };
@@ -26,6 +26,7 @@ impl FrameGraph {
         swapchain_size: Vector2u,
         swapchain_image: &VulkanImage,
         swapchain_color_attachment: &VulkanImageView,
+        swapchain_format: VulkanFormat,
 
         transient_buffer: &mut FrameGraphTransientBuffer,
 
@@ -52,6 +53,7 @@ impl FrameGraph {
 
             FrameGraph::build(
                 self.structure.as_ref().unwrap(),
+                swapchain_format,
                 &mut resource_builder,
                 &mut self.nodes,
             );

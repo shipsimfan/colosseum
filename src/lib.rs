@@ -6,7 +6,6 @@
 #![deny(rustdoc::redundant_explicit_links)]
 #![warn(rustdoc::broken_intra_doc_links)]
 #![allow(incomplete_features)]
-#![feature(generic_const_exprs)]
 #![feature(generic_const_items)]
 #![feature(const_trait_impl)]
 #![feature(const_convert)]
