@@ -127,7 +127,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         }
 
         // Update the current scene
-        update_context.render_data().reset();
+        update_context.render_data().reset(false);
 
         update_context.ecs_mut().execute_pre_update_systems();
         self.scene.update(&mut update_context)?;

@@ -42,21 +42,20 @@ impl<'surface> Swapchain<'surface> {
 
         // Begin the command buffer for the frame
         device
-            .command_buffer(frame_index)
+            .command_buffer(&token)
             .begin()
             .map_err(Error::new_inner)?;
 
         // Build and execute the frame graph for this frame
         device.build_and_run_frame_graph(
-            token,
+            &token,
             self.size,
             &self.image_views[image_index as usize],
-            frame_index,
         )?;
 
         // End the command buffer
         device
-            .command_buffer(frame_index)
+            .command_buffer(&token)
             .end()
             .map_err(Error::new_inner)?;
 

@@ -68,7 +68,7 @@ pub(in crate::run) fn run<Game: crate::Game>(
 
         // Reset per-frame data
         let render_data = render_job.render_data();
-        render_data.reset();
+        render_data.reset(true);
         log_controller.frame();
 
         // Prepare the timing data for this frame

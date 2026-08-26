@@ -9,10 +9,9 @@ impl GraphicsDevice {
     /// flags, and image layout for the swapchain image after rendering
     pub fn build_and_run_frame_graph(
         &mut self,
-        token: RenderToken,
+        token: &RenderToken,
         swapchain_size: Vector2u,
         swapchain_color_attachment: &VulkanImageView,
-        frame_index: usize,
     ) -> Result<()> {
         self.frame_graph.build_and_run(
             &self.render_data[token.frame_index()],
@@ -21,8 +20,8 @@ impl GraphicsDevice {
             swapchain_color_attachment.image(),
             swapchain_color_attachment,
             self.swapchain_format,
-            &mut self.transient_buffers[frame_index],
-            &mut self.command_pool[self.command_buffers[frame_index]],
+            &mut self.transient_buffers[token.frame_index()],
+            &mut self.command_pool[self.command_buffers[token.frame_index()]],
             &self.memory_properties,
             &self.device,
         )

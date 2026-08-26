@@ -1,6 +1,9 @@
 use crate::{
     logging::Logger,
-    render::{FixedRenderObjects, RenderData, job::GraphicsDevice},
+    render::{
+        FixedRenderObjects, RenderData,
+        job::{GraphicsDevice, RenderToken},
+    },
 };
 use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanCommandBuffer, VulkanFormat};
 use std::sync::Arc;
@@ -17,8 +20,8 @@ impl GraphicsDevice {
     }
 
     /// Get the command buffer for the given frame index
-    pub fn command_buffer(&mut self, index: usize) -> &mut VulkanCommandBuffer {
-        &mut self.command_pool[self.command_buffers[index]]
+    pub fn command_buffer(&mut self, token: &RenderToken) -> &mut VulkanCommandBuffer {
+        &mut self.command_pool[self.command_buffers[token.frame_index()]]
     }
 
     /// Get the memory properties of the adapter for this graphics device

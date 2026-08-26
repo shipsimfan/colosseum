@@ -35,7 +35,7 @@ dependencies = [
 
 [[package]]
 name = "colosseum"
-version = "0.12.3"
+version = "0.12.4"
 dependencies = [
  "alexandria",
  "argparse",
@@ -48,7 +48,7 @@ dependencies = [
 
 [[package]]
 name = "colosseum-build"
-version = "0.12.3"
+version = "0.12.4"
 dependencies = [
  "alexandria",
  "time",
@@ -56,7 +56,7 @@ dependencies = [
 
 [[package]]
 name = "colosseum-macros"
-version = "0.12.3"
+version = "0.12.4"
 dependencies = [
  "proc-macro-util",
 ]
