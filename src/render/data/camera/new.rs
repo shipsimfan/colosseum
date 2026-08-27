@@ -1,16 +1,17 @@
 use crate::{
     Error, Result,
-    render::{CameraRenderData, RenderObjects, data::camera::CameraShaderData},
+    render::{CameraRenderData, FixedRenderObjects, RenderObjects, data::camera::CameraShaderData},
 };
 use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanBufferUsageFlag, VulkanDescriptorBufferInfo,
-    VulkanDescriptorPoolSize, VulkanDescriptorType, VulkanDevice, VulkanMemoryPropertyFlag,
+    VulkanDescriptorPool, VulkanDescriptorType, VulkanDevice, VulkanMemoryPropertyFlag,
     VulkanSharingMode, VulkanWriteDescriptorSet,
 };
 
 impl CameraRenderData {
     /// Create a new set of [`CameraRenderData`]
     pub(in crate::render::data) fn new(
+        descriptor_pool: &mut VulkanDescriptorPool,
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,
         render_objects: &RenderObjects,
@@ -44,21 +45,12 @@ impl CameraRenderData {
             .map_err(|(error, _)| Error::new_inner(error))?;
         shader_data[0] = CameraShaderData::new();
 
-        // Create a descriptor pool for the camera shader data
-        let mut descriptor_pool = device
-            .create_descriptor_pool(
-                0,
-                1,
-                &[VulkanDescriptorPoolSize::new(
-                    VulkanDescriptorType::UniformBuffer,
-                    1,
-                )],
-            )
-            .map_err(Error::new_inner)?;
-
         // Allocate a descriptor set for the camera shader data
         let descriptor_set = descriptor_pool
-            .allocate_descriptor_set(render_objects.camera_data_layout())
+            .allocate_descriptor_set(
+                render_objects
+                    .descriptor_set_layout(FixedRenderObjects::CAMERA_DATA_DESCRIPTOR_SET_LAYOUT),
+            )
             .map_err(Error::new_inner)?;
 
         // Update the descriptor set with the camera shader data buffer
@@ -80,7 +72,6 @@ impl CameraRenderData {
 
         Ok(CameraRenderData {
             descriptor_set,
-            descriptor_pool,
             buffer,
             shader_data,
         })

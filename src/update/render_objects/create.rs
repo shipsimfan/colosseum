@@ -42,7 +42,6 @@ impl UpdateRenderObjects {
         let (material, render_material) = Material::new(
             shader,
             self.fixed_render_objects.material_pipeline_layout(kind),
-            self.swapchain_format,
             &self.device,
         )?;
 

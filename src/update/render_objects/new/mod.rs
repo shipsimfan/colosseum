@@ -24,7 +24,6 @@ impl UpdateRenderObjects {
         // Extract the necessary data from the render job
         let device = render_job.device().clone();
         let memory_properties = render_job.memory_properties().clone();
-        let swapchain_format = render_job.swapchain_format();
         let fixed_render_objects = render_job.fixed_render_objects().clone();
 
         // Create allocator for GPU meshes
@@ -46,7 +45,6 @@ impl UpdateRenderObjects {
         let mut render_objects = UpdateRenderObjects {
             device,
             fixed_render_objects,
-            swapchain_format,
             mesh_allocator,
             meshes: SlotMap::new(),
             unlit_shaders,

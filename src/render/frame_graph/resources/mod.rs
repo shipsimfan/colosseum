@@ -1,9 +1,10 @@
 use crate::render::frame_graph::Arena;
-use alexandria::gpu::VulkanDeviceMemory;
+use list::*;
 
 mod buffer;
 mod builder;
 mod id;
+mod list;
 mod resource;
 
 mod get;
@@ -26,9 +27,9 @@ pub(in crate::render::frame_graph) struct FrameGraphResources<'a> {
     /// The epoch of the transient resources
     epoch: &'a mut u64,
 
-    /// The transient resources that are at the render scale
-    transient_render_scale: &'a mut Vec<FrameGraphTransientResource>,
+    /// The render scale transient resources
+    render_scale_transients: FrameGraphResourceList<'a>,
 
-    /// The memory used to hold the transient render scale resources
-    transient_render_scale_memory: &'a mut Option<VulkanDeviceMemory>,
+    /// The native scale transient resources
+    native_scale_transients: FrameGraphResourceList<'a>,
 }

@@ -7,9 +7,9 @@ impl<'a> FrameGraphResources<'a> {
         if id.is_external() {
             FrameGraphResource::External(&self.external[id.index()])
         } else if id.is_transient_render_scale() {
-            FrameGraphResource::Transient(&self.transient_render_scale[id.index()])
+            FrameGraphResource::Transient(&self.render_scale_transients[id.index()])
         } else if id.is_transient_native_scale() {
-            todo!("transient native scale resources are not yet implemented")
+            FrameGraphResource::Transient(&self.native_scale_transients[id.index()])
         } else {
             todo!("transient static resources are not yet implemented")
         }
@@ -23,15 +23,18 @@ impl<'a> FrameGraphResources<'a> {
         if id.is_external() {
             let external = &self.external[id.index()];
             let load_op = external.load_op();
-            (FrameGraphResource::External(external), load_op)
-        } else if id.is_transient_render_scale() {
-            let transient = &self.transient_render_scale[id.index()];
-            let load_op = transient.load_op();
-            (FrameGraphResource::Transient(transient), load_op)
+            return (FrameGraphResource::External(external), load_op);
+        }
+
+        let transient = if id.is_transient_render_scale() {
+            &self.render_scale_transients[id.index()]
         } else if id.is_transient_native_scale() {
-            todo!("transient native scale resources are not yet implemented")
+            &self.native_scale_transients[id.index()]
         } else {
             todo!("transient static resources are not yet implemented")
-        }
+        };
+
+        let load_op = transient.load_op();
+        (FrameGraphResource::Transient(transient), load_op)
     }
 }

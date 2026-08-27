@@ -12,6 +12,7 @@ impl FrameGraphDynamicTransientResourceInfo {
             is_depth: false,
             is_transfer_dst: false,
             is_transfer_src: false,
+            is_sampled_image: false,
             state: FrameGraphResourceState::default(),
         }
     }

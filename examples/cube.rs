@@ -1,8 +1,23 @@
 #![feature(const_trait_impl)]
 
-use colosseum::render::Skybox;
+use colosseum::render::{MeshTransfer, Skybox};
 
 colosseum::run!(Cube);
+
+const CUBE_VERTICES: &[colosseum::render::Vertex] = &[
+    colosseum::render::Vertex::new((-1.0, 1.0, 1.0), (0.0, 0.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, 1.0, 1.0), (0.0, 0.0, 1.0)),
+    colosseum::render::Vertex::new((-1.0, -1.0, 1.0), (0.0, 1.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, -1.0, 1.0), (0.0, 1.0, 1.0)),
+    colosseum::render::Vertex::new((-1.0, 1.0, -1.0), (1.0, 0.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, 1.0, -1.0), (1.0, 0.0, 1.0)),
+    colosseum::render::Vertex::new((-1.0, -1.0, -1.0), (1.0, 1.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, -1.0, -1.0), (1.0, 1.0, 1.0)),
+];
+const CUBE_INDICES: &[u32] = &[
+    0, 1, 2, 1, 3, 2, 4, 6, 5, 5, 6, 7, 0, 4, 1, 1, 4, 5, 2, 3, 6, 3, 7, 6, 0, 2, 4, 2, 6, 4, 1, 5,
+    3, 3, 5, 7,
+];
 
 /// The cube example
 struct Cube;
@@ -10,7 +25,7 @@ struct Cube;
 impl colosseum::Game for Cube {
     type Options = CubeOptions;
     type SettingsCache = CubeSettings;
-    type InitialScene = CubeScene;
+    type InitialScene = CubeInitialScene;
 
     const NAME: &str = "Cube Example";
     const COMPANY: &str = "Lance Hart";
@@ -37,7 +52,41 @@ impl colosseum::GameOptions<Cube> for CubeOptions {
 struct CubeSettings {}
 
 /// The initial scene for the cube example
-struct CubeScene {
+struct CubeInitialScene {
+    /// The mesh being transferred to the GPU
+    mesh: Option<MeshTransfer>,
+}
+
+impl colosseum::update::Scene for CubeInitialScene {
+    type Game = Cube;
+
+    fn update(
+        &mut self,
+        context: &mut colosseum::update::UpdateContext<Self::Game>,
+    ) -> colosseum::Result<()> {
+        if !self.mesh.as_ref().unwrap().is_complete() {
+            return Ok(());
+        }
+
+        let mesh = context.complete_mesh(self.mesh.take().unwrap());
+        context.set_next_scene(move |context| CubeMainScene::new(context, mesh));
+        Ok(())
+    }
+}
+
+impl colosseum::update::InitialScene for CubeInitialScene {
+    fn new(
+        _: &CubeOptions,
+        context: &mut colosseum::update::UpdateContext<Cube>,
+    ) -> colosseum::Result<Self> {
+        let mesh = Some(context.create_mesh(CUBE_VERTICES.to_vec(), CUBE_INDICES.to_vec())?);
+
+        Ok(CubeInitialScene { mesh })
+    }
+}
+
+/// The main scene for the cube example
+struct CubeMainScene {
     /// A color that shifts over time to demonstrate the update loop
     color: colosseum::math::ColorHsv<f32, colosseum::math::Linear>,
 
@@ -66,7 +115,7 @@ struct CubeScene {
     render_state: bool,
 }
 
-impl colosseum::update::Scene for CubeScene {
+impl colosseum::update::Scene for CubeMainScene {
     type Game = Cube;
 
     fn update(
@@ -213,22 +262,25 @@ impl colosseum::update::Scene for CubeScene {
     }
 }
 
-impl colosseum::update::InitialScene for CubeScene {
+impl CubeMainScene {
+    /// Create a new [`CubeMainScene`]
     fn new(
-        _: &CubeOptions,
         context: &mut colosseum::update::UpdateContext<Cube>,
+        mesh: colosseum::Id<colosseum::render::Mesh>,
     ) -> colosseum::Result<Self> {
+        // Create logger
         let logger = context.logger("cube");
 
+        // Set skybox
         let color = colosseum::math::ColorHsv::RED;
+        context.set_skybox(Skybox::SolidColor(color.into_rgb()));
+
+        // Create material for the cube
         let shader = context.default_unlit_shader();
         let material =
             context.create_material(colosseum::render::MaterialKind::UnlitOpaque, shader)?;
-        //context.set_material_color(material, color.into_rgba(1.0));
-        context.set_skybox(Skybox::SolidColor(color.into_rgb()));
 
-        let mesh = context.cylinder();
-
+        // Create the cube entity and add components
         let ecs = context.ecs_mut();
         let cube = ecs.create_entity();
         let mut transform = colosseum::update::components::Transform::default();
@@ -239,12 +291,13 @@ impl colosseum::update::InitialScene for CubeScene {
             colosseum::update::components::Renderer::new(material, mesh),
         );
 
+        // Create the camera entity and add components
         let camera = ecs.create_entity();
         ecs.add_component(camera, colosseum::update::components::Camera::default());
         ecs.add_component(camera, colosseum::update::components::Transform::default());
         context.set_active_camera(camera);
 
-        Ok(CubeScene {
+        Ok(CubeMainScene {
             color,
             frames: 0,
             fps_timer: 0.0,

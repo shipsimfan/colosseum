@@ -17,4 +17,7 @@ pub(in crate::render::frame_graph) struct FrameGraphResourceBuilder<'a> {
 
     /// The transient resources that are at the render scale
     transient_render_scale: &'a mut Vec<FrameGraphDynamicTransientResourceInfo>,
+
+    /// The transient resources that are at the native scale
+    transient_native_scale: &'a mut Vec<FrameGraphDynamicTransientResourceInfo>,
 }

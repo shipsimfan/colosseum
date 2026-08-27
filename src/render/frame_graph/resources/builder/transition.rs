@@ -15,7 +15,7 @@ impl<'a> FrameGraphResourceBuilder<'a> {
         } else if id.is_transient_render_scale() {
             self.transient_render_scale[id.index()].transition(id, new_state)
         } else if id.is_transient_native_scale() {
-            todo!("transient native scale resources are not yet implemented")
+            self.transient_native_scale[id.index()].transition(id, new_state)
         } else {
             todo!("transient static resources are not yet implemented")
         }

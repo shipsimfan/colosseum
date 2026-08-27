@@ -1,6 +1,6 @@
 use crate::{
     Error, Result,
-    render::{RenderMaterial, Shader, Vertex},
+    render::{DEPTH_FORMAT, RenderMaterial, SDR_FORMAT, Shader, Vertex},
 };
 use alexandria::{
     gpu::{
@@ -27,7 +27,6 @@ impl RenderMaterial {
     pub(in crate::render::material) fn new(
         shader: &Arc<Shader>,
         pipeline_layout: &VulkanPipelineLayout,
-        swapchain_format: VulkanFormat,
         device: &VulkanDevice,
     ) -> Result<RenderMaterial> {
         // Define the shader stages
@@ -130,8 +129,8 @@ impl RenderMaterial {
             .create_graphics_pipeline(
                 [&mut VulkanPipelineRenderingCreateInfo::new(
                     0,
-                    &[swapchain_format],
-                    VulkanFormat::D32SFloat,
+                    &[SDR_FORMAT],
+                    DEPTH_FORMAT,
                     VulkanFormat::Undefined,
                 ) as _],
                 None,

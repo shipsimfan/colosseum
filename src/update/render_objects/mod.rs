@@ -1,8 +1,5 @@
 use crate::render::{FixedRenderObjects, GpuTransferQueue, Material, Mesh, Shader, ShaderId};
-use alexandria::{
-    Id, SlotMap,
-    gpu::{VulkanDevice, VulkanFormat},
-};
+use alexandria::{Id, SlotMap, gpu::VulkanDevice};
 use std::sync::Arc;
 
 mod allocator;
@@ -23,9 +20,6 @@ pub(crate) struct UpdateRenderObjects {
 
     /// The fixed render objects
     fixed_render_objects: Arc<FixedRenderObjects>,
-
-    /// The format of the swapchain being used
-    swapchain_format: VulkanFormat,
 
     /// The queue for transfering data to the GPU
     transfer_queue: GpuTransferQueue,

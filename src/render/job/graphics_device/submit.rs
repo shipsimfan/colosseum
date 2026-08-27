@@ -24,7 +24,7 @@ impl GraphicsDevice {
                         0,
                     )],
                     &[VulkanCommandBufferSubmitInfo::new(
-                        &self.command_pool[self.command_buffers[frame_index]],
+                        &self.command_pool[self.frame_data[frame_index].command_buffer()],
                         0,
                     )],
                     &[VulkanSemaphoreSubmitInfo::new(

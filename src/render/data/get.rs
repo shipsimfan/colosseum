@@ -2,7 +2,10 @@ use crate::render::{
     CameraRenderData, Material, Mesh, ObjectData, RenderData, RenderObjectRemoveConfirm, Skybox,
     data::DoubledRenderData,
 };
-use alexandria::{Id, gpu::GpuAddress};
+use alexandria::{
+    Id,
+    gpu::{GpuAddress, VulkanDescriptorSet},
+};
 use std::vec::Drain;
 
 impl RenderData {
@@ -14,6 +17,14 @@ impl RenderData {
     /// Get the render scale for the current frame
     pub(in crate::render) fn render_scale(&self) -> f32 {
         self.render_scale
+    }
+
+    /// Get the list of post processing descriptor sets for the current frame
+    pub(in crate::render) fn post_process_descriptor_set(
+        &self,
+        index: usize,
+    ) -> &VulkanDescriptorSet {
+        &self.post_process_descriptor_sets[index]
     }
 
     /// Get a reference to the skybox that should be rendered in the current frame

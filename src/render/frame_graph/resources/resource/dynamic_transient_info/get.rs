@@ -26,6 +26,9 @@ impl FrameGraphDynamicTransientResourceInfo {
         if self.is_transfer_src {
             flags |= VulkanImageUsageFlag::TransferSrc;
         }
+        if self.is_sampled_image {
+            flags |= VulkanImageUsageFlag::Sampled;
+        }
 
         flags
     }
@@ -34,11 +37,10 @@ impl FrameGraphDynamicTransientResourceInfo {
     pub fn aspect_mask(&self) -> VulkanImageAspectFlags {
         let mut flags = VulkanImageAspectFlags::empty();
 
-        if self.is_color {
-            flags |= VulkanImageAspectFlag::Color;
-        }
         if self.is_depth {
             flags |= VulkanImageAspectFlag::Depth;
+        } else {
+            flags |= VulkanImageAspectFlag::Color;
         }
 
         flags

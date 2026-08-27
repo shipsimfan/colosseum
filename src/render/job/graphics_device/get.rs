@@ -21,7 +21,7 @@ impl GraphicsDevice {
 
     /// Get the command buffer for the given frame index
     pub fn command_buffer(&mut self, token: &RenderToken) -> &mut VulkanCommandBuffer {
-        &mut self.command_pool[self.command_buffers[token.frame_index()]]
+        &mut self.command_pool[self.frame_data[token.frame_index()].command_buffer()]
     }
 
     /// Get the memory properties of the adapter for this graphics device
@@ -36,6 +36,6 @@ impl GraphicsDevice {
 
     /// Get the current render data for the frame
     pub fn render_data(&mut self) -> &mut RenderData {
-        &mut self.render_data[self.current_render_data]
+        self.frame_data[self.frame_index].render_data_mut()
     }
 }

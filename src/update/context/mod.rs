@@ -1,5 +1,5 @@
 use crate::{
-    Window,
+    Result, Window,
     file_io::FileIo,
     logging::Logger,
     render::{RenderData, Skybox},
@@ -35,7 +35,8 @@ pub struct UpdateContext<'a, Game: crate::Game> {
     should_exit: bool,
 
     /// The next scene to switch to, if any
-    next_scene: Option<Box<dyn Scene<Game = Game>>>,
+    next_scene:
+        Option<Box<dyn FnOnce(&mut UpdateContext<Game>) -> Result<Box<dyn Scene<Game = Game>>>>>,
 
     /// The current set of inputs for the game
     inputs: &'a Inputs,

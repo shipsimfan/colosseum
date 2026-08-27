@@ -1,8 +1,9 @@
 use crate::{
+    Result,
     file_io::FileIo,
     logging::Logger,
     render::Skybox,
-    update::{ECS, Entity, Inputs, Scene, UpdateRenderObjects},
+    update::{ECS, Entity, Inputs, Scene, UpdateContext, UpdateRenderObjects},
 };
 use alexandria::Id;
 
@@ -15,7 +16,8 @@ pub(crate) struct UpdateJob<'a, Game: crate::Game> {
     scene: Box<dyn Scene<Game = Game>>,
 
     /// The scene to transition to at the start of the next frame, if any
-    next_scene: Option<Box<dyn Scene<Game = Game>>>,
+    next_scene:
+        Option<Box<dyn FnOnce(&mut UpdateContext<Game>) -> Result<Box<dyn Scene<Game = Game>>>>>,
 
     /// Is the next scene the first scene of the game?
     first_scene: bool,

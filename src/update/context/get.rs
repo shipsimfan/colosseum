@@ -1,4 +1,5 @@
 use crate::{
+    Result,
     file_io::FileIo,
     logging::Logger,
     render::{Material, MaterialId, Mesh, RenderData, ShaderId, Skybox},
@@ -120,7 +121,10 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     }
 
     /// Take the next scene to switch to, if any
-    pub(in crate::update) fn take_next_scene(&mut self) -> Option<Box<dyn Scene<Game = Game>>> {
+    pub(in crate::update) fn take_next_scene(
+        &mut self,
+    ) -> Option<Box<dyn FnOnce(&mut UpdateContext<Game>) -> Result<Box<dyn Scene<Game = Game>>>>>
+    {
         self.next_scene.take()
     }
 }

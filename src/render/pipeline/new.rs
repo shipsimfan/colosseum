@@ -1,18 +1,19 @@
 use crate::{
     Error, Result,
-    render::{Pipeline, Shader},
+    render::{DEPTH_FORMAT, Pipeline, Shader},
 };
 use alexandria::{
     gpu::{
         VulkanBlendFactor, VulkanBlendOp, VulkanColorComponentFlag, VulkanCullModeFlag,
-        VulkanDevice, VulkanDynamicState, VulkanFormat, VulkanFrontFace, VulkanLogicOp,
-        VulkanPipelineColorBlendAttachmentState, VulkanPipelineColorBlendStateCreateInfo,
-        VulkanPipelineDepthStencilStateCreateInfo, VulkanPipelineDynamicStateCreateInfo,
-        VulkanPipelineInputAssemblyStateCreateInfo, VulkanPipelineMultisampleStateCreateInfo,
-        VulkanPipelineRasterizationStateCreateInfo, VulkanPipelineRenderingCreateInfo,
-        VulkanPipelineShaderStageCreateInfo, VulkanPipelineVertexInputStateCreateInfo,
-        VulkanPipelineViewportStateCreateInfo, VulkanPolygonMode, VulkanPrimitiveTopology,
-        VulkanPushConstantRange, VulkanSampleCountFlag, VulkanShaderStageFlag,
+        VulkanDescriptorSetLayout, VulkanDevice, VulkanDynamicState, VulkanFormat, VulkanFrontFace,
+        VulkanLogicOp, VulkanPipelineColorBlendAttachmentState,
+        VulkanPipelineColorBlendStateCreateInfo, VulkanPipelineDepthStencilStateCreateInfo,
+        VulkanPipelineDynamicStateCreateInfo, VulkanPipelineInputAssemblyStateCreateInfo,
+        VulkanPipelineMultisampleStateCreateInfo, VulkanPipelineRasterizationStateCreateInfo,
+        VulkanPipelineRenderingCreateInfo, VulkanPipelineShaderStageCreateInfo,
+        VulkanPipelineVertexInputStateCreateInfo, VulkanPipelineViewportStateCreateInfo,
+        VulkanPolygonMode, VulkanPrimitiveTopology, VulkanPushConstantRange, VulkanSampleCountFlag,
+        VulkanShaderStageFlag,
     },
     math::{Color4f, Linear},
 };
@@ -25,7 +26,8 @@ impl Pipeline {
         fragment_shader: &Arc<Shader>,
         push_constant_size: usize,
         depth_stencil_state: Option<&VulkanPipelineDepthStencilStateCreateInfo>,
-        swapchain_format: VulkanFormat,
+        output_formats: &[VulkanFormat],
+        descriptor_set_layouts: &[&VulkanDescriptorSetLayout],
         device: &VulkanDevice,
     ) -> Result<Pipeline> {
         assert!(
@@ -41,7 +43,7 @@ impl Pipeline {
         )];
 
         let pipeline_layout = device
-            .create_pipeline_layout(0, &[], &push_constant_range)
+            .create_pipeline_layout(0, descriptor_set_layouts, &push_constant_range)
             .map_err(Error::new_inner)?;
 
         // Define the shader stages
@@ -119,11 +121,11 @@ impl Pipeline {
             .create_graphics_pipeline(
                 [&mut VulkanPipelineRenderingCreateInfo::new(
                     0,
-                    &[swapchain_format],
+                    output_formats,
                     if depth_stencil_state.is_none() {
                         VulkanFormat::Undefined
                     } else {
-                        VulkanFormat::D32SFloat
+                        DEPTH_FORMAT
                     },
                     VulkanFormat::Undefined,
                 ) as _],

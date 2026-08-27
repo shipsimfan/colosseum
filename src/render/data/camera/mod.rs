@@ -1,6 +1,4 @@
-use alexandria::gpu::{
-    VulkanBuffer, VulkanDescriptorPool, VulkanDescriptorSet, VulkanMappedMemory,
-};
+use alexandria::gpu::{VulkanBuffer, VulkanDescriptorSet, VulkanMappedMemory};
 use shader::CameraShaderData;
 
 mod get;
@@ -12,10 +10,6 @@ mod shader;
 pub(crate) struct CameraRenderData {
     /// The descriptor set containing the camera shader data
     descriptor_set: VulkanDescriptorSet,
-
-    /// The descriptor pool containing the camera shader data
-    #[allow(unused)]
-    descriptor_pool: VulkanDescriptorPool,
 
     /// The buffer containing the camera shader data
     #[allow(unused)]

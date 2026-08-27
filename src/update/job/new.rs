@@ -1,79 +1,39 @@
 use crate::{
-    Result, Window,
+    Result,
     file_io::FileIo,
     logging::Logger,
     render::{GpuTransferQueue, RenderJob, Skybox},
     update::{ECS, InitialScene, Inputs, Scene, UpdateContext, UpdateJob, UpdateRenderObjects},
 };
-use alexandria::math::Vector2u;
-use std::{marker::PhantomData, time::Duration};
+use std::marker::PhantomData;
 
 impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
     /// Create a new update job
     pub fn new(
-        options: &Game::Options,
-        window_size: Vector2u,
+        options: Game::Options,
         logger: &Logger,
         settings: &'a mut Game::SettingsCache,
         file_io: FileIo,
-        window: &Window,
 
         transfer_queue: GpuTransferQueue,
         render_job: &mut RenderJob,
-    ) -> Result<Option<UpdateJob<'a, Game>>> {
-        // Create the initial set of inputs for the game
-        let inputs = Inputs::new();
-
-        // Create the ECS system for the game
-        let mut ecs = ECS::new(logger);
-
-        // Create the render objects
-        let mut skybox = Skybox::default();
-        let mut render_objects = UpdateRenderObjects::new(transfer_queue, render_job)?;
-
-        // Create the update context that will be passed to the initial scene
-        let mut active_camera = None;
-        let mut update_context = UpdateContext::new(
-            Duration::ZERO,
-            window_size,
-            logger,
-            settings,
-            &inputs,
-            &file_io,
-            &mut ecs,
-            &mut active_camera,
-            window,
-            &mut skybox,
-            render_job.render_data(),
-            &mut render_objects,
-        );
-
-        // Create the initial scene for the game
-        let mut initial_scene: Box<dyn Scene<Game = Game>> = Box::new(
-            <Game::InitialScene as InitialScene>::new(options, &mut update_context)?,
-        );
-
-        // Check if the initial scene requested to exit the game or switch to a different scene
-        if update_context.should_exit() {
-            return Ok(None);
-        }
-        if let Some(next_scene) = update_context.take_next_scene() {
-            initial_scene = next_scene;
-        }
-
-        Ok(Some(UpdateJob {
+    ) -> Result<UpdateJob<'a, Game>> {
+        Ok(UpdateJob {
             scene: Box::new(EmptyScene(PhantomData)),
-            next_scene: Some(initial_scene),
+            next_scene: Some(Box::new(move |context| {
+                <Game::InitialScene as InitialScene>::new(&options, context)
+                    .map(|scene| Box::new(scene) as _)
+            })),
             first_scene: true,
             logger: logger.logger("scenes"),
             settings,
-            inputs,
+            inputs: Inputs::new(),
             file_io,
-            ecs,
-            active_camera,
-            skybox,
-            render_objects,
-        }))
+            ecs: ECS::new(logger),
+            active_camera: None,
+            skybox: Skybox::default(),
+            render_objects: UpdateRenderObjects::new(transfer_queue, render_job)?,
+        })
     }
 }
 

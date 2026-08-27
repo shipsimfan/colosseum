@@ -14,8 +14,17 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     }
 
     /// Set the next scene to switch to at the start of the next frame
-    pub fn set_next_scene(&mut self, next_scene: Box<dyn Scene<Game = Game>>) {
-        self.next_scene = Some(next_scene);
+    pub fn set_next_scene<
+        S: Scene<Game = Game>,
+        F: 'static + FnOnce(&mut UpdateContext<Game>) -> Result<S>,
+    >(
+        &mut self,
+        next_scene: F,
+    ) {
+        self.next_scene = Some(Box::new(move |context| {
+            let scene = next_scene(context)?;
+            Ok(Box::new(scene) as _)
+        }));
     }
 
     /// Set the render scale to use for this update

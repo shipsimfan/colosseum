@@ -23,6 +23,9 @@ pub(in crate::render::frame_graph) struct FrameGraphDynamicTransientResourceInfo
     /// Is this resource a transfer source resource?
     is_transfer_src: bool,
 
+    /// Is this resource a sampled image resource?
+    is_sampled_image: bool,
+
     /// The current state of the resource
     state: FrameGraphResourceState,
 }

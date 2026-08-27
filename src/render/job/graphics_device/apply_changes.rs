@@ -10,12 +10,13 @@ impl GraphicsDevice {
             while gpu_transfer_queue.handle_command(&mut self.queue, false)? {}
         }
 
-        self.render_data[self.current_render_data]
+        self.frame_data[self.frame_index]
+            .render_data_mut()
             .apply_render_object_changes(&mut self.render_objects);
 
-        let next_render_data_index = (self.current_render_data + 1) % self.render_data.len();
-        let token = RenderToken::new(self.current_render_data);
-        self.current_render_data = next_render_data_index;
+        let next_render_data_index = (self.frame_index + 1) % self.frame_data.len();
+        let token = RenderToken::new(self.frame_index);
+        self.frame_index = next_render_data_index;
 
         Ok(token)
     }

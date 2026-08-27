@@ -15,4 +15,12 @@ pub(in crate::render) struct FrameGraphTransientBuffer {
     /// The memory for the transient render scale resources
     pub(in crate::render::frame_graph::resources) transient_render_scale_memory:
         Option<VulkanDeviceMemory>,
+
+    /// The transient resources that are at the native scale
+    pub(in crate::render::frame_graph::resources) transient_native_scale:
+        Vec<FrameGraphTransientResource>,
+
+    /// The memory for the transient native scale resources
+    pub(in crate::render::frame_graph::resources) transient_native_scale_memory:
+        Option<VulkanDeviceMemory>,
 }

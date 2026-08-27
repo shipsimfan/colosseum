@@ -11,4 +11,7 @@ pub(in crate::render::frame_graph) enum FrameGraphResourceUsage {
 
     /// The resource is read from as a transfer source
     TransferSrc,
+
+    /// The resource is read from as a sampled image
+    SampledImage,
 }

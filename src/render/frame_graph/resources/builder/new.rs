@@ -12,6 +12,7 @@ impl<'a> FrameGraphResourceBuilder<'a> {
     pub fn new(
         external: &'a mut ArenaBuffer<FrameGraphExternalResource<'static>>,
         transient_render_scale: &'a mut Vec<FrameGraphDynamicTransientResourceInfo>,
+        transient_native_scale: &'a mut Vec<FrameGraphDynamicTransientResourceInfo>,
 
         swapchain_size: Vector2u,
         swapchain_image: &'a VulkanImage,
@@ -28,6 +29,7 @@ impl<'a> FrameGraphResourceBuilder<'a> {
         FrameGraphResourceBuilder {
             external,
             transient_render_scale,
+            transient_native_scale,
         }
     }
 }

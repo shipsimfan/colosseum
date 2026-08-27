@@ -1,11 +1,8 @@
 use crate::{
-    Error, Result,
-    render::{FixedRenderObjects, FrameGraphNode, RenderMaterial, Shader},
+    Result,
+    render::{FixedRenderObjects, FrameGraphNode, Shader},
 };
-use alexandria::gpu::{
-    VulkanDescriptorSetLayoutBinding, VulkanDescriptorType, VulkanDevice, VulkanFormat,
-    VulkanPushConstantRange, VulkanShaderStageFlag, compile_shader,
-};
+use alexandria::gpu::{VulkanDevice, VulkanFormat, compile_shader};
 use std::sync::Arc;
 
 compile_shader! {
@@ -20,42 +17,20 @@ impl FixedRenderObjects {
         swapchain_format: VulkanFormat,
         device: &VulkanDevice,
     ) -> Result<Arc<FixedRenderObjects>> {
-        // Create the descriptor set layout for the camera data
-        let camera_data_layout = device
-            .create_descriptor_set_layout(
-                0,
-                &[VulkanDescriptorSetLayoutBinding::new(
-                    0,
-                    VulkanDescriptorType::UniformBuffer,
-                    1,
-                    VulkanShaderStageFlag::Vertex,
-                )],
-            )
-            .map_err(Error::new_inner)?;
+        let mut fixed_render_objects = FixedRenderObjects {
+            pipeline_layouts: Vec::new(),
+            pipelines: Vec::new(),
+            samplers: Vec::new(),
 
-        // Create the pipeline layout for unlit opaque rendering
-        let unlit_forward_pipeline_layout = device
-            .create_pipeline_layout(
-                0,
-                &[&camera_data_layout],
-                &[VulkanPushConstantRange::new(
-                    VulkanShaderStageFlag::Vertex | VulkanShaderStageFlag::Fragment,
-                    0,
-                    RenderMaterial::PUSH_CONSTANT_SIZE as _,
-                )],
-            )
-            .map_err(Error::new_inner)?;
+            descriptor_set_layouts: Vec::new(),
+            max_descriptor_sets: 0,
+            descriptor_pool_sizes: Vec::new(),
 
-        // Create the persistent objects that are used by nodes
-        let mut pipelines = Vec::new();
-        let fullscreen_quad = Shader::new(&FULLSCREEN_QUAD_SHADER, device)?;
+            fullscreen_quad: Shader::new(&FULLSCREEN_QUAD_SHADER, device)?,
+        };
 
-        FrameGraphNode::create_objects(&mut pipelines, &fullscreen_quad, swapchain_format, device)?;
+        FrameGraphNode::create_objects(&mut fixed_render_objects, swapchain_format, device)?;
 
-        Ok(Arc::new(FixedRenderObjects {
-            camera_data_layout,
-            unlit_forward_pipeline_layout,
-            pipelines,
-        }))
+        Ok(Arc::new(fixed_render_objects))
     }
 }

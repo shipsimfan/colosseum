@@ -12,4 +12,13 @@ impl<'a> FrameGraphResourceBuilder<'a> {
             .push(FrameGraphDynamicTransientResourceInfo::new(format));
         id
     }
+
+    /// Create a new native scale transient resource and return its ID
+    pub fn create_native_scale_transient(&mut self, format: VulkanFormat) -> FrameGraphResourceId {
+        let id =
+            FrameGraphResourceId::new_transient_native_scale(self.transient_native_scale.len());
+        self.transient_native_scale
+            .push(FrameGraphDynamicTransientResourceInfo::new(format));
+        id
+    }
 }

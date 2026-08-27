@@ -37,22 +37,14 @@ pub(in crate::run) fn run<Game: crate::Game>(
         &thread_manager,
     )?;
 
-    let mut update_job = match UpdateJob::<Game>::new(
-        &options,
-        window_size,
+    let mut update_job = UpdateJob::<Game>::new(
+        options,
         &logger,
         &mut settings,
         file_io,
-        &window,
         transfer_queue,
         &mut render_job,
-    )? {
-        Some(job) => job,
-        None => {
-            info!(logger, "Initial scene requested exit");
-            return Ok(());
-        }
-    };
+    )?;
 
     // Run the main loop, breaking if either the update job or the thread manager indicates that
     // the game should exit

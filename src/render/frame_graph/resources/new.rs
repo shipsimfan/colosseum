@@ -1,6 +1,8 @@
 use crate::render::{
     FrameGraphTransientBuffer,
-    frame_graph::{Arena, FrameGraphExternalResource, FrameGraphResources},
+    frame_graph::{
+        Arena, FrameGraphExternalResource, FrameGraphResources, resources::FrameGraphResourceList,
+    },
 };
 
 impl<'a> FrameGraphResources<'a> {
@@ -13,6 +15,10 @@ impl<'a> FrameGraphResources<'a> {
             resource.reset();
         }
 
+        for resource in transient_buffer.transient_native_scale.iter_mut() {
+            resource.reset();
+        }
+
         for resource in transient_buffer.transient_render_scale.iter_mut() {
             resource.reset();
         }
@@ -20,8 +26,14 @@ impl<'a> FrameGraphResources<'a> {
         FrameGraphResources {
             external,
             epoch: &mut transient_buffer.epoch,
-            transient_render_scale: &mut transient_buffer.transient_render_scale,
-            transient_render_scale_memory: &mut transient_buffer.transient_render_scale_memory,
+            render_scale_transients: FrameGraphResourceList::new(
+                &mut transient_buffer.transient_render_scale,
+                &mut transient_buffer.transient_render_scale_memory,
+            ),
+            native_scale_transients: FrameGraphResourceList::new(
+                &mut transient_buffer.transient_native_scale,
+                &mut transient_buffer.transient_native_scale_memory,
+            ),
         }
     }
 }

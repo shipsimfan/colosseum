@@ -17,6 +17,7 @@ impl FrameGraph {
             nodes: Vec::new(),
             external_resources: ArenaBuffer::new(),
             transient_render_scale_info: Vec::new(),
+            transient_native_scale_info: Vec::new(),
 
             pipeline_barrier_indices: Vec::new(),
             pipeline_barriers: Vec::new(),

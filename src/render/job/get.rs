@@ -1,5 +1,5 @@
 use crate::render::{FixedRenderObjects, RenderData, RenderJob};
-use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice, VulkanFormat};
+use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice};
 use std::sync::Arc;
 
 impl<'surface> RenderJob<'surface> {
@@ -8,14 +8,6 @@ impl<'surface> RenderJob<'surface> {
         match self {
             RenderJob::Rendering { device, .. } => device,
             RenderJob::RecreateSwapchain { device, .. } => device,
-        }
-    }
-
-    /// Get the swapchain format to use for rendering
-    pub fn swapchain_format(&self) -> VulkanFormat {
-        match self {
-            RenderJob::Rendering { device, .. } => device.swapchain_format(),
-            RenderJob::RecreateSwapchain { device, .. } => device.swapchain_format(),
         }
     }
 

@@ -1,3 +1,4 @@
+use alexandria::gpu::{VulkanDescriptorPool, VulkanDescriptorSet};
 use doubled::DoubledRenderData;
 use renderable_list::RenderableList;
 
@@ -33,6 +34,13 @@ pub(crate) struct RenderData {
     /// The objects whose removals have been confirmed, and the memory can be freed
     confirmed_removals: Vec<RenderObjectRemoveConfirm>,
 
+    /// The descriptor pool containing the descriptors sets in this render data
+    #[allow(unused)]
+    descriptor_pool: VulkanDescriptorPool,
+
+    /// The descriptor sets used by post-processing nodes
+    post_process_descriptor_sets: Vec<VulkanDescriptorSet>,
+
     /** Render Settings **/
 
     /// The scale to render the scene at
@@ -49,4 +57,8 @@ pub(crate) struct RenderData {
 
     /// The index of the doubled render data that is currently being used for rendering
     current_doubled_index: usize,
+}
+
+impl RenderData {
+    pub(in crate::render) const GAMMA_CORRECTION_DESCRIPTOR_SET: usize = 0;
 }

@@ -1,5 +1,5 @@
 use crate::render::{
-    RenderData, RenderObjects, Skybox, as_bytes,
+    FixedRenderObjects, RenderData, RenderObjects, Skybox, as_bytes,
     frame_graph::{FrameGraphResources, SolidColorSkyNode},
 };
 use alexandria::{
@@ -25,14 +25,15 @@ impl SolidColorSkyNode {
         cmd_buffer.cmd_set_scissor(0, &[scissor]);
 
         // Bind the pipeline for the solid color sky pass
-        render_objects.pipelines()[0].bind(cmd_buffer);
+        let pipeline = render_objects.pipeline(FixedRenderObjects::SOLID_COLOR_SKY_PIPELINE);
+        pipeline.bind(cmd_buffer);
 
         // Bind the push constants for the clear color
         let clear_color = match render_data.skybox() {
             Skybox::SolidColor(color) => color.with_alpha(1.0),
         };
         cmd_buffer.cmd_push_constants(
-            render_objects.pipelines()[0].layout(),
+            pipeline.layout(),
             VulkanShaderStageFlag::Fragment,
             0,
             unsafe { as_bytes(&clear_color) },

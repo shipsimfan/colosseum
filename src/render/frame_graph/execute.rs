@@ -90,7 +90,8 @@ impl FrameGraph {
                             ));
                         }
                         FrameGraphResourceUsage::TransferDst
-                        | FrameGraphResourceUsage::TransferSrc => {}
+                        | FrameGraphResourceUsage::TransferSrc
+                        | FrameGraphResourceUsage::SampledImage => {}
                     }
                 }
             });

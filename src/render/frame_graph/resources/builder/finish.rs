@@ -10,7 +10,12 @@ impl<'a> FrameGraphResourceBuilder<'a> {
     ) -> (
         Arena<'a, FrameGraphExternalResource<'a>>,
         &'a mut Vec<FrameGraphDynamicTransientResourceInfo>,
+        &'a mut Vec<FrameGraphDynamicTransientResourceInfo>,
     ) {
-        (self.external, self.transient_render_scale)
+        (
+            self.external,
+            self.transient_render_scale,
+            self.transient_native_scale,
+        )
     }
 }

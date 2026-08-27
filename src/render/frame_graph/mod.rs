@@ -49,6 +49,9 @@ pub(in crate::render) struct FrameGraph {
     /// The info describing the transient resources that are at the render scale
     transient_render_scale_info: Vec<FrameGraphDynamicTransientResourceInfo>,
 
+    /// The info describing the transient resources that are at the native scale
+    transient_native_scale_info: Vec<FrameGraphDynamicTransientResourceInfo>,
+
     /** Compile Members **/
 
     /// The node index for needed pipeline barriers and the number of pipeline barriers needed for each node

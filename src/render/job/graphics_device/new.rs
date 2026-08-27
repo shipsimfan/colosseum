@@ -2,8 +2,11 @@ use crate::{
     Error, Result, ThreadManager, info,
     logging::Logger,
     render::{
-        FrameGraph, GpuTransferQueue, RenderData, RenderObjects,
-        job::{GraphicsDevice, graphics_device::VulkanAdapterInfo},
+        FrameGraph, GpuTransferQueue, RenderObjects,
+        job::{
+            GraphicsDevice,
+            graphics_device::{PerFrameData, VulkanAdapterInfo},
+        },
     },
     warning,
 };
@@ -61,7 +64,7 @@ impl GraphicsDevice {
         let mut queue = queues.swap_remove(0);
 
         // Create the command pool
-        let command_pool = device
+        let mut command_pool = device
             .create_command_pool(
                 queue.queue_family(),
                 VulkanCommandPoolCreateFlag::ResetCommandBuffer,
@@ -91,10 +94,11 @@ impl GraphicsDevice {
         let render_objects = RenderObjects::new(adapter.swapchain_format(), &device)?;
 
         // Create the initial render data
-        let render_data = vec![RenderData::new(
-            &device,
-            adapter.memory_properties(),
+        let frame_data = vec![PerFrameData::new(
             &render_objects,
+            &mut command_pool,
+            adapter.memory_properties(),
+            &device,
         )?];
 
         Ok((
@@ -103,15 +107,13 @@ impl GraphicsDevice {
                 device,
                 queue,
                 command_pool,
-                command_buffers: Vec::new(),
-                transient_buffers: Vec::new(),
                 swapchain_format: adapter.swapchain_format(),
                 frame_graph: FrameGraph::new(),
                 render_objects,
                 memory_properties: adapter.memory_properties().clone(),
                 gpu_transfer_queue,
-                render_data,
-                current_render_data: 0,
+                frame_index: 0,
+                frame_data,
             },
             transfer_queue,
         ))

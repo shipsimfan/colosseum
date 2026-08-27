@@ -58,6 +58,14 @@ impl FrameGraph {
                                 VulkanImageLayout::TransferSrcOptimal,
                             )
                         }
+                        FrameGraphResourceUsage::SampledImage => {
+                            resource_builder.set_sampled_image(*id);
+                            FrameGraphResourceState::new(
+                                VulkanPipelineStageFlag::FragmentShader,
+                                VulkanAccessFlag::ShaderRead,
+                                VulkanImageLayout::ShaderReadOnlyOptimal,
+                            )
+                        }
                     };
 
                     if let Some(barrier) = resource_builder.transition(*id, new_state) {

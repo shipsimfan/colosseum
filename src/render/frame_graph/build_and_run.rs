@@ -10,8 +10,8 @@ use crate::{
 };
 use alexandria::{
     gpu::{
-        VulkanAdapterMemoryProperties, VulkanCommandBuffer, VulkanDevice, VulkanFormat,
-        VulkanImage, VulkanImageView,
+        VulkanAdapterMemoryProperties, VulkanCommandBuffer, VulkanDevice, VulkanImage,
+        VulkanImageView,
     },
     math::Vector2u,
 };
@@ -26,7 +26,6 @@ impl FrameGraph {
         swapchain_size: Vector2u,
         swapchain_image: &VulkanImage,
         swapchain_color_attachment: &VulkanImageView,
-        swapchain_format: VulkanFormat,
 
         transient_buffer: &mut FrameGraphTransientBuffer,
 
@@ -38,6 +37,7 @@ impl FrameGraph {
         let mut resource_builder = FrameGraphResourceBuilder::new(
             &mut self.external_resources,
             &mut self.transient_render_scale_info,
+            &mut self.transient_native_scale_info,
             swapchain_size,
             swapchain_image,
             swapchain_color_attachment,
@@ -53,7 +53,6 @@ impl FrameGraph {
 
             FrameGraph::build(
                 self.structure.as_ref().unwrap(),
-                swapchain_format,
                 &mut resource_builder,
                 &mut self.nodes,
             );
@@ -77,19 +76,25 @@ impl FrameGraph {
             self.transient_epoch += 1;
         }
 
-        let (external, transient_render_scale_info) = resource_builder.finish();
+        let (external, transient_render_scale_info, transient_native_scale_info) =
+            resource_builder.finish();
         let mut resources = FrameGraphResources::new(external, transient_buffer);
 
         // See if we need to resize
         if resources.needs_resize(self.transient_epoch) {
             resources.resize(
                 &transient_render_scale_info,
+                &transient_native_scale_info,
                 swapchain_size,
                 data.render_scale(),
                 memory_properties,
                 device,
                 self.transient_epoch,
             )?;
+
+            for node in &self.nodes {
+                node.update_descriptor_sets(data, render_objects, &resources, device);
+            }
         }
 
         // Execute the frame graph
