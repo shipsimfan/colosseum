@@ -1,6 +1,6 @@
 use crate::{
     Result,
-    render::{FixedRenderObjects, Pipeline, SDR_FORMAT, Shader, frame_graph::SolidColorSkyNode},
+    render::{FixedRenderObjects, HDR_FORMAT, Pipeline, Shader, frame_graph::SolidColorSkyNode},
 };
 use alexandria::{
     gpu::{
@@ -64,7 +64,7 @@ fn create_pipeline(
         &shader,
         std::mem::size_of::<Color4f<Linear>>(),
         Some(&depth_stencil_state),
-        &[SDR_FORMAT],
+        &[HDR_FORMAT],
         &[],
         device,
     )

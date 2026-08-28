@@ -13,6 +13,11 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     pub(in crate::update) fn execute_rendering_systems(&mut self) {
         self.render_data
             .set_render_scale(self.settings.display_settings().render_scale());
+        self.render_data
+            .set_gamma(self.settings.display_settings().gamma());
+        self.render_data.set_exposure(*self.exposure);
+        self.render_data.set_contrast(*self.contrast);
+        self.render_data.set_saturation(*self.saturation);
         self.render_data.set_skybox(self.skybox.clone());
         if !self.update_camera() {
             warning!(self.logger, "no active camera set");

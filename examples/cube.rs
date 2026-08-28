@@ -1,7 +1,5 @@
 #![feature(const_trait_impl)]
 
-use colosseum::render::{MeshTransfer, Skybox};
-
 colosseum::run!(Cube);
 
 const CUBE_VERTICES: &[colosseum::render::Vertex] = &[
@@ -54,7 +52,7 @@ struct CubeSettings {}
 /// The initial scene for the cube example
 struct CubeInitialScene {
     /// The mesh being transferred to the GPU
-    mesh: Option<MeshTransfer>,
+    mesh: Option<colosseum::render::MeshTransfer>,
 }
 
 impl colosseum::update::Scene for CubeInitialScene {
@@ -88,7 +86,7 @@ impl colosseum::update::InitialScene for CubeInitialScene {
 /// The main scene for the cube example
 struct CubeMainScene {
     /// A color that shifts over time to demonstrate the update loop
-    color: colosseum::math::ColorHsv<f32, colosseum::math::Linear>,
+    color: colosseum::math::ColorHsv<f32, colosseum::math::Srgb>,
 
     /// A count of the number of frames that have been rendered
     frames: usize,
@@ -140,7 +138,6 @@ impl colosseum::update::Scene for CubeMainScene {
         };
 
         if color_changed {
-            //context.set_material_color(self.material, self.color.into_rgba(1.0));
             context.set_skybox(self.color.into_rgb());
         }
 
@@ -273,7 +270,7 @@ impl CubeMainScene {
 
         // Set skybox
         let color = colosseum::math::ColorHsv::RED;
-        context.set_skybox(Skybox::SolidColor(color.into_rgb()));
+        context.set_skybox(color.into_rgb());
 
         // Create material for the cube
         let shader = context.default_unlit_shader();

@@ -1,13 +1,13 @@
 use crate::render::{
-    FixedRenderObjects, RenderData, RenderObjects,
-    frame_graph::{FrameGraphResources, GammaCorrectionNode},
+    FixedRenderObjects, RenderData, RenderObjects, as_bytes,
+    frame_graph::{FrameGraphResources, QuantizationNode, nodes::quantization::PushConstants},
 };
 use alexandria::{
-    gpu::{VulkanCommandBuffer, VulkanPipelineBindPoint, VulkanViewport},
+    gpu::{VulkanCommandBuffer, VulkanPipelineBindPoint, VulkanShaderStageFlag, VulkanViewport},
     math::{Recti, Vector2},
 };
 
-impl GammaCorrectionNode {
+impl QuantizationNode {
     /// Execute the solid color sky pass, rendering a full-screen quad with the specified clear color
     pub(in crate::render::frame_graph) fn execute(
         &self,
@@ -25,7 +25,7 @@ impl GammaCorrectionNode {
         cmd_buffer.cmd_set_scissor(0, &[scissor]);
 
         // Bind the pipeline for the solid color sky pass
-        let pipeline = render_objects.pipeline(FixedRenderObjects::GAMMA_CORRECTION_PIPELINE);
+        let pipeline = render_objects.pipeline(FixedRenderObjects::QUANTIZATION_PIPELINE);
         pipeline.bind(cmd_buffer);
 
         // Bind the descriptor set for the input image
@@ -33,7 +33,27 @@ impl GammaCorrectionNode {
             VulkanPipelineBindPoint::Graphics,
             pipeline.layout(),
             0,
-            render_data.post_process_descriptor_set(RenderData::GAMMA_CORRECTION_DESCRIPTOR_SET),
+            render_data.post_process_descriptor_set(RenderData::QUANTIZATION_DESCRIPTOR_SET),
+        );
+
+        // Push texel size
+        let size = size.into_f32();
+        let push_constants = PushConstants {
+            image_size: size,
+            texel_size: 1.0 / size,
+            sharpness: if render_data.render_scale() == 1.0 {
+                0.0
+            } else if render_data.render_scale() < 1.0 {
+                -0.2
+            } else {
+                -0.125
+            },
+        };
+        cmd_buffer.cmd_push_constants(
+            pipeline.layout(),
+            VulkanShaderStageFlag::Fragment,
+            0,
+            unsafe { as_bytes(&push_constants) },
         );
 
         // Perform the draw

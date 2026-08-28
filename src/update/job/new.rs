@@ -32,6 +32,10 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             ecs: ECS::new(logger),
             active_camera: None,
             skybox: Skybox::default(),
+            exposure: 1.0,
+            contrast: 1.0,
+            saturation: 1.0,
+
             render_objects: UpdateRenderObjects::new(transfer_queue, render_job)?,
         })
     }

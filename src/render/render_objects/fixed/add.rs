@@ -34,7 +34,7 @@ impl FixedRenderObjects {
     pub(in crate::render) fn add_descriptor_set_layout(
         &mut self,
         bindings: &[VulkanDescriptorSetLayoutBinding],
-        doubled: bool,
+        quantity: u32,
         index: usize,
         device: &VulkanDevice,
     ) -> Result<()> {
@@ -46,9 +46,9 @@ impl FixedRenderObjects {
 
         self.descriptor_set_layouts.push(descriptor_set_layout);
 
-        self.max_descriptor_sets += if doubled { 2 } else { 1 };
+        self.max_descriptor_sets += quantity;
         'binding_loop: for binding in bindings {
-            let count = binding.descriptor_count() * if doubled { 2 } else { 1 };
+            let count = binding.descriptor_count() * quantity;
             for pool_size in &mut self.descriptor_pool_sizes {
                 if pool_size.r#type() == binding.descriptor_type() {
                     *pool_size.count_mut() += count;

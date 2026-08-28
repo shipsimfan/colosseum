@@ -21,6 +21,9 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         active_camera: &'a mut Option<Id<Entity>>,
         window: &'a Window,
         skybox: &'a mut Skybox,
+        exposure: &'a mut f32,
+        contrast: &'a mut f32,
+        saturation: &'a mut f32,
         render_data: &'a mut RenderData,
         render_objects: &'a mut UpdateRenderObjects,
     ) -> UpdateContext<'a, Game> {
@@ -37,6 +40,9 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
             active_camera,
             window,
             skybox,
+            exposure,
+            contrast,
+            saturation,
             render_data,
             render_objects,
         }

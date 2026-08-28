@@ -1,4 +1,4 @@
-use alexandria::math::{Color4f, Linear};
+use alexandria::math::{Color4f, Srgb};
 
 mod id;
 mod kind;
@@ -20,5 +20,5 @@ pub(crate) use render::*;
 /// This is the material as it exists in the update job
 pub struct Material {
     /// The color of the material
-    color: Color4f<Linear>,
+    color: Color4f<Srgb>,
 }

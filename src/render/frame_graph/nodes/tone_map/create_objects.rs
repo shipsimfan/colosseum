@@ -1,6 +1,9 @@
 use crate::{
     Error, Result,
-    render::{FixedRenderObjects, Pipeline, RenderData, Shader, frame_graph::GammaCorrectionNode},
+    render::{
+        FixedRenderObjects, Pipeline, RenderData, SDR_FORMAT, Shader,
+        frame_graph::{ToneMapNode, nodes::tone_map::PushConstants},
+    },
 };
 use alexandria::gpu::{
     VulkanBorderColor, VulkanCompareOp, VulkanDescriptorPool, VulkanDescriptorSet,
@@ -10,15 +13,15 @@ use alexandria::gpu::{
 };
 
 compile_shader! {
-    const FRAGMENT_SHADER = "gamma-correction.slang",
+    const FRAGMENT_SHADER = "tone-map.slang",
     frag_main
 }
 
-impl GammaCorrectionNode {
+impl ToneMapNode {
     /// Create the persistent objects that are used by this node
     pub(in crate::render) fn create_objects(
         fixed_render_objects: &mut FixedRenderObjects,
-        swapchain_format: VulkanFormat,
+        _: VulkanFormat,
         device: &VulkanDevice,
     ) -> Result<()> {
         // Create post processing descriptor set layout
@@ -29,7 +32,7 @@ impl GammaCorrectionNode {
                 1,
                 VulkanShaderStageFlag::Fragment,
             )],
-            false,
+            2,
             FixedRenderObjects::POST_PROCESS_DESCRIPTOR_SET_LAYOUT,
             device,
         )?;
@@ -46,14 +49,14 @@ impl GammaCorrectionNode {
             Pipeline::new_post_process(
                 fixed_render_objects.fullscreen_quad(),
                 &shader,
-                std::mem::size_of::<f32>() * 2,
+                std::mem::size_of::<PushConstants>(),
                 None,
-                &[swapchain_format],
+                &[SDR_FORMAT],
                 &[fixed_render_objects
                     .descriptor_set_layout(FixedRenderObjects::POST_PROCESS_DESCRIPTOR_SET_LAYOUT)],
                 device,
             )?,
-            FixedRenderObjects::GAMMA_CORRECTION_PIPELINE,
+            FixedRenderObjects::TONE_MAP_PIPELINE,
         );
 
         Ok(())
@@ -65,10 +68,7 @@ impl GammaCorrectionNode {
         descriptor_pool: &mut VulkanDescriptorPool,
         descriptor_sets: &mut Vec<VulkanDescriptorSet>,
     ) -> Result<()> {
-        assert_eq!(
-            RenderData::GAMMA_CORRECTION_DESCRIPTOR_SET,
-            descriptor_sets.len()
-        );
+        assert_eq!(RenderData::TONE_MAP_DESCRIPTOR_SET, descriptor_sets.len());
 
         let descriptor_set = descriptor_pool
             .allocate_descriptor_set(

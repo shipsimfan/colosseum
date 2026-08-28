@@ -5,6 +5,10 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     pub(in crate::update) fn scene_reset(&mut self) {
         *self.skybox = Skybox::default();
 
+        *self.exposure = 1.0;
+        *self.contrast = 1.0;
+        *self.saturation = 1.0;
+
         self.ecs.scene_reset();
         *self.active_camera = None;
     }

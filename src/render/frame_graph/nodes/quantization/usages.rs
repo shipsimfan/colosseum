@@ -1,8 +1,6 @@
-use crate::render::frame_graph::{
-    FrameGraphResourceId, FrameGraphResourceUsage, GammaCorrectionNode,
-};
+use crate::render::frame_graph::{FrameGraphResourceId, FrameGraphResourceUsage, QuantizationNode};
 
-impl GammaCorrectionNode {
+impl QuantizationNode {
     /// Get the usage types for the resources that this node uses
     pub(in crate::render::frame_graph) fn usages<
         T,

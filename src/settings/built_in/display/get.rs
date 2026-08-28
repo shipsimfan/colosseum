@@ -31,4 +31,9 @@ impl DisplaySettings {
     pub fn render_scale(&self) -> f32 {
         self.render_scale
     }
+
+    /// Get the gamma used for rendering
+    pub fn gamma(&self) -> f32 {
+        self.gamma
+    }
 }

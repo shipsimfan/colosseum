@@ -56,6 +56,15 @@ pub struct UpdateContext<'a, Game: crate::Game> {
     /// The skybox currently set
     skybox: &'a mut Skybox,
 
+    /// The exposure to use when rendering
+    exposure: &'a mut f32,
+
+    /// The contrast to use when rendering
+    contrast: &'a mut f32,
+
+    /// The saturation to use when rendering
+    saturation: &'a mut f32,
+
     /// The data to be sent to the render job for rendering
     render_data: &'a mut RenderData,
 

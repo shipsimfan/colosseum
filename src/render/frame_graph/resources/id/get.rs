@@ -20,9 +20,4 @@ impl FrameGraphResourceId {
     pub const fn is_transient_native_scale(&self) -> bool {
         (self.id & FrameGraphResourceId::TYPE_MASK) == FrameGraphResourceId::TRANSIENT_NATIVE_SCALE
     }
-
-    /// Is this a transient resource at static scale?
-    pub const fn is_transient_static_scale(&self) -> bool {
-        (self.id & FrameGraphResourceId::TYPE_MASK) == FrameGraphResourceId::TRANSIENT_STATIC_SCALE
-    }
 }

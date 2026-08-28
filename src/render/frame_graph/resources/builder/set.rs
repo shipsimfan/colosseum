@@ -7,8 +7,6 @@ impl<'a> FrameGraphResourceBuilder<'a> {
             self.transient_render_scale[id.index()].set_color();
         } else if id.is_transient_native_scale() {
             self.transient_native_scale[id.index()].set_color();
-        } else if id.is_transient_static_scale() {
-            todo!("transient static resources are not yet implemented")
         }
 
         // Do nothing for external resources
@@ -20,8 +18,6 @@ impl<'a> FrameGraphResourceBuilder<'a> {
             self.transient_render_scale[id.index()].set_depth();
         } else if id.is_transient_native_scale() {
             self.transient_native_scale[id.index()].set_depth();
-        } else if id.is_transient_static_scale() {
-            todo!("transient static resources are not yet implemented")
         }
 
         // Do nothing for external resources
@@ -33,8 +29,6 @@ impl<'a> FrameGraphResourceBuilder<'a> {
             self.transient_render_scale[id.index()].set_transfer_dst();
         } else if id.is_transient_native_scale() {
             self.transient_native_scale[id.index()].set_transfer_dst();
-        } else if id.is_transient_static_scale() {
-            todo!("transient static resources are not yet implemented")
         }
 
         // Do nothing for external resources
@@ -46,8 +40,6 @@ impl<'a> FrameGraphResourceBuilder<'a> {
             self.transient_render_scale[id.index()].set_transfer_src();
         } else if id.is_transient_native_scale() {
             self.transient_native_scale[id.index()].set_transfer_src();
-        } else if id.is_transient_static_scale() {
-            todo!("transient static resources are not yet implemented")
         }
 
         // Do nothing for external resources
@@ -59,8 +51,6 @@ impl<'a> FrameGraphResourceBuilder<'a> {
             self.transient_render_scale[id.index()].set_sampled_image();
         } else if id.is_transient_native_scale() {
             self.transient_native_scale[id.index()].set_sampled_image();
-        } else if id.is_transient_static_scale() {
-            todo!("transient static resources are not yet implemented")
         }
 
         // Do nothing for external resources

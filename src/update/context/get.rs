@@ -7,7 +7,7 @@ use crate::{
 };
 use alexandria::{
     Id,
-    math::{Color4f, Linear, Vector2u},
+    math::{Color4f, Srgb, Vector2u},
 };
 use std::time::Duration;
 
@@ -83,10 +83,11 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     }
 
     /// Set the color of a material
-    pub fn set_material_color(&mut self, id: MaterialId, color: Color4f<Linear>) {
+    pub fn set_material_color(&mut self, id: MaterialId, color: Color4f<Srgb>) {
         if let Some(material) = self.render_objects.get_material_mut(id) {
             material.set_color(color);
-            self.render_data.add_render_object_change((id, color));
+            self.render_data
+                .add_render_object_change((id, color.into_linear()));
         }
     }
 

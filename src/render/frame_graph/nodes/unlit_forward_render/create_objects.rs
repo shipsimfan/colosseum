@@ -22,7 +22,7 @@ impl UnlitForwardRenderNode {
                 1,
                 VulkanShaderStageFlag::Vertex,
             )],
-            true,
+            2,
             FixedRenderObjects::CAMERA_DATA_DESCRIPTOR_SET_LAYOUT,
             device,
         )?;

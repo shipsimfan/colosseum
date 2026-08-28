@@ -42,6 +42,10 @@ impl RenderData {
             post_process_descriptor_sets: descriptor_sets,
 
             render_scale: 1.0,
+            gamma: 2.2,
+            exposure: 1.0,
+            contrast: 1.0,
+            saturation: 1.0,
 
             skybox: Skybox::default(),
 

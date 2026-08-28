@@ -1,9 +1,9 @@
 use crate::render::Material;
-use alexandria::math::{Color4f, Linear};
+use alexandria::math::{Color4f, Srgb};
 
 impl Material {
     /// Get the color of the material
-    pub fn color(&self) -> Color4f<Linear> {
+    pub fn color(&self) -> Color4f<Srgb> {
         self.color
     }
 

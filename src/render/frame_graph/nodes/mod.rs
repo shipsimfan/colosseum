@@ -29,8 +29,12 @@ nodes![
     ],
 
     sampled: [
-        /// A node that performs sharpening, gamma correction, and dithering on the input image and
-        /// outputs it to a new image
-        gamma_correction::GammaCorrection(GammaCorrectionNode),
+        /// A node that performs color correction, tone mapping, gamma correction, and color
+        /// grading
+        tone_map::ToneMap(ToneMapNode),
+
+        /// A node that performs sharpening and dithering before quantizing an input image
+        quantization::Quantization(QuantizationNode),
+
     ]
 ];

@@ -46,6 +46,18 @@ pub(crate) struct RenderData {
     /// The scale to render the scene at
     render_scale: f32,
 
+    /// The gamma to render the scene with
+    gamma: f32,
+
+    /// The exposure to render the scene with
+    exposure: f32,
+
+    /// The contrast to render the scene with
+    contrast: f32,
+
+    /// The saturation to render the scene with
+    saturation: f32,
+
     /** Scene Data **/
 
     /// The skybox to render
@@ -60,5 +72,6 @@ pub(crate) struct RenderData {
 }
 
 impl RenderData {
-    pub(in crate::render) const GAMMA_CORRECTION_DESCRIPTOR_SET: usize = 0;
+    pub(in crate::render) const TONE_MAP_DESCRIPTOR_SET: usize = 0;
+    pub(in crate::render) const QUANTIZATION_DESCRIPTOR_SET: usize = 1;
 }

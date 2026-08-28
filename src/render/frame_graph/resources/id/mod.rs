@@ -28,9 +28,6 @@ impl FrameGraphResourceId {
     /// The bit used to indicate that a resource ID is transient and at native scale
     const TRANSIENT_NATIVE_SCALE: usize = 0b01 << FrameGraphResourceId::TYPE_SHIFT;
 
-    /// The bit used to indicate that a resource ID is transient and at a static scale
-    const TRANSIENT_STATIC_SCALE: usize = 0b10 << FrameGraphResourceId::TYPE_SHIFT;
-
     /// The bit used to indicate that a resource ID is external (e.g., from the swapchain)
     const EXTERNAL: usize = 0b11 << FrameGraphResourceId::TYPE_SHIFT;
 

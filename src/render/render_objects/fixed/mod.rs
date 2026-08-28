@@ -39,7 +39,8 @@ impl FixedRenderObjects {
 
     /** Pipelines **/
     pub const SOLID_COLOR_SKY_PIPELINE: usize = 0;
-    pub const GAMMA_CORRECTION_PIPELINE: usize = 1;
+    pub const TONE_MAP_PIPELINE: usize = 1;
+    pub const QUANTIZATION_PIPELINE: usize = 2;
 
     /** Samplers **/
     pub const LINEAR_CLAMP_SAMPLER: usize = 0;

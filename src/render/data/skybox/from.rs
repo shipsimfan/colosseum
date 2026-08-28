@@ -1,8 +1,8 @@
 use crate::render::Skybox;
-use alexandria::math::{Color3f, Linear};
+use alexandria::math::{Color3f, Srgb};
 
-impl<T: Into<Color3f<Linear>>> From<T> for Skybox {
+impl<T: Into<Color3f<Srgb>>> From<T> for Skybox {
     fn from(color: T) -> Self {
-        Skybox::SolidColor(color.into())
+        Skybox::SolidColor(color.into().into_linear())
     }
 }

@@ -1,6 +1,6 @@
 use crate::{
     Error, Result,
-    render::{DEPTH_FORMAT, RenderMaterial, SDR_FORMAT, Shader, Vertex},
+    render::{DEPTH_FORMAT, HDR_FORMAT, RenderMaterial, Shader, Vertex},
 };
 use alexandria::{
     gpu::{
@@ -129,7 +129,7 @@ impl RenderMaterial {
             .create_graphics_pipeline(
                 [&mut VulkanPipelineRenderingCreateInfo::new(
                     0,
-                    &[SDR_FORMAT],
+                    &[HDR_FORMAT],
                     DEPTH_FORMAT,
                     VulkanFormat::Undefined,
                 ) as _],

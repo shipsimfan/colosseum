@@ -43,6 +43,15 @@ pub(crate) struct UpdateJob<'a, Game: crate::Game> {
     /// The skybox to use for rendering the scene
     skybox: Skybox,
 
+    /// The exposure to use for the scene
+    exposure: f32,
+
+    /// The contrast to use for the scene
+    contrast: f32,
+
+    /// The saturation to use for the scene
+    saturation: f32,
+
     /// The render objects that have been created and are being used by the game
     render_objects: UpdateRenderObjects,
 }

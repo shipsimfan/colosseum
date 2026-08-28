@@ -36,6 +36,28 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         self.settings.save(&settings);
     }
 
+    /// Set the gamma to use for this update
+    pub fn set_gamma(&mut self, gamma: f32) {
+        let mut settings = self.settings.begin_modify();
+        settings.display_settings_mut().set_gamma(gamma);
+        self.settings.save(&settings);
+    }
+
+    /// Set the exposure to use for this update
+    pub fn set_exposure(&mut self, exposure: f32) {
+        *self.exposure = exposure;
+    }
+
+    /// Set the contrast to use for this update
+    pub fn set_contrast(&mut self, contrast: f32) {
+        *self.contrast = contrast;
+    }
+
+    /// Set the saturation to use for this update
+    pub fn set_saturation(&mut self, saturation: f32) {
+        *self.saturation = saturation;
+    }
+
     /// Set the skybox to use for this update
     pub fn set_skybox<S: Into<Skybox>>(&mut self, skybox: S) {
         *self.skybox = skybox.into();

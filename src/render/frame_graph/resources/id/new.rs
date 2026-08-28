@@ -42,18 +42,4 @@ impl FrameGraphResourceId {
             id: id | FrameGraphResourceId::TRANSIENT_NATIVE_SCALE,
         }
     }
-
-    /// Create a new [`FrameGraphResourceId`] for a transient resource at static scale
-    pub(in crate::render::frame_graph::resources) const fn new_transient_static_scale(
-        id: usize,
-    ) -> FrameGraphResourceId {
-        debug_assert!(
-            id < FrameGraphResourceId::TYPE_MASK,
-            "static scale transient resource ID too large"
-        );
-
-        FrameGraphResourceId {
-            id: id | FrameGraphResourceId::TRANSIENT_STATIC_SCALE,
-        }
-    }
 }

@@ -19,6 +19,26 @@ impl RenderData {
         self.render_scale
     }
 
+    /// Get the gamma for the current frame
+    pub(in crate::render) fn gamma(&self) -> f32 {
+        self.gamma
+    }
+
+    /// Get the exposure for the current frame
+    pub(in crate::render) fn exposure(&self) -> f32 {
+        self.exposure
+    }
+
+    /// Get the contrast for the current frame
+    pub(in crate::render) fn contrast(&self) -> f32 {
+        self.contrast
+    }
+
+    /// Get the saturation for the current frame
+    pub(in crate::render) fn saturation(&self) -> f32 {
+        self.saturation
+    }
+
     /// Get the list of post processing descriptor sets for the current frame
     pub(in crate::render) fn post_process_descriptor_set(
         &self,

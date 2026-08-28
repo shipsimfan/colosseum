@@ -26,4 +26,9 @@ impl DisplaySettings {
     pub(crate) fn set_render_scale(&mut self, render_scale: f32) {
         self.render_scale = render_scale;
     }
+
+    /// Set the gamma to use for rendering
+    pub(crate) fn set_gamma(&mut self, gamma: f32) {
+        self.gamma = gamma;
+    }
 }
