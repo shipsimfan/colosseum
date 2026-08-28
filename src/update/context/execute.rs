@@ -19,6 +19,8 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         self.render_data.set_contrast(*self.contrast);
         self.render_data.set_saturation(*self.saturation);
         self.render_data.set_skybox(self.skybox.clone());
+        self.render_data
+            .set_anti_aliasing(self.settings.display_settings().anti_aliasing());
         if !self.update_camera() {
             warning!(self.logger, "no active camera set");
             self.render_data

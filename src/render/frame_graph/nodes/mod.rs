@@ -36,5 +36,7 @@ nodes![
         /// A node that performs sharpening and dithering before quantizing an input image
         quantization::Quantization(QuantizationNode),
 
+        /// A node that performs FXAA anti-aliasing on an input image
+        fxaa::Fxaa(FxaaNode),
     ]
 ];

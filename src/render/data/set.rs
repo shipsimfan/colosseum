@@ -1,4 +1,4 @@
-use crate::render::{RenderData, Skybox};
+use crate::render::{AntiAliasingMode, RenderData, Skybox};
 
 impl RenderData {
     /// Set the render scale to use for rendering
@@ -24,6 +24,11 @@ impl RenderData {
     /// Set the saturation to use for rendering
     pub fn set_saturation(&mut self, saturation: f32) {
         self.saturation = saturation;
+    }
+
+    /// Set the anti-aliasing mode to use for rendering
+    pub fn set_anti_aliasing(&mut self, anti_aliasing: AntiAliasingMode) {
+        self.anti_aliasing = anti_aliasing;
     }
 
     /// Set the skybox to use for rendering

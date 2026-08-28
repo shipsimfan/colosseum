@@ -2,6 +2,7 @@ use alexandria::gpu::{VulkanDescriptorPool, VulkanDescriptorSet};
 use doubled::DoubledRenderData;
 use renderable_list::RenderableList;
 
+mod anti_aliasing;
 mod camera;
 mod doubled;
 mod object;
@@ -17,6 +18,7 @@ mod new;
 mod reset;
 mod set;
 
+pub use anti_aliasing::*;
 pub use skybox::*;
 
 pub(crate) use camera::*;
@@ -58,6 +60,9 @@ pub(crate) struct RenderData {
     /// The saturation to render the scene with
     saturation: f32,
 
+    /// The type of anti-aliasing to use when rendering the scene
+    anti_aliasing: AntiAliasingMode,
+
     /** Scene Data **/
 
     /// The skybox to render
@@ -74,4 +79,5 @@ pub(crate) struct RenderData {
 impl RenderData {
     pub(in crate::render) const TONE_MAP_DESCRIPTOR_SET: usize = 0;
     pub(in crate::render) const QUANTIZATION_DESCRIPTOR_SET: usize = 1;
+    pub(in crate::render) const FXAA_DESCRIPTOR_SET: usize = 2;
 }

@@ -1,4 +1,4 @@
-use crate::math::Vector2u;
+use crate::{math::Vector2u, render::AntiAliasingMode};
 use alexandria::math::Vector2i;
 use data_format::{Deserialize, Serialize};
 
@@ -30,4 +30,7 @@ pub struct DisplaySettings {
 
     /// The gamma to use for rendering
     gamma: f32,
+
+    /// The anti-aliasing mode to use for rendering
+    anti_aliasing: AntiAliasingMode,
 }

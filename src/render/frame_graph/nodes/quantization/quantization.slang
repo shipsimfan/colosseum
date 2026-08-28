@@ -66,5 +66,5 @@ float4 frag_main(VertexOutput vertex) : SV_Target {
     float3 color = cas(sample.rgb, vertex.uv);
     float dither = ign(vertex.uv * constants.image_size) * (1.0 / 255.0);
 
-    return float4(color + dither, sample.a);
+    return float4(color + dither, 1.0);
 }

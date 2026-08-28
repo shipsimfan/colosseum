@@ -1,8 +1,8 @@
 use crate::render::{
-    FrameGraph, HDR_FORMAT, SDR_FORMAT,
+    AntiAliasingMode, FrameGraph, HDR_FORMAT, SDR_FORMAT,
     frame_graph::{
         FrameGraphNode, FrameGraphResourceBuilder, FrameGraphResourceId, FrameGraphStructure,
-        QuantizationNode, RenderScaleNode, ToneMapNode, UnlitForwardRenderNode,
+        FxaaNode, QuantizationNode, RenderScaleNode, ToneMapNode, UnlitForwardRenderNode,
     },
 };
 use alexandria::gpu::VulkanFormat;
@@ -25,13 +25,15 @@ impl FrameGraph {
         // Create the 3d color output
         let color_output = resources.create_render_scale_transient(HDR_FORMAT);
 
-        // Add nodes to the frame graph
+        // Perform the main render passes
         nodes.push(UnlitForwardRenderNode::new(color_output, depth_buffer).into());
         nodes.push(structure.skybox().create_node(color_output, depth_buffer));
 
+        // Perform tone mapping
         let tone_map_output = resources.create_render_scale_transient(SDR_FORMAT);
         nodes.push(ToneMapNode::new(color_output, tone_map_output).into());
 
+        // Perform render scaling, if needed
         let scaled_output = if structure.has_render_scale() {
             let scale_output = resources.create_native_scale_transient(SDR_FORMAT);
             nodes.push(RenderScaleNode::new(tone_map_output, scale_output).into());
@@ -40,8 +42,17 @@ impl FrameGraph {
             tone_map_output
         };
 
-        nodes.push(
-            QuantizationNode::new(scaled_output, FrameGraphResourceId::SWAPCHAIN_IMAGE).into(),
-        );
+        // Perform anti-aliasing
+        let aa_output = match structure.anti_aliasing() {
+            AntiAliasingMode::None => scaled_output,
+            AntiAliasingMode::FXAA => {
+                let aa_output = resources.create_native_scale_transient(SDR_FORMAT);
+                nodes.push(FxaaNode::new(scaled_output, aa_output).into());
+                aa_output
+            }
+        };
+
+        // Quantize the output to the swapchain
+        nodes.push(QuantizationNode::new(aa_output, FrameGraphResourceId::SWAPCHAIN_IMAGE).into());
     }
 }

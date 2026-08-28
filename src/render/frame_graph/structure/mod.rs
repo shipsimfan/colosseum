@@ -1,3 +1,5 @@
+use crate::render::AntiAliasingMode;
+
 mod skybox;
 
 mod from_data;
@@ -13,4 +15,7 @@ pub(in crate::render::frame_graph) struct FrameGraphStructure {
 
     /// The kind of skybox being requested
     skybox: FrameGraphSkybox,
+
+    /// The kind of anti-aliasing being requested
+    anti_aliasing: AntiAliasingMode,
 }

@@ -2,7 +2,7 @@ use alexandria::Id;
 
 use crate::{
     Result,
-    render::Skybox,
+    render::{AntiAliasingMode, Skybox},
     settings::{ModifiableSettingsCache, SettingsCache},
     update::{Entity, Scene, UpdateContext},
 };
@@ -56,6 +56,15 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Set the saturation to use for this update
     pub fn set_saturation(&mut self, saturation: f32) {
         *self.saturation = saturation;
+    }
+
+    /// Set the anti-aliasing mode to use for this update
+    pub fn set_anti_aliasing(&mut self, anti_aliasing: AntiAliasingMode) {
+        let mut settings = self.settings.begin_modify();
+        settings
+            .display_settings_mut()
+            .set_anti_aliasing(anti_aliasing);
+        self.settings.save(&settings);
     }
 
     /// Set the skybox to use for this update

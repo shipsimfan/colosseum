@@ -16,12 +16,15 @@ ConstantBuffer<Constants> constants;
 [[vk::binding(0, 0)]]
 Sampler2D input;
 
+float luminance(float3 c) {
+    return dot(c, float3(0.2126, 0.7152, 0.0722));
+}
+
 float3 contrast(float3 c) {
     return (c - 0.5) * constants.contrast + 0.5;
 }
 
-float3 saturation(float3 c) {
-    float luminance = dot(c, float3(0.2126, 0.7152, 0.0722));
+float3 saturation(float3 c, float luminance) {
     return saturate(lerp(float3(luminance), c, constants.saturation));
 }
 
@@ -43,9 +46,12 @@ float4 frag_main(VertexOutput vertex) : SV_Target {
     float4 sample = input.Sample(vertex.uv);
 
     float3 color = aces_film(sample.rgb * constants.exposure);
+
+    float luminance = luminance(color);
+
     color = contrast(color);
-    color = saturation(color);
+    color = saturation(color, luminance);
     color = apply_gamma(color);
 
-    return float4(color, sample.a);
+    return float4(color, luminance);
 }

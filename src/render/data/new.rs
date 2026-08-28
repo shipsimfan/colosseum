@@ -1,6 +1,9 @@
 use crate::{
     Result,
-    render::{FrameGraphNode, RenderData, RenderObjects, Skybox, data::DoubledRenderData},
+    render::{
+        AntiAliasingMode, FrameGraphNode, RenderData, RenderObjects, Skybox,
+        data::DoubledRenderData,
+    },
 };
 use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice};
 use std::sync::Arc;
@@ -46,6 +49,7 @@ impl RenderData {
             exposure: 1.0,
             contrast: 1.0,
             saturation: 1.0,
+            anti_aliasing: AntiAliasingMode::None,
 
             skybox: Skybox::default(),
 

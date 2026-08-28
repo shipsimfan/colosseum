@@ -32,7 +32,7 @@ impl ToneMapNode {
                 1,
                 VulkanShaderStageFlag::Fragment,
             )],
-            2,
+            3,
             FixedRenderObjects::POST_PROCESS_DESCRIPTOR_SET_LAYOUT,
             device,
         )?;

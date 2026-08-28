@@ -1,5 +1,4 @@
 # ToDo
- 1. Add FXAA (after render scale node, before gamma correction)
  2. Add color grading to tone map node
    1. Add CPU LUT type w/ SlotMap
    2. Add render side LUT (dedicated allocations)

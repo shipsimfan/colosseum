@@ -1,4 +1,4 @@
-use crate::settings::DisplaySettings;
+use crate::{render::AntiAliasingMode, settings::DisplaySettings};
 use alexandria::math::{Vector2i, Vector2u};
 
 impl DisplaySettings {
@@ -35,5 +35,10 @@ impl DisplaySettings {
     /// Get the gamma used for rendering
     pub fn gamma(&self) -> f32 {
         self.gamma
+    }
+
+    /// Get the anti-aliasing mode to use for rendering
+    pub fn anti_aliasing(&self) -> AntiAliasingMode {
+        self.anti_aliasing
     }
 }

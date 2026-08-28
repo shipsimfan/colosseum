@@ -1,6 +1,6 @@
 use crate::render::{
-    CameraRenderData, Material, Mesh, ObjectData, RenderData, RenderObjectRemoveConfirm, Skybox,
-    data::DoubledRenderData,
+    AntiAliasingMode, CameraRenderData, Material, Mesh, ObjectData, RenderData,
+    RenderObjectRemoveConfirm, Skybox, data::DoubledRenderData,
 };
 use alexandria::{
     Id,
@@ -37,6 +37,11 @@ impl RenderData {
     /// Get the saturation for the current frame
     pub(in crate::render) fn saturation(&self) -> f32 {
         self.saturation
+    }
+
+    /// Get the anti-aliasing mode for the current frame
+    pub(in crate::render) fn anti_aliasing(&self) -> AntiAliasingMode {
+        self.anti_aliasing
     }
 
     /// Get the list of post processing descriptor sets for the current frame
