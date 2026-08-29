@@ -7,6 +7,7 @@ impl FixedRenderObjects {
     pub fn material_pipeline_layout(&self, kind: MaterialKind) -> &VulkanPipelineLayout {
         &self.pipeline_layouts[match kind {
             MaterialKind::UnlitOpaque => FixedRenderObjects::UNLIT_OPAQUE_PIPELINE_LAYOUT,
+            MaterialKind::LitOpaque => FixedRenderObjects::LIT_OPAQUE_PIPELINE_LAYOUT,
         }]
     }
 

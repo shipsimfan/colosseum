@@ -25,6 +25,11 @@ impl Renderer {
                             renderer.mesh,
                             object,
                         ),
+                        MaterialKind::LitOpaque => render_data.add_lit_opaque_renderable(
+                            renderer.material.id(),
+                            renderer.mesh,
+                            object,
+                        ),
                     }
                 }
             });

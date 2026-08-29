@@ -5,7 +5,10 @@ use crate::{
     render::{RenderData, Skybox},
     update::{ECS, Entity, Inputs, Scene, UpdateRenderObjects},
 };
-use alexandria::{Id, math::Vector2u};
+use alexandria::{
+    Id,
+    math::{Color4f, Linear, Vector2u},
+};
 use std::time::Duration;
 
 mod complete;
@@ -55,6 +58,9 @@ pub struct UpdateContext<'a, Game: crate::Game> {
 
     /// The skybox currently set
     skybox: &'a mut Skybox,
+
+    /// The ambient light of the current scene
+    ambient_light: &'a mut Color4f<Linear>,
 
     /// The exposure to use when rendering
     exposure: &'a mut f32,

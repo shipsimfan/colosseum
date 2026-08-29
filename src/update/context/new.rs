@@ -5,7 +5,10 @@ use crate::{
     render::{RenderData, Skybox},
     update::{ECS, Entity, Inputs, UpdateContext, UpdateRenderObjects},
 };
-use alexandria::{Id, math::Vector2u};
+use alexandria::{
+    Id,
+    math::{Color4f, Linear, Vector2u},
+};
 use std::time::Duration;
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
@@ -21,6 +24,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         active_camera: &'a mut Option<Id<Entity>>,
         window: &'a Window,
         skybox: &'a mut Skybox,
+        ambient_light: &'a mut Color4f<Linear>,
         exposure: &'a mut f32,
         contrast: &'a mut f32,
         saturation: &'a mut f32,
@@ -40,6 +44,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
             active_camera,
             window,
             skybox,
+            ambient_light,
             exposure,
             contrast,
             saturation,

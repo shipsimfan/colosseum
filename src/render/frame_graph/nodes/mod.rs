@@ -22,6 +22,9 @@ nodes![
         /// A node that renders unlit objects using a forward rendering pipeline
         unlit_forward_render::UnlitForwardRender(UnlitForwardRenderNode),
 
+        /// A node that renders lit objects using a forward rendering pipeline
+        lit_forward_render::LitForwardRender(LitForwardRenderNode),
+
         /** Post-Processing Nodes **/
 
         /// A node that changes the render scale of the input image and outputs it to a new image

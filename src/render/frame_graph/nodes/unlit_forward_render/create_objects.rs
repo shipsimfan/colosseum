@@ -20,7 +20,7 @@ impl UnlitForwardRenderNode {
                 0,
                 VulkanDescriptorType::UniformBuffer,
                 1,
-                VulkanShaderStageFlag::Vertex,
+                VulkanShaderStageFlag::Vertex | VulkanShaderStageFlag::Fragment,
             )],
             2,
             FixedRenderObjects::CAMERA_DATA_DESCRIPTOR_SET_LAYOUT,

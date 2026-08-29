@@ -10,6 +10,7 @@ impl RenderObjects {
     pub fn insert_material(&mut self, kind: MaterialKind, material: RenderMaterial) {
         match kind {
             MaterialKind::UnlitOpaque => self.unlit_opaque_materials.insert(material),
+            MaterialKind::LitOpaque => self.lit_opaque_materials.insert(material),
         };
     }
 }

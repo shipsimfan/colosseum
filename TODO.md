@@ -1,12 +1,8 @@
 # ToDo
- 1. Add lighting system
-   1. Add lit opaque materials
-   2. Add lit opaque renderables
-   3. Add lit opaque node
-   4. Ambient light
-   5. Directional lights
-   6. Point lights
-   7. Spot lights
+ 0. Add lighting system
+   1. Point lights
+   2. Spot lights
+ 1. Add procedural skybox
  2. Add shadow mapping
    1. Add shadow map memory container
    2. Spot light shadows

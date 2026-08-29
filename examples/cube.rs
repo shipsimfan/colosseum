@@ -3,18 +3,44 @@
 colosseum::run!(Cube);
 
 const CUBE_VERTICES: &[colosseum::render::Vertex] = &[
-    colosseum::render::Vertex::new((-1.0, 1.0, 1.0), (0.0, 0.0, 0.0)),
-    colosseum::render::Vertex::new((1.0, 1.0, 1.0), (0.0, 0.0, 1.0)),
-    colosseum::render::Vertex::new((-1.0, -1.0, 1.0), (0.0, 1.0, 0.0)),
-    colosseum::render::Vertex::new((1.0, -1.0, 1.0), (0.0, 1.0, 1.0)),
-    colosseum::render::Vertex::new((-1.0, 1.0, -1.0), (1.0, 0.0, 0.0)),
-    colosseum::render::Vertex::new((1.0, 1.0, -1.0), (1.0, 0.0, 1.0)),
-    colosseum::render::Vertex::new((-1.0, -1.0, -1.0), (1.0, 1.0, 0.0)),
-    colosseum::render::Vertex::new((1.0, -1.0, -1.0), (1.0, 1.0, 1.0)),
+    // Front (+Z)
+    colosseum::render::Vertex::new((-1.0, 1.0, 1.0), (0.0, 0.0, 0.0), (0.0, 0.0, 1.0)),
+    colosseum::render::Vertex::new((1.0, 1.0, 1.0), (0.0, 0.0, 1.0), (0.0, 0.0, 1.0)),
+    colosseum::render::Vertex::new((-1.0, -1.0, 1.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0)),
+    colosseum::render::Vertex::new((1.0, -1.0, 1.0), (0.0, 1.0, 1.0), (0.0, 0.0, 1.0)),
+    // Back (-Z)
+    colosseum::render::Vertex::new((-1.0, 1.0, -1.0), (1.0, 0.0, 0.0), (0.0, 0.0, -1.0)),
+    colosseum::render::Vertex::new((1.0, 1.0, -1.0), (1.0, 0.0, 1.0), (0.0, 0.0, -1.0)),
+    colosseum::render::Vertex::new((-1.0, -1.0, -1.0), (1.0, 1.0, 0.0), (0.0, 0.0, -1.0)),
+    colosseum::render::Vertex::new((1.0, -1.0, -1.0), (1.0, 1.0, 1.0), (0.0, 0.0, -1.0)),
+    // Top (+Y)
+    colosseum::render::Vertex::new((-1.0, 1.0, 1.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0)),
+    colosseum::render::Vertex::new((-1.0, 1.0, -1.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, 1.0, 1.0), (0.0, 0.0, 1.0), (0.0, 1.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, 1.0, -1.0), (1.0, 0.0, 1.0), (0.0, 1.0, 0.0)),
+    // Bottom (-Y)
+    colosseum::render::Vertex::new((-1.0, -1.0, 1.0), (0.0, 1.0, 0.0), (0.0, -1.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, -1.0, 1.0), (0.0, 1.0, 1.0), (0.0, -1.0, 0.0)),
+    colosseum::render::Vertex::new((-1.0, -1.0, -1.0), (1.0, 1.0, 0.0), (0.0, -1.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, -1.0, -1.0), (1.0, 1.0, 1.0), (0.0, -1.0, 0.0)),
+    // Left (-X)
+    colosseum::render::Vertex::new((-1.0, 1.0, 1.0), (0.0, 0.0, 0.0), (-1.0, 0.0, 0.0)),
+    colosseum::render::Vertex::new((-1.0, -1.0, 1.0), (0.0, 1.0, 0.0), (-1.0, 0.0, 0.0)),
+    colosseum::render::Vertex::new((-1.0, 1.0, -1.0), (1.0, 0.0, 0.0), (-1.0, 0.0, 0.0)),
+    colosseum::render::Vertex::new((-1.0, -1.0, -1.0), (1.0, 1.0, 0.0), (-1.0, 0.0, 0.0)),
+    // Right (+X)
+    colosseum::render::Vertex::new((1.0, 1.0, 1.0), (0.0, 0.0, 1.0), (1.0, 0.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, 1.0, -1.0), (1.0, 0.0, 1.0), (1.0, 0.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, -1.0, 1.0), (0.0, 1.0, 1.0), (1.0, 0.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, -1.0, -1.0), (1.0, 1.0, 1.0), (1.0, 0.0, 0.0)),
 ];
 const CUBE_INDICES: &[u32] = &[
-    0, 1, 2, 1, 3, 2, 4, 6, 5, 5, 6, 7, 0, 4, 1, 1, 4, 5, 2, 3, 6, 3, 7, 6, 0, 2, 4, 2, 6, 4, 1, 5,
-    3, 3, 5, 7,
+    0, 1, 2, 1, 3, 2, // Front
+    4, 6, 5, 5, 6, 7, // Back
+    8, 9, 10, 10, 9, 11, // Top
+    12, 13, 14, 13, 15, 14, // Bottom
+    16, 17, 18, 17, 19, 18, // Left
+    20, 21, 22, 22, 21, 23, // Right
 ];
 
 /// The cube example
@@ -273,9 +299,11 @@ impl CubeMainScene {
         context.set_skybox(color.into_rgb());
 
         // Create material for the cube
-        let shader = context.default_unlit_shader();
+        let shader = context.default_lit_shader();
         let material =
-            context.create_material(colosseum::render::MaterialKind::UnlitOpaque, shader)?;
+            context.create_material(colosseum::render::MaterialKind::LitOpaque, shader)?;
+        context.set_material_specular_strength(material, 1.0);
+        context.set_material_shininess(material, 256.0);
 
         // Create the cube entity and add components
         let ecs = context.ecs_mut();
@@ -286,6 +314,29 @@ impl CubeMainScene {
         ecs.add_component(
             cube,
             colosseum::update::components::Renderer::new(material, mesh),
+        );
+
+        // Create a directional light
+        let directional_light = ecs.create_entity();
+        ecs.add_component(
+            directional_light,
+            colosseum::update::components::DirectionalLight::new(
+                (1.0, 1.0, 1.0),
+                0.5,
+                (-1.0, -1.5, 1.0),
+            ),
+        );
+
+        // Create a point light
+        let point_light = ecs.create_entity();
+        ecs.add_component(
+            point_light,
+            colosseum::update::components::PointLight::new(
+                (1.0, 0.2, 1.0),
+                10.0,
+                (-1.5, -1.5, -1.0),
+                7.0,
+            ),
         );
 
         // Create the camera entity and add components

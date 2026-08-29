@@ -5,10 +5,17 @@ use crate::{
     render::Skybox,
     update::{ECS, Entity, Inputs, Scene, UpdateContext, UpdateRenderObjects},
 };
-use alexandria::Id;
+use alexandria::{
+    Id,
+    math::{Color4f, Linear, Srgb},
+};
 
 mod new;
 mod run;
+
+/// The default ambient light color to use
+pub(in crate::update) const DEFAULT_AMBIENT_LIGHT: Color4f<Srgb> =
+    Color4f::new(0.2, 0.2, 0.24, 1.0);
 
 /// The persistent state of the update job
 pub(crate) struct UpdateJob<'a, Game: crate::Game> {
@@ -42,6 +49,9 @@ pub(crate) struct UpdateJob<'a, Game: crate::Game> {
 
     /// The skybox to use for rendering the scene
     skybox: Skybox,
+
+    /// The ambient light for the current scene
+    ambient_light: Color4f<Linear>,
 
     /// The exposure to use for the scene
     exposure: f32,

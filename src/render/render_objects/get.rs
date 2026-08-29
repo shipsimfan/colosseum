@@ -16,12 +16,18 @@ impl RenderObjects {
         &self.unlit_opaque_materials[unsafe { id.cast() }]
     }
 
+    /// Get the lit opaque material with the given ID
+    pub fn lit_opaque_material(&self, id: Id<Material>) -> &RenderMaterial {
+        &self.lit_opaque_materials[unsafe { id.cast() }]
+    }
+
     /// Get a reference to the material with the given ID
     pub fn material_mut(&mut self, id: MaterialId) -> &mut RenderMaterial {
         match id.kind() {
             MaterialKind::UnlitOpaque => {
                 &mut self.unlit_opaque_materials[unsafe { id.id().cast() }]
             }
+            MaterialKind::LitOpaque => &mut self.lit_opaque_materials[unsafe { id.id().cast() }],
         }
     }
 

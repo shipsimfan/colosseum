@@ -32,6 +32,24 @@ pub(crate) enum RenderObjectChange {
         color: Color4f<Linear>,
     },
 
+    /// A material has changed specular strength
+    ChangeSpecularStrength {
+        /// The material that was changed
+        material: MaterialId,
+
+        /// The new specular strength of the material
+        specular_strength: f32,
+    },
+
+    /// A material has changed shininess
+    ChangeShininess {
+        /// The material that was changed
+        material: MaterialId,
+
+        /// The new shininess of the material
+        shininess: f32,
+    },
+
     /// A material has been removed
     RemoveMaterial {
         /// The material that was removed

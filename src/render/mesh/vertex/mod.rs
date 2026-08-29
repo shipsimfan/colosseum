@@ -14,4 +14,7 @@ pub struct Vertex {
 
     /// The color of the vertex
     color: Color3f<Linear>,
+
+    /// The normal of the vertex
+    normal: Vector3f,
 }

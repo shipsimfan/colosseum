@@ -36,6 +36,7 @@ pub(crate) struct FixedRenderObjects {
 impl FixedRenderObjects {
     /** Pipeline Layouts **/
     pub const UNLIT_OPAQUE_PIPELINE_LAYOUT: usize = 0;
+    pub const LIT_OPAQUE_PIPELINE_LAYOUT: usize = 1;
 
     /** Pipelines **/
     pub const SOLID_COLOR_SKY_PIPELINE: usize = 0;
@@ -48,5 +49,6 @@ impl FixedRenderObjects {
 
     /** Descriptor Set Layouts **/
     pub const CAMERA_DATA_DESCRIPTOR_SET_LAYOUT: usize = 0;
-    pub const POST_PROCESS_DESCRIPTOR_SET_LAYOUT: usize = 1;
+    pub const LIGHTING_DESCRIPTOR_SET_LAYOUT: usize = 1;
+    pub const POST_PROCESS_DESCRIPTOR_SET_LAYOUT: usize = 2;
 }

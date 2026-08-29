@@ -14,9 +14,8 @@ pub use id::*;
 pub use kind::*;
 pub use shader::*;
 
+pub(crate) use push_constants::*;
 pub(crate) use render::*;
-
-pub(crate) use push_constants::UnlitMaterialPushConstants;
 
 /// A material being used in rendering
 ///
@@ -24,4 +23,10 @@ pub(crate) use push_constants::UnlitMaterialPushConstants;
 pub struct Material {
     /// The color of the material
     color: Color4f<Srgb>,
+
+    /// The strength of specular reflections
+    specular_strength: f32,
+
+    /// The shininess of the material
+    shininess: f32,
 }

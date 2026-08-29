@@ -10,10 +10,16 @@ impl UpdateRenderObjects {
         self.default_unlit_shader
     }
 
+    /// Get the ID of the default lit shader
+    pub fn default_lit_shader(&self) -> ShaderId {
+        self.default_lit_shader
+    }
+
     /// Get a reference to the material with the given ID
     pub fn get_material(&self, id: MaterialId) -> Option<&Material> {
         match id.kind() {
             MaterialKind::UnlitOpaque => self.unlit_opaque_materials.get(id.id()),
+            MaterialKind::LitOpaque => self.lit_opaque_materials.get(id.id()),
         }
     }
 
@@ -21,6 +27,7 @@ impl UpdateRenderObjects {
     pub fn get_material_mut(&mut self, id: MaterialId) -> Option<&mut Material> {
         match id.kind() {
             MaterialKind::UnlitOpaque => self.unlit_opaque_materials.get_mut(id.id()),
+            MaterialKind::LitOpaque => self.lit_opaque_materials.get_mut(id.id()),
         }
     }
 

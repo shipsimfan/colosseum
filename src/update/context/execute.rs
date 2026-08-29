@@ -6,7 +6,7 @@ use crate::{
     },
     warning,
 };
-use alexandria::math::Matrix4x4f;
+use alexandria::math::{Matrix4x4f, Vector3f};
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Execute all rendering systems on the archetypes in the ECS system
@@ -21,13 +21,17 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         self.render_data.set_skybox(self.skybox.clone());
         self.render_data
             .set_anti_aliasing(self.settings.display_settings().anti_aliasing());
+
         if !self.update_camera() {
             warning!(self.logger, "no active camera set");
             self.render_data
                 .camera_mut()
-                .set_view_projection(Matrix4x4f::IDENTITY);
+                .set(Matrix4x4f::IDENTITY, Vector3f::ZERO);
             return;
         }
+        self.render_data
+            .lighting_mut()
+            .set_ambient_light(*self.ambient_light);
 
         self.ecs.execute_rendering_systems(self.render_data);
     }
@@ -50,15 +54,15 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         };
 
         // Get the transform associated with the camera and combine it with the projection matrix
-        let view = match self.ecs.try_get_mut::<Transform>(active_camera) {
-            Some(transform) => transform.camera_matrix(),
-            None => Matrix4x4f::IDENTITY,
+        let (view, position) = match self.ecs.try_get_mut::<Transform>(active_camera) {
+            Some(transform) => (transform.camera_matrix(), transform.position()),
+            None => (Matrix4x4f::IDENTITY, Vector3f::ZERO),
         };
 
         // Set the view-projection matrix in the render data
         self.render_data
             .camera_mut()
-            .set_view_projection(projection * view);
+            .set(projection * view, position);
         true
     }
 }

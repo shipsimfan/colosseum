@@ -22,4 +22,7 @@ pub(in crate::render) struct RenderObjects {
 
     /// The unlit opaque materials that have been created
     unlit_opaque_materials: SlotMap<RenderMaterial>,
+
+    /// The lit opaque materials that have been created
+    lit_opaque_materials: SlotMap<RenderMaterial>,
 }

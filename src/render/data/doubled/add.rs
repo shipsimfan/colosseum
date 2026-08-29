@@ -13,4 +13,15 @@ impl DoubledRenderData {
         self.unlit_opaque_renderables
             .push((material, mesh, address));
     }
+
+    /// Add a new lit opaque renderable object to the render data
+    pub fn add_lit_opaque_renderable(
+        &mut self,
+        material: Id<Material>,
+        mesh: Id<Mesh>,
+        object: ObjectData,
+    ) {
+        let address = self.object_buffer.push(object);
+        self.lit_opaque_renderables.push((material, mesh, address));
+    }
 }

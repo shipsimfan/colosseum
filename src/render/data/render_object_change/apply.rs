@@ -14,6 +14,22 @@ impl RenderObjectChange {
             RenderObjectChange::ChangeMaterialColor { material, color } => {
                 render_objects.material_mut(material).set_color(color);
             }
+            RenderObjectChange::ChangeSpecularStrength {
+                material,
+                specular_strength,
+            } => {
+                render_objects
+                    .material_mut(material)
+                    .set_specular_strength(specular_strength);
+            }
+            RenderObjectChange::ChangeShininess {
+                material,
+                shininess,
+            } => {
+                render_objects
+                    .material_mut(material)
+                    .set_shininess(shininess);
+            }
             RenderObjectChange::RemoveMaterial { material } => {
                 render_objects.remove_material(material);
             }

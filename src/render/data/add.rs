@@ -17,4 +17,15 @@ impl RenderData {
         self.doubled_mut()
             .add_unlit_opaque_renderable(material, mesh, object)
     }
+
+    /// Add a new lit opaque renderable object to the render data
+    pub fn add_lit_opaque_renderable(
+        &mut self,
+        material: Id<Material>,
+        mesh: Id<Mesh>,
+        object: ObjectData,
+    ) {
+        self.doubled_mut()
+            .add_lit_opaque_renderable(material, mesh, object)
+    }
 }

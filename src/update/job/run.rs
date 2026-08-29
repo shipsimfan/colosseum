@@ -90,6 +90,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             &mut self.active_camera,
             window,
             &mut self.skybox,
+            &mut self.ambient_light,
             &mut self.exposure,
             &mut self.contrast,
             &mut self.saturation,

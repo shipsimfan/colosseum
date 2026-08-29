@@ -1,12 +1,13 @@
 use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanDescriptorPool, VulkanDescriptorSet, VulkanDevice,
 };
-use doubled::DoubledRenderData;
+use doubled::*;
 use std::sync::Arc;
 
 mod anti_aliasing;
 mod camera;
 mod doubled;
+mod lighting;
 mod object;
 mod remove_confirm;
 mod render_object_change;
@@ -24,6 +25,7 @@ pub use anti_aliasing::*;
 pub use skybox::*;
 
 pub(crate) use camera::*;
+pub(crate) use lighting::*;
 pub(crate) use object::*;
 pub(crate) use remove_confirm::*;
 pub(crate) use render_object_change::*;

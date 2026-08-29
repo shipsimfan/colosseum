@@ -1,5 +1,5 @@
 use crate::render::{
-    AntiAliasingMode, CameraRenderData, Material, Mesh, ObjectData, RenderData,
+    AntiAliasingMode, CameraRenderData, LightingData, Material, Mesh, ObjectData, RenderData,
     RenderObjectRemoveConfirm, Skybox, data::DoubledRenderData,
 };
 use alexandria::{
@@ -64,6 +64,13 @@ impl RenderData {
         self.doubled().unlit_opaque_renderables().iter().copied()
     }
 
+    /// Get the list of lit opaque renderable objects in the render data
+    pub(in crate::render) fn lit_opaque_renderables(
+        &self,
+    ) -> impl Iterator<Item = (Id<Material>, Id<Mesh>, GpuAddress<ObjectData>)> {
+        self.doubled().lit_opaque_renderables().iter().copied()
+    }
+
     /// Get the camera data for the current frame
     pub(in crate::render) fn camera(&self) -> &CameraRenderData {
         self.doubled().camera()
@@ -72,6 +79,16 @@ impl RenderData {
     /// Get a mutable reference to the camera data for the current frame
     pub fn camera_mut(&mut self) -> &mut CameraRenderData {
         self.doubled_mut().camera_mut()
+    }
+
+    /// Get the lighting data for the current frame
+    pub(in crate::render) fn lighting(&self) -> &LightingData {
+        self.doubled().lighting()
+    }
+
+    /// Get a mutable reference to the lighting daata for the current frame
+    pub fn lighting_mut(&mut self) -> &mut LightingData {
+        self.doubled_mut().lighting_mut()
     }
 
     /// Get a reference to the doubled render data that is currently being used for rendering

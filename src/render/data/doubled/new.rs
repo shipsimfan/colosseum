@@ -2,7 +2,7 @@ use crate::{
     Result,
     render::{
         CameraRenderData, RenderObjects,
-        data::{DoubledRenderData, doubled::DataBuffer},
+        data::{DoubledRenderData, LightingData, doubled::DataBuffer},
     },
 };
 use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDescriptorPool, VulkanDevice};
@@ -21,12 +21,16 @@ impl DoubledRenderData {
     ) -> Result<DoubledRenderData> {
         let camera =
             CameraRenderData::new(descriptor_pool, device, memory_properties, render_objects)?;
+        let lighting =
+            LightingData::new(descriptor_pool, device, memory_properties, render_objects)?;
         let object_buffer =
             DataBuffer::new(OBJECT_BUFFER_INIT_CAPACITY, device, memory_properties)?;
 
         Ok(DoubledRenderData {
             camera,
+            lighting,
             unlit_opaque_renderables: Vec::new(),
+            lit_opaque_renderables: Vec::new(),
             object_buffer,
         })
     }

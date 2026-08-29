@@ -15,6 +15,13 @@ compile_shader! {
     frag_main
 }
 
+compile_shader! {
+    /// The vertex shader code for lit objects
+    const LIT_SHADER = "lit-opaque.slang",
+    vert_main,
+    frag_main
+}
+
 impl UpdateRenderObjects {
     /// Create a new set of [`UpdateRenderObjects`]
     pub(in crate::update) fn new(
@@ -42,14 +49,23 @@ impl UpdateRenderObjects {
             unlit_shaders.insert(Shader::new(&UNLIT_SHADER, &device)?),
         );
 
+        let mut lit_shaders = SlotMap::new();
+        let default_lit_shader = ShaderId::new(
+            ShaderKind::Lit,
+            lit_shaders.insert(Shader::new(&LIT_SHADER, &device)?),
+        );
+
         let mut render_objects = UpdateRenderObjects {
             device,
             fixed_render_objects,
             mesh_allocator,
             meshes: SlotMap::new(),
             unlit_shaders,
+            lit_shaders,
             default_unlit_shader,
+            default_lit_shader,
             unlit_opaque_materials: SlotMap::new(),
+            lit_opaque_materials: SlotMap::new(),
             transfer_queue,
             quad: unsafe { std::mem::zeroed() },
             plane: unsafe { std::mem::zeroed() },

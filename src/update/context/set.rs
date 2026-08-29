@@ -1,10 +1,11 @@
-use alexandria::Id;
-
 use crate::{
     Result,
-    render::{AntiAliasingMode, Skybox},
-    settings::{ModifiableSettingsCache, SettingsCache},
+    render::{MaterialId, RenderObjectChange, Skybox},
     update::{Entity, Scene, UpdateContext},
+};
+use alexandria::{
+    Id,
+    math::{Color3f, Color4f, Srgb},
 };
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
@@ -27,22 +28,6 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         }));
     }
 
-    /// Set the render scale to use for this update
-    pub fn set_render_scale(&mut self, render_scale: f32) {
-        let mut settings = self.settings.begin_modify();
-        settings
-            .display_settings_mut()
-            .set_render_scale(render_scale);
-        self.settings.save(&settings);
-    }
-
-    /// Set the gamma to use for this update
-    pub fn set_gamma(&mut self, gamma: f32) {
-        let mut settings = self.settings.begin_modify();
-        settings.display_settings_mut().set_gamma(gamma);
-        self.settings.save(&settings);
-    }
-
     /// Set the exposure to use for this update
     pub fn set_exposure(&mut self, exposure: f32) {
         *self.exposure = exposure;
@@ -58,18 +43,14 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         *self.saturation = saturation;
     }
 
-    /// Set the anti-aliasing mode to use for this update
-    pub fn set_anti_aliasing(&mut self, anti_aliasing: AntiAliasingMode) {
-        let mut settings = self.settings.begin_modify();
-        settings
-            .display_settings_mut()
-            .set_anti_aliasing(anti_aliasing);
-        self.settings.save(&settings);
-    }
-
     /// Set the skybox to use for this update
     pub fn set_skybox<S: Into<Skybox>>(&mut self, skybox: S) {
         *self.skybox = skybox.into();
+    }
+
+    /// Set the ambient light color
+    pub fn set_ambient_light<C: Into<Color3f<Srgb>>>(&mut self, ambient: C) {
+        *self.ambient_light = ambient.into().into_linear().with_alpha(1.0)
     }
 
     /// Set the currently active camera
@@ -85,5 +66,38 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Unset the window from fullscreen mode
     pub fn unset_fullscreen(&self) -> Result<()> {
         self.window.unset_fullscreen()
+    }
+
+    /// Set the color of a material
+    pub fn set_material_color(&mut self, id: MaterialId, color: Color4f<Srgb>) {
+        if let Some(material) = self.render_objects.get_material_mut(id) {
+            material.set_color(color);
+            self.render_data
+                .add_render_object_change((id, color.into_linear()));
+        }
+    }
+
+    /// Set the specular strength of a material
+    pub fn set_material_specular_strength(&mut self, id: MaterialId, specular_strength: f32) {
+        if let Some(material) = self.render_objects.get_material_mut(id) {
+            material.set_specular_strength(specular_strength);
+            self.render_data
+                .add_render_object_change(RenderObjectChange::ChangeSpecularStrength {
+                    material: id,
+                    specular_strength,
+                });
+        }
+    }
+
+    /// Set the shininess of a material
+    pub fn set_material_shininess(&mut self, id: MaterialId, shininess: f32) {
+        if let Some(material) = self.render_objects.get_material_mut(id) {
+            material.set_shininess(shininess);
+            self.render_data
+                .add_render_object_change(RenderObjectChange::ChangeShininess {
+                    material: id,
+                    shininess,
+                });
+        }
     }
 }

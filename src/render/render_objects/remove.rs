@@ -8,6 +8,9 @@ impl RenderObjects {
             MaterialKind::UnlitOpaque => self
                 .unlit_opaque_materials
                 .remove(unsafe { material.id().cast() }),
+            MaterialKind::LitOpaque => self
+                .lit_opaque_materials
+                .remove(unsafe { material.id().cast() }),
         };
     }
 

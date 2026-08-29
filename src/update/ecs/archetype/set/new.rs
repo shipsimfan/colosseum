@@ -2,7 +2,7 @@ use crate::{
     logging::Logger,
     update::{
         Entity,
-        components::Renderer,
+        components::{DirectionalLight, PointLight, Renderer},
         ecs::{Archetype, ArchetypeSet, archetype::Components},
     },
 };
@@ -14,7 +14,11 @@ impl ArchetypeSet {
         let entity_component = Components::new::<Id<Entity>>();
         let entity_archetype = Archetype::new(vec![entity_component], &logger);
 
-        let rendering_systems = vec![Renderer::system()];
+        let rendering_systems = vec![
+            Renderer::system(),
+            DirectionalLight::system(),
+            PointLight::system(),
+        ];
 
         ArchetypeSet {
             archetypes: vec![entity_archetype],

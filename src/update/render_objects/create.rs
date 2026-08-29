@@ -18,6 +18,7 @@ impl UpdateRenderObjects {
         let shader = Shader::new(code, &self.device)?;
         let id = match kind {
             ShaderKind::Unlit => self.unlit_shaders.insert(shader),
+            ShaderKind::Lit => self.lit_shaders.insert(shader),
         };
         Ok(ShaderId::new(kind, id))
     }
@@ -37,9 +38,11 @@ impl UpdateRenderObjects {
 
         let shader = match shader.kind() {
             ShaderKind::Unlit => &self.unlit_shaders[shader.id()],
+            ShaderKind::Lit => &self.lit_shaders[shader.id()],
         };
 
         let (material, render_material) = Material::new(
+            kind,
             shader,
             self.fixed_render_objects.material_pipeline_layout(kind),
             &self.device,
@@ -49,6 +52,7 @@ impl UpdateRenderObjects {
 
         let id = match kind {
             MaterialKind::UnlitOpaque => self.unlit_opaque_materials.insert(material),
+            MaterialKind::LitOpaque => self.lit_opaque_materials.insert(material),
         };
         Ok(MaterialId::new(kind, id))
     }

@@ -5,6 +5,8 @@ impl ShaderKind {
     pub(crate) fn is_compatible_with(&self, material_kind: MaterialKind) -> bool {
         match (self, material_kind) {
             (ShaderKind::Unlit, MaterialKind::UnlitOpaque) => true,
+            (ShaderKind::Lit, MaterialKind::LitOpaque) => true,
+            _ => false,
         }
     }
 }

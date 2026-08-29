@@ -3,7 +3,10 @@ use crate::{
     file_io::FileIo,
     logging::Logger,
     render::{GpuTransferQueue, RenderJob, Skybox},
-    update::{ECS, InitialScene, Inputs, Scene, UpdateContext, UpdateJob, UpdateRenderObjects},
+    update::{
+        DEFAULT_AMBIENT_LIGHT, ECS, InitialScene, Inputs, Scene, UpdateContext, UpdateJob,
+        UpdateRenderObjects,
+    },
 };
 use std::marker::PhantomData;
 
@@ -32,6 +35,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             ecs: ECS::new(logger),
             active_camera: None,
             skybox: Skybox::default(),
+            ambient_light: DEFAULT_AMBIENT_LIGHT.into_linear(),
             exposure: 1.0,
             contrast: 1.0,
             saturation: 1.0,

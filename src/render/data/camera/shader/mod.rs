@@ -1,4 +1,4 @@
-use alexandria::math::Matrix4x4f;
+use alexandria::math::{Matrix4x4f, Vector3f};
 
 mod new;
 mod set;
@@ -8,4 +8,7 @@ mod set;
 pub(in crate::render::data::camera) struct CameraShaderData {
     /// The camera's view-projection matrix
     view_projection: Matrix4x4f,
+
+    /// The position of the camera in world space
+    position: Vector3f,
 }

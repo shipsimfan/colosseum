@@ -1,6 +1,6 @@
-use crate::render::{CameraRenderData, Material, Mesh, ObjectData};
+use crate::render::{CameraRenderData, Material, Mesh, ObjectData, data::LightingData};
 use alexandria::{Id, gpu::GpuAddress};
-use buffer::DataBuffer;
+use buffer::*;
 
 mod buffer;
 
@@ -16,11 +16,20 @@ pub(in crate::render::data) struct DoubledRenderData {
     /// The camera data for the current frame
     camera: CameraRenderData,
 
+    /// The data about lighting for the current frame
+    lighting: LightingData,
+
     /// The set of unlit opaque renderable objects in the scene
     ///
     /// These renderables are rendered in a single pass, and do not require any lighting
     /// calculations or transparency
     unlit_opaque_renderables: Vec<(Id<Material>, Id<Mesh>, GpuAddress<ObjectData>)>,
+
+    /// The set of lit opaque renderable objects in the scene
+    ///
+    /// These renderables are rendered in a single pass, and do not transparency but do use
+    /// lighting
+    lit_opaque_renderables: Vec<(Id<Material>, Id<Mesh>, GpuAddress<ObjectData>)>,
 
     /// The buffer for object data
     object_buffer: DataBuffer<ObjectData>,

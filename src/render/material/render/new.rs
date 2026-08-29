@@ -1,6 +1,6 @@
 use crate::{
     Error, Result,
-    render::{DEPTH_FORMAT, HDR_FORMAT, RenderMaterial, Shader, Vertex},
+    render::{DEPTH_FORMAT, HDR_FORMAT, MaterialKind, RenderMaterial, Shader, Vertex},
 };
 use alexandria::{
     gpu::{
@@ -25,6 +25,7 @@ const FRAGMENT_ENTRY: &CStr = c"frag_main";
 impl RenderMaterial {
     /// Create a new [`RenderMaterial`]
     pub(in crate::render::material) fn new(
+        kind: MaterialKind,
         shader: &Arc<Shader>,
         pipeline_layout: &VulkanPipelineLayout,
         device: &VulkanDevice,
@@ -44,7 +45,10 @@ impl RenderMaterial {
 
         // Setup the vertex input and input assembly states
         let vertex_input_state = VulkanPipelineVertexInputStateCreateInfo::new(
-            &Vertex::ATTRIBUTE_DESCRIPTORS,
+            match kind {
+                MaterialKind::LitOpaque => &Vertex::LIT_ATTRIBUTE_DESCRIPTORS,
+                MaterialKind::UnlitOpaque => &Vertex::UNLIT_ATTRIBUTE_DESCRIPTORS,
+            },
             &Vertex::BINDING_DESCRIPTORS,
         );
         let input_assembly_state = VulkanPipelineInputAssemblyStateCreateInfo::new(
@@ -154,7 +158,10 @@ impl RenderMaterial {
             .map_err(Error::new_inner)?;
 
         Ok(RenderMaterial {
+            kind,
             color: Color4f::WHITE,
+            specular_strength: 0.5,
+            shininess: 32.0,
 
             pipeline,
             shader: shader.clone(),

@@ -14,6 +14,7 @@ impl RenderObjects {
             fixed: FixedRenderObjects::new(swapchain_format, device)?,
             meshes: SlotMap::new(),
             unlit_opaque_materials: SlotMap::new(),
+            lit_opaque_materials: SlotMap::new(),
         })
     }
 }

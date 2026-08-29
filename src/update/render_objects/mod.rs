@@ -35,13 +35,24 @@ pub(crate) struct UpdateRenderObjects {
     /// These shaders are run in a forward pass without lighting information
     unlit_shaders: SlotMap<Arc<Shader>>,
 
+    /// The lit shaders that have been registered
+    lit_shaders: SlotMap<Arc<Shader>>,
+
     /// The ID of the default unlit shader to use when no other shader is specified
     default_unlit_shader: ShaderId,
+
+    /// The ID of the default lit shader to use when no other shader is specified
+    default_lit_shader: ShaderId,
 
     /// The unlit opaque materials that have been registered
     ///
     /// These materials are used in a forward pass without lighting information or transparency
     unlit_opaque_materials: SlotMap<Material>,
+
+    /// The lit opaque materials that have been registered
+    ///
+    /// These materials are used in a forward pass with lighting information but without transparency
+    lit_opaque_materials: SlotMap<Material>,
 
     /// The ID of the quad primitive mesh
     quad: Id<Mesh>,

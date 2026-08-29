@@ -21,4 +21,14 @@ impl Material {
     pub fn blue(&self) -> f32 {
         self.color.b
     }
+
+    /// Get the specular strength of the material
+    pub fn specular_strength(&self) -> f32 {
+        self.specular_strength
+    }
+
+    /// Get the shininess of the material
+    pub fn shininess(&self) -> f32 {
+        self.shininess
+    }
 }

@@ -7,4 +7,9 @@ pub enum MaterialKind {
     ///
     /// This type of material is run in a forward pass without any lighting calculations
     UnlitOpaque,
+
+    /// The material is opaque and lit
+    ///
+    /// This type of material is run ina a forward pass with lighting calculations
+    LitOpaque,
 }

@@ -9,4 +9,18 @@ impl RenderData {
             &self.memory_properties,
         )
     }
+
+    /// Reserve enough space to store all the directional lights
+    pub fn reserve_directional_lights(&mut self, num: usize) -> Result<()> {
+        self.doubled[self.current_doubled_index]
+            .lighting_mut()
+            .reserve_directional_lights(num, &self.device, &self.memory_properties)
+    }
+
+    /// Reserve enough space to store all the point lights
+    pub fn reserve_point_lights(&mut self, num: usize) -> Result<()> {
+        self.doubled[self.current_doubled_index]
+            .lighting_mut()
+            .reserve_point_lights(num, &self.device, &self.memory_properties)
+    }
 }

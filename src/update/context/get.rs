@@ -5,10 +5,7 @@ use crate::{
     render::{Material, MaterialId, Mesh, RenderData, ShaderId, Skybox},
     update::{ECS, Inputs, Scene, UpdateContext},
 };
-use alexandria::{
-    Id,
-    math::{Color4f, Srgb, Vector2u},
-};
+use alexandria::{Id, math::Vector2u};
 use std::time::Duration;
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
@@ -72,6 +69,11 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         self.render_objects.default_unlit_shader()
     }
 
+    /// Get the default lit shader
+    pub fn default_lit_shader(&self) -> ShaderId {
+        self.render_objects.default_lit_shader()
+    }
+
     /// Try to get a reference to a material, returning [`None`] if it doesn't exist
     pub fn get_material(&self, id: MaterialId) -> Option<&Material> {
         self.render_objects.get_material(id)
@@ -80,15 +82,6 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Get a reference to a material
     pub fn material(&self, id: MaterialId) -> &Material {
         self.get_material(id).expect("Material does not exist")
-    }
-
-    /// Set the color of a material
-    pub fn set_material_color(&mut self, id: MaterialId, color: Color4f<Srgb>) {
-        if let Some(material) = self.render_objects.get_material_mut(id) {
-            material.set_color(color);
-            self.render_data
-                .add_render_object_change((id, color.into_linear()));
-        }
     }
 
     /// Get the quad primitive
