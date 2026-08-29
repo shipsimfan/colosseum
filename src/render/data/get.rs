@@ -61,7 +61,7 @@ impl RenderData {
     pub(in crate::render) fn unlit_opaque_renderables(
         &self,
     ) -> impl Iterator<Item = (Id<Material>, Id<Mesh>, GpuAddress<ObjectData>)> {
-        self.doubled().unlit_opaque_renderables().iter()
+        self.doubled().unlit_opaque_renderables().iter().copied()
     }
 
     /// Get the camera data for the current frame

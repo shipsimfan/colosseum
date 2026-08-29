@@ -14,17 +14,17 @@ impl Renderer {
             system_with_extra_data!(|render_data: RenderData,
                                      renderer: Renderer,
                                      transform: Transform| {
+                render_data.reserve_renderables(renderer.len()).unwrap();
+
                 for (renderer, transform) in renderer.iter().zip(transform) {
                     let object = ObjectData::new(transform.matrix());
 
                     match renderer.material.kind() {
-                        MaterialKind::UnlitOpaque => render_data
-                            .add_unlit_opaque_renderable(
-                                renderer.material.id(),
-                                renderer.mesh,
-                                object,
-                            )
-                            .unwrap(),
+                        MaterialKind::UnlitOpaque => render_data.add_unlit_opaque_renderable(
+                            renderer.material.id(),
+                            renderer.mesh,
+                            object,
+                        ),
                     }
                 }
             });

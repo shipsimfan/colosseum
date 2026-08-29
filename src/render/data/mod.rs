@@ -1,6 +1,8 @@
-use alexandria::gpu::{VulkanDescriptorPool, VulkanDescriptorSet};
+use alexandria::gpu::{
+    VulkanAdapterMemoryProperties, VulkanDescriptorPool, VulkanDescriptorSet, VulkanDevice,
+};
 use doubled::DoubledRenderData;
-use renderable_list::RenderableList;
+use std::sync::Arc;
 
 mod anti_aliasing;
 mod camera;
@@ -8,13 +10,13 @@ mod doubled;
 mod object;
 mod remove_confirm;
 mod render_object_change;
-mod renderable_list;
 mod skybox;
 
 mod add;
 mod apply;
 mod get;
 mod new;
+mod reserve;
 mod reset;
 mod set;
 
@@ -74,6 +76,12 @@ pub(crate) struct RenderData {
 
     /// The index of the doubled render data that is currently being used for rendering
     current_doubled_index: usize,
+
+    /// The device to use when allocating memory
+    device: VulkanDevice,
+
+    /// The memory properties of the device
+    memory_properties: Arc<VulkanAdapterMemoryProperties>,
 }
 
 impl RenderData {

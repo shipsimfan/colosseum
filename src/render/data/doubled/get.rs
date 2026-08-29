@@ -1,7 +1,5 @@
-use crate::render::{
-    CameraRenderData, ObjectData,
-    data::{DoubledRenderData, RenderableList},
-};
+use crate::render::{CameraRenderData, Material, Mesh, ObjectData, data::DoubledRenderData};
+use alexandria::{Id, gpu::GpuAddress};
 
 impl DoubledRenderData {
     /// Get the camera data for the current frame
@@ -15,13 +13,7 @@ impl DoubledRenderData {
     }
 
     /// Get the list of unlit opaque renderable objects in the doubled render data
-    pub fn unlit_opaque_renderables(&self) -> &RenderableList<ObjectData> {
+    pub fn unlit_opaque_renderables(&self) -> &[(Id<Material>, Id<Mesh>, GpuAddress<ObjectData>)] {
         &self.unlit_opaque_renderables
-    }
-
-    /// Get a mutable reference to the list of unlit opaque renderable objects in the doubled
-    /// render data
-    pub fn unlit_opaque_renderables_mut(&mut self) -> &mut RenderableList<ObjectData> {
-        &mut self.unlit_opaque_renderables
     }
 }

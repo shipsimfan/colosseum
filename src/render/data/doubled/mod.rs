@@ -1,7 +1,14 @@
-use crate::render::{CameraRenderData, ObjectData, data::RenderableList};
+use crate::render::{CameraRenderData, Material, Mesh, ObjectData};
+use alexandria::{Id, gpu::GpuAddress};
+use buffer::DataBuffer;
 
+mod buffer;
+
+mod add;
 mod get;
 mod new;
+mod reserve;
+mod reset;
 
 /// The render data that exists in two copies for each frame, so that one copy can be used for
 /// rendering while the other is being updated
@@ -13,5 +20,8 @@ pub(in crate::render::data) struct DoubledRenderData {
     ///
     /// These renderables are rendered in a single pass, and do not require any lighting
     /// calculations or transparency
-    unlit_opaque_renderables: RenderableList<ObjectData>,
+    unlit_opaque_renderables: Vec<(Id<Material>, Id<Mesh>, GpuAddress<ObjectData>)>,
+
+    /// The buffer for object data
+    object_buffer: DataBuffer<ObjectData>,
 }

@@ -1,6 +1,6 @@
 use crate::{
     Error, Result,
-    render::{FixedRenderObjects, RenderMaterial, frame_graph::UnlitForwardRenderNode},
+    render::{FixedRenderObjects, UnlitMaterialPushConstants, frame_graph::UnlitForwardRenderNode},
 };
 use alexandria::gpu::{
     VulkanDescriptorSetLayoutBinding, VulkanDescriptorType, VulkanDevice, VulkanFormat,
@@ -38,7 +38,7 @@ impl UnlitForwardRenderNode {
                     &[VulkanPushConstantRange::new(
                         VulkanShaderStageFlag::Vertex | VulkanShaderStageFlag::Fragment,
                         0,
-                        RenderMaterial::PUSH_CONSTANT_SIZE as _,
+                        std::mem::size_of::<UnlitMaterialPushConstants>() as _,
                     )],
                 )
                 .map_err(Error::new_inner)?,

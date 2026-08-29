@@ -1,5 +1,23 @@
 # ToDo
- 2. Add color grading to tone map node
+ 1. Add lighting system
+   1. Add lit opaque materials
+   2. Add lit opaque renderables
+   3. Add lit opaque node
+   4. Ambient light
+   5. Directional lights
+   6. Point lights
+   7. Spot lights
+ 2. Add shadow mapping
+   1. Add shadow map memory container
+   2. Spot light shadows
+   3. Directional light shadows
+   4. Point light shadows
+ 3. Combine all staging buffers into one 
+ 4. Add texture loading
+ 5. Add mesh loading
+ 6. Add PBR material system
+ 7. Add transient texture aliasing system
+ 8. Add color grading to tone map node
    1. Add CPU LUT type w/ SlotMap
    2. Add render side LUT (dedicated allocations)
    3. Add LUTs to transfer queue
@@ -9,19 +27,6 @@
    7. Add binding of descriptor set to tone map node
    8. Add sampling of LUT in tone map node fragment shader
    9. Add reading .cube files
- 3. Add lighting system
-   1. Add lit opaque materials
-   2. Directional lights
-   3. Point lights
-   4. Spot lights
- 4. Add shadow mapping
-   1. Directional light shadows
-   2. Point light shadows
-   3. Spot light shadows
- 5. Add mesh loading
- 6. Add texture loading
- 7. Add PBR material system
- 8. Add transient texture aliasing system
  9. Add vignette
  10. Add bloom
  11. Add lens flare

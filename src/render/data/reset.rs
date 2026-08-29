@@ -7,6 +7,6 @@ impl RenderData {
             self.current_doubled_index = (self.current_doubled_index + 1) % 2;
         }
 
-        self.doubled_mut().unlit_opaque_renderables_mut().reset();
+        self.doubled_mut().reset();
     }
 }

@@ -55,6 +55,9 @@ impl RenderData {
 
             doubled,
             current_doubled_index: 0,
+
+            device: device.clone(),
+            memory_properties: memory_properties.clone(),
         })
     }
 }

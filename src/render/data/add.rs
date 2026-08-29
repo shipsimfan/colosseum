@@ -1,7 +1,4 @@
-use crate::{
-    Result,
-    render::{Material, Mesh, ObjectData, RenderData, RenderObjectChange},
-};
+use crate::render::{Material, Mesh, ObjectData, RenderData, RenderObjectChange};
 use alexandria::Id;
 
 impl RenderData {
@@ -16,9 +13,8 @@ impl RenderData {
         material: Id<Material>,
         mesh: Id<Mesh>,
         object: ObjectData,
-    ) -> Result<()> {
+    ) {
         self.doubled_mut()
-            .unlit_opaque_renderables_mut()
-            .push(material, mesh, object)
+            .add_unlit_opaque_renderable(material, mesh, object)
     }
 }
