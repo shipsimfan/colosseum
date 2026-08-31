@@ -1,5 +1,3 @@
-use std::f32::consts::PI;
-
 use crate::update::components::SpotLight;
 use alexandria::math::{Color3f, Srgb, Vector3f};
 
@@ -20,8 +18,8 @@ impl SpotLight {
             position: position.into(),
             range,
             direction: direction.into().normalized(),
-            cutoff_angle: cutoff_angle / PI,
-            falloff_angle: falloff_angle / PI,
+            cutoff_angle: cutoff_angle.cos(),
+            falloff_angle: falloff_angle.cos(),
         }
     }
 }

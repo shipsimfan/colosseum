@@ -29,11 +29,11 @@ impl SpotLight {
 
     /// Get the cut off angle of the spot light
     pub fn cutoff_angle(&self) -> f32 {
-        self.cutoff_angle
+        self.cutoff_angle.acos()
     }
 
     /// Get angle at which light begins falling off
     pub fn falloff_angle(&self) -> f32 {
-        self.falloff_angle
+        self.falloff_angle.acos()
     }
 }

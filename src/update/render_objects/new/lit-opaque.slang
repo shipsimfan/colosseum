@@ -95,12 +95,12 @@ float specular(float3 light_direction, float3 normal, float3 view_direction) {
 
 float3 directional_light(DirectionalLight light, float3 normal, float3 view_direction) {
     // Calculate diffuse contribution
-    float3 diffuse = diffuse(-light.direction, normal) * light.color.rgb;
+    float diffuse = diffuse(-light.direction, normal);
 
     // Calculate specular contribution
-    float3 specular = specular(-light.direction, normal, view_direction) * light.color.rgb;
+    float specular = specular(-light.direction, normal, view_direction);
 
-    return diffuse + specular;
+    return (diffuse + specular) * light.color.rgb;
 }
 
 float attenuation(float distance, float range) {
@@ -118,37 +118,38 @@ float3 point_light(PointLight light, float3 normal, float3 view_direction, float
     float3 direction = normalize(difference); 
 
     // Calculate diffuse contribution
-    float3 diffuse = diffuse(direction, normal) * light.color.rgb;
+    float diffuse = diffuse(direction, normal);
 
     // Calculate specular contribution
-    float3 specular = specular(direction, normal, view_direction) * light.color.rgb;
+    float specular = specular(direction, normal, view_direction);
 
     // Calculate attenuation
     float distance = length(light.position - position);
     float attenuation = attenuation(distance, light.range);
 
-    return (diffuse + specular) * attenuation;
+    return (diffuse + specular) * attenuation * light.color.rgb;
 }
 
 float3 spot_light(SpotLight light, float3 normal, float3 view_direction, float3 position) {
     float3 difference = light.position - position;
     float3 direction = normalize(difference);
 
-    float theta = dot(direction, -light.direction);
-    float epsilon = light.falloff_angle - light.cutoff_angle;
-    float intensity = clamp((theta - light.cutoff_angle) / epsilon, 0.0, 1.0);
+    // Calculate angle intensity
+    float theta = max(dot(direction, -light.direction), 0.0);
+    float epsilon = light.cutoff_angle - light.falloff_angle;
+    float intensity = clamp((light.cutoff_angle - theta) / epsilon, 0.0, 1.0);
 
     // Calculate diffuse contribution
-    float3 diffuse = diffuse(direction, normal) * light.color.rgb;
+    float diffuse = diffuse(direction, normal);
 
     // Calculate specular contribution
-    float3 specular = specular(direction, normal, view_direction) * light.color.rgb;
+    float specular = specular(direction, normal, view_direction);
 
     // Calculate attenuation
     float distance = length(light.position - position);
     float attenuation = attenuation(distance, light.range);
 
-    return (diffuse + specular) * attenuation * intensity;
+    return (diffuse + specular) * attenuation * intensity * light.color.rgb;
 }
 
 [shader("fragment")]

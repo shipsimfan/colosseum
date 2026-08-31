@@ -1,5 +1,3 @@
-use std::f32::consts::PI;
-
 use crate::update::components::SpotLight;
 use alexandria::math::{Color3f, Srgb, Vector3f};
 
@@ -31,11 +29,11 @@ impl SpotLight {
 
     /// Set the cutoff angle of the light
     pub fn set_cutoff_angle(&mut self, cutoff_angle: f32) {
-        self.cutoff_angle = cutoff_angle / PI;
+        self.cutoff_angle = cutoff_angle.cos();
     }
 
     /// Set the angle at which light begins falling off
     pub fn set_falloff_angle(&mut self, falloff_angle: f32) {
-        self.falloff_angle = falloff_angle / PI;
+        self.falloff_angle = falloff_angle.cos();
     }
 }

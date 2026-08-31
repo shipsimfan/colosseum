@@ -317,7 +317,7 @@ impl CubeMainScene {
         );
 
         // Create a directional light
-        /*let directional_light = ecs.create_entity();
+        let directional_light = ecs.create_entity();
         ecs.add_component(
             directional_light,
             colosseum::update::components::DirectionalLight::new(
@@ -325,7 +325,7 @@ impl CubeMainScene {
                 0.5,
                 (-1.0, -1.5, 1.0),
             ),
-        );*/
+        );
 
         // Create a point light
         let point_light = ecs.create_entity();
@@ -346,11 +346,11 @@ impl CubeMainScene {
             colosseum::update::components::SpotLight::new(
                 (1.0, 1.0, 1.0),
                 1.0,
-                (0.0, 0.0, 0.0),
+                (0.0, 0.0, 6.0),
                 5.0,
-                (0.0, 0.0, 1.0),
-                0.05,
-                0.04,
+                (0.0, 0.0, -1.0),
+                3.14 / 8.0,
+                3.14 / 12.0,
             ),
         );
 
