@@ -2,6 +2,7 @@ use crate::{
     Error, Result,
     render::{
         FixedRenderObjects, LightingData, RenderDirectionalLight, RenderObjects, RenderPointLight,
+        RenderSpotLight,
         data::lighting::{LightingDataBuffer, LightingMetadata},
     },
 };
@@ -13,6 +14,7 @@ use alexandria::gpu::{
 
 const INITIAL_DIRECTIONAL_LIGHT_CAPACITY: usize = 1;
 const INITIAL_POINT_LIGHT_CAPACITY: usize = 32;
+const INITIAL_SPOT_LIGHT_CAPACITY: usize = 8;
 
 impl LightingData {
     /// Create a new set of [`LightingData`]
@@ -73,6 +75,9 @@ impl LightingData {
         let point_lights =
             LightingDataBuffer::new(INITIAL_POINT_LIGHT_CAPACITY, device, memory_properties)?;
 
+        let spot_lights =
+            LightingDataBuffer::new(INITIAL_SPOT_LIGHT_CAPACITY, device, memory_properties)?;
+
         // Update the descriptor set with the buffers
         device.update_descriptor_sets(
             &[
@@ -107,6 +112,11 @@ impl LightingData {
                             (std::mem::size_of::<RenderPointLight>() * point_lights.capacity())
                                 as _,
                         ),
+                        VulkanDescriptorBufferInfo::new(
+                            spot_lights.buffer(),
+                            0,
+                            (std::mem::size_of::<RenderSpotLight>() * spot_lights.capacity()) as _,
+                        ),
                     ],
                 ),
             ],
@@ -119,6 +129,7 @@ impl LightingData {
             metadata,
             directional_lights,
             point_lights,
+            spot_lights,
         })
     }
 }

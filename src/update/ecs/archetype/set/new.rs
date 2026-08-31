@@ -2,7 +2,7 @@ use crate::{
     logging::Logger,
     update::{
         Entity,
-        components::{DirectionalLight, PointLight, Renderer},
+        components::{DirectionalLight, PointLight, Renderer, SpotLight},
         ecs::{Archetype, ArchetypeSet, archetype::Components},
     },
 };
@@ -18,6 +18,7 @@ impl ArchetypeSet {
             Renderer::system(),
             DirectionalLight::system(),
             PointLight::system(),
+            SpotLight::system(),
         ];
 
         ArchetypeSet {

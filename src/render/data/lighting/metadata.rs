@@ -11,6 +11,9 @@ pub(in crate::render::data::lighting) struct LightingMetadata {
 
     /// The number of point lights in the scene
     pub num_point_lights: u32,
+
+    /// The number of spot lights in the scene
+    pub num_spot_lights: u32,
 }
 
 impl Default for LightingMetadata {
@@ -19,6 +22,7 @@ impl Default for LightingMetadata {
             ambient_light: Color4f::WHITE,
             num_directional_lights: 0,
             num_point_lights: 0,
+            num_spot_lights: 0,
         }
     }
 }

@@ -14,7 +14,7 @@ impl PointLight {
 
     /// Set the direction of the light
     pub fn set_position<P: Into<Vector3f>>(&mut self, position: P) {
-        self.position = position.into().normalized();
+        self.position = position.into();
     }
 
     /// Set the range of the light

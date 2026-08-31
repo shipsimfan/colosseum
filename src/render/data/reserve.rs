@@ -23,4 +23,11 @@ impl RenderData {
             .lighting_mut()
             .reserve_point_lights(num, &self.device, &self.memory_properties)
     }
+
+    /// Reserve enough space to store all the spot lights
+    pub fn reserve_spot_lights(&mut self, num: usize) -> Result<()> {
+        self.doubled[self.current_doubled_index]
+            .lighting_mut()
+            .reserve_spot_lights(num, &self.device, &self.memory_properties)
+    }
 }

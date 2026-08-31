@@ -6,7 +6,7 @@ pub(crate) struct RenderPointLight {
     /// The color of the light
     pub color: Color4f<Linear>,
 
-    /// The direction of the light
+    /// The position of the light
     pub position: Vector3f,
 
     /// The range of the light

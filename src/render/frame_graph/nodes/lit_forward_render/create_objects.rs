@@ -35,6 +35,12 @@ impl LitForwardRenderNode {
                     1,
                     VulkanShaderStageFlag::Fragment,
                 ),
+                VulkanDescriptorSetLayoutBinding::new(
+                    3,
+                    VulkanDescriptorType::StorageBuffer,
+                    1,
+                    VulkanShaderStageFlag::Fragment,
+                ),
             ],
             2,
             FixedRenderObjects::LIGHTING_DESCRIPTOR_SET_LAYOUT,

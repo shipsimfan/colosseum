@@ -6,6 +6,7 @@ mod buffer;
 mod directional;
 mod metadata;
 mod point;
+mod spot;
 
 mod add;
 mod get;
@@ -16,6 +17,7 @@ mod set;
 
 pub(crate) use directional::*;
 pub(crate) use point::*;
+pub(crate) use spot::*;
 
 /// The data about lighting for a given frame
 pub(crate) struct LightingData {
@@ -34,4 +36,7 @@ pub(crate) struct LightingData {
 
     /// The buffer containing the point light data
     point_lights: LightingDataBuffer<RenderPointLight>,
+
+    /// The buffer containing the spot light data
+    spot_lights: LightingDataBuffer<RenderSpotLight>,
 }

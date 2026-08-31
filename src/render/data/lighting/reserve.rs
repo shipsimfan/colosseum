@@ -1,6 +1,9 @@
 use crate::{
     Result,
-    render::{LightingData, RenderDirectionalLight, data::lighting::LightingDataBuffer},
+    render::{
+        LightingData, RenderDirectionalLight, RenderPointLight, RenderSpotLight,
+        data::lighting::LightingDataBuffer,
+    },
 };
 use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanDescriptorBufferInfo, VulkanDescriptorType, VulkanDevice,
@@ -73,15 +76,54 @@ impl LightingData {
         device.update_descriptor_sets(
             &[VulkanWriteDescriptorSet::new(
                 &self.descriptor_set,
-                1,
+                2,
                 0,
                 VulkanDescriptorType::StorageBuffer,
                 &[],
                 &[VulkanDescriptorBufferInfo::new(
                     &self.point_lights.buffer(),
                     0,
-                    (std::mem::size_of::<RenderDirectionalLight>() * self.point_lights.capacity())
-                        as _,
+                    (std::mem::size_of::<RenderPointLight>() * self.point_lights.capacity()) as _,
+                )],
+            )],
+            &[],
+        );
+
+        Ok(())
+    }
+
+    /// Reserve enough space for the specified number of spot lights
+    pub fn reserve_spot_lights(
+        &mut self,
+        spot_lights: usize,
+        device: &VulkanDevice,
+        memory_properties: &VulkanAdapterMemoryProperties,
+    ) -> Result<()> {
+        self.metadata[0].num_spot_lights = spot_lights as _;
+
+        if self.spot_lights.capacity() > spot_lights {
+            return Ok(());
+        }
+
+        let mut new_capacity = self.spot_lights.capacity();
+        while new_capacity < spot_lights {
+            new_capacity *= 2;
+        }
+
+        self.spot_lights = LightingDataBuffer::new(new_capacity, device, memory_properties)?;
+
+        // Update the descriptor set with the buffers
+        device.update_descriptor_sets(
+            &[VulkanWriteDescriptorSet::new(
+                &self.descriptor_set,
+                3,
+                0,
+                VulkanDescriptorType::StorageBuffer,
+                &[],
+                &[VulkanDescriptorBufferInfo::new(
+                    &self.spot_lights.buffer(),
+                    0,
+                    (std::mem::size_of::<RenderSpotLight>() * self.spot_lights.capacity()) as _,
                 )],
             )],
             &[],
