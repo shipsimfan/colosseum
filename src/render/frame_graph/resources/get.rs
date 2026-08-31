@@ -1,5 +1,5 @@
 use crate::render::frame_graph::{FrameGraphResource, FrameGraphResourceId, FrameGraphResources};
-use alexandria::gpu::VulkanAttachmentLoadOp;
+use alexandria::gpu::{VulkanAttachmentLoadOp, VulkanDescriptorSet};
 
 impl<'a> FrameGraphResources<'a> {
     /// Get a reference to a resource by its ID
@@ -7,9 +7,9 @@ impl<'a> FrameGraphResources<'a> {
         if id.is_external() {
             FrameGraphResource::External(&self.external[id.index()])
         } else if id.is_transient_render_scale() {
-            FrameGraphResource::Transient(&self.render_scale_transients[id.index()])
+            FrameGraphResource::Transient(&self.transient.render_scale[id.index()])
         } else if id.is_transient_native_scale() {
-            FrameGraphResource::Transient(&self.native_scale_transients[id.index()])
+            FrameGraphResource::Transient(&self.transient.native_scale[id.index()])
         } else {
             todo!("transient static resources are not yet implemented")
         }
@@ -27,14 +27,19 @@ impl<'a> FrameGraphResources<'a> {
         }
 
         let transient = if id.is_transient_render_scale() {
-            &self.render_scale_transients[id.index()]
+            &self.transient.render_scale[id.index()]
         } else if id.is_transient_native_scale() {
-            &self.native_scale_transients[id.index()]
+            &self.transient.native_scale[id.index()]
         } else {
             todo!("transient static resources are not yet implemented")
         };
 
         let load_op = transient.load_op();
         (FrameGraphResource::Transient(transient), load_op)
+    }
+
+    /// Get a reference to a descriptor set by its index in the descriptor set array
+    pub fn descriptor_set(&self, index: usize) -> &VulkanDescriptorSet {
+        &self.transient.descriptor_sets[index]
     }
 }

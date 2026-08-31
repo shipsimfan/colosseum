@@ -64,7 +64,7 @@ fn do_run<Game: crate::Game>(
     )?;
 
     // Create the thread manager
-    let thread_manager = ThreadManager::new(&log_controller);
+    let thread_manager = ThreadManager::new(&log_controller)?;
 
     // Start the logging thread
     log_controller.spawn_thread(

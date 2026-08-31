@@ -13,7 +13,7 @@ use alexandria::{
     math::Vector2u,
 };
 
-impl<'a> FrameGraphResourceList<'a> {
+impl FrameGraphResourceList {
     pub fn resize(
         &mut self,
         info: &[FrameGraphDynamicTransientResourceInfo],
@@ -23,7 +23,7 @@ impl<'a> FrameGraphResourceList<'a> {
     ) -> Result<()> {
         // Clear the transient resources
         self.resources.clear();
-        *self.memory = None;
+        self.memory = None;
 
         // Create the new images and image views for the transient resources at the new size
         // and calculate the memory requirements
@@ -57,7 +57,7 @@ impl<'a> FrameGraphResourceList<'a> {
             offset = resource.bind_memory(info, &memory, offset)?;
         }
 
-        *self.memory = Some(memory);
+        self.memory = Some(memory);
 
         Ok(())
     }

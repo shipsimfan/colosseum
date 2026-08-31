@@ -1,3 +1,4 @@
+use crate::logging::Logger;
 use std::sync::{Arc, Mutex};
 use thread::*;
 
@@ -23,4 +24,10 @@ pub(crate) struct ThreadManager {
 
     /// The threads that have been spawned
     threads: Mutex<Vec<Thread>>,
+
+    /// The logger the thread manager uses
+    logger: Logger,
+
+    /// A single value channel to hold panic information from threads
+    panic_receiver: Mutex<Option<SingleValueReceiver<String>>>,
 }

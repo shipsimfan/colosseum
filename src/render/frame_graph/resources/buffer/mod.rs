@@ -1,5 +1,5 @@
-use crate::render::frame_graph::FrameGraphTransientResource;
-use alexandria::gpu::VulkanDeviceMemory;
+use crate::render::frame_graph::resources::FrameGraphResourceList;
+use alexandria::gpu::{VulkanDescriptorPool, VulkanDescriptorSet};
 
 mod new;
 
@@ -9,18 +9,15 @@ pub(in crate::render) struct FrameGraphTransientBuffer {
     pub(in crate::render::frame_graph::resources) epoch: u64,
 
     /// The transient resources that are at the render scale
-    pub(in crate::render::frame_graph::resources) transient_render_scale:
-        Vec<FrameGraphTransientResource>,
-
-    /// The memory for the transient render scale resources
-    pub(in crate::render::frame_graph::resources) transient_render_scale_memory:
-        Option<VulkanDeviceMemory>,
+    pub(in crate::render::frame_graph::resources) render_scale: FrameGraphResourceList,
 
     /// The transient resources that are at the native scale
-    pub(in crate::render::frame_graph::resources) transient_native_scale:
-        Vec<FrameGraphTransientResource>,
+    pub(in crate::render::frame_graph::resources) native_scale: FrameGraphResourceList,
 
-    /// The memory for the transient native scale resources
-    pub(in crate::render::frame_graph::resources) transient_native_scale_memory:
-        Option<VulkanDeviceMemory>,
+    /// The pool for the descriptor sets
+    #[allow(unused)]
+    descriptor_pool: VulkanDescriptorPool,
+
+    /// The descriptor sets that have been made for the frame
+    pub(in crate::render::frame_graph::resources) descriptor_sets: Vec<VulkanDescriptorSet>,
 }

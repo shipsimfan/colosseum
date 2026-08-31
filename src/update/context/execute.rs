@@ -25,8 +25,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         if !self.update_camera() {
             warning!(self.logger, "no active camera set");
             self.render_data
-                .camera_mut()
-                .set(Matrix4x4f::IDENTITY, Vector3f::ZERO);
+                .set_camera(Matrix4x4f::IDENTITY, Vector3f::ZERO);
             return;
         }
         self.render_data
@@ -60,9 +59,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         };
 
         // Set the view-projection matrix in the render data
-        self.render_data
-            .camera_mut()
-            .set(projection * view, position);
+        self.render_data.set_camera(projection * view, position);
         true
     }
 }

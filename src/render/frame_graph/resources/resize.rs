@@ -20,20 +20,20 @@ impl<'a> FrameGraphResources<'a> {
         new_epoch: u64,
     ) -> Result<()> {
         let render_scale_size: Vector2u = (swapchain_size.into_f32() * render_scale).from_f32();
-        self.render_scale_transients.resize(
+        self.transient.render_scale.resize(
             transient_render_scale_info,
             render_scale_size,
             device,
             memory_properties,
         )?;
-        self.native_scale_transients.resize(
+        self.transient.native_scale.resize(
             transient_native_scale_info,
             swapchain_size,
             device,
             memory_properties,
         )?;
 
-        *self.epoch = new_epoch;
+        self.transient.epoch = new_epoch;
         Ok(())
     }
 }

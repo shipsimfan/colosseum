@@ -14,8 +14,8 @@ impl RenderData {
         mesh: Id<Mesh>,
         object: ObjectData,
     ) {
-        self.doubled_mut()
-            .add_unlit_opaque_renderable(material, mesh, object)
+        let index = self.renderable_buffer.push(object);
+        self.unlit_opaque_renderables.push((material, mesh, index));
     }
 
     /// Add a new lit opaque renderable object to the render data
@@ -25,7 +25,7 @@ impl RenderData {
         mesh: Id<Mesh>,
         object: ObjectData,
     ) {
-        self.doubled_mut()
-            .add_lit_opaque_renderable(material, mesh, object)
+        let index = self.renderable_buffer.push(object);
+        self.lit_opaque_renderables.push((material, mesh, index));
     }
 }

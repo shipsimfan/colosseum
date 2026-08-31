@@ -1,19 +1,14 @@
 use crate::{
     logging::Logger,
-    render::{FrameGraph, RenderGpuTransferQueue, RenderObjects},
+    render::{FrameGraph, RenderData, RenderGpuTransferQueue, RenderObjects},
 };
 use adapter_info::VulkanAdapterInfo;
-use alexandria::gpu::{
-    VulkanAdapterMemoryProperties, VulkanCommandPool, VulkanDevice, VulkanFormat, VulkanQueue,
-};
-use per_frame_data::*;
+use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice, VulkanFormat, VulkanQueue};
 use std::sync::Arc;
 
 mod adapter_info;
-mod per_frame_data;
 mod render_token;
 
-mod allocate_command_buffer;
 mod apply_changes;
 mod build_and_run_frame_graph;
 mod deref;
@@ -22,6 +17,7 @@ mod get;
 mod get_adapters;
 mod new;
 mod present;
+mod reserve_render_data;
 mod submit;
 mod wait_for_transfer;
 
@@ -37,9 +33,6 @@ pub(in crate::render::job) struct GraphicsDevice {
 
     /// The queue to submit rendering commands to
     queue: VulkanQueue,
-
-    /// The command pool for the graphics queue
-    command_pool: VulkanCommandPool,
 
     /// The format of the swapchain images, which is determined when creating the swapchain
     swapchain_format: VulkanFormat,
@@ -57,8 +50,8 @@ pub(in crate::render::job) struct GraphicsDevice {
     memory_properties: Arc<VulkanAdapterMemoryProperties>,
 
     /// The index of the current render data being used
-    frame_index: usize,
+    render_data_index: usize,
 
     /// The data that is needed for each frame in flight
-    frame_data: Vec<PerFrameData>,
+    render_data: Vec<RenderData>,
 }

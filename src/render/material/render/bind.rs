@@ -1,10 +1,8 @@
 use crate::render::{
-    LitMaterialPushConstants, MaterialKind, ObjectData, RenderMaterial, UnlitMaterialPushConstants,
-    as_bytes,
+    LitMaterialPushConstants, MaterialKind, RenderMaterial, UnlitMaterialPushConstants, as_bytes,
 };
 use alexandria::gpu::{
-    GpuAddress, VulkanCommandBuffer, VulkanPipelineBindPoint, VulkanPipelineLayout,
-    VulkanShaderStageFlag,
+    VulkanCommandBuffer, VulkanPipelineBindPoint, VulkanPipelineLayout, VulkanShaderStageFlag,
 };
 
 impl RenderMaterial {
@@ -13,7 +11,7 @@ impl RenderMaterial {
         &self,
         cmd_buffer: &mut VulkanCommandBuffer,
         pipeline_layout: &VulkanPipelineLayout,
-        object_data: GpuAddress<ObjectData>,
+        object_data: usize,
     ) {
         cmd_buffer.cmd_bind_pipeline(VulkanPipelineBindPoint::Graphics, &self.pipeline);
 
@@ -21,7 +19,7 @@ impl RenderMaterial {
             MaterialKind::UnlitOpaque => {
                 let push_constants = UnlitMaterialPushConstants {
                     color: self.color,
-                    object_data,
+                    object_data: object_data as _,
                 };
                 cmd_buffer.cmd_push_constants(
                     pipeline_layout,
@@ -35,7 +33,7 @@ impl RenderMaterial {
                     color: self.color,
                     specular_strength: self.specular_strength,
                     shininess: self.shininess,
-                    object_data,
+                    object_data: object_data as _,
                 };
                 cmd_buffer.cmd_push_constants(
                     pipeline_layout,

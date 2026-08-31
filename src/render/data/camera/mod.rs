@@ -1,20 +1,14 @@
-use alexandria::gpu::{VulkanBuffer, VulkanDescriptorSet, VulkanMappedMemory};
-use shader::CameraShaderData;
+use alexandria::math::{Matrix4x4f, Vector3f};
 
-mod get;
 mod new;
 mod set;
-mod shader;
 
-/// The data required to render a camera's view of the scene
-pub(crate) struct CameraRenderData {
-    /// The descriptor set containing the camera shader data
-    descriptor_set: VulkanDescriptorSet,
+/// The data that is passed to shader programs describing the camera's view of the scene
+#[repr(C)]
+pub(in crate::render::data) struct CameraRenderData {
+    /// The camera's view-projection matrix
+    view_projection: Matrix4x4f,
 
-    /// The buffer containing the camera shader data
-    #[allow(unused)]
-    buffer: VulkanBuffer,
-
-    /// The memory containing the camera shader data
-    shader_data: VulkanMappedMemory<CameraShaderData>,
+    /// The position of the camera in world space
+    position: Vector3f,
 }

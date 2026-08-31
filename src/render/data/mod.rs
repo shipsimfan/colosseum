@@ -1,13 +1,16 @@
-use alexandria::gpu::{
-    VulkanAdapterMemoryProperties, VulkanDescriptorPool, VulkanDescriptorSet, VulkanDevice,
+use crate::render::{Material, Mesh};
+use alexandria::{
+    Id,
+    gpu::{VulkanAdapterMemoryProperties, VulkanDevice, VulkanFence},
 };
-use doubled::*;
+use camera::*;
+use local_buffer::*;
 use std::sync::Arc;
 
 mod anti_aliasing;
 mod camera;
-mod doubled;
 mod lighting;
+mod local_buffer;
 mod object;
 mod remove_confirm;
 mod render_object_change;
@@ -24,11 +27,13 @@ mod set;
 pub use anti_aliasing::*;
 pub use skybox::*;
 
-pub(crate) use camera::*;
 pub(crate) use lighting::*;
 pub(crate) use object::*;
 pub(crate) use remove_confirm::*;
 pub(crate) use render_object_change::*;
+
+/// The information needed for a renderable
+pub(crate) type Renderable = (Id<Material>, Id<Mesh>, usize);
 
 /// The data required to execute a render job
 pub(crate) struct RenderData {
@@ -40,12 +45,8 @@ pub(crate) struct RenderData {
     /// The objects whose removals have been confirmed, and the memory can be freed
     confirmed_removals: Vec<RenderObjectRemoveConfirm>,
 
-    /// The descriptor pool containing the descriptors sets in this render data
-    #[allow(unused)]
-    descriptor_pool: VulkanDescriptorPool,
-
-    /// The descriptor sets used by post-processing nodes
-    post_process_descriptor_sets: Vec<VulkanDescriptorSet>,
+    /// The fence to wait on for the completion of copy operations to the GPU
+    copy_fence: VulkanFence,
 
     /** Render Settings **/
 
@@ -72,22 +73,30 @@ pub(crate) struct RenderData {
     /// The skybox to render
     skybox: Skybox,
 
-    /// The render data that exists in two copies for each frame, so that one copy can be used for
-    /// rendering while the other is being updated
-    doubled: [DoubledRenderData; 2],
+    /// The camera data for the current frame
+    camera: LocalDataBuffer<CameraRenderData>,
 
-    /// The index of the doubled render data that is currently being used for rendering
-    current_doubled_index: usize,
+    /// The data about lighting for the current frame
+    lighting: LightingData,
+
+    /// The set of unlit opaque renderable objects in the scene
+    ///
+    /// These renderables are rendered in a single pass, and do not require any lighting
+    /// calculations or transparency
+    unlit_opaque_renderables: Vec<Renderable>,
+
+    /// The set of lit opaque renderable objects in the scene
+    ///
+    /// These renderables are rendered in a single pass, and do not transparency but do use
+    /// lighting
+    lit_opaque_renderables: Vec<Renderable>,
+
+    /// The buffer for object data
+    renderable_buffer: LocalDataBuffer<ObjectData>,
 
     /// The device to use when allocating memory
     device: VulkanDevice,
 
     /// The memory properties of the device
     memory_properties: Arc<VulkanAdapterMemoryProperties>,
-}
-
-impl RenderData {
-    pub(in crate::render) const TONE_MAP_DESCRIPTOR_SET: usize = 0;
-    pub(in crate::render) const QUANTIZATION_DESCRIPTOR_SET: usize = 1;
-    pub(in crate::render) const FXAA_DESCRIPTOR_SET: usize = 2;
 }

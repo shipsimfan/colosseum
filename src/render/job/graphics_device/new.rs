@@ -2,16 +2,12 @@ use crate::{
     Error, Result, ThreadManager, info,
     logging::Logger,
     render::{
-        FrameGraph, GpuTransferQueue, RenderObjects,
-        job::{
-            GraphicsDevice,
-            graphics_device::{PerFrameData, VulkanAdapterInfo},
-        },
+        FrameGraph, GpuTransferQueue, RenderData, RenderObjects,
+        job::{GraphicsDevice, graphics_device::VulkanAdapterInfo},
     },
     warning,
 };
 use alexandria::gpu::{
-    VulkanCommandPoolCreateFlag, VulkanDeviceBufferDeviceAddressFeatures,
     VulkanDeviceExtendedDynamicStateFeatures, VulkanDeviceExtension, VulkanDeviceVulkan11Features,
     VulkanDeviceVulkan13Features, VulkanInstance, VulkanQueueCreateInfo, VulkanSurface,
 };
@@ -36,8 +32,6 @@ impl GraphicsDevice {
         let mut vulkan_13_features = VulkanDeviceVulkan13Features::default()
             .enable_synchronization2()
             .enable_dynamic_rendering();
-        let mut buffer_device_address_features =
-            VulkanDeviceBufferDeviceAddressFeatures::default().enable_buffer_device_address();
         let mut extended_dynamic_state_features =
             VulkanDeviceExtendedDynamicStateFeatures::default().enable_extended_dynamic_state();
 
@@ -50,7 +44,6 @@ impl GraphicsDevice {
             ))
             .feature(&mut vulkan_11_features)
             .feature(&mut vulkan_13_features)
-            .feature(&mut buffer_device_address_features)
             .feature(&mut extended_dynamic_state_features);
         if let Some(transfer_queue_family_index) = adapter.transfer_queue_family_index() {
             device_builder.queue(VulkanQueueCreateInfo::new(
@@ -62,14 +55,6 @@ impl GraphicsDevice {
         let (device, mut queues) = device_builder.create().map_err(Error::new_inner)?;
 
         let mut queue = queues.swap_remove(0);
-
-        // Create the command pool
-        let mut command_pool = device
-            .create_command_pool(
-                queue.queue_family(),
-                VulkanCommandPoolCreateFlag::ResetCommandBuffer,
-            )
-            .map_err(Error::new_inner)?;
 
         // Create the transfer queue
         let (transfer_queue, gpu_transfer_queue) = match adapter.transfer_queue_family_index() {
@@ -94,26 +79,20 @@ impl GraphicsDevice {
         let render_objects = RenderObjects::new(adapter.swapchain_format(), &device)?;
 
         // Create the initial render data
-        let frame_data = vec![PerFrameData::new(
-            &render_objects,
-            &mut command_pool,
-            adapter.memory_properties(),
-            &device,
-        )?];
+        let render_data = vec![RenderData::new(&device, adapter.memory_properties())?];
 
         Ok((
             GraphicsDevice {
                 logger: logger.clone(),
                 device,
                 queue,
-                command_pool,
                 swapchain_format: adapter.swapchain_format(),
                 frame_graph: FrameGraph::new(),
                 render_objects,
                 memory_properties: adapter.memory_properties().clone(),
                 gpu_transfer_queue,
-                frame_index: 0,
-                frame_data,
+                render_data_index: 0,
+                render_data,
             },
             transfer_queue,
         ))

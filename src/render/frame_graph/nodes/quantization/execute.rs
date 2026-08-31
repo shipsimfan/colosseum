@@ -33,7 +33,7 @@ impl QuantizationNode {
             VulkanPipelineBindPoint::Graphics,
             pipeline.layout(),
             0,
-            render_data.post_process_descriptor_set(RenderData::QUANTIZATION_DESCRIPTOR_SET),
+            resources.descriptor_set(FixedRenderObjects::QUANTIZATION_DESCRIPTOR_SET),
         );
 
         // Push texel size

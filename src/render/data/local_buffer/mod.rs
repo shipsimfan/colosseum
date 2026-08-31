@@ -1,12 +1,13 @@
-use alexandria::gpu::{GpuAddress, VulkanBuffer, VulkanMappedMemory};
+use alexandria::gpu::{VulkanBuffer, VulkanMappedMemory};
 
-mod get;
+mod index;
 mod new;
 mod push;
+mod reserve;
 mod reset;
 
 /// A contiguous buffer that holds a set number of elements
-pub(in crate::render::data::doubled) struct DataBuffer<T> {
+pub(in crate::render::data) struct LocalDataBuffer<T> {
     /// The capacity of the buffer
     capacity: usize,
 
@@ -19,7 +20,4 @@ pub(in crate::render::data::doubled) struct DataBuffer<T> {
 
     /// The mapped memory for writing object data
     memory: VulkanMappedMemory<T>,
-
-    /// The base address of the buffer in GPU memory
-    base_address: GpuAddress<T>,
 }

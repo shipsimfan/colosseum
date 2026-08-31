@@ -1,5 +1,5 @@
 use crate::render::{
-    FixedRenderObjects, RenderData, RenderObjects,
+    FixedRenderObjects, RenderObjects,
     frame_graph::{FrameGraphResources, QuantizationNode},
 };
 use alexandria::gpu::{
@@ -11,14 +11,13 @@ impl QuantizationNode {
     /// Update the descriptor sets for this node
     pub(in crate::render::frame_graph) fn update_descriptor_sets(
         &self,
-        render_data: &RenderData,
         render_objects: &RenderObjects,
         resources: &FrameGraphResources,
         device: &VulkanDevice,
     ) {
         device.update_descriptor_sets(
             &[VulkanWriteDescriptorSet::new(
-                render_data.post_process_descriptor_set(RenderData::QUANTIZATION_DESCRIPTOR_SET),
+                resources.descriptor_set(FixedRenderObjects::QUANTIZATION_DESCRIPTOR_SET),
                 0,
                 0,
                 VulkanDescriptorType::CombinedImageSampler,

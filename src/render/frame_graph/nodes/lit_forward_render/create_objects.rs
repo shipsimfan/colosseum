@@ -42,7 +42,7 @@ impl LitForwardRenderNode {
                     VulkanShaderStageFlag::Fragment,
                 ),
             ],
-            2,
+            1,
             FixedRenderObjects::LIGHTING_DESCRIPTOR_SET_LAYOUT,
             device,
         )?;
@@ -54,7 +54,10 @@ impl LitForwardRenderNode {
                     0,
                     &[
                         fixed_render_objects.descriptor_set_layout(
-                            FixedRenderObjects::CAMERA_DATA_DESCRIPTOR_SET_LAYOUT,
+                            FixedRenderObjects::CAMERA_DESCRIPTOR_SET_LAYOUT,
+                        ),
+                        fixed_render_objects.descriptor_set_layout(
+                            FixedRenderObjects::RENDERABLES_DESCRIPTOR_SET_LAYOUT,
                         ),
                         fixed_render_objects.descriptor_set_layout(
                             FixedRenderObjects::LIGHTING_DESCRIPTOR_SET_LAYOUT,

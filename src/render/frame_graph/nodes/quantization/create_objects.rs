@@ -1,7 +1,7 @@
 use crate::{
     Error, Result,
     render::{
-        FixedRenderObjects, Pipeline, RenderData, Shader,
+        FixedRenderObjects, Pipeline, Shader,
         frame_graph::{QuantizationNode, nodes::quantization::PushConstants},
     },
 };
@@ -47,7 +47,7 @@ impl QuantizationNode {
         descriptor_sets: &mut Vec<VulkanDescriptorSet>,
     ) -> Result<()> {
         assert_eq!(
-            RenderData::QUANTIZATION_DESCRIPTOR_SET,
+            FixedRenderObjects::QUANTIZATION_DESCRIPTOR_SET,
             descriptor_sets.len()
         );
 

@@ -111,14 +111,13 @@ macro_rules! nodes {
             /// Update the descriptor sets for this node
             pub(in crate::render::frame_graph) fn update_descriptor_sets(
                 &self,
-                render_data: &RenderData,
                 render_objects: &RenderObjects,
                 resources: &FrameGraphResources,
                 device: &VulkanDevice,
             ){
                 match self {
                     $(FrameGraphNode::$sampled_name(node) => {
-                        node.update_descriptor_sets(render_data, render_objects, resources, device)
+                        node.update_descriptor_sets(render_objects, resources, device)
                     })*
                     _ => {}
                 }

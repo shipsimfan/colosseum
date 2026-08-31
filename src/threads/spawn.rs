@@ -15,7 +15,7 @@ impl ThreadManager {
             return Ok(());
         }
 
-        let thread = Thread::new(name, self.shared_state.clone(), f, on_kill)?;
+        let thread = Thread::new(name, self.shared_state.clone(), f, on_kill, &self.logger)?;
         self.threads.lock().unwrap().push(thread);
         Ok(())
     }

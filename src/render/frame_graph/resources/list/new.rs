@@ -1,12 +1,11 @@
-use crate::render::frame_graph::{FrameGraphTransientResource, resources::FrameGraphResourceList};
-use alexandria::gpu::VulkanDeviceMemory;
+use crate::render::frame_graph::resources::FrameGraphResourceList;
 
-impl<'a> FrameGraphResourceList<'a> {
+impl FrameGraphResourceList {
     /// Create a new [`FrameGraphResourceList`]
-    pub fn new(
-        resources: &'a mut Vec<FrameGraphTransientResource>,
-        memory: &'a mut Option<VulkanDeviceMemory>,
-    ) -> FrameGraphResourceList<'a> {
-        FrameGraphResourceList { resources, memory }
+    pub fn new() -> FrameGraphResourceList {
+        FrameGraphResourceList {
+            resources: Vec::new(),
+            memory: None,
+        }
     }
 }

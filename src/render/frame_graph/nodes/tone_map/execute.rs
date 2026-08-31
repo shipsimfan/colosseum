@@ -33,7 +33,7 @@ impl ToneMapNode {
             VulkanPipelineBindPoint::Graphics,
             pipeline.layout(),
             0,
-            render_data.post_process_descriptor_set(RenderData::TONE_MAP_DESCRIPTOR_SET),
+            resources.descriptor_set(FixedRenderObjects::TONE_MAP_DESCRIPTOR_SET),
         );
 
         // Push constants

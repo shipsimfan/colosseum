@@ -14,7 +14,7 @@ impl UnlitForwardRenderNode {
         _: VulkanFormat,
         device: &VulkanDevice,
     ) -> Result<()> {
-        // Create the descriptor set layout for the camera data
+        // Create the descriptor set layout for the camera
         fixed_render_objects.add_descriptor_set_layout(
             &[VulkanDescriptorSetLayoutBinding::new(
                 0,
@@ -22,8 +22,21 @@ impl UnlitForwardRenderNode {
                 1,
                 VulkanShaderStageFlag::Vertex | VulkanShaderStageFlag::Fragment,
             )],
-            2,
-            FixedRenderObjects::CAMERA_DATA_DESCRIPTOR_SET_LAYOUT,
+            1,
+            FixedRenderObjects::CAMERA_DESCRIPTOR_SET_LAYOUT,
+            device,
+        )?;
+
+        // Create the descriptor set layout for the renderables
+        fixed_render_objects.add_descriptor_set_layout(
+            &[VulkanDescriptorSetLayoutBinding::new(
+                0,
+                VulkanDescriptorType::StorageBuffer,
+                1,
+                VulkanShaderStageFlag::Vertex,
+            )],
+            1,
+            FixedRenderObjects::RENDERABLES_DESCRIPTOR_SET_LAYOUT,
             device,
         )?;
 
@@ -32,9 +45,14 @@ impl UnlitForwardRenderNode {
             device
                 .create_pipeline_layout(
                     0,
-                    &[fixed_render_objects.descriptor_set_layout(
-                        FixedRenderObjects::CAMERA_DATA_DESCRIPTOR_SET_LAYOUT,
-                    )],
+                    &[
+                        fixed_render_objects.descriptor_set_layout(
+                            FixedRenderObjects::CAMERA_DESCRIPTOR_SET_LAYOUT,
+                        ),
+                        fixed_render_objects.descriptor_set_layout(
+                            FixedRenderObjects::RENDERABLES_DESCRIPTOR_SET_LAYOUT,
+                        ),
+                    ],
                     &[VulkanPushConstantRange::new(
                         VulkanShaderStageFlag::Vertex | VulkanShaderStageFlag::Fragment,
                         0,

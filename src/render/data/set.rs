@@ -1,3 +1,5 @@
+use alexandria::math::{Matrix4x4f, Vector3f};
+
 use crate::render::{AntiAliasingMode, RenderData, Skybox};
 
 impl RenderData {
@@ -34,5 +36,10 @@ impl RenderData {
     /// Set the skybox to use for rendering
     pub fn set_skybox(&mut self, skybox: Skybox) {
         self.skybox = skybox;
+    }
+
+    /// Set the camera data for the frame
+    pub fn set_camera(&mut self, view_projection: Matrix4x4f, position: Vector3f) {
+        self.camera[0].set(view_projection, position);
     }
 }

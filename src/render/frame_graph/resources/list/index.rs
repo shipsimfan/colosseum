@@ -1,7 +1,7 @@
 use crate::render::frame_graph::{FrameGraphTransientResource, resources::FrameGraphResourceList};
 use std::ops::Index;
 
-impl<'a> Index<usize> for FrameGraphResourceList<'a> {
+impl Index<usize> for FrameGraphResourceList {
     type Output = FrameGraphTransientResource;
 
     fn index(&self, index: usize) -> &Self::Output {

@@ -11,7 +11,7 @@ impl FxaaNode {
     /// Execute the FXAA pass, rendering a full-screen quad with anti-aliasing
     pub(in crate::render::frame_graph) fn execute(
         &self,
-        render_data: &RenderData,
+        _: &RenderData,
         render_objects: &RenderObjects,
         resources: &FrameGraphResources,
         cmd_buffer: &mut VulkanCommandBuffer,
@@ -33,7 +33,7 @@ impl FxaaNode {
             VulkanPipelineBindPoint::Graphics,
             pipeline.layout(),
             0,
-            render_data.post_process_descriptor_set(RenderData::FXAA_DESCRIPTOR_SET),
+            resources.descriptor_set(FixedRenderObjects::FXAA_DESCRIPTOR_SET),
         );
 
         // Push texel size

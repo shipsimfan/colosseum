@@ -1,48 +1,37 @@
 use crate::{
-    Result,
+    Error, Result,
     render::{
-        AntiAliasingMode, FrameGraphNode, RenderData, RenderObjects, Skybox,
-        data::DoubledRenderData,
+        AntiAliasingMode, LightingData, RenderData, Skybox,
+        data::{CameraRenderData, LocalDataBuffer},
     },
 };
-use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice};
+use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice, VulkanFenceCreateFlag};
 use std::sync::Arc;
+
+/// The initial capacity for the renderable data buffer
+const RENDERABLE_BUFFER_INIT_CAPACITY: usize = 256;
 
 impl RenderData {
     /// Create a new set of [`RenderData`]
     pub(in crate::render) fn new(
         device: &VulkanDevice,
         memory_properties: &Arc<VulkanAdapterMemoryProperties>,
-        render_objects: &RenderObjects,
     ) -> Result<RenderData> {
-        let mut descriptor_pool = render_objects.fixed().create_descriptor_pool(device)?;
-        let doubled = [
-            DoubledRenderData::new(
-                &mut descriptor_pool,
-                device,
-                memory_properties,
-                render_objects,
-            )?,
-            DoubledRenderData::new(
-                &mut descriptor_pool,
-                device,
-                memory_properties,
-                render_objects,
-            )?,
-        ];
+        let copy_fence = device
+            .create_fence(VulkanFenceCreateFlag::Signalled)
+            .map_err(Error::new_inner)?;
 
-        let mut descriptor_sets = Vec::new();
-        FrameGraphNode::create_descriptor_sets(
-            render_objects.fixed(),
-            &mut descriptor_pool,
-            &mut descriptor_sets,
-        )?;
+        let mut camera = LocalDataBuffer::new(1, device, memory_properties)?;
+        camera.push(CameraRenderData::new());
+
+        let lighting = LightingData::new(device, memory_properties)?;
+        let renderable_buffer =
+            LocalDataBuffer::new(RENDERABLE_BUFFER_INIT_CAPACITY, device, memory_properties)?;
 
         Ok(RenderData {
             render_object_changes: Vec::new(),
             confirmed_removals: Vec::new(),
-            descriptor_pool,
-            post_process_descriptor_sets: descriptor_sets,
+            copy_fence,
 
             render_scale: 1.0,
             gamma: 2.2,
@@ -52,9 +41,12 @@ impl RenderData {
             anti_aliasing: AntiAliasingMode::None,
 
             skybox: Skybox::default(),
+            camera,
+            lighting,
 
-            doubled,
-            current_doubled_index: 0,
+            unlit_opaque_renderables: Vec::new(),
+            lit_opaque_renderables: Vec::new(),
+            renderable_buffer,
 
             device: device.clone(),
             memory_properties: memory_properties.clone(),

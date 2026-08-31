@@ -48,7 +48,17 @@ impl FixedRenderObjects {
     pub const LINEAR_CLAMP_SAMPLER: usize = 0;
 
     /** Descriptor Set Layouts **/
-    pub const CAMERA_DATA_DESCRIPTOR_SET_LAYOUT: usize = 0;
-    pub const LIGHTING_DESCRIPTOR_SET_LAYOUT: usize = 1;
-    pub const POST_PROCESS_DESCRIPTOR_SET_LAYOUT: usize = 2;
+    pub const CAMERA_DESCRIPTOR_SET_LAYOUT: usize = 0;
+    pub const RENDERABLES_DESCRIPTOR_SET_LAYOUT: usize = 1;
+    pub const LIGHTING_DESCRIPTOR_SET_LAYOUT: usize = 2;
+    pub const POST_PROCESS_DESCRIPTOR_SET_LAYOUT: usize = 3;
+
+    /** Descriptor Sets **/
+    pub const CAMERA_DESCRIPTOR_SET: usize = 0;
+    pub const RENDERABLES_DESCRIPTOR_SET: usize = 1;
+    pub const LIGHTING_DESCRIPTOR_SET: usize = 2;
+
+    pub const TONE_MAP_DESCRIPTOR_SET: usize = 3;
+    pub const QUANTIZATION_DESCRIPTOR_SET: usize = 4;
+    pub const FXAA_DESCRIPTOR_SET: usize = 5;
 }

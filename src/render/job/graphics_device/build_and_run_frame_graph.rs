@@ -1,8 +1,14 @@
 use crate::{
     Result,
-    render::job::{GraphicsDevice, RenderToken},
+    render::{
+        FrameGraphTransientBuffer,
+        job::{GraphicsDevice, RenderToken},
+    },
 };
-use alexandria::{gpu::VulkanImageView, math::Vector2u};
+use alexandria::{
+    gpu::{VulkanCommandBuffer, VulkanImageView},
+    math::Vector2u,
+};
 
 impl GraphicsDevice {
     /// Build and run the frame graph to render a frame, returning the pipeline stage flags, access
@@ -12,10 +18,10 @@ impl GraphicsDevice {
         token: &RenderToken,
         swapchain_size: Vector2u,
         swapchain_color_attachment: &VulkanImageView,
+        transient_buffer: &mut FrameGraphTransientBuffer,
+        cmd_buffer: &mut VulkanCommandBuffer,
     ) -> Result<()> {
-        let frame = &mut self.frame_data[token.frame_index()];
-        let command_buffer = frame.command_buffer();
-        let (render_data, transient_buffer) = frame.render_data_and_transient_buffer_mut();
+        let render_data = &mut self.render_data[token.frame_index()];
 
         self.frame_graph.build_and_run(
             render_data,
@@ -24,7 +30,7 @@ impl GraphicsDevice {
             swapchain_color_attachment.image(),
             swapchain_color_attachment,
             transient_buffer,
-            &mut self.command_pool[command_buffer],
+            cmd_buffer,
             &self.memory_properties,
             &self.device,
         )

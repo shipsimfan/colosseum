@@ -1,8 +1,9 @@
 use crate::{
     Error, GlobalSharedState, Result, debug, error,
+    logging::Logger,
     threads::{Thread, single_value_channel},
 };
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 
 impl Thread {
     /// Create a new thread with the provided name
@@ -14,30 +15,15 @@ impl Thread {
         global_shared_state: Arc<GlobalSharedState>,
         f: F1,
         on_kill: F2,
+        logger: &Logger,
     ) -> Result<Thread> {
         let (result_sender, result_receiver) = single_value_channel::create(true)?;
 
         let child_name = name.clone();
+        debug!(logger, "Spawning thread \"{}\"", child_name);
         let join_handle = std::thread::Builder::new()
             .name(name.clone())
             .spawn(move || {
-                let result_sender = Arc::new(Mutex::new(Some(result_sender)));
-
-                // Setup a panic hook to kill the thread if it panics
-                let child_shared_state = global_shared_state.clone();
-                let child_result_sender = result_sender.clone();
-                let panic_name = child_name.clone();
-                std::panic::set_hook(Box::new(move |panic_info| {
-                    child_result_sender
-                        .lock()
-                        .unwrap()
-                        .take()
-                        .unwrap()
-                        .send(Err(Error::new(panic_info.to_string())))
-                        .unwrap();
-                    child_shared_state.kill(&panic_name);
-                }));
-
                 // Log that the thread has started
                 debug!(
                     global_shared_state.logger(),
@@ -60,17 +46,8 @@ impl Thread {
                 }
 
                 // Send the result back to the main thread and kill the program
-                result_sender
-                    .lock()
-                    .unwrap()
-                    .take()
-                    .unwrap()
-                    .send(result)
-                    .unwrap();
+                result_sender.send(result).unwrap();
                 global_shared_state.kill(&child_name);
-
-                #[allow(unused_must_use)]
-                std::panic::take_hook();
             })
             .map_err(|error| {
                 Error::new_with(format!("unable to spawn \"{}\" thread", name), error)

@@ -1,5 +1,5 @@
 use crate::render::{
-    MaterialKind, RenderData, RenderObjects,
+    FixedRenderObjects, MaterialKind, RenderData, RenderObjects,
     frame_graph::{FrameGraphResources, LitForwardRenderNode},
 };
 use alexandria::{
@@ -24,19 +24,25 @@ impl LitForwardRenderNode {
         cmd_buffer.cmd_set_viewport(0, &[viewport]);
         cmd_buffer.cmd_set_scissor(0, &[scissor]);
 
-        // Bind the camera descriptor set
+        // Bind the descriptor sets
         let pipeline_layout = render_objects.material_pipeline_layout(MaterialKind::LitOpaque);
         cmd_buffer.cmd_bind_descriptor_set(
             VulkanPipelineBindPoint::Graphics,
             pipeline_layout,
             0,
-            render_data.camera().descriptor_set(),
+            resources.descriptor_set(FixedRenderObjects::CAMERA_DESCRIPTOR_SET),
         );
         cmd_buffer.cmd_bind_descriptor_set(
             VulkanPipelineBindPoint::Graphics,
             pipeline_layout,
             1,
-            render_data.lighting().descriptor_set(),
+            resources.descriptor_set(FixedRenderObjects::RENDERABLES_DESCRIPTOR_SET),
+        );
+        cmd_buffer.cmd_bind_descriptor_set(
+            VulkanPipelineBindPoint::Graphics,
+            pipeline_layout,
+            2,
+            resources.descriptor_set(FixedRenderObjects::LIGHTING_DESCRIPTOR_SET),
         );
 
         for (material, mesh, object_data) in render_data.lit_opaque_renderables() {

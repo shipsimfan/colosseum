@@ -7,7 +7,10 @@ impl Thread {
         if self.join_handle.join().is_err() {
             error!(logger, "Thread \"{}\" panicked", self.name);
         }
-        let result = self.result.take();
+        let result = match self.result.try_take() {
+            Ok(result) => result,
+            Err(_) => return Ok(()),
+        };
         if let Err(error) = &result {
             error!(
                 logger,

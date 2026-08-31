@@ -1,6 +1,6 @@
 use crate::{
     Error, Result,
-    render::{FixedRenderObjects, Pipeline, RenderData, SDR_FORMAT, Shader, frame_graph::FxaaNode},
+    render::{FixedRenderObjects, Pipeline, SDR_FORMAT, Shader, frame_graph::FxaaNode},
 };
 use alexandria::{
     gpu::{VulkanDescriptorPool, VulkanDescriptorSet, VulkanDevice, VulkanFormat, compile_shader},
@@ -44,7 +44,10 @@ impl FxaaNode {
         descriptor_pool: &mut VulkanDescriptorPool,
         descriptor_sets: &mut Vec<VulkanDescriptorSet>,
     ) -> Result<()> {
-        assert_eq!(RenderData::FXAA_DESCRIPTOR_SET, descriptor_sets.len());
+        assert_eq!(
+            FixedRenderObjects::FXAA_DESCRIPTOR_SET,
+            descriptor_sets.len()
+        );
 
         let descriptor_set = descriptor_pool
             .allocate_descriptor_set(

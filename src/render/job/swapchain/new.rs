@@ -4,9 +4,9 @@ use crate::{
 };
 use alexandria::{
     gpu::{
-        VulkanComponentMapping, VulkanCompositeAlphaFlag, VulkanImageAspectFlag,
-        VulkanImageUsageFlag, VulkanImageViewType, VulkanPresentMode, VulkanSharingMode,
-        VulkanSurface,
+        VulkanCommandPoolCreateFlag, VulkanComponentMapping, VulkanCompositeAlphaFlag,
+        VulkanImageAspectFlag, VulkanImageUsageFlag, VulkanImageViewType, VulkanPresentMode,
+        VulkanSharingMode, VulkanSurface,
     },
     math::Vector2u,
 };
@@ -68,12 +68,22 @@ impl<'surface> Swapchain<'surface> {
             })
             .collect::<Result<Vec<_>>>()?;
 
+        // Create the command pool
+        let render_queue_family = device.render_queue_family();
+        let mut command_pool = device
+            .create_command_pool(
+                render_queue_family,
+                VulkanCommandPoolCreateFlag::ResetCommandBuffer,
+            )
+            .map_err(Error::new_inner)?;
+
+        // Allocate per-frame data
         let mut frame_data = Vec::with_capacity(image_views.len());
         for _ in 0..image_views.len() {
-            frame_data.push(FrameData::new(&device)?);
+            frame_data.push(FrameData::new(&mut command_pool, &device)?);
         }
 
-        device.reserve_command_buffers(image_views.len())?;
+        device.reserve_render_data(image_views.len())?;
 
         debug!(
             device.logger(),
@@ -81,11 +91,13 @@ impl<'surface> Swapchain<'surface> {
         );
 
         Ok(Swapchain {
-            swapchain,
+            swapchain: Some(swapchain),
             image_views,
+            command_pool,
             frame_data,
             frame_index: 0,
             size,
+            device: device.clone(),
         })
     }
 }

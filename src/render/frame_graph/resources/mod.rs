@@ -24,12 +24,6 @@ pub(in crate::render::frame_graph) struct FrameGraphResources<'a> {
     /// The external resources that are available to the frame graph, such as the swapchain image
     external: Arena<'a, FrameGraphExternalResource<'a>>,
 
-    /// The epoch of the transient resources
-    epoch: &'a mut u64,
-
-    /// The render scale transient resources
-    render_scale_transients: FrameGraphResourceList<'a>,
-
-    /// The native scale transient resources
-    native_scale_transients: FrameGraphResourceList<'a>,
+    /// The transient resources
+    transient: &'a mut FrameGraphTransientBuffer,
 }

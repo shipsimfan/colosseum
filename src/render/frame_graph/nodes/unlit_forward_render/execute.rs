@@ -1,5 +1,5 @@
 use crate::render::{
-    MaterialKind, RenderData, RenderObjects,
+    FixedRenderObjects, MaterialKind, RenderData, RenderObjects,
     frame_graph::{FrameGraphResources, UnlitForwardRenderNode},
 };
 use alexandria::{
@@ -24,13 +24,19 @@ impl UnlitForwardRenderNode {
         cmd_buffer.cmd_set_viewport(0, &[viewport]);
         cmd_buffer.cmd_set_scissor(0, &[scissor]);
 
-        // Bind the camera descriptor set
+        // Bind the descriptor sets
         let pipeline_layout = render_objects.material_pipeline_layout(MaterialKind::UnlitOpaque);
         cmd_buffer.cmd_bind_descriptor_set(
             VulkanPipelineBindPoint::Graphics,
             pipeline_layout,
             0,
-            render_data.camera().descriptor_set(),
+            resources.descriptor_set(FixedRenderObjects::CAMERA_DESCRIPTOR_SET),
+        );
+        cmd_buffer.cmd_bind_descriptor_set(
+            VulkanPipelineBindPoint::Graphics,
+            pipeline_layout,
+            1,
+            resources.descriptor_set(FixedRenderObjects::RENDERABLES_DESCRIPTOR_SET),
         );
 
         for (material, mesh, object_data) in render_data.unlit_opaque_renderables() {

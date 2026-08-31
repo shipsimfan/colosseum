@@ -1,9 +1,4 @@
-use alexandria::{
-    gpu::GpuAddress,
-    math::{Color4f, Linear},
-};
-
-use crate::render::ObjectData;
+use alexandria::math::{Color4f, Linear};
 
 /// The push constants provided for lit materials
 #[repr(C)]
@@ -17,6 +12,6 @@ pub(crate) struct LitMaterialPushConstants {
     /// The shininess of the material
     pub shininess: f32,
 
-    /// A pointer to the object data
-    pub object_data: GpuAddress<ObjectData>,
+    /// The index of this object's data in the renderable storage buffer
+    pub object_data: u32,
 }

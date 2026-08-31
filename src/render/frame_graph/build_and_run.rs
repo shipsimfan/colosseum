@@ -93,7 +93,7 @@ impl FrameGraph {
             )?;
 
             for node in &self.nodes {
-                node.update_descriptor_sets(data, render_objects, &resources, device);
+                node.update_descriptor_sets(render_objects, &resources, device);
             }
         }
 

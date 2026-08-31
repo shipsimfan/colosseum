@@ -1,16 +1,16 @@
-use crate::{Error, Result, render::data::doubled::DataBuffer};
+use crate::{Error, Result, render::data::LocalDataBuffer};
 use alexandria::gpu::{
-    VulkanAdapterMemoryProperties, VulkanBufferUsageFlag, VulkanDevice, VulkanMemoryAllocateFlag,
-    VulkanMemoryPropertyFlag, VulkanSharingMode,
+    VulkanAdapterMemoryProperties, VulkanBufferUsageFlag, VulkanDevice, VulkanMemoryPropertyFlag,
+    VulkanSharingMode,
 };
 
-impl<T> DataBuffer<T> {
-    /// Create a new [`DataBuffer`]
+impl<T> LocalDataBuffer<T> {
+    /// Create a new [`LocalDataBuffer`]
     pub fn new(
         capacity: usize,
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,
-    ) -> Result<DataBuffer<T>> {
+    ) -> Result<LocalDataBuffer<T>> {
         let size = (capacity * std::mem::size_of::<T>()) as u64;
 
         // Create the buffer
@@ -18,7 +18,7 @@ impl<T> DataBuffer<T> {
             .create_buffer(
                 0,
                 size,
-                VulkanBufferUsageFlag::ShaderDeviceAddress,
+                VulkanBufferUsageFlag::TransferSrc,
                 VulkanSharingMode::Exclusive,
                 &[],
             )
@@ -31,30 +31,25 @@ impl<T> DataBuffer<T> {
                 memory_requirements.memory_type_bits(),
                 VulkanMemoryPropertyFlag::HostVisible | VulkanMemoryPropertyFlag::HostCoherent,
             )
-            .ok_or(Error::new("cannot find memory for an object buffer"))?;
+            .ok_or(Error::new("cannot find memory for a buffer"))?;
         let memory = device
-            .allocate_memory_flags(
-                memory_requirements.size(),
-                memory_type_index,
-                VulkanMemoryAllocateFlag::DeviceAddress,
-            )
+            .allocate_memory(memory_requirements.size(), memory_type_index)
             .map_err(Error::new_inner)?;
 
         // Bind the buffer to the allocated memory
         buffer.bind_memory(&memory, 0).map_err(Error::new_inner)?;
-        let base_address = buffer.get_device_address();
 
         // Map the buffer memory to a pointer
         let memory = memory
             .map(0, size, 0)
             .map_err(|(error, _)| Error::new_inner(error))?;
 
-        Ok(DataBuffer {
+        Ok(LocalDataBuffer {
             capacity,
             count: 0,
+
             buffer,
             memory,
-            base_address,
         })
     }
 }
