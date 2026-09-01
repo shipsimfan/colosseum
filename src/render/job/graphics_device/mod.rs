@@ -11,6 +11,7 @@ mod render_token;
 
 mod apply_changes;
 mod build_and_run_frame_graph;
+mod copy_data;
 mod deref;
 mod drop;
 mod get;

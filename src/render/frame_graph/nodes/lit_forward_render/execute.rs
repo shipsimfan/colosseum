@@ -9,7 +9,7 @@ use alexandria::{
 
 impl LitForwardRenderNode {
     /// Execute the lit forward pass, rendering all lit objects in the scene
-    pub(in crate::render::frame_graph) fn execute(
+    pub(in crate::render::frame_graph::nodes) fn execute(
         &self,
         render_data: &RenderData,
         render_objects: &RenderObjects,

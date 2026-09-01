@@ -2,7 +2,7 @@ use crate::render::frame_graph::{FrameGraphResourceId, FrameGraphResourceUsage, 
 
 impl ToneMapNode {
     /// Get the usage types for the resources that this node uses
-    pub(in crate::render::frame_graph) fn usages<
+    pub(in crate::render::frame_graph::nodes) fn usages<
         T,
         F: FnOnce(&[(FrameGraphResourceId, FrameGraphResourceUsage)]) -> T,
     >(

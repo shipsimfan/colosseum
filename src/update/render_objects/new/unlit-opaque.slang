@@ -22,18 +22,24 @@ struct Material {
 
 struct PushConstants {
     Material material;
-    ImmutablePtr<Object, AddressSpace.Device> object;
+    uint object_index;
 };
 
+[[vk::binding(0, 0)]]
 ConstantBuffer<Camera> camera;
+
+[[vk::binding(0, 1)]]
+StructuredBuffer<Object> objects;
 
 [push_constant]
 ConstantBuffer<PushConstants> pc;
 
 [shader("vertex")]
 VertexOutput vert_main(VertexInput input) {
+    Object object = objects[pc.object_index];
+    
     VertexOutput output;
-    float4x4 mvp = mul(camera.view_projection, pc.object->model);
+    float4x4 mvp = mul(camera.view_projection, object.model);
     output.position = mul(mvp, float4(input.position, 1.0));
     output.color = input.color * pc.material.color.rgb;
     return output;

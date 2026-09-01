@@ -12,7 +12,7 @@ use alexandria::{
 
 impl RenderScaleNode {
     /// Execute the solid color sky pass, rendering a full-screen quad with the specified clear color
-    pub(in crate::render::frame_graph) fn execute(
+    pub(in crate::render::frame_graph::nodes) fn execute(
         &self,
         _: &RenderData,
         _: &RenderObjects,

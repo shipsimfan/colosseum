@@ -1,10 +1,10 @@
-use crate::{Result, render::data::LocalDataBuffer};
+use crate::{Result, render::LocalDataBuffer};
 use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice};
 
 impl<T> LocalDataBuffer<T> {
     /// Reserve enough capacity in the data buffer for `num` elements, returning if the buffer was
     /// reallocated
-    pub fn reserve(
+    pub(in crate::render::data) fn reserve(
         &mut self,
         num: usize,
         device: &VulkanDevice,

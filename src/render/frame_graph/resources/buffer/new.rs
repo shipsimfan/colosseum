@@ -1,7 +1,7 @@
 use crate::{
     Result,
     render::{
-        FixedRenderObjects, FrameGraphNode, FrameGraphTransientBuffer,
+        FixedRenderObjects, FrameGraphNode, FrameGraphTransientBuffer, PerFrameObjectBuilder,
         frame_graph::resources::FrameGraphResourceList,
     },
 };
@@ -15,11 +15,13 @@ impl FrameGraphTransientBuffer {
     ) -> Result<FrameGraphTransientBuffer> {
         let mut descriptor_pool = render_objects.create_descriptor_pool(device)?;
         let mut descriptor_sets = Vec::new();
-        FrameGraphNode::create_descriptor_sets(
+        let mut device_buffers = Vec::new();
+        FrameGraphNode::create_per_frame_objects(PerFrameObjectBuilder::new(
             render_objects,
             &mut descriptor_pool,
             &mut descriptor_sets,
-        )?;
+            &mut device_buffers,
+        ))?;
 
         Ok(FrameGraphTransientBuffer {
             epoch: 0,
@@ -28,6 +30,7 @@ impl FrameGraphTransientBuffer {
 
             descriptor_pool,
             descriptor_sets,
+            device_buffers,
         })
     }
 }

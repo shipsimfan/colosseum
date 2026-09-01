@@ -1,8 +1,8 @@
-use crate::render::data::LocalDataBuffer;
+use crate::render::LocalDataBuffer;
 
 impl<T> LocalDataBuffer<T> {
     /// Push a new element to the data buffer
-    pub fn push(&mut self, data: T) -> usize {
+    pub(in crate::render::data) fn push(&mut self, data: T) -> usize {
         debug_assert!(self.count < self.capacity);
 
         let index = self.count;

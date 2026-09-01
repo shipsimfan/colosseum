@@ -9,12 +9,18 @@ mod wait_for_draw_finish;
 
 /// The per-frame data for the swapchain
 pub(in crate::render::job::swapchain) struct FrameData {
-    /// The command buffer that has been allocated in the pool for this frame
-    pub command_buffer: Id<VulkanCommandBuffer>,
+    /// The command buffer used for recording copy commands
+    pub copy_command_buffer: Id<VulkanCommandBuffer>,
+
+    /// The command buffer used for recording rendering commands
+    pub render_command_buffer: Id<VulkanCommandBuffer>,
 
     /// Semaphore signaled when the swapchain image has been acquired and the GPU can begin
     /// rendering this frame
     pub acquire_image_semaphore: VulkanSemaphore,
+
+    /// Semaphore signalled when the copy commands for this frame have completed
+    pub copy_complete_semaphore: VulkanSemaphore,
 
     /// Semaphore signaled when the GPU has finished rendering this frame and presentation can
     /// begin

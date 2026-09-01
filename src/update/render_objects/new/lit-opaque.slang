@@ -51,22 +51,25 @@ struct PushConstants {
     float4 color;
     float specular_strength;
     float shininess;
-    ImmutablePtr<Object, AddressSpace.Device> object;
+    uint object_index;
 };
 
 [[vk::binding(0, 0)]]
 ConstantBuffer<Camera> camera;
 
 [[vk::binding(0, 1)]]
+StructuredBuffer<Object> objects;
+
+[[vk::binding(0, 2)]]
 ConstantBuffer<LightingMetadata> lighting_metadata;
 
-[[vk::binding(1, 1)]]
+[[vk::binding(1, 2)]]
 StructuredBuffer<DirectionalLight> directional_lights;
 
-[[vk::binding(2, 1)]]
+[[vk::binding(2, 2)]]
 StructuredBuffer<PointLight> point_lights;
 
-[[vk::binding(3, 1)]]
+[[vk::binding(3, 2)]]
 StructuredBuffer<SpotLight> spot_lights;
 
 [push_constant]
@@ -74,12 +77,14 @@ ConstantBuffer<PushConstants> pc;
 
 [shader("vertex")]
 VertexOutput vert_main(VertexInput input) {
+    Object object = objects[pc.object_index];
+
     VertexOutput output;
-    float4x4 mvp = mul(camera.view_projection, pc.object->model);
+    float4x4 mvp = mul(camera.view_projection, object.model);
     output.position = mul(mvp, float4(input.position, 1.0));
-    output.world_position = mul(pc.object->model, float4(input.position, 1.0)).xyz;
+    output.world_position = mul(object.model, float4(input.position, 1.0)).xyz;
     output.color = input.color * pc.color.rgb;
-    output.normal = mul(float3x3(pc.object->model), input.normal);
+    output.normal = mul(float3x3(object.model), input.normal);
     return output;
 }
 

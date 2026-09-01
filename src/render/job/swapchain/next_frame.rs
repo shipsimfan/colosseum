@@ -28,6 +28,15 @@ impl<'surface> Swapchain<'surface> {
             return Ok(true);
         }
 
+        // Copy all required data to the GPU (renderables, lights, and camera data)
+        let copy_cmd_buffer = &mut self.command_pool[frame.copy_command_buffer];
+        device.copy_data(
+            &token,
+            &mut frame.transient_buffer,
+            &frame.copy_complete_semaphore,
+            copy_cmd_buffer,
+        )?;
+
         // Acquire the next image to render into
         let image_index = match self
             .swapchain
@@ -40,11 +49,9 @@ impl<'surface> Swapchain<'surface> {
             None => return Ok(true),
         };
 
-        // TODO: Copy all required data to the GPU (renderables, lights, and camera data)
-
-        // Begin the command buffer for the frame
-        let command_buffer = &mut self.command_pool[frame.command_buffer];
-        command_buffer.begin().map_err(Error::new_inner)?;
+        // Begin the command buffer for rendering the frame
+        let render_cmd_buffer = &mut self.command_pool[frame.render_command_buffer];
+        render_cmd_buffer.begin().map_err(Error::new_inner)?;
 
         // Build and execute the frame graph for this frame
         device.build_and_run_frame_graph(
@@ -52,18 +59,19 @@ impl<'surface> Swapchain<'surface> {
             self.size,
             &self.image_views[image_index as usize],
             &mut frame.transient_buffer,
-            command_buffer,
+            render_cmd_buffer,
         )?;
 
-        // End the command buffer
-        command_buffer.end().map_err(Error::new_inner)?;
+        // End the rendering command buffer
+        render_cmd_buffer.end().map_err(Error::new_inner)?;
 
-        // Submit the command buffer for execution
-        device.submit(
+        // Submit the render command buffer for execution
+        device.submit_render(
             &frame.acquire_image_semaphore,
+            &frame.copy_complete_semaphore,
             &frame.render_complete_semaphore,
             &mut frame.draw_fence,
-            command_buffer,
+            render_cmd_buffer,
         )?;
 
         // Present the rendered image

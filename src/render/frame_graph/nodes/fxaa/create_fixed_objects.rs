@@ -1,9 +1,9 @@
 use crate::{
-    Error, Result,
+    Result,
     render::{FixedRenderObjects, Pipeline, SDR_FORMAT, Shader, frame_graph::FxaaNode},
 };
 use alexandria::{
-    gpu::{VulkanDescriptorPool, VulkanDescriptorSet, VulkanDevice, VulkanFormat, compile_shader},
+    gpu::{VulkanDevice, VulkanFormat, compile_shader},
     math::Vector2f,
 };
 
@@ -14,7 +14,7 @@ compile_shader! {
 
 impl FxaaNode {
     /// Create the persistent objects that are used by this node
-    pub(in crate::render) fn create_objects(
+    pub(in crate::render::frame_graph::nodes) fn create_fixed_objects(
         fixed_render_objects: &mut FixedRenderObjects,
         _: VulkanFormat,
         device: &VulkanDevice,
@@ -34,28 +34,6 @@ impl FxaaNode {
             )?,
             FixedRenderObjects::FXAA_PIPELINE,
         );
-
-        Ok(())
-    }
-
-    /// Create needed per-frame descriptor sets for this node
-    pub(in crate::render) fn create_descriptor_sets(
-        fixed_render_objects: &FixedRenderObjects,
-        descriptor_pool: &mut VulkanDescriptorPool,
-        descriptor_sets: &mut Vec<VulkanDescriptorSet>,
-    ) -> Result<()> {
-        assert_eq!(
-            FixedRenderObjects::FXAA_DESCRIPTOR_SET,
-            descriptor_sets.len()
-        );
-
-        let descriptor_set = descriptor_pool
-            .allocate_descriptor_set(
-                fixed_render_objects
-                    .descriptor_set_layout(FixedRenderObjects::POST_PROCESS_DESCRIPTOR_SET_LAYOUT),
-            )
-            .map_err(Error::new_inner)?;
-        descriptor_sets.push(descriptor_set);
 
         Ok(())
     }

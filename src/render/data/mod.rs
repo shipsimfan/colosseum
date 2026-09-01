@@ -4,7 +4,6 @@ use alexandria::{
     gpu::{VulkanAdapterMemoryProperties, VulkanDevice, VulkanFence},
 };
 use camera::*;
-use local_buffer::*;
 use std::sync::Arc;
 
 mod anti_aliasing;
@@ -31,6 +30,8 @@ pub(crate) use lighting::*;
 pub(crate) use object::*;
 pub(crate) use remove_confirm::*;
 pub(crate) use render_object_change::*;
+
+pub(in crate::render) use local_buffer::*;
 
 /// The information needed for a renderable
 pub(crate) type Renderable = (Id<Material>, Id<Mesh>, usize);

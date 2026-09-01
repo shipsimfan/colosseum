@@ -1,6 +1,7 @@
 use crate::render::{
     AntiAliasingMode, LightingData, RenderData, RenderObjectRemoveConfirm, Renderable, Skybox,
 };
+use alexandria::gpu::VulkanFence;
 use std::vec::Drain;
 
 impl RenderData {
@@ -57,6 +58,11 @@ impl RenderData {
     /// Get the lighting data for the current frame
     pub(in crate::render) fn lighting(&self) -> &LightingData {
         &self.lighting
+    }
+
+    /// Get the fence used to synchronize copy operations for the current frame
+    pub(in crate::render) fn copy_fence(&mut self) -> &mut VulkanFence {
+        &mut self.copy_fence
     }
 
     /// Get a mutable reference to the lighting daata for the current frame

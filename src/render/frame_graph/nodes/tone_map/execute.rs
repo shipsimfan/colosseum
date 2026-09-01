@@ -9,7 +9,7 @@ use alexandria::{
 
 impl ToneMapNode {
     /// Execute the solid color sky pass, rendering a full-screen quad with the specified clear color
-    pub(in crate::render::frame_graph) fn execute(
+    pub(in crate::render::frame_graph::nodes) fn execute(
         &self,
         render_data: &RenderData,
         render_objects: &RenderObjects,

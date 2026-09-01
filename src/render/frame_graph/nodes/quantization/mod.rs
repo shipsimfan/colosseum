@@ -1,7 +1,8 @@
 use crate::render::frame_graph::FrameGraphResourceId;
 use alexandria::math::Vector2f;
 
-mod create_objects;
+mod create_fixed_objects;
+mod create_per_frame_objects;
 mod execute;
 mod new;
 mod update_descriptor_sets;
@@ -9,7 +10,7 @@ mod usages;
 
 /// Sharpens and applies dithering to an image before quantizing it
 #[derive(Debug)]
-pub(in crate::render) struct QuantizationNode {
+pub(in crate::render::frame_graph) struct QuantizationNode {
     /// The ID of the input image
     input: FrameGraphResourceId,
 

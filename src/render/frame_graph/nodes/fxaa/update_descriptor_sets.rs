@@ -9,7 +9,7 @@ use alexandria::gpu::{
 
 impl FxaaNode {
     /// Update the descriptor sets for this node
-    pub(in crate::render::frame_graph) fn update_descriptor_sets(
+    pub(in crate::render::frame_graph::nodes) fn update_descriptor_sets(
         &self,
         render_objects: &RenderObjects,
         resources: &FrameGraphResources,

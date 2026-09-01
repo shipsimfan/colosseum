@@ -1,12 +1,9 @@
 # ToDo
  0. Separate "doubled" buffers into staging + device local buffers with a copy fence protecting the staging buffers
-   1. Create descriptor sets for camera, lighting, and renderables
-   2. Create `DeviceDataBuffer<T>` type
-   3. Add `DeviceDataBuffer` to `FrameData` for camera, renderables, light metadata, directional lights, point lights, and spot lights
-   4. Add updating of descriptor sets when data buffers resize
-   5. Add copy commands to command buffer for copying staging buffers to device local buffers
-   6. Add wait for copy fence to start of `ecs.execute_rendering_systems`
-   7. Update shaders to read object data from storage buffer + index instead of pointer
+   1. Add `DeviceDataBuffer` to `FrameData` for camera, renderables, light metadata, directional lights, point lights, and spot lights
+   2. Add updating of descriptor sets when data buffers resize
+   3. Add copy commands to command buffer for copying staging buffers to device local buffers
+   4. Add wait for copy fence to start of `ecs.execute_rendering_systems`
  1. Fix resize issue
  2. Add procedural skybox
  3. Add shadow mapping

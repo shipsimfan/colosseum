@@ -9,7 +9,7 @@ use alexandria::{
 
 impl FxaaNode {
     /// Execute the FXAA pass, rendering a full-screen quad with anti-aliasing
-    pub(in crate::render::frame_graph) fn execute(
+    pub(in crate::render::frame_graph::nodes) fn execute(
         &self,
         _: &RenderData,
         render_objects: &RenderObjects,

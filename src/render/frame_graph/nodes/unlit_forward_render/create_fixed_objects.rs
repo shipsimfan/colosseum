@@ -9,7 +9,7 @@ use alexandria::gpu::{
 
 impl UnlitForwardRenderNode {
     /// Create the persistent objects that are used by this node
-    pub(in crate::render) fn create_objects(
+    pub(in crate::render::frame_graph::nodes) fn create_fixed_objects(
         fixed_render_objects: &mut FixedRenderObjects,
         _: VulkanFormat,
         device: &VulkanDevice,

@@ -1,6 +1,8 @@
 use crate::render::frame_graph::FrameGraphResourceId;
 
-mod create_objects;
+mod copy_data;
+mod create_fixed_objects;
+mod create_per_frame_objects;
 mod execute;
 mod new;
 mod usages;

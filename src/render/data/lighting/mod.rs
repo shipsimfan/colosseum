@@ -1,4 +1,4 @@
-use crate::render::data::LocalDataBuffer;
+use crate::render::LocalDataBuffer;
 use metadata::*;
 
 mod directional;

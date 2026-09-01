@@ -29,7 +29,7 @@ impl FixedRenderObjects {
             fullscreen_quad: Shader::new(&FULLSCREEN_QUAD_SHADER, device)?,
         };
 
-        FrameGraphNode::create_objects(&mut fixed_render_objects, swapchain_format, device)?;
+        FrameGraphNode::create_fixed_objects(&mut fixed_render_objects, swapchain_format, device)?;
 
         Ok(Arc::new(fixed_render_objects))
     }

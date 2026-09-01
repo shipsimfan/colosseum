@@ -1,4 +1,4 @@
-use crate::{Error, Result, render::data::LocalDataBuffer};
+use crate::{Error, Result, render::LocalDataBuffer};
 use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanBufferUsageFlag, VulkanDevice, VulkanMemoryPropertyFlag,
     VulkanSharingMode,
@@ -6,7 +6,7 @@ use alexandria::gpu::{
 
 impl<T> LocalDataBuffer<T> {
     /// Create a new [`LocalDataBuffer`]
-    pub fn new(
+    pub(in crate::render::data) fn new(
         capacity: usize,
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,

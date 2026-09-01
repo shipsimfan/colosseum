@@ -1,4 +1,4 @@
-use crate::render::data::LocalDataBuffer;
+use crate::render::LocalDataBuffer;
 use std::ops::{Index, IndexMut};
 
 impl<T> Index<usize> for LocalDataBuffer<T> {

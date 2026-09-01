@@ -1,12 +1,16 @@
 macro_rules! nodes {
     [
-        unsampled: [$(
+        simple: [$(
             $(#[$meta: meta])*
             $module: ident::$name: ident($type: ident),
         )*],
-        sampled: [$(
-            $(#[$sampled_meta: meta])*
-            $sampled_module: ident::$sampled_name: ident($sampled_type: ident),
+        data_buffer: [$(
+            $(#[$data_buffer_meta: meta])*
+            $data_buffer_module: ident::$data_buffer_name: ident($data_buffer_type: ident),
+        )*],
+        post_process: [$(
+            $(#[$post_process_meta: meta])*
+            $post_process_module: ident::$post_process_name: ident($post_process_type: ident),
         )*]
     ] => {
         $(
@@ -15,9 +19,14 @@ macro_rules! nodes {
             pub(in crate::render::frame_graph) use $module::$type;
         )*
         $(
-            mod $sampled_module;
+            mod $data_buffer_module;
 
-            pub(in crate::render::frame_graph) use $sampled_module::$sampled_type;
+            pub(in crate::render::frame_graph) use $data_buffer_module::$data_buffer_type;
+        )*
+        $(
+            mod $post_process_module;
+
+            pub(in crate::render::frame_graph) use $post_process_module::$post_process_type;
         )*
 
         /// A single node in the frame graph
@@ -29,8 +38,12 @@ macro_rules! nodes {
                 $name($type),
             )*
             $(
-                $(#[$sampled_meta])*
-                $sampled_name($sampled_type),
+                $(#[$data_buffer_meta])*
+                $data_buffer_name($data_buffer_type),
+            )*
+            $(
+                $(#[$post_process_meta])*
+                $post_process_name($post_process_type),
             )*
         }
 
@@ -47,7 +60,10 @@ macro_rules! nodes {
                     $(FrameGraphNode::$name(node) => {
                         node.execute(render_data, render_objects, resources, cmd_buffer)
                     })*
-                    $(FrameGraphNode::$sampled_name(node) => {
+                    $(FrameGraphNode::$data_buffer_name(node) => {
+                        node.execute(render_data, render_objects, resources, cmd_buffer)
+                    })*
+                    $(FrameGraphNode::$post_process_name(node) => {
                         node.execute(render_data, render_objects, resources, cmd_buffer)
                     })*
                 }
@@ -63,25 +79,33 @@ macro_rules! nodes {
             ) -> T {
                 match self {
                     $(FrameGraphNode::$name(node) => node.usages(f),)*
-                    $(FrameGraphNode::$sampled_name(node) => node.usages(f),)*
+                    $(FrameGraphNode::$data_buffer_name(node) => node.usages(f),)*
+                    $(FrameGraphNode::$post_process_name(node) => node.usages(f),)*
                 }
             }
 
             /// Create the persistent objects that are used by nodes
-            pub(in crate::render) fn create_objects(
+            pub(in crate::render) fn create_fixed_objects(
                 fixed_render_objects: &mut FixedRenderObjects,
                 swapchain_format: VulkanFormat,
                 device: &VulkanDevice,
             ) -> Result<()> {
                 $(
-                    $type::create_objects(
+                    $type::create_fixed_objects(
                         fixed_render_objects,
                         swapchain_format,
                         device
                     )?;
                 )*
                 $(
-                    $sampled_type::create_objects(
+                    $data_buffer_type::create_fixed_objects(
+                        fixed_render_objects,
+                        swapchain_format,
+                        device
+                    )?;
+                )*
+                $(
+                    $post_process_type::create_fixed_objects(
                         fixed_render_objects,
                         swapchain_format,
                         device
@@ -92,18 +116,25 @@ macro_rules! nodes {
             }
 
             /// Create per-frame descriptor sets for this node
-            pub(in crate::render) fn create_descriptor_sets(
-                fixed_render_objects: &FixedRenderObjects,
-                descriptor_pool: &mut VulkanDescriptorPool,
-                descriptor_sets: &mut Vec<VulkanDescriptorSet>,
+            pub(in crate::render) fn create_per_frame_objects(
+                mut per_frame_objects: PerFrameObjectBuilder,
             ) -> Result<()> {
-                $(
-                    $sampled_type::create_descriptor_sets(
-                        fixed_render_objects,
-                        descriptor_pool,
-                        descriptor_sets,
-                    )?;
-                )*
+                $($type::create_per_frame_objects(&mut per_frame_objects,)?;)*
+                $($data_buffer_type::create_per_frame_objects(&mut per_frame_objects)?;)*
+                $($post_process_type::create_per_frame_objects(&mut per_frame_objects)?;)*
+
+                Ok(())
+            }
+
+            /// Copy data from staging buffers to device local buffers
+            pub(in crate::render) fn copy_data(
+                render_data: &RenderData,
+                device_buffers: &mut [DeviceDataBuffer],
+                cmd_buffer: &mut VulkanCommandBuffer,
+                device: &VulkanDevice,
+                memory_properties: &VulkanAdapterMemoryProperties,
+            ) -> Result<()> {
+                $($data_buffer_type::copy_data(render_data, device_buffers, cmd_buffer, device, memory_properties)?;)*
 
                 Ok(())
             }
@@ -116,7 +147,7 @@ macro_rules! nodes {
                 device: &VulkanDevice,
             ){
                 match self {
-                    $(FrameGraphNode::$sampled_name(node) => {
+                    $(FrameGraphNode::$post_process_name(node) => {
                         node.update_descriptor_sets(render_objects, resources, device)
                     })*
                     _ => {}
@@ -133,9 +164,17 @@ macro_rules! nodes {
         )*
 
         $(
-            impl From<$sampled_type> for FrameGraphNode {
-                fn from(node: $sampled_type) -> Self {
-                    FrameGraphNode::$sampled_name(node)
+            impl From<$data_buffer_type> for FrameGraphNode {
+                fn from(node: $data_buffer_type) -> Self {
+                    FrameGraphNode::$data_buffer_name(node)
+                }
+            }
+        )*
+
+        $(
+            impl From<$post_process_type> for FrameGraphNode {
+                fn from(node: $post_process_type) -> Self {
+                    FrameGraphNode::$post_process_name(node)
                 }
             }
         )*
