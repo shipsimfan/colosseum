@@ -12,8 +12,8 @@ use alexandria::math::{Matrix4x4f, Vector3f};
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Execute all rendering systems on the archetypes in the ECS system
     pub(in crate::update) fn execute_rendering_systems(&mut self) -> Result<()> {
-        self.render_data.reset();
         self.render_data.wait_for_copy()?;
+        self.render_data.reset();
 
         self.render_data
             .set_render_scale(self.settings.display_settings().render_scale());
