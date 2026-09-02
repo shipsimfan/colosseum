@@ -3,7 +3,6 @@ use alexandria::{
     Id,
     gpu::{VulkanAdapterMemoryProperties, VulkanDevice, VulkanFence},
 };
-use camera::*;
 use std::sync::Arc;
 
 mod anti_aliasing;
@@ -22,6 +21,7 @@ mod new;
 mod reserve;
 mod reset;
 mod set;
+mod wait;
 
 pub use anti_aliasing::*;
 pub use skybox::*;
@@ -31,6 +31,7 @@ pub(crate) use object::*;
 pub(crate) use remove_confirm::*;
 pub(crate) use render_object_change::*;
 
+pub(in crate::render) use camera::*;
 pub(in crate::render) use local_buffer::*;
 
 /// The information needed for a renderable
@@ -48,6 +49,9 @@ pub(crate) struct RenderData {
 
     /// The fence to wait on for the completion of copy operations to the GPU
     copy_fence: VulkanFence,
+
+    /// Were the commands for copying actually sent this frame?
+    copy_commands_sent: bool,
 
     /** Render Settings **/
 
@@ -75,7 +79,7 @@ pub(crate) struct RenderData {
     skybox: Skybox,
 
     /// The camera data for the current frame
-    camera: LocalDataBuffer<CameraRenderData>,
+    camera: LocalDataBuffer<RenderCamera>,
 
     /// The data about lighting for the current frame
     lighting: LightingData,

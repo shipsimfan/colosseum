@@ -1,21 +1,27 @@
 use crate::{Error, Result, render::DeviceDataBuffer};
 use alexandria::gpu::{
-    VulkanAdapterMemoryProperties, VulkanBufferUsageFlag, VulkanBufferUsageFlags, VulkanDevice,
-    VulkanMemoryPropertyFlag, VulkanSharingMode,
+    VulkanAdapterMemoryProperties, VulkanBufferUsageFlag, VulkanBufferUsageFlags,
+    VulkanDescriptorBufferInfo, VulkanDescriptorSet, VulkanDescriptorType, VulkanDevice,
+    VulkanMemoryPropertyFlag, VulkanSharingMode, VulkanWriteDescriptorSet,
 };
 
 impl DeviceDataBuffer {
     /// Create a new [`DeviceDataBuffer`]
-    pub fn new<T, U: Into<VulkanBufferUsageFlags>>(
+    pub(in crate::render::frame_graph::resources::buffer) fn new<T>(
         capacity: usize,
-        usage: U,
+        usage: VulkanBufferUsageFlags,
+
+        descriptor_set: &VulkanDescriptorSet,
+        descriptor_type: VulkanDescriptorType,
+        binding: u32,
+
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,
     ) -> Result<DeviceDataBuffer> {
         let size = (capacity * std::mem::size_of::<T>()) as u64;
 
         // Create the buffer
-        let usage = VulkanBufferUsageFlag::TransferDst | usage.into();
+        let usage = VulkanBufferUsageFlag::TransferDst | usage;
         let mut buffer = device
             .create_buffer(0, size, usage, VulkanSharingMode::Exclusive, &[])
             .map_err(Error::new_inner)?;
@@ -35,11 +41,26 @@ impl DeviceDataBuffer {
         // Bind the buffer to the allocated memory
         buffer.bind_memory(&memory, 0).map_err(Error::new_inner)?;
 
+        // Bind the buffer to a descriptor set
+        device.update_descriptor_sets(
+            &[VulkanWriteDescriptorSet::new(
+                descriptor_set,
+                binding,
+                0,
+                descriptor_type,
+                &[],
+                &[VulkanDescriptorBufferInfo::new(&buffer, 0, size)],
+            )],
+            &[],
+        );
+
         Ok(DeviceDataBuffer {
             capacity: size as usize,
             buffer,
             memory,
             usage,
+            binding,
+            descriptor_type,
         })
     }
 }

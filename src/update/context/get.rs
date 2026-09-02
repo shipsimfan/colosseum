@@ -2,7 +2,7 @@ use crate::{
     Result,
     file_io::FileIo,
     logging::Logger,
-    render::{Material, MaterialId, Mesh, RenderData, ShaderId, Skybox},
+    render::{Material, MaterialId, Mesh, ShaderId, Skybox},
     update::{ECS, Inputs, Scene, UpdateContext},
 };
 use alexandria::{Id, math::Vector2u};
@@ -107,11 +107,6 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Get the cylinder primitive
     pub fn cylinder(&self) -> Id<Mesh> {
         self.render_objects.cylinder()
-    }
-
-    /// Get the render data for this update
-    pub(in crate::update) fn render_data(&mut self) -> &mut RenderData {
-        self.render_data
     }
 
     /// Take the next scene to switch to, if any

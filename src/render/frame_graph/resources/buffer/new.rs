@@ -5,13 +5,14 @@ use crate::{
         frame_graph::resources::FrameGraphResourceList,
     },
 };
-use alexandria::gpu::VulkanDevice;
+use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice};
 
 impl FrameGraphTransientBuffer {
     /// Create a new [`FrameGraphTransientBuffer`]
     pub fn new(
         render_objects: &FixedRenderObjects,
         device: &VulkanDevice,
+        memory_properties: &VulkanAdapterMemoryProperties,
     ) -> Result<FrameGraphTransientBuffer> {
         let mut descriptor_pool = render_objects.create_descriptor_pool(device)?;
         let mut descriptor_sets = Vec::new();
@@ -21,6 +22,8 @@ impl FrameGraphTransientBuffer {
             &mut descriptor_pool,
             &mut descriptor_sets,
             &mut device_buffers,
+            device,
+            memory_properties,
         ))?;
 
         Ok(FrameGraphTransientBuffer {

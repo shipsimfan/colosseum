@@ -1,5 +1,6 @@
 use crate::render::{
-    AntiAliasingMode, LightingData, RenderData, RenderObjectRemoveConfirm, Renderable, Skybox,
+    AntiAliasingMode, LightingData, LocalDataBuffer, ObjectData, RenderCamera, RenderData,
+    RenderObjectRemoveConfirm, Renderable, Skybox,
 };
 use alexandria::gpu::VulkanFence;
 use std::vec::Drain;
@@ -60,8 +61,19 @@ impl RenderData {
         &self.lighting
     }
 
+    /// Get a reference to the local camera data buffer
+    pub(in crate::render) fn camera(&self) -> &LocalDataBuffer<RenderCamera> {
+        &self.camera
+    }
+
+    /// Get a reference to the renderables data buffer
+    pub(in crate::render) fn renderables(&self) -> &LocalDataBuffer<ObjectData> {
+        &self.renderable_buffer
+    }
+
     /// Get the fence used to synchronize copy operations for the current frame
     pub(in crate::render) fn copy_fence(&mut self) -> &mut VulkanFence {
+        self.copy_commands_sent = true;
         &mut self.copy_fence
     }
 

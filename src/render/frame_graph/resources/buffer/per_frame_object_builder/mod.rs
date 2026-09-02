@@ -1,5 +1,7 @@
 use crate::render::{DeviceDataBuffer, FixedRenderObjects};
-use alexandria::gpu::{VulkanDescriptorPool, VulkanDescriptorSet};
+use alexandria::gpu::{
+    VulkanAdapterMemoryProperties, VulkanDescriptorPool, VulkanDescriptorSet, VulkanDevice,
+};
 
 mod add;
 mod new;
@@ -17,4 +19,10 @@ pub(in crate::render) struct PerFrameObjectBuilder<'a> {
 
     /// The set of device-local data buffers needed
     device_buffers: &'a mut Vec<DeviceDataBuffer>,
+
+    /// The device to create buffers with
+    device: &'a VulkanDevice,
+
+    /// The memory properties to use for buffer allocation
+    memory_properties: &'a VulkanAdapterMemoryProperties,
 }

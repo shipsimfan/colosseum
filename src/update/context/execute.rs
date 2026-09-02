@@ -1,4 +1,5 @@
 use crate::{
+    Result,
     settings::SettingsCache,
     update::{
         UpdateContext,
@@ -10,7 +11,10 @@ use alexandria::math::{Matrix4x4f, Vector3f};
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Execute all rendering systems on the archetypes in the ECS system
-    pub(in crate::update) fn execute_rendering_systems(&mut self) {
+    pub(in crate::update) fn execute_rendering_systems(&mut self) -> Result<()> {
+        self.render_data.reset();
+        self.render_data.wait_for_copy()?;
+
         self.render_data
             .set_render_scale(self.settings.display_settings().render_scale());
         self.render_data
@@ -26,13 +30,15 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
             warning!(self.logger, "no active camera set");
             self.render_data
                 .set_camera(Matrix4x4f::IDENTITY, Vector3f::ZERO);
-            return;
+            return Ok(());
         }
         self.render_data
             .lighting_mut()
             .set_ambient_light(*self.ambient_light);
 
         self.ecs.execute_rendering_systems(self.render_data);
+
+        Ok(())
     }
 
     /// Update the camera in the render data, returning whether an active camera was set

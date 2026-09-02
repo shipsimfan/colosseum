@@ -61,4 +61,12 @@ impl FixedRenderObjects {
     pub const TONE_MAP_DESCRIPTOR_SET: usize = 3;
     pub const QUANTIZATION_DESCRIPTOR_SET: usize = 4;
     pub const FXAA_DESCRIPTOR_SET: usize = 5;
+
+    /** Device Buffers **/
+    pub const CAMERA_DEVICE_BUFFER: usize = 0;
+    pub const RENDERABLES_DEVICE_BUFFER: usize = 1;
+    pub const LIGHTING_METADATA_DEVICE_BUFFER: usize = 2;
+    pub const DIRECTIONAL_LIGHTS_DEVICE_BUFFER: usize = 3;
+    pub const POINT_LIGHTS_DEVICE_BUFFER: usize = 4;
+    pub const SPOT_LIGHTS_DEVICE_BUFFER: usize = 5;
 }

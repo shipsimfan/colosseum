@@ -28,8 +28,11 @@ impl FrameData {
             .create_fence(VulkanFenceCreateFlag::Signalled)
             .map_err(Error::new_inner)?;
 
-        let transient_buffer =
-            FrameGraphTransientBuffer::new(device.fixed_render_objects(), device)?;
+        let transient_buffer = FrameGraphTransientBuffer::new(
+            device.fixed_render_objects(),
+            device,
+            device.memory_properties(),
+        )?;
 
         Ok(FrameData {
             copy_command_buffer,

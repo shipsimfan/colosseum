@@ -1,4 +1,8 @@
-use crate::{Error, Result, render::PerFrameObjectBuilder};
+use crate::{
+    Error, Result,
+    render::{DeviceDataBuffer, PerFrameObjectBuilder},
+};
+use alexandria::gpu::{VulkanBufferUsageFlags, VulkanDescriptorType};
 
 impl<'a> PerFrameObjectBuilder<'a> {
     /// Add a new per-frame descriptor set
@@ -15,6 +19,34 @@ impl<'a> PerFrameObjectBuilder<'a> {
             .map_err(Error::new_inner)?;
 
         self.descriptor_sets.push(descriptor_set);
+        Ok(())
+    }
+
+    /// Add a new per-frame device data buffer
+    pub fn add_device_data_buffer<T, U: Into<VulkanBufferUsageFlags>>(
+        &mut self,
+        initial_capacity: usize,
+        usage: U,
+
+        descriptor_set: usize,
+        descriptor_type: VulkanDescriptorType,
+        binding: u32,
+
+        index: usize,
+    ) -> Result<()> {
+        assert_eq!(index, self.device_buffers.len());
+
+        let device_buffer = DeviceDataBuffer::new::<T>(
+            initial_capacity,
+            usage.into(),
+            &self.descriptor_sets[descriptor_set],
+            descriptor_type,
+            binding,
+            self.device,
+            self.memory_properties,
+        )?;
+        self.device_buffers.push(device_buffer);
+
         Ok(())
     }
 }

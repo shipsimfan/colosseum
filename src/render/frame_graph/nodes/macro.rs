@@ -130,11 +130,12 @@ macro_rules! nodes {
             pub(in crate::render) fn copy_data(
                 render_data: &RenderData,
                 device_buffers: &mut [DeviceDataBuffer],
+                descriptor_sets: &[VulkanDescriptorSet],
                 cmd_buffer: &mut VulkanCommandBuffer,
                 device: &VulkanDevice,
                 memory_properties: &VulkanAdapterMemoryProperties,
             ) -> Result<()> {
-                $($data_buffer_type::copy_data(render_data, device_buffers, cmd_buffer, device, memory_properties)?;)*
+                $($data_buffer_type::copy_data(render_data, device_buffers, descriptor_sets, cmd_buffer, device, memory_properties)?;)*
 
                 Ok(())
             }

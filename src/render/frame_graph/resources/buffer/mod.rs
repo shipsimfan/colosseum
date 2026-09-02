@@ -25,7 +25,7 @@ pub(in crate::render) struct FrameGraphTransientBuffer {
     descriptor_pool: VulkanDescriptorPool,
 
     /// The descriptor sets that have been made for the frame
-    pub(in crate::render::frame_graph::resources) descriptor_sets: Vec<VulkanDescriptorSet>,
+    pub descriptor_sets: Vec<VulkanDescriptorSet>,
 
     /// The device local data buffers made for the frame
     pub device_buffers: Vec<DeviceDataBuffer>,

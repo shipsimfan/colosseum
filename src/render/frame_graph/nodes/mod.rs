@@ -6,7 +6,8 @@ use crate::{
     },
 };
 use alexandria::gpu::{
-    VulkanAdapterMemoryProperties, VulkanCommandBuffer, VulkanDevice, VulkanFormat,
+    VulkanAdapterMemoryProperties, VulkanCommandBuffer, VulkanDescriptorSet, VulkanDevice,
+    VulkanFormat,
 };
 use r#macro::nodes;
 

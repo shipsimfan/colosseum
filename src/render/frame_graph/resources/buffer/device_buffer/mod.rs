@@ -1,4 +1,6 @@
-use alexandria::gpu::{VulkanBuffer, VulkanBufferUsageFlags, VulkanDeviceMemory};
+use alexandria::gpu::{
+    VulkanBuffer, VulkanBufferUsageFlags, VulkanDescriptorType, VulkanDeviceMemory,
+};
 
 mod copy;
 mod new;
@@ -11,9 +13,16 @@ pub(in crate::render) struct DeviceDataBuffer {
     /// The GPU buffer containing the object data
     buffer: VulkanBuffer,
 
-    /// The mapped memory for writing object data
+    /// The memory the buffer uses
+    #[allow(unused)]
     memory: VulkanDeviceMemory,
 
     /// The usage of the buffer
     usage: VulkanBufferUsageFlags,
+
+    /// The binding that this device buffer is bound to in the descriptor set
+    binding: u32,
+
+    /// The type of descriptor this buffer is used as
+    descriptor_type: VulkanDescriptorType,
 }

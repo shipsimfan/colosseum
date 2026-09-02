@@ -1,5 +1,4 @@
 use crate::render::LocalDataBuffer;
-use metadata::*;
 
 mod directional;
 mod metadata;
@@ -7,6 +6,7 @@ mod point;
 mod spot;
 
 mod add;
+mod get;
 mod new;
 mod reserve;
 mod reset;
@@ -15,6 +15,8 @@ mod set;
 pub(crate) use directional::*;
 pub(crate) use point::*;
 pub(crate) use spot::*;
+
+pub(in crate::render) use metadata::*;
 
 /// The data about lighting for a given frame
 pub(crate) struct LightingData {

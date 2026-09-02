@@ -1,37 +1,36 @@
 use crate::{
     Error, Result,
-    render::{
-        AntiAliasingMode, LightingData, RenderData, Skybox,
-        data::{CameraRenderData, LocalDataBuffer},
-    },
+    render::{AntiAliasingMode, LightingData, LocalDataBuffer, RenderCamera, RenderData, Skybox},
 };
-use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice, VulkanFenceCreateFlag};
+use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice};
 use std::sync::Arc;
 
-/// The initial capacity for the renderable data buffer
-const RENDERABLE_BUFFER_INIT_CAPACITY: usize = 256;
-
 impl RenderData {
+    /// The initial capacity for the renderable data buffer
+    pub(in crate::render) const RENDERABLE_BUFFER_INIT_CAPACITY: usize = 256;
+
     /// Create a new set of [`RenderData`]
     pub(in crate::render) fn new(
         device: &VulkanDevice,
         memory_properties: &Arc<VulkanAdapterMemoryProperties>,
     ) -> Result<RenderData> {
-        let copy_fence = device
-            .create_fence(VulkanFenceCreateFlag::Signalled)
-            .map_err(Error::new_inner)?;
+        let copy_fence = device.create_fence(0).map_err(Error::new_inner)?;
 
         let mut camera = LocalDataBuffer::new(1, device, memory_properties)?;
-        camera.push(CameraRenderData::new());
+        camera.push(RenderCamera::new());
 
         let lighting = LightingData::new(device, memory_properties)?;
-        let renderable_buffer =
-            LocalDataBuffer::new(RENDERABLE_BUFFER_INIT_CAPACITY, device, memory_properties)?;
+        let renderable_buffer = LocalDataBuffer::new(
+            RenderData::RENDERABLE_BUFFER_INIT_CAPACITY,
+            device,
+            memory_properties,
+        )?;
 
         Ok(RenderData {
             render_object_changes: Vec::new(),
             confirmed_removals: Vec::new(),
             copy_fence,
+            copy_commands_sent: false,
 
             render_scale: 1.0,
             gamma: 2.2,
