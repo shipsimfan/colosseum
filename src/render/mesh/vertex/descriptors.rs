@@ -13,6 +13,15 @@ impl Vertex {
             VulkanVertexInputRate::Vertex,
         )];
 
+    /// The attribute descriptors for only the position of this vertex is needed
+    pub(in crate::render) const POSITION_ONLY_ATTRIBUTE_DESCRIPTORS:
+        [VulkanVertexInputAttributeDescription; 1] = [VulkanVertexInputAttributeDescription::new(
+        0,
+        0,
+        VulkanFormat::R32G32B32SFloat,
+        std::mem::offset_of!(Vertex, position) as u32,
+    )];
+
     /// The attribute descriptors for this vertex when used in unlit shaders
     pub(in crate::render) const UNLIT_ATTRIBUTE_DESCRIPTORS:
         [VulkanVertexInputAttributeDescription; 2] = [

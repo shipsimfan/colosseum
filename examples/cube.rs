@@ -296,7 +296,7 @@ impl CubeMainScene {
 
         // Set skybox
         let color = colosseum::math::ColorHsv::RED;
-        context.set_skybox(color.into_rgb());
+        context.set_skybox(colosseum::update::Skybox::Procedural);
 
         // Create material for the cube
         let shader = context.default_lit_shader();

@@ -35,17 +35,6 @@ impl Pipeline {
             "push constant size must be less than or equal to 128 bytes"
         );
 
-        // Craete the pipeline layout
-        let push_constant_range = [VulkanPushConstantRange::new(
-            VulkanShaderStageFlag::Fragment,
-            0,
-            push_constant_size as _,
-        )];
-
-        let pipeline_layout = device
-            .create_pipeline_layout(0, descriptor_set_layouts, &push_constant_range)
-            .map_err(Error::new_inner)?;
-
         // Define the shader stages
         let shader_stages = [
             create_shader_stage(fullscreen_quad, VulkanShaderStageFlag::Vertex, c"vert_main"),
@@ -116,17 +105,62 @@ impl Pipeline {
             Color4f::<Linear>::CLEAR,
         );
 
+        Pipeline::new(
+            descriptor_set_layouts,
+            &[VulkanPushConstantRange::new(
+                VulkanShaderStageFlag::Fragment,
+                0,
+                push_constant_size as _,
+            )],
+            output_formats,
+            if depth_stencil_state.is_none() {
+                VulkanFormat::Undefined
+            } else {
+                DEPTH_FORMAT
+            },
+            &shader_stages,
+            vec![fullscreen_quad.clone(), fragment_shader.clone()],
+            &vertex_input_state,
+            &input_assembly_state,
+            &viewport_state,
+            &rasterization_state,
+            &multisample_state,
+            depth_stencil_state,
+            &color_blend_state,
+            &dynamic_state,
+            device,
+        )
+    }
+
+    /// Create a completely custom pair of pipeline and layout
+    pub fn new(
+        descriptor_set_layouts: &[&VulkanDescriptorSetLayout],
+        push_constant_ranges: &[VulkanPushConstantRange],
+        output_formats: &[VulkanFormat],
+        depth_format: VulkanFormat,
+        shader_stages: &[VulkanPipelineShaderStageCreateInfo],
+        shaders: Vec<Arc<Shader>>,
+        vertex_input_state: &VulkanPipelineVertexInputStateCreateInfo,
+        input_assembly_state: &VulkanPipelineInputAssemblyStateCreateInfo,
+        viewport_state: &VulkanPipelineViewportStateCreateInfo,
+        rasterization_state: &VulkanPipelineRasterizationStateCreateInfo,
+        multisample_state: &VulkanPipelineMultisampleStateCreateInfo,
+        depth_stencil_state: Option<&VulkanPipelineDepthStencilStateCreateInfo>,
+        color_blend_state: &VulkanPipelineColorBlendStateCreateInfo,
+        dynamic_state: &VulkanPipelineDynamicStateCreateInfo,
+        device: &VulkanDevice,
+    ) -> Result<Pipeline> {
+        let pipeline_layout = device
+            .create_pipeline_layout(0, descriptor_set_layouts, push_constant_ranges)
+            .map_err(Error::new_inner)?;
+
         // Actually create the graphics pipeline
         let pipeline = device
             .create_graphics_pipeline(
                 [&mut VulkanPipelineRenderingCreateInfo::new(
                     0,
                     output_formats,
-                    if depth_stencil_state.is_none() {
-                        VulkanFormat::Undefined
-                    } else {
-                        DEPTH_FORMAT
-                    },
+                    depth_format,
                     VulkanFormat::Undefined,
                 ) as _],
                 None,
@@ -152,7 +186,7 @@ impl Pipeline {
         Ok(Pipeline {
             pipeline,
             layout: pipeline_layout,
-            shader: vec![fullscreen_quad.clone(), fragment_shader.clone()],
+            shaders,
         })
     }
 }

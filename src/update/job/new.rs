@@ -2,9 +2,9 @@ use crate::{
     Result,
     file_io::FileIo,
     logging::Logger,
-    render::{GpuTransferQueue, RenderJob, Skybox},
+    render::{GpuTransferQueue, RenderJob},
     update::{
-        DEFAULT_AMBIENT_LIGHT, ECS, InitialScene, Inputs, Scene, UpdateContext, UpdateJob,
+        DEFAULT_AMBIENT_LIGHT, ECS, InitialScene, Inputs, Scene, Skybox, UpdateContext, UpdateJob,
         UpdateRenderObjects,
     },
 };

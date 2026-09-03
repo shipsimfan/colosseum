@@ -76,7 +76,7 @@ pub(crate) struct RenderData {
     /** Scene Data **/
 
     /// The skybox to render
-    skybox: Skybox,
+    skybox: RenderSkybox,
 
     /// The camera data for the current frame
     camera: LocalDataBuffer<RenderCamera>,

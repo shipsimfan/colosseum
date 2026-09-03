@@ -15,8 +15,11 @@ mod r#macro;
 
 nodes![
     simple: [
-        /// A node that clears the screen to a solid color
+        /// A node that renders the sky as a solid color
         solid_color_sky::SolidColorSky(SolidColorSkyNode),
+
+        /// A node that generates a procedural sky
+        procedural_sky::ProceduralSky(ProceduralSkyNode),
     ],
 
     data_buffer:[

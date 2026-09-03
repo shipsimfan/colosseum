@@ -14,19 +14,6 @@ impl UnlitForwardRenderNode {
         _: VulkanFormat,
         device: &VulkanDevice,
     ) -> Result<()> {
-        // Create the descriptor set layout for the camera
-        fixed_render_objects.add_descriptor_set_layout(
-            &[VulkanDescriptorSetLayoutBinding::new(
-                0,
-                VulkanDescriptorType::UniformBuffer,
-                1,
-                VulkanShaderStageFlag::Vertex | VulkanShaderStageFlag::Fragment,
-            )],
-            1,
-            FixedRenderObjects::CAMERA_DESCRIPTOR_SET_LAYOUT,
-            device,
-        )?;
-
         // Create the descriptor set layout for the renderables
         fixed_render_objects.add_descriptor_set_layout(
             &[VulkanDescriptorSetLayoutBinding::new(

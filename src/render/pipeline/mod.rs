@@ -16,5 +16,5 @@ pub(in crate::render) struct Pipeline {
 
     /// The shaders being used by this pipeline
     #[allow(unused)]
-    shader: Vec<Arc<Shader>>,
+    shaders: Vec<Arc<Shader>>,
 }

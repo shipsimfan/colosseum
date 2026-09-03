@@ -1,8 +1,8 @@
 use crate::render::frame_graph::{
-    FrameGraphResourceId, FrameGraphResourceUsage, SolidColorSkyNode,
+    FrameGraphResourceId, FrameGraphResourceUsage, ProceduralSkyNode,
 };
 
-impl SolidColorSkyNode {
+impl ProceduralSkyNode {
     /// Get the usage types for the resources that this node uses
     pub(in crate::render::frame_graph::nodes) fn usages<
         T,

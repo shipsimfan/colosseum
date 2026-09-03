@@ -1,8 +1,8 @@
-use crate::render::Skybox;
+use crate::render::RenderSkybox;
 use alexandria::math::Color3f;
 
-impl Default for Skybox {
+impl Default for RenderSkybox {
     fn default() -> Self {
-        Skybox::SolidColor(Color3f::BLACK)
+        RenderSkybox::SolidColor(Color3f::BLACK)
     }
 }

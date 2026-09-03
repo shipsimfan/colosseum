@@ -1,4 +1,4 @@
-use crate::render::Skybox;
+use crate::update::Skybox;
 use alexandria::math::{Color3f, Srgb};
 
 impl<T: Into<Color3f<Srgb>>> From<T> for Skybox {

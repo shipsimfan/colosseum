@@ -6,4 +6,7 @@ mod from_data;
 pub(in crate::render::frame_graph) enum FrameGraphSkybox {
     /// The skybox is a solid color
     SolidColor,
+
+    /// The skybox is procedurally generated
+    Procedural,
 }

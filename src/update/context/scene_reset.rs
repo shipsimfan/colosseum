@@ -1,7 +1,4 @@
-use crate::{
-    render::Skybox,
-    update::{DEFAULT_AMBIENT_LIGHT, UpdateContext},
-};
+use crate::update::{DEFAULT_AMBIENT_LIGHT, Skybox, UpdateContext};
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Reset the data to its default state for a new scene

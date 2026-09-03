@@ -2,8 +2,8 @@ use crate::{
     Result,
     file_io::FileIo,
     logging::Logger,
-    render::{Material, MaterialId, Mesh, ShaderId, Skybox},
-    update::{ECS, Inputs, Scene, UpdateContext},
+    render::{Material, MaterialId, Mesh, ShaderId},
+    update::{ECS, Inputs, Scene, Skybox, UpdateContext},
 };
 use alexandria::{Id, math::Vector2u};
 use std::time::Duration;

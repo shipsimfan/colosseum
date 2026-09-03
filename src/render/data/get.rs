@@ -1,6 +1,6 @@
 use crate::render::{
     AntiAliasingMode, LightingData, LocalDataBuffer, ObjectData, RenderCamera, RenderData,
-    RenderObjectRemoveConfirm, Renderable, Skybox,
+    RenderObjectRemoveConfirm, RenderSkybox, Renderable,
 };
 use alexandria::gpu::VulkanFence;
 use std::vec::Drain;
@@ -42,7 +42,7 @@ impl RenderData {
     }
 
     /// Get a reference to the skybox that should be rendered in the current frame
-    pub(in crate::render) fn skybox(&self) -> &Skybox {
+    pub(in crate::render) fn skybox(&self) -> &RenderSkybox {
         &self.skybox
     }
 

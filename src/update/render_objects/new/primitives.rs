@@ -48,7 +48,7 @@ pub(in crate::update::render_objects::new) const CUBE_INDICES: &[u32] = &[
     8, 9, 10, 9, 11, 10, // Left
     12, 13, 14, 13, 15, 14, // Right
     16, 17, 18, 17, 19, 18, // Top
-    20, 22, 21, 21, 22, 23, // Bottom
+    20, 21, 22, 21, 23, 22, // Bottom
 ];
 
 /// Generate a plane primitive mesh

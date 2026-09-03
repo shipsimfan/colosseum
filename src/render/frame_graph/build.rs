@@ -27,7 +27,7 @@ impl FrameGraph {
         let color_output = resources.create_render_scale_transient(HDR_FORMAT);
 
         // Perform the main render passes
-        nodes.push(structure.skybox().create_node(color_output, depth_buffer));
+        nodes.push(structure.skybox().create_node(color_output));
         nodes.push(UnlitForwardRenderNode::new(color_output, depth_buffer).into());
         nodes.push(LitForwardRenderNode::new(color_output, depth_buffer).into());
 

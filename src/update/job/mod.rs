@@ -2,8 +2,7 @@ use crate::{
     Result,
     file_io::FileIo,
     logging::Logger,
-    render::Skybox,
-    update::{ECS, Entity, Inputs, Scene, UpdateContext, UpdateRenderObjects},
+    update::{ECS, Entity, Inputs, Scene, Skybox, UpdateContext, UpdateRenderObjects},
 };
 use alexandria::{
     Id,

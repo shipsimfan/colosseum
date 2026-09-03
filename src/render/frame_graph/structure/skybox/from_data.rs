@@ -1,10 +1,11 @@
-use crate::render::{Skybox, frame_graph::FrameGraphSkybox};
+use crate::render::{RenderSkybox, frame_graph::FrameGraphSkybox};
 
 impl FrameGraphSkybox {
-    /// Convert a [`Skybox`] into a [`FrameGraphSkybox`]
-    pub fn from_data(skybox: &Skybox) -> FrameGraphSkybox {
+    /// Convert a [`RenderSkybox`] into a [`FrameGraphSkybox`]
+    pub fn from_data(skybox: &RenderSkybox) -> FrameGraphSkybox {
         match skybox {
-            Skybox::SolidColor(_) => FrameGraphSkybox::SolidColor,
+            RenderSkybox::SolidColor(_) => FrameGraphSkybox::SolidColor,
+            RenderSkybox::Procedural { .. } => FrameGraphSkybox::Procedural,
         }
     }
 }

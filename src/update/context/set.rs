@@ -1,7 +1,7 @@
 use crate::{
     Result,
-    render::{MaterialId, RenderObjectChange, Skybox},
-    update::{Entity, Scene, UpdateContext},
+    render::{MaterialId, RenderObjectChange},
+    update::{Entity, Scene, Skybox, UpdateContext},
 };
 use alexandria::{
     Id,

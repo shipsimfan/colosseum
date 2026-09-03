@@ -6,9 +6,9 @@ mod execute;
 mod new;
 mod usages;
 
-/// Draws a solid color to the output, which can be used as the sky in a scene
+/// Renders a procedural sky to the output
 #[derive(Debug)]
-pub(in crate::render::frame_graph) struct SolidColorSkyNode {
+pub(in crate::render::frame_graph) struct ProceduralSkyNode {
     /// The ID of the output color attachment
     output: FrameGraphResourceId,
 }

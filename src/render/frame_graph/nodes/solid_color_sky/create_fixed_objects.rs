@@ -3,10 +3,7 @@ use crate::{
     render::{FixedRenderObjects, HDR_FORMAT, Pipeline, Shader, frame_graph::SolidColorSkyNode},
 };
 use alexandria::{
-    gpu::{
-        VulkanCompareOp, VulkanDevice, VulkanFormat, VulkanPipelineDepthStencilStateCreateInfo,
-        VulkanStencilOp, compile_shader,
-    },
+    gpu::{VulkanDevice, VulkanFormat, compile_shader},
     math::{Color4f, Linear},
 };
 
@@ -25,36 +22,11 @@ impl SolidColorSkyNode {
         // Create the pipeline
         let shader = Shader::new(&FRAGMENT_SHADER, device)?;
 
-        let depth_stencil_state = VulkanPipelineDepthStencilStateCreateInfo::new(
-            0,
-            true,
-            false,
-            VulkanCompareOp::LessOrEqual,
-            false,
-            false,
-            VulkanStencilOp::Keep,
-            VulkanStencilOp::Keep,
-            VulkanStencilOp::Keep,
-            VulkanCompareOp::Always,
-            0,
-            0,
-            0,
-            VulkanStencilOp::Keep,
-            VulkanStencilOp::Keep,
-            VulkanStencilOp::Keep,
-            VulkanCompareOp::Always,
-            0,
-            0,
-            0,
-            0.0,
-            1.0,
-        );
-
         let pipeline = Pipeline::new_post_process(
             fixed_render_objects.fullscreen_quad(),
             &shader,
             std::mem::size_of::<Color4f<Linear>>(),
-            Some(&depth_stencil_state),
+            None,
             &[HDR_FORMAT],
             &[],
             device,
