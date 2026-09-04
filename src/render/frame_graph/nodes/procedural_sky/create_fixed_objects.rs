@@ -1,7 +1,8 @@
 use crate::{
     Result,
     render::{
-        FixedRenderObjects, HDR_FORMAT, Pipeline, Shader, Vertex, frame_graph::ProceduralSkyNode,
+        FixedRenderObjects, HDR_FORMAT, Pipeline, Shader, Vertex,
+        frame_graph::{ProceduralSkyNode, nodes::procedural_sky::PushConstants},
     },
 };
 use alexandria::{
@@ -13,8 +14,8 @@ use alexandria::{
         VulkanPipelineInputAssemblyStateCreateInfo, VulkanPipelineMultisampleStateCreateInfo,
         VulkanPipelineRasterizationStateCreateInfo, VulkanPipelineShaderStageCreateInfo,
         VulkanPipelineVertexInputStateCreateInfo, VulkanPipelineViewportStateCreateInfo,
-        VulkanPolygonMode, VulkanPrimitiveTopology, VulkanSampleCountFlag, VulkanShaderStageFlag,
-        compile_shader,
+        VulkanPolygonMode, VulkanPrimitiveTopology, VulkanPushConstantRange, VulkanSampleCountFlag,
+        VulkanShaderStageFlag, compile_shader,
     },
     math::{Color4f, Linear},
 };
@@ -51,7 +52,11 @@ impl ProceduralSkyNode {
         let pipeline = Pipeline::new(
             &[fixed_render_objects
                 .descriptor_set_layout(FixedRenderObjects::CAMERA_DESCRIPTOR_SET_LAYOUT)],
-            &[],
+            &[VulkanPushConstantRange::new(
+                VulkanShaderStageFlag::Fragment,
+                0,
+                std::mem::size_of::<PushConstants>() as _,
+            )],
             &[HDR_FORMAT],
             VulkanFormat::Undefined,
             &[

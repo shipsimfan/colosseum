@@ -111,9 +111,6 @@ impl colosseum::update::InitialScene for CubeInitialScene {
 
 /// The main scene for the cube example
 struct CubeMainScene {
-    /// A color that shifts over time to demonstrate the update loop
-    color: colosseum::math::ColorHsv<f32, colosseum::math::Srgb>,
-
     /// A count of the number of frames that have been rendered
     frames: usize,
 
@@ -146,27 +143,6 @@ impl colosseum::update::Scene for CubeMainScene {
         &mut self,
         context: &mut colosseum::update::UpdateContext<Cube>,
     ) -> colosseum::Result<()> {
-        // Shift the color over time based on user input
-        let amount = context.delta_time().as_secs_f32() / 5.0;
-        let mut color_changed = false;
-        self.color = if context.inputs().key(colosseum::Key::Left)
-            || context.inputs().key(colosseum::Key::K)
-        {
-            color_changed = true;
-            self.color.add_hue(amount)
-        } else if context.inputs().key(colosseum::Key::Right)
-            || context.inputs().key(colosseum::Key::L)
-        {
-            color_changed = true;
-            self.color.sub_hue(amount)
-        } else {
-            self.color
-        };
-
-        if color_changed {
-            context.set_skybox(self.color.into_rgb());
-        }
-
         // Toggle fullscreen mode when the user presses F11
         if context.inputs().key_down(colosseum::Key::F11) {
             if context.settings().display().fullscreen() {
@@ -294,10 +270,6 @@ impl CubeMainScene {
         // Create logger
         let logger = context.logger("cube");
 
-        // Set skybox
-        let color = colosseum::math::ColorHsv::RED;
-        context.set_skybox(colosseum::update::Skybox::Procedural);
-
         // Create material for the cube
         let shader = context.default_lit_shader();
         let material =
@@ -344,7 +316,7 @@ impl CubeMainScene {
         ecs.add_component(
             spot_light,
             colosseum::update::components::SpotLight::new(
-                (1.0, 1.0, 1.0),
+                (1.0, 0.95, 0.85),
                 1.0,
                 (0.0, 0.0, 6.0),
                 5.0,
@@ -360,8 +332,17 @@ impl CubeMainScene {
         ecs.add_component(camera, colosseum::update::components::Transform::default());
         context.set_active_camera(camera);
 
+        // Set skybox
+        context.set_skybox(colosseum::update::ProceduralSkybox::new_light(
+            (0.5, 0.7, 0.9),
+            directional_light,
+            0.02,
+            5.0,
+            1.0,
+            (0.37, 0.29, 0.20),
+        ));
+
         Ok(CubeMainScene {
-            color,
             frames: 0,
             fps_timer: 0.0,
             logger,
