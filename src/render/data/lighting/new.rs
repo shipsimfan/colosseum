@@ -36,12 +36,18 @@ impl LightingData {
             device,
             memory_properties,
         )?;
+        let spot_light_matrices = LocalDataBuffer::new(
+            LightingData::INITIAL_SPOT_LIGHT_CAPACITY,
+            device,
+            memory_properties,
+        )?;
 
         Ok(LightingData {
             metadata,
             directional_lights,
             point_lights,
             spot_lights,
+            spot_light_matrices,
         })
     }
 }

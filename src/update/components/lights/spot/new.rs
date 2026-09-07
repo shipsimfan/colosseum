@@ -1,5 +1,5 @@
 use crate::update::components::SpotLight;
-use alexandria::math::{Color3f, Srgb, Vector3f};
+use alexandria::math::{Color3f, Matrix4x4f, Srgb, Vector3f};
 
 impl SpotLight {
     /// Create a new [`SpotLight`] component
@@ -20,6 +20,8 @@ impl SpotLight {
             direction: direction.into().normalized(),
             cutoff_angle: cutoff_angle.cos(),
             falloff_angle: falloff_angle.cos(),
+            view_projection: Matrix4x4f::ZERO,
+            dirty: true,
         }
     }
 }

@@ -41,27 +41,30 @@ impl FixedRenderObjects {
     /** Pipelines **/
     pub const SOLID_COLOR_SKY_PIPELINE: usize = 0;
     pub const PROCEDURAL_SKY_PIPELINE: usize = 1;
-    pub const TONE_MAP_PIPELINE: usize = 2;
-    pub const QUANTIZATION_PIPELINE: usize = 3;
-    pub const FXAA_PIPELINE: usize = 4;
+    pub const SHADOW_MAP_PIPELINE: usize = 2;
+    pub const TONE_MAP_PIPELINE: usize = 3;
+    pub const QUANTIZATION_PIPELINE: usize = 4;
+    pub const FXAA_PIPELINE: usize = 5;
 
     /** Samplers **/
     pub const LINEAR_CLAMP_SAMPLER: usize = 0;
 
     /** Descriptor Set Layouts **/
     pub const CAMERA_DESCRIPTOR_SET_LAYOUT: usize = 0;
-    pub const RENDERABLES_DESCRIPTOR_SET_LAYOUT: usize = 1;
-    pub const LIGHTING_DESCRIPTOR_SET_LAYOUT: usize = 2;
-    pub const POST_PROCESS_DESCRIPTOR_SET_LAYOUT: usize = 3;
+    pub const SHADOW_MAP_DESCRIPTOR_SET_LAYOUT: usize = 1;
+    pub const RENDERABLES_DESCRIPTOR_SET_LAYOUT: usize = 2;
+    pub const LIGHTING_DESCRIPTOR_SET_LAYOUT: usize = 3;
+    pub const POST_PROCESS_DESCRIPTOR_SET_LAYOUT: usize = 4;
 
     /** Descriptor Sets **/
     pub const CAMERA_DESCRIPTOR_SET: usize = 0;
-    pub const RENDERABLES_DESCRIPTOR_SET: usize = 1;
-    pub const LIGHTING_DESCRIPTOR_SET: usize = 2;
+    pub const SPOT_LIGHT_DESCRIPTOR_SET: usize = 1;
+    pub const RENDERABLES_DESCRIPTOR_SET: usize = 2;
+    pub const LIGHTING_DESCRIPTOR_SET: usize = 3;
 
-    pub const TONE_MAP_DESCRIPTOR_SET: usize = 3;
-    pub const QUANTIZATION_DESCRIPTOR_SET: usize = 4;
-    pub const FXAA_DESCRIPTOR_SET: usize = 5;
+    pub const TONE_MAP_DESCRIPTOR_SET: usize = 4;
+    pub const QUANTIZATION_DESCRIPTOR_SET: usize = 5;
+    pub const FXAA_DESCRIPTOR_SET: usize = 6;
 
     /** Device Buffers **/
     pub const CAMERA_DEVICE_BUFFER: usize = 0;
@@ -70,4 +73,8 @@ impl FixedRenderObjects {
     pub const DIRECTIONAL_LIGHTS_DEVICE_BUFFER: usize = 3;
     pub const POINT_LIGHTS_DEVICE_BUFFER: usize = 4;
     pub const SPOT_LIGHTS_DEVICE_BUFFER: usize = 5;
+    pub const SPOT_LIGHT_MATRICES_DEVICE_BUFFER: usize = 6;
+
+    /** Shadow Maps **/
+    pub const SPOT_LIGHT_SHADOW_MAPS: usize = 0;
 }

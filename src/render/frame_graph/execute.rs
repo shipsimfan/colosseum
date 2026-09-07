@@ -91,7 +91,8 @@ impl FrameGraph {
                         }
                         FrameGraphResourceUsage::TransferDst
                         | FrameGraphResourceUsage::TransferSrc
-                        | FrameGraphResourceUsage::SampledImage => {}
+                        | FrameGraphResourceUsage::SampledImage
+                        | FrameGraphResourceUsage::ShadowMapDepthAttachment => {}
                     }
                 }
             });

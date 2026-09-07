@@ -1,4 +1,5 @@
 use crate::render::{LightingData, RenderDirectionalLight, RenderPointLight, RenderSpotLight};
+use alexandria::math::Matrix4x4f;
 
 impl LightingData {
     /// Add a new directional light to the data
@@ -12,7 +13,8 @@ impl LightingData {
     }
 
     /// Add a new point light to the data
-    pub fn add_spot_light(&mut self, spot_light: RenderSpotLight) {
+    pub fn add_spot_light(&mut self, spot_light: RenderSpotLight, view_projection: Matrix4x4f) {
         self.spot_lights.push(spot_light);
+        self.spot_light_matrices.push(view_projection);
     }
 }

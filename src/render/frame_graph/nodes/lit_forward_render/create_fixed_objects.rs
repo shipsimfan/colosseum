@@ -53,6 +53,12 @@ fn create_lighting_descriptor_set_layout(
                 1,
                 VulkanShaderStageFlag::Fragment,
             ),
+            VulkanDescriptorSetLayoutBinding::new(
+                4,
+                VulkanDescriptorType::StorageBuffer,
+                1,
+                VulkanShaderStageFlag::Fragment,
+            ),
         ],
         1,
         FixedRenderObjects::LIGHTING_DESCRIPTOR_SET_LAYOUT,

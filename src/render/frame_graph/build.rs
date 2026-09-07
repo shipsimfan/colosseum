@@ -2,8 +2,8 @@ use crate::render::{
     AntiAliasingMode, FrameGraph, HDR_FORMAT, SDR_FORMAT,
     frame_graph::{
         FrameGraphNode, FrameGraphResourceBuilder, FrameGraphResourceId, FrameGraphStructure,
-        FxaaNode, LitForwardRenderNode, QuantizationNode, RenderScaleNode, ToneMapNode,
-        UnlitForwardRenderNode,
+        FxaaNode, LitForwardRenderNode, QuantizationNode, RenderScaleNode, ShadowMapNode,
+        ToneMapNode, UnlitForwardRenderNode,
     },
 };
 use alexandria::gpu::VulkanFormat;
@@ -27,6 +27,8 @@ impl FrameGraph {
         let color_output = resources.create_render_scale_transient(HDR_FORMAT);
 
         // Perform the main render passes
+        nodes.push(ShadowMapNode::new().into());
+
         nodes.push(structure.skybox().create_node(color_output));
         nodes.push(UnlitForwardRenderNode::new(color_output, depth_buffer).into());
         nodes.push(LitForwardRenderNode::new(color_output, depth_buffer).into());

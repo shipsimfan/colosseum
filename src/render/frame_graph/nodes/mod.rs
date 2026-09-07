@@ -2,6 +2,7 @@ use crate::{
     Result,
     render::{
         DeviceDataBuffer, FixedRenderObjects, PerFrameObjectBuilder, RenderData, RenderObjects,
+        ShadowMapBuffer,
         frame_graph::{FrameGraphResourceId, FrameGraphResourceUsage, FrameGraphResources},
     },
 };
@@ -20,6 +21,9 @@ nodes![
 
         /// A node that generates a procedural sky
         procedural_sky::ProceduralSky(ProceduralSkyNode),
+
+        /// A node that renders shadow maps for lights
+        shadow_map::ShadowMap(ShadowMapNode),
     ],
 
     data_buffer:[
@@ -28,7 +32,6 @@ nodes![
 
         /// A node that renders lit objects using a forward rendering pipeline
         lit_forward_render::LitForwardRender(LitForwardRenderNode),
-
     ],
 
     post_process: [

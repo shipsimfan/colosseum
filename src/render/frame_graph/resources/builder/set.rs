@@ -9,6 +9,11 @@ impl<'a> FrameGraphResourceBuilder<'a> {
             self.transient_native_scale[id.index()].set_color();
         }
 
+        debug_assert!(
+            !id.is_shadow_map(),
+            "shadow maps cannot be marked as color attachments"
+        );
+
         // Do nothing for external resources
     }
 
@@ -20,7 +25,7 @@ impl<'a> FrameGraphResourceBuilder<'a> {
             self.transient_native_scale[id.index()].set_depth();
         }
 
-        // Do nothing for external resources
+        // Do nothing for external resources or shadow maps
     }
 
     /// Mark that a resource will be used as a transfer destination
@@ -30,6 +35,11 @@ impl<'a> FrameGraphResourceBuilder<'a> {
         } else if id.is_transient_native_scale() {
             self.transient_native_scale[id.index()].set_transfer_dst();
         }
+
+        debug_assert!(
+            !id.is_shadow_map(),
+            "shadow maps cannot be marked as transfer destinations"
+        );
 
         // Do nothing for external resources
     }
@@ -42,6 +52,11 @@ impl<'a> FrameGraphResourceBuilder<'a> {
             self.transient_native_scale[id.index()].set_transfer_src();
         }
 
+        debug_assert!(
+            !id.is_shadow_map(),
+            "shadow maps cannot be marked as transfer sources"
+        );
+
         // Do nothing for external resources
     }
 
@@ -53,6 +68,6 @@ impl<'a> FrameGraphResourceBuilder<'a> {
             self.transient_native_scale[id.index()].set_sampled_image();
         }
 
-        // Do nothing for external resources
+        // Do nothing for external resources or shadow maps
     }
 }

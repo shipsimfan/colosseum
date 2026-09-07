@@ -24,6 +24,7 @@ impl GraphicsDevice {
         FrameGraphNode::copy_data(
             &mut self.render_data[token.frame_index()],
             &mut transient_buffer.device_buffers,
+            &mut transient_buffer.shadow_map_buffers,
             &transient_buffer.descriptor_sets,
             cmd_buffer,
             &self.device,

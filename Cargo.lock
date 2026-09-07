@@ -4,11 +4,12 @@ version = 4
 
 [[package]]
 name = "alexandria"
-version = "0.13.2"
-source = "git+https://github.com/shipsimfan/alexandria#20acf55bfa95e02f1cf8935f351c7e084c9857e9"
+version = "0.14.0"
+source = "git+https://github.com/shipsimfan/alexandria#1aa4ff122fff3078c23ae91162fb4585fbac3f4a"
 dependencies = [
  "alexandria-macros",
  "data-format",
+ "dioptra",
  "linux",
  "time",
  "vulkan",
@@ -19,8 +20,8 @@ dependencies = [
 
 [[package]]
 name = "alexandria-macros"
-version = "0.13.2"
-source = "git+https://github.com/shipsimfan/alexandria#20acf55bfa95e02f1cf8935f351c7e084c9857e9"
+version = "0.14.0"
+source = "git+https://github.com/shipsimfan/alexandria#1aa4ff122fff3078c23ae91162fb4585fbac3f4a"
 dependencies = [
  "proc-macro-util",
 ]
@@ -67,6 +68,16 @@ version = "1.2.0"
 source = "git+https://github.com/shipsimfan/lib-data-format#38d368e72582aa7a2075734f4fabf41f7f28b97f"
 dependencies = [
  "macros 1.2.0",
+]
+
+[[package]]
+name = "dioptra"
+version = "1.0.0"
+source = "git+https://github.com/shipsimfan/lib-dioptra#2fe3f29de351dc8903dcdd8e6fbdf747258cb215"
+dependencies = [
+ "data-format",
+ "vulkan",
+ "win32",
 ]
 
 [[package]]

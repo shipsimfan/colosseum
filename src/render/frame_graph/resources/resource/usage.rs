@@ -6,6 +6,10 @@ pub(in crate::render::frame_graph) enum FrameGraphResourceUsage {
     /// The resource is written to as a depth attachment
     DepthAttachment,
 
+    /// The resource is written to as a depth attachment, but a render pass shouldn't be
+    /// automatically started
+    ShadowMapDepthAttachment,
+
     /// The resource is written to as a transfer destination
     TransferDst,
 

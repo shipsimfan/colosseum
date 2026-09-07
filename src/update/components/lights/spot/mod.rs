@@ -1,4 +1,4 @@
-use alexandria::math::{Color3f, Linear, Vector3f};
+use alexandria::math::{Color3f, Linear, Matrix4x4f, Vector3f};
 
 mod get;
 mod new;
@@ -27,4 +27,10 @@ pub struct SpotLight {
 
     /// The angle at which lights starts falling off
     falloff_angle: f32,
+
+    /// The view-projection matrix for this light
+    view_projection: Matrix4x4f,
+
+    /// Does the view-projection matrix need to be re-calcualated?
+    dirty: bool,
 }

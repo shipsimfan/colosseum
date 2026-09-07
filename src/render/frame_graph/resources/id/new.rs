@@ -42,4 +42,17 @@ impl FrameGraphResourceId {
             id: id | FrameGraphResourceId::TRANSIENT_NATIVE_SCALE,
         }
     }
+    /// Create a new [`FrameGraphResourceId`] for a shadow map resource
+    pub(in crate::render::frame_graph::resources) const fn new_shadow_map(
+        id: usize,
+    ) -> FrameGraphResourceId {
+        debug_assert!(
+            id < FrameGraphResourceId::TYPE_MASK,
+            "shadow map resource ID too large"
+        );
+
+        FrameGraphResourceId {
+            id: id | FrameGraphResourceId::SHADOW_MAP,
+        }
+    }
 }

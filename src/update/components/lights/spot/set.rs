@@ -15,21 +15,25 @@ impl SpotLight {
     /// Set the direction of the light
     pub fn set_position<P: Into<Vector3f>>(&mut self, position: P) {
         self.position = position.into();
+        self.dirty = true;
     }
 
     /// Set the range of the light
     pub fn set_range(&mut self, range: f32) {
         self.range = range;
+        self.dirty = true;
     }
 
     /// Set the direction of the light
     pub fn set_direction<D: Into<Vector3f>>(&mut self, direction: D) {
         self.direction = direction.into().normalized();
+        self.dirty = true;
     }
 
     /// Set the cutoff angle of the light
     pub fn set_cutoff_angle(&mut self, cutoff_angle: f32) {
         self.cutoff_angle = cutoff_angle.cos();
+        self.dirty = true;
     }
 
     /// Set the angle at which light begins falling off

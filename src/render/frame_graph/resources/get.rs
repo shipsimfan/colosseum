@@ -11,7 +11,7 @@ impl<'a> FrameGraphResources<'a> {
         } else if id.is_transient_native_scale() {
             FrameGraphResource::Transient(&self.transient.native_scale[id.index()])
         } else {
-            todo!("transient static resources are not yet implemented")
+            panic!("cannot get a shadow map resource from its ID")
         }
     }
 
@@ -31,7 +31,7 @@ impl<'a> FrameGraphResources<'a> {
         } else if id.is_transient_native_scale() {
             &self.transient.native_scale[id.index()]
         } else {
-            todo!("transient static resources are not yet implemented")
+            panic!("cannot get a shadow map resource from its ID")
         };
 
         let load_op = transient.load_op();

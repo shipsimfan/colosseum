@@ -1,3 +1,5 @@
+use crate::render::FixedRenderObjects;
+
 mod get;
 mod new;
 
@@ -28,9 +30,16 @@ impl FrameGraphResourceId {
     /// The bit used to indicate that a resource ID is transient and at native scale
     const TRANSIENT_NATIVE_SCALE: usize = 0b01 << FrameGraphResourceId::TYPE_SHIFT;
 
+    /// The bit used to indicate that a resource ID is a shadow map set
+    const SHADOW_MAP: usize = 0b10 << FrameGraphResourceId::TYPE_SHIFT;
+
     /// The bit used to indicate that a resource ID is external (e.g., from the swapchain)
     const EXTERNAL: usize = 0b11 << FrameGraphResourceId::TYPE_SHIFT;
 
     /// The ID for the swapchain image, which is always an external resource with ID 0
     pub const SWAPCHAIN_IMAGE: FrameGraphResourceId = FrameGraphResourceId::new_external(0);
+
+    /// The ID for the spot light shadow maps
+    pub const SPOT_LIGHT_SHADOW_MAPS: FrameGraphResourceId =
+        FrameGraphResourceId::new_shadow_map(FixedRenderObjects::SPOT_LIGHT_SHADOW_MAPS);
 }

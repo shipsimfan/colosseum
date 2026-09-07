@@ -1,4 +1,4 @@
-use crate::render::{DeviceDataBuffer, FixedRenderObjects};
+use crate::render::{DeviceDataBuffer, FixedRenderObjects, ShadowMapBuffer};
 use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanDescriptorPool, VulkanDescriptorSet, VulkanDevice,
 };
@@ -19,6 +19,9 @@ pub(in crate::render) struct PerFrameObjectBuilder<'a> {
 
     /// The set of device-local data buffers needed
     device_buffers: &'a mut Vec<DeviceDataBuffer>,
+
+    /// The shadow map buffers for the frame
+    shadow_map_buffers: &'a mut Vec<ShadowMapBuffer>,
 
     /// The device to create buffers with
     device: &'a VulkanDevice,

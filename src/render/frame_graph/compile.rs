@@ -34,7 +34,8 @@ impl FrameGraph {
                                 VulkanImageLayout::ColorAttachmentOptimal,
                             )
                         }
-                        FrameGraphResourceUsage::DepthAttachment => {
+                        FrameGraphResourceUsage::DepthAttachment
+                        | FrameGraphResourceUsage::ShadowMapDepthAttachment => {
                             resource_builder.set_depth(*id);
                             FrameGraphResourceState::new(
                                 VulkanPipelineStageFlag::EarlyFragmentTests,

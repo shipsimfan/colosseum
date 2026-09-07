@@ -1,3 +1,5 @@
+use alexandria::math::Matrix4x4f;
+
 use crate::render::{
     LightingData, LightingMetadata, LocalDataBuffer, RenderDirectionalLight, RenderPointLight,
     RenderSpotLight,
@@ -22,5 +24,10 @@ impl LightingData {
     /// Get a reference to the spot lights buffer
     pub(in crate::render) fn spot_lights(&self) -> &LocalDataBuffer<RenderSpotLight> {
         &self.spot_lights
+    }
+
+    /// Get a reference to the spot light matrix buffer
+    pub(in crate::render) fn spot_light_matrices(&self) -> &LocalDataBuffer<Matrix4x4f> {
+        &self.spot_light_matrices
     }
 }

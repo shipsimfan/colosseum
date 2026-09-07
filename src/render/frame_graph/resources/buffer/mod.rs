@@ -3,11 +3,13 @@ use alexandria::gpu::{VulkanDescriptorPool, VulkanDescriptorSet};
 
 mod device_buffer;
 mod per_frame_object_builder;
+mod shadow_map_buffer;
 
 mod new;
 
 pub(in crate::render) use device_buffer::*;
 pub(in crate::render) use per_frame_object_builder::*;
+pub(in crate::render) use shadow_map_buffer::*;
 
 /// A buffer for transient resources used by the frame graph in a specific frame
 pub(in crate::render) struct FrameGraphTransientBuffer {
@@ -29,4 +31,7 @@ pub(in crate::render) struct FrameGraphTransientBuffer {
 
     /// The device local data buffers made for the frame
     pub device_buffers: Vec<DeviceDataBuffer>,
+
+    /// The shadow map buffers
+    pub shadow_map_buffers: Vec<ShadowMapBuffer>,
 }

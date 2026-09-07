@@ -35,6 +35,8 @@ impl LightingData {
     ) -> Result<()> {
         self.metadata[0].num_spot_lights = spot_lights as _;
         self.spot_lights
+            .reserve(spot_lights, device, memory_properties)?;
+        self.spot_light_matrices
             .reserve(spot_lights, device, memory_properties)
     }
 }

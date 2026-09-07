@@ -12,19 +12,22 @@ impl DeviceDataBuffer {
     pub fn copy<'a, T>(
         &'a mut self,
         local: &LocalDataBuffer<T>,
-        descriptor_set: &VulkanDescriptorSet,
+        created_descriptor_sets: &[VulkanDescriptorSet],
         cmd_buffer: &mut VulkanCommandBuffer,
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,
     ) -> Result<()> {
         let local_capacity = local.capacity() * std::mem::size_of::<T>();
         if self.capacity < local_capacity {
+            let mut descriptor_sets = Vec::new();
+            std::mem::swap(&mut descriptor_sets, &mut self.descriptor_sets);
+
             *self = DeviceDataBuffer::new::<T>(
                 local.capacity(),
                 self.usage,
-                descriptor_set,
                 self.descriptor_type,
-                self.binding,
+                descriptor_sets,
+                created_descriptor_sets,
                 device,
                 memory_properties,
             )?;

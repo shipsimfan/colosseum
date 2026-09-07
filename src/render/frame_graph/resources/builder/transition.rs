@@ -17,7 +17,7 @@ impl<'a> FrameGraphResourceBuilder<'a> {
         } else if id.is_transient_native_scale() {
             self.transient_native_scale[id.index()].transition(id, new_state)
         } else {
-            todo!("transient static resources are not yet implemented")
+            todo!("shadow map transitions are not yet implemented")
         }
     }
 }

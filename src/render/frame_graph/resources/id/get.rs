@@ -20,4 +20,9 @@ impl FrameGraphResourceId {
     pub const fn is_transient_native_scale(&self) -> bool {
         (self.id & FrameGraphResourceId::TYPE_MASK) == FrameGraphResourceId::TRANSIENT_NATIVE_SCALE
     }
+
+    /// Is this a shadow map resource?
+    pub const fn is_shadow_map(&self) -> bool {
+        (self.id & FrameGraphResourceId::TYPE_MASK) == FrameGraphResourceId::SHADOW_MAP
+    }
 }

@@ -2,8 +2,12 @@ use alexandria::gpu::{
     VulkanBuffer, VulkanBufferUsageFlags, VulkanDescriptorType, VulkanDeviceMemory,
 };
 
+mod descriptor_set;
+
 mod copy;
 mod new;
+
+pub(in crate::render) use descriptor_set::*;
 
 /// A contiguous buffer that holds a set number of elements
 pub(in crate::render) struct DeviceDataBuffer {
@@ -20,8 +24,8 @@ pub(in crate::render) struct DeviceDataBuffer {
     /// The usage of the buffer
     usage: VulkanBufferUsageFlags,
 
-    /// The binding that this device buffer is bound to in the descriptor set
-    binding: u32,
+    /// The descriptor sets this buffer should be bound to
+    descriptor_sets: Vec<DeviceBufferDescriptorSet>,
 
     /// The type of descriptor this buffer is used as
     descriptor_type: VulkanDescriptorType,

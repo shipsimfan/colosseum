@@ -1,4 +1,5 @@
 use crate::render::LocalDataBuffer;
+use alexandria::math::Matrix4x4f;
 
 mod directional;
 mod metadata;
@@ -31,4 +32,7 @@ pub(crate) struct LightingData {
 
     /// The buffer containing the spot light data
     spot_lights: LocalDataBuffer<RenderSpotLight>,
+
+    /// The buffer containing the view-projection matrices of the spot lights
+    spot_light_matrices: LocalDataBuffer<Matrix4x4f>,
 }

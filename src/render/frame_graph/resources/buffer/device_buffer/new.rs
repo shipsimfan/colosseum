@@ -1,4 +1,7 @@
-use crate::{Error, Result, render::DeviceDataBuffer};
+use crate::{
+    Error, Result,
+    render::{DeviceBufferDescriptorSet, DeviceDataBuffer},
+};
 use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanBufferUsageFlag, VulkanBufferUsageFlags,
     VulkanDescriptorBufferInfo, VulkanDescriptorSet, VulkanDescriptorType, VulkanDevice,
@@ -10,11 +13,10 @@ impl DeviceDataBuffer {
     pub(in crate::render::frame_graph::resources::buffer) fn new<T>(
         capacity: usize,
         usage: VulkanBufferUsageFlags,
-
-        descriptor_set: &VulkanDescriptorSet,
         descriptor_type: VulkanDescriptorType,
-        binding: u32,
+        descriptor_sets: Vec<DeviceBufferDescriptorSet>,
 
+        created_descriptor_sets: &[VulkanDescriptorSet],
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,
     ) -> Result<DeviceDataBuffer> {
@@ -42,24 +44,26 @@ impl DeviceDataBuffer {
         buffer.bind_memory(&memory, 0).map_err(Error::new_inner)?;
 
         // Bind the buffer to a descriptor set
-        device.update_descriptor_sets(
-            &[VulkanWriteDescriptorSet::new(
-                descriptor_set,
-                binding,
-                0,
-                descriptor_type,
+        for descriptor_set in &descriptor_sets {
+            device.update_descriptor_sets(
+                &[VulkanWriteDescriptorSet::new(
+                    &created_descriptor_sets[descriptor_set.descriptor_set],
+                    descriptor_set.binding,
+                    0,
+                    descriptor_type,
+                    &[],
+                    &[VulkanDescriptorBufferInfo::new(&buffer, 0, size)],
+                )],
                 &[],
-                &[VulkanDescriptorBufferInfo::new(&buffer, 0, size)],
-            )],
-            &[],
-        );
+            );
+        }
 
         Ok(DeviceDataBuffer {
             capacity: size as usize,
             buffer,
             memory,
             usage,
-            binding,
+            descriptor_sets,
             descriptor_type,
         })
     }

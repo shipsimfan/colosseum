@@ -1,8 +1,11 @@
 use crate::{
     Error, Result,
-    render::{DeviceDataBuffer, PerFrameObjectBuilder},
+    render::{DeviceBufferDescriptorSet, DeviceDataBuffer, PerFrameObjectBuilder, ShadowMapBuffer},
 };
-use alexandria::gpu::{VulkanBufferUsageFlags, VulkanDescriptorType};
+use alexandria::{
+    gpu::{VulkanBufferUsageFlags, VulkanDescriptorType},
+    math::Vector2u,
+};
 
 impl<'a> PerFrameObjectBuilder<'a> {
     /// Add a new per-frame descriptor set
@@ -27,10 +30,8 @@ impl<'a> PerFrameObjectBuilder<'a> {
         &mut self,
         initial_capacity: usize,
         usage: U,
-
-        descriptor_set: usize,
         descriptor_type: VulkanDescriptorType,
-        binding: u32,
+        descriptor_sets: Vec<DeviceBufferDescriptorSet>,
 
         index: usize,
     ) -> Result<()> {
@@ -39,13 +40,29 @@ impl<'a> PerFrameObjectBuilder<'a> {
         let device_buffer = DeviceDataBuffer::new::<T>(
             initial_capacity,
             usage.into(),
-            &self.descriptor_sets[descriptor_set],
             descriptor_type,
-            binding,
+            descriptor_sets,
+            self.descriptor_sets,
             self.device,
             self.memory_properties,
         )?;
         self.device_buffers.push(device_buffer);
+
+        Ok(())
+    }
+
+    /// Add a new [`ShadowMapBuffer`]
+    pub fn add_shadow_map_buffer<V: Into<Vector2u>>(
+        &mut self,
+        size: V,
+        count: usize,
+        index: usize,
+    ) -> Result<()> {
+        assert_eq!(index, self.shadow_map_buffers.len());
+
+        let shadow_map_buffer =
+            ShadowMapBuffer::new(size.into(), count, self.device, self.memory_properties)?;
+        self.shadow_map_buffers.push(shadow_map_buffer);
 
         Ok(())
     }

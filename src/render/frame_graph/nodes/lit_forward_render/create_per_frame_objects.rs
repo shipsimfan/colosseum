@@ -6,7 +6,10 @@ use crate::{
         frame_graph::LitForwardRenderNode,
     },
 };
-use alexandria::gpu::{VulkanBufferUsageFlag, VulkanDescriptorType};
+use alexandria::{
+    gpu::{VulkanBufferUsageFlag, VulkanDescriptorType},
+    math::Matrix4x4f,
+};
 
 impl LitForwardRenderNode {
     /// Create needed per-frame resources for this node
@@ -23,34 +26,47 @@ impl LitForwardRenderNode {
         per_frame_objects.add_device_data_buffer::<LightingMetadata, _>(
             1,
             VulkanBufferUsageFlag::UniformBuffer,
-            FixedRenderObjects::LIGHTING_DESCRIPTOR_SET,
             VulkanDescriptorType::UniformBuffer,
-            0,
+            vec![(0, FixedRenderObjects::LIGHTING_DESCRIPTOR_SET).into()],
             FixedRenderObjects::LIGHTING_METADATA_DEVICE_BUFFER,
         )?;
         per_frame_objects.add_device_data_buffer::<RenderDirectionalLight, _>(
             LightingData::INITIAL_DIRECTIONAL_LIGHT_CAPACITY,
             VulkanBufferUsageFlag::StorageBuffer,
-            FixedRenderObjects::LIGHTING_DESCRIPTOR_SET,
             VulkanDescriptorType::StorageBuffer,
-            1,
+            vec![(1, FixedRenderObjects::LIGHTING_DESCRIPTOR_SET).into()],
             FixedRenderObjects::DIRECTIONAL_LIGHTS_DEVICE_BUFFER,
         )?;
         per_frame_objects.add_device_data_buffer::<RenderPointLight, _>(
             LightingData::INITIAL_POINT_LIGHT_CAPACITY,
             VulkanBufferUsageFlag::StorageBuffer,
-            FixedRenderObjects::LIGHTING_DESCRIPTOR_SET,
             VulkanDescriptorType::StorageBuffer,
-            2,
+            vec![(2, FixedRenderObjects::LIGHTING_DESCRIPTOR_SET).into()],
             FixedRenderObjects::POINT_LIGHTS_DEVICE_BUFFER,
         )?;
         per_frame_objects.add_device_data_buffer::<RenderSpotLight, _>(
             LightingData::INITIAL_SPOT_LIGHT_CAPACITY,
             VulkanBufferUsageFlag::StorageBuffer,
-            FixedRenderObjects::LIGHTING_DESCRIPTOR_SET,
             VulkanDescriptorType::StorageBuffer,
-            3,
+            vec![(3, FixedRenderObjects::LIGHTING_DESCRIPTOR_SET).into()],
             FixedRenderObjects::SPOT_LIGHTS_DEVICE_BUFFER,
+        )?;
+        per_frame_objects.add_device_data_buffer::<Matrix4x4f, _>(
+            LightingData::INITIAL_SPOT_LIGHT_CAPACITY,
+            VulkanBufferUsageFlag::StorageBuffer,
+            VulkanDescriptorType::StorageBuffer,
+            vec![
+                (4, FixedRenderObjects::LIGHTING_DESCRIPTOR_SET).into(),
+                (0, FixedRenderObjects::SPOT_LIGHT_DESCRIPTOR_SET).into(),
+            ],
+            FixedRenderObjects::SPOT_LIGHT_MATRICES_DEVICE_BUFFER,
+        )?;
+
+        // Create the shadow map buffers
+        per_frame_objects.add_shadow_map_buffer(
+            (1024, 1024),
+            LightingData::INITIAL_SPOT_LIGHT_CAPACITY,
+            FixedRenderObjects::SPOT_LIGHT_SHADOW_MAPS,
         )?;
 
         Ok(())
