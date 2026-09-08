@@ -102,7 +102,7 @@ fn create_shadow_map_pipeline(
             false,
             false,
             VulkanPolygonMode::Fill,
-            VulkanCullModeFlag::Back,
+            VulkanCullModeFlag::Front,
             VulkanFrontFace::CounterClockwise,
             false,
             0.0,

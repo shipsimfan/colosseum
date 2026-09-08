@@ -72,6 +72,12 @@ StructuredBuffer<PointLight> point_lights;
 [[vk::binding(3, 2)]]
 StructuredBuffer<SpotLight> spot_lights;
 
+[[vk::binding(4, 2)]]
+StructuredBuffer<float4x4> spot_light_matrices;
+
+[[vk::binding(5, 2)]]
+Sampler2D spot_light_shadow_maps[];
+
 [push_constant]
 ConstantBuffer<PushConstants> pc;
 
@@ -96,6 +102,19 @@ float specular(float3 light_direction, float3 normal, float3 view_direction) {
     float3 reflect_direction = reflect(light_direction, normal);
 
     return pow(max(dot(view_direction, reflect_direction), 0.0), pc.shininess) * pc.specular_strength;
+}
+
+float shadow_factor(float3 position, float4x4 view_projection, Sampler2D shadow_map) {
+    float4 view_position = mul(view_projection, float4(position, 1.0));
+
+    float our_depth = view_position.z / view_position.w;
+
+    float2 tex_coords = (view_position.xy / view_position.w + 1.0) / 2.0;
+    float sample_depth = shadow_map.Sample(tex_coords).r;
+
+    if (our_depth > sample_depth)
+        return 0.0;
+    return 1.0;
 }
 
 float3 directional_light(DirectionalLight light, float3 normal, float3 view_direction) {
@@ -135,7 +154,14 @@ float3 point_light(PointLight light, float3 normal, float3 view_direction, float
     return (diffuse + specular) * attenuation * light.color.rgb;
 }
 
-float3 spot_light(SpotLight light, float3 normal, float3 view_direction, float3 position) {
+float3 spot_light(
+    SpotLight light, 
+    float3 normal, 
+    float3 view_direction, 
+    float3 position, 
+    float4x4 view_projection, 
+    Sampler2D shadow_map
+) { 
     float3 difference = light.position - position;
     float3 direction = normalize(difference);
 
@@ -154,7 +180,10 @@ float3 spot_light(SpotLight light, float3 normal, float3 view_direction, float3 
     float distance = length(light.position - position);
     float attenuation = attenuation(distance, light.range);
 
-    return (diffuse + specular) * attenuation * intensity * light.color.rgb;
+    // Calculate shadow factor
+    float shadow_factor = shadow_factor(position, view_projection, shadow_map);
+
+    return (diffuse + specular) * attenuation * intensity * shadow_factor * light.color.rgb;
 }
 
 [shader("fragment")]
@@ -173,7 +202,7 @@ float4 frag_main(VertexOutput vertex) : SV_Target {
         lighting += point_light(point_lights[i], normal, view_direction, vertex.world_position);
 
     for (uint i = 0; i < lighting_metadata.spot_light_count; i++)
-        lighting += spot_light(spot_lights[i], normal, view_direction, vertex.world_position);
+        lighting += spot_light(spot_lights[i], normal, view_direction, vertex.world_position, spot_light_matrices[i], spot_light_shadow_maps[i]);
 
     return float4(vertex.color.rgb * lighting, 1.0);
 }

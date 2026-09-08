@@ -278,6 +278,8 @@ impl CubeMainScene {
         context.set_material_specular_strength(material, 1.0);
         context.set_material_shininess(material, 256.0);
 
+        let sphere_mesh = context.sphere();
+
         // Create the cube entity and add components
         let ecs = context.ecs_mut();
         let cube = ecs.create_entity();
@@ -287,6 +289,17 @@ impl CubeMainScene {
         ecs.add_component(
             cube,
             colosseum::update::components::Renderer::new(material, mesh),
+        );
+
+        // Create a sphere
+        let sphere = ecs.create_entity();
+        let mut transform = colosseum::update::components::Transform::default();
+        transform.set_position((0.6, 0.0, 5.0));
+        transform.set_scale(0.5);
+        ecs.add_component(sphere, transform);
+        ecs.add_component(
+            sphere,
+            colosseum::update::components::Renderer::new(material, sphere_mesh),
         );
 
         // Create a directional light

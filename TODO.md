@@ -1,9 +1,13 @@
 # ToDo
  1. Add shadow mapping
-   1. Spot light shadows
-     - Use shadow map depth buffer in lit shader
-   2. Directional light shadows
-   3. Point light shadows
+   1. Directional light shadows
+     - Compute inverse camera matrix
+     - Calculate orthographic bounds from camera frustum + additional shadow depth (default 300)
+     - Create orthographic projection matrix for shadow map
+     - Add shadow map and matrix buffers
+     - Generalize shadow map node for different light types
+     - Use shadow map result in lit shader
+   2. Point light shadows
  2. Combine all GPU transfer staging buffers into one 
  3. Continue adding names to all objects
  4. Add debug labels to all render passes
