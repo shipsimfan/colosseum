@@ -1,5 +1,6 @@
 use crate::render::frame_graph::{
     Arena, FrameGraphDynamicTransientResourceInfo, FrameGraphExternalResource,
+    FrameGraphResourceState,
 };
 
 mod clear_transient;
@@ -20,4 +21,7 @@ pub(in crate::render::frame_graph) struct FrameGraphResourceBuilder<'a> {
 
     /// The transient resources that are at the native scale
     transient_native_scale: &'a mut Vec<FrameGraphDynamicTransientResourceInfo>,
+
+    /// The states of the shadow map buffers
+    shadow_map_states: [FrameGraphResourceState; 1],
 }

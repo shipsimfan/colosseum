@@ -10,15 +10,19 @@ use alexandria::{
     math::Vector2u,
 };
 use std::cell::UnsafeCell;
+#[cfg(debug_assertions)]
+use std::ffi::CString;
 
 impl FrameGraphTransientResource {
     /// Create a new [`FrameGraphTransientResource`] from dynamic information
     pub fn from_dynamic(
         info: &FrameGraphDynamicTransientResourceInfo,
+        #[cfg_attr(not(debug_assertions), allow(unused_variables))] index: usize,
         size: Vector2u,
         device: &VulkanDevice,
     ) -> Result<FrameGraphTransientResource> {
-        let image = device
+        #[cfg_attr(not(debug_assertions), allow(unused_mut))]
+        let mut image = device
             .create_image(
                 0,
                 VulkanImageType::_2d,
@@ -32,6 +36,13 @@ impl FrameGraphTransientResource {
                 VulkanSharingMode::Exclusive,
                 &[],
                 VulkanImageLayout::Undefined,
+            )
+            .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(
+                &mut image,
+                &CString::new(format!("{} {}", info.name(), index)).unwrap(),
             )
             .map_err(Error::new_inner)?;
 

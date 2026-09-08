@@ -3,6 +3,7 @@ use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanBuffer, VulkanBufferUsageFlag, VulkanDevice,
     VulkanMappedMemory, VulkanMemoryPropertyFlag, VulkanSharingMode,
 };
+use std::ffi::CStr;
 
 impl<T> StagingBuffer<T> {
     /// Resize the staging buffer to the specified capacity
@@ -10,8 +11,12 @@ impl<T> StagingBuffer<T> {
         &mut self,
         new_capacity: usize,
     ) -> Result<()> {
-        let (buffer, memory) =
-            StagingBuffer::allocate(&self.device, &self.memory_properties, new_capacity)?;
+        let (buffer, memory) = StagingBuffer::allocate(
+            self.name,
+            &self.device,
+            &self.memory_properties,
+            new_capacity,
+        )?;
 
         self.buffer = buffer;
         self.memory = memory;
@@ -22,6 +27,7 @@ impl<T> StagingBuffer<T> {
 
     /// Allocate a new staging buffer with the specified capacity
     pub(in crate::render::transfer::staging_buffer) fn allocate(
+        #[cfg_attr(not(debug_assertions), allow(unused_variables))] name: &CStr,
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,
         capacity: usize,
@@ -37,6 +43,10 @@ impl<T> StagingBuffer<T> {
                 VulkanSharingMode::Exclusive,
                 &[],
             )
+            .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut buffer, name)
             .map_err(Error::new_inner)?;
 
         // Allocate the memory for the buffer

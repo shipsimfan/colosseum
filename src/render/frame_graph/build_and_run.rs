@@ -22,6 +22,7 @@ impl FrameGraph {
         &mut self,
         data: &RenderData,
         render_objects: &RenderObjects,
+        index: usize,
 
         swapchain_size: Vector2u,
         swapchain_image: &VulkanImage,
@@ -83,6 +84,7 @@ impl FrameGraph {
         // See if we need to resize
         if resources.needs_resize(self.transient_epoch) {
             resources.resize(
+                index,
                 &transient_render_scale_info,
                 &transient_native_scale_info,
                 swapchain_size,

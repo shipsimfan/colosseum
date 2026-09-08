@@ -1,3 +1,5 @@
+use crate::render::ShadowMapBuffer;
+
 mod dynamic_transient_info;
 mod external;
 mod state;
@@ -19,4 +21,7 @@ pub(in crate::render::frame_graph) enum FrameGraphResource<'a, 'b> {
 
     /// The resource is a transient resource, which is managed by the frame graph
     Transient(&'b FrameGraphTransientResource),
+
+    /// The resource is a shadow map
+    ShadowMap(&'b ShadowMapBuffer),
 }

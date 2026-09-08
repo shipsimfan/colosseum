@@ -5,20 +5,28 @@ use alexandria::gpu::VulkanFormat;
 
 impl<'a> FrameGraphResourceBuilder<'a> {
     /// Create a new render scale transient resource and return its ID
-    pub fn create_render_scale_transient(&mut self, format: VulkanFormat) -> FrameGraphResourceId {
+    pub fn create_render_scale_transient(
+        &mut self,
+        name: &'static str,
+        format: VulkanFormat,
+    ) -> FrameGraphResourceId {
         let id =
             FrameGraphResourceId::new_transient_render_scale(self.transient_render_scale.len());
         self.transient_render_scale
-            .push(FrameGraphDynamicTransientResourceInfo::new(format));
+            .push(FrameGraphDynamicTransientResourceInfo::new(name, format));
         id
     }
 
     /// Create a new native scale transient resource and return its ID
-    pub fn create_native_scale_transient(&mut self, format: VulkanFormat) -> FrameGraphResourceId {
+    pub fn create_native_scale_transient(
+        &mut self,
+        name: &'static str,
+        format: VulkanFormat,
+    ) -> FrameGraphResourceId {
         let id =
             FrameGraphResourceId::new_transient_native_scale(self.transient_native_scale.len());
         self.transient_native_scale
-            .push(FrameGraphDynamicTransientResourceInfo::new(format));
+            .push(FrameGraphDynamicTransientResourceInfo::new(name, format));
         id
     }
 }

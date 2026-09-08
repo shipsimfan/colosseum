@@ -26,6 +26,7 @@ impl GraphicsDevice {
             &mut transient_buffer.device_buffers,
             &mut transient_buffer.shadow_map_buffers,
             &transient_buffer.descriptor_sets,
+            self.render_objects.fixed(),
             cmd_buffer,
             &self.device,
             &self.memory_properties,

@@ -6,6 +6,7 @@ use alexandria::gpu::{
     VulkanDescriptorPoolSize, VulkanDescriptorSetLayoutBinding, VulkanDevice, VulkanPipelineLayout,
     VulkanSampler,
 };
+use std::ffi::CStr;
 
 impl FixedRenderObjects {
     /// Add a new pipeline layout
@@ -33,6 +34,7 @@ impl FixedRenderObjects {
     /// Add a new descriptor set layout
     pub(in crate::render) fn add_descriptor_set_layout(
         &mut self,
+        #[cfg_attr(not(debug_assertions), allow(unused_variables))] name: &CStr,
         bindings: &[VulkanDescriptorSetLayoutBinding],
         quantity: u32,
         index: usize,
@@ -40,8 +42,13 @@ impl FixedRenderObjects {
     ) -> Result<()> {
         assert_eq!(index, self.descriptor_set_layouts.len());
 
-        let descriptor_set_layout = device
+        #[cfg_attr(not(debug_assertions), allow(unused_mut))]
+        let mut descriptor_set_layout = device
             .create_descriptor_set_layout(0, bindings)
+            .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut descriptor_set_layout, name)
             .map_err(Error::new_inner)?;
 
         self.descriptor_set_layouts.push(descriptor_set_layout);

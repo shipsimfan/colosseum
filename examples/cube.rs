@@ -103,7 +103,8 @@ impl colosseum::update::InitialScene for CubeInitialScene {
         _: &CubeOptions,
         context: &mut colosseum::update::UpdateContext<Cube>,
     ) -> colosseum::Result<Self> {
-        let mesh = Some(context.create_mesh(CUBE_VERTICES.to_vec(), CUBE_INDICES.to_vec())?);
+        let mesh =
+            Some(context.create_mesh("Cube", CUBE_VERTICES.to_vec(), CUBE_INDICES.to_vec())?);
 
         Ok(CubeInitialScene { mesh })
     }

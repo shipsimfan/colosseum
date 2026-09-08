@@ -1,4 +1,7 @@
-use crate::render::frame_graph::{FrameGraphResource, FrameGraphResourceId, FrameGraphResources};
+use crate::render::{
+    ShadowMapBuffer,
+    frame_graph::{FrameGraphResource, FrameGraphResourceId, FrameGraphResources},
+};
 use alexandria::gpu::{VulkanAttachmentLoadOp, VulkanDescriptorSet};
 
 impl<'a> FrameGraphResources<'a> {
@@ -11,7 +14,7 @@ impl<'a> FrameGraphResources<'a> {
         } else if id.is_transient_native_scale() {
             FrameGraphResource::Transient(&self.transient.native_scale[id.index()])
         } else {
-            panic!("cannot get a shadow map resource from its ID")
+            FrameGraphResource::ShadowMap(&self.transient.shadow_map_buffers[id.index()])
         }
     }
 
@@ -26,12 +29,19 @@ impl<'a> FrameGraphResources<'a> {
             return (FrameGraphResource::External(external), load_op);
         }
 
+        if id.is_shadow_map() {
+            return (
+                FrameGraphResource::ShadowMap(&self.transient.shadow_map_buffers[id.index()]),
+                VulkanAttachmentLoadOp::DontCare,
+            );
+        }
+
         let transient = if id.is_transient_render_scale() {
             &self.transient.render_scale[id.index()]
         } else if id.is_transient_native_scale() {
             &self.transient.native_scale[id.index()]
         } else {
-            panic!("cannot get a shadow map resource from its ID")
+            todo!("shadow maps cannot be gotten with a load op")
         };
 
         let load_op = transient.load_op();
@@ -41,5 +51,10 @@ impl<'a> FrameGraphResources<'a> {
     /// Get a reference to a descriptor set by its index in the descriptor set array
     pub fn descriptor_set(&self, index: usize) -> &VulkanDescriptorSet {
         &self.transient.descriptor_sets[index]
+    }
+
+    /// Get a reference to a shadow map buffer by its index
+    pub fn shadow_map_buffer(&self, index: usize) -> &ShadowMapBuffer {
+        &self.transient.shadow_map_buffers[index]
     }
 }

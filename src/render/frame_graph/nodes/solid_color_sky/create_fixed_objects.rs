@@ -23,6 +23,7 @@ impl SolidColorSkyNode {
         let shader = Shader::new(&FRAGMENT_SHADER, device)?;
 
         let pipeline = Pipeline::new_post_process(
+            "Solid Color Sky Pipeline",
             fixed_render_objects.fullscreen_quad(),
             &shader,
             std::mem::size_of::<Color4f<Linear>>(),

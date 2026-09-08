@@ -1,6 +1,6 @@
 use crate::render::frame_graph::{
     ArenaBuffer, FrameGraphDynamicTransientResourceInfo, FrameGraphExternalResource,
-    FrameGraphResourceBuilder,
+    FrameGraphResourceBuilder, FrameGraphResourceState,
 };
 use alexandria::{
     gpu::{VulkanImage, VulkanImageAspectFlag, VulkanImageView},
@@ -30,6 +30,7 @@ impl<'a> FrameGraphResourceBuilder<'a> {
             external,
             transient_render_scale,
             transient_native_scale,
+            shadow_map_states: [FrameGraphResourceState::default()],
         }
     }
 }

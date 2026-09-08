@@ -118,10 +118,11 @@ macro_rules! nodes {
             /// Create per-frame descriptor sets for this node
             pub(in crate::render) fn create_per_frame_objects(
                 mut per_frame_objects: PerFrameObjectBuilder,
+                index: usize,
             ) -> Result<()> {
-                $($type::create_per_frame_objects(&mut per_frame_objects,)?;)*
-                $($data_buffer_type::create_per_frame_objects(&mut per_frame_objects)?;)*
-                $($post_process_type::create_per_frame_objects(&mut per_frame_objects)?;)*
+                $($type::create_per_frame_objects(&mut per_frame_objects, index)?;)*
+                $($data_buffer_type::create_per_frame_objects(&mut per_frame_objects, index)?;)*
+                $($post_process_type::create_per_frame_objects(&mut per_frame_objects, index)?;)*
 
                 Ok(())
             }
@@ -132,6 +133,7 @@ macro_rules! nodes {
                 device_buffers: &mut [DeviceDataBuffer],
                 shadow_maps: &mut [ShadowMapBuffer],
                 descriptor_sets: &[VulkanDescriptorSet],
+                fixed_objects: &FixedRenderObjects,
                 cmd_buffer: &mut VulkanCommandBuffer,
                 device: &VulkanDevice,
                 memory_properties: &VulkanAdapterMemoryProperties,
@@ -141,6 +143,7 @@ macro_rules! nodes {
                     device_buffers,
                     shadow_maps,
                     descriptor_sets,
+                    fixed_objects,
                     cmd_buffer,
                     device,
                     memory_properties

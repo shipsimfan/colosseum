@@ -7,6 +7,8 @@ use crate::{
     update::UpdateRenderObjects,
 };
 use alexandria::gpu::{VulkanBufferUsageFlag, VulkanSharingMode};
+#[cfg(debug_assertions)]
+use std::ffi::CString;
 
 impl UpdateRenderObjects {
     /// Create a new [`Shader`]
@@ -62,6 +64,7 @@ impl UpdateRenderObjects {
     /// The mesh cannot be used in rendering until the [`MeshTransfer`] has completed
     pub fn create_mesh(
         &mut self,
+        #[cfg_attr(not(debug_assertions), allow(unused_variables))] name: &str,
         vertices: Vec<Vertex>,
         indices: Vec<u32>,
     ) -> Result<MeshTransfer> {
@@ -76,6 +79,13 @@ impl UpdateRenderObjects {
                 &[],
             )
             .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        let vertex_name = CString::new(format!("\"{}\" Vertex Buffer", name)).unwrap();
+        #[cfg(debug_assertions)]
+        self.device
+            .set_object_name(&mut vertex_buffer, &vertex_name)
+            .map_err(Error::new_inner)?;
+
         let mut index_buffer = self
             .device
             .create_buffer(
@@ -85,6 +95,12 @@ impl UpdateRenderObjects {
                 VulkanSharingMode::Exclusive,
                 &[],
             )
+            .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        let index_name = CString::new(format!("\"{}\" Index Buffer", name)).unwrap();
+        #[cfg(debug_assertions)]
+        self.device
+            .set_object_name(&mut index_buffer, &index_name)
             .map_err(Error::new_inner)?;
 
         // Allocate memory for the vertex and index buffers

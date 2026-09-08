@@ -15,15 +15,18 @@ impl LitForwardRenderNode {
     /// Create needed per-frame resources for this node
     pub(in crate::render::frame_graph::nodes) fn create_per_frame_objects(
         per_frame_objects: &mut PerFrameObjectBuilder,
+        index: usize,
     ) -> Result<()> {
         // Create the lighting descriptor set
         per_frame_objects.add_descriptor_set(
+            format!("Lighting Descriptor Set {}", index),
             FixedRenderObjects::LIGHTING_DESCRIPTOR_SET_LAYOUT,
             FixedRenderObjects::LIGHTING_DESCRIPTOR_SET,
         )?;
 
         // Create the lighting device data buffers
         per_frame_objects.add_device_data_buffer::<LightingMetadata, _>(
+            format!("Lighting Metadata Buffer {}", index),
             1,
             VulkanBufferUsageFlag::UniformBuffer,
             VulkanDescriptorType::UniformBuffer,
@@ -31,6 +34,7 @@ impl LitForwardRenderNode {
             FixedRenderObjects::LIGHTING_METADATA_DEVICE_BUFFER,
         )?;
         per_frame_objects.add_device_data_buffer::<RenderDirectionalLight, _>(
+            format!("Directional Light Buffer {}", index),
             LightingData::INITIAL_DIRECTIONAL_LIGHT_CAPACITY,
             VulkanBufferUsageFlag::StorageBuffer,
             VulkanDescriptorType::StorageBuffer,
@@ -38,6 +42,7 @@ impl LitForwardRenderNode {
             FixedRenderObjects::DIRECTIONAL_LIGHTS_DEVICE_BUFFER,
         )?;
         per_frame_objects.add_device_data_buffer::<RenderPointLight, _>(
+            format!("Point Light Buffer {}", index),
             LightingData::INITIAL_POINT_LIGHT_CAPACITY,
             VulkanBufferUsageFlag::StorageBuffer,
             VulkanDescriptorType::StorageBuffer,
@@ -45,6 +50,7 @@ impl LitForwardRenderNode {
             FixedRenderObjects::POINT_LIGHTS_DEVICE_BUFFER,
         )?;
         per_frame_objects.add_device_data_buffer::<RenderSpotLight, _>(
+            format!("Spot Light Buffer {}", index),
             LightingData::INITIAL_SPOT_LIGHT_CAPACITY,
             VulkanBufferUsageFlag::StorageBuffer,
             VulkanDescriptorType::StorageBuffer,
@@ -52,6 +58,7 @@ impl LitForwardRenderNode {
             FixedRenderObjects::SPOT_LIGHTS_DEVICE_BUFFER,
         )?;
         per_frame_objects.add_device_data_buffer::<Matrix4x4f, _>(
+            format!("Spot Light Matrix Buffer {}", index),
             LightingData::INITIAL_SPOT_LIGHT_CAPACITY,
             VulkanBufferUsageFlag::StorageBuffer,
             VulkanDescriptorType::StorageBuffer,
@@ -64,8 +71,11 @@ impl LitForwardRenderNode {
 
         // Create the shadow map buffers
         per_frame_objects.add_shadow_map_buffer(
+            format!("Spot Ligth Shadow Map Buffer {}", index),
             (1024, 1024),
             LightingData::INITIAL_SPOT_LIGHT_CAPACITY,
+            FixedRenderObjects::LIGHTING_DESCRIPTOR_SET,
+            5,
             FixedRenderObjects::SPOT_LIGHT_SHADOW_MAPS,
         )?;
 

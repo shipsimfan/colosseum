@@ -7,10 +7,37 @@ use alexandria::gpu::{
     VulkanDescriptorBufferInfo, VulkanDescriptorSet, VulkanDescriptorType, VulkanDevice,
     VulkanMemoryPropertyFlag, VulkanSharingMode, VulkanWriteDescriptorSet,
 };
+use std::ffi::CString;
 
 impl DeviceDataBuffer {
     /// Create a new [`DeviceDataBuffer`]
     pub(in crate::render::frame_graph::resources::buffer) fn new<T>(
+        name: String,
+        capacity: usize,
+        usage: VulkanBufferUsageFlags,
+        descriptor_type: VulkanDescriptorType,
+        descriptor_sets: Vec<DeviceBufferDescriptorSet>,
+
+        created_descriptor_sets: &[VulkanDescriptorSet],
+        device: &VulkanDevice,
+        memory_properties: &VulkanAdapterMemoryProperties,
+    ) -> Result<DeviceDataBuffer> {
+        let name = CString::new(name).unwrap();
+        DeviceDataBuffer::new_inner::<T>(
+            name,
+            capacity,
+            usage,
+            descriptor_type,
+            descriptor_sets,
+            created_descriptor_sets,
+            device,
+            memory_properties,
+        )
+    }
+
+    /// Create a new [`DeviceDataBuffer`]
+    pub(in crate::render::frame_graph::resources::buffer) fn new_inner<T>(
+        #[cfg_attr(not(debug_assertions), allow(unused_variables))] name: CString,
         capacity: usize,
         usage: VulkanBufferUsageFlags,
         descriptor_type: VulkanDescriptorType,
@@ -59,6 +86,7 @@ impl DeviceDataBuffer {
         }
 
         Ok(DeviceDataBuffer {
+            name,
             capacity: size as usize,
             buffer,
             memory,

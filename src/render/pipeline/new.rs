@@ -17,11 +17,14 @@ use alexandria::{
     },
     math::{Color4f, Linear},
 };
+#[cfg(debug_assertions)]
+use std::ffi::CString;
 use std::{ffi::CStr, sync::Arc};
 
 impl Pipeline {
     /// Create a new [`Pipeline`] for a post-processing effect
     pub fn new_post_process(
+        name: &'static str,
         fullscreen_quad: &Arc<Shader>,
         fragment_shader: &Arc<Shader>,
         push_constant_size: usize,
@@ -106,6 +109,7 @@ impl Pipeline {
         );
 
         Pipeline::new(
+            name,
             descriptor_set_layouts,
             &[VulkanPushConstantRange::new(
                 VulkanShaderStageFlag::Fragment,
@@ -134,6 +138,7 @@ impl Pipeline {
 
     /// Create a completely custom pair of pipeline and layout
     pub fn new(
+        #[cfg_attr(not(debug_assertions), allow(unused_variables))] name: &'static str,
         descriptor_set_layouts: &[&VulkanDescriptorSetLayout],
         push_constant_ranges: &[VulkanPushConstantRange],
         output_formats: &[VulkanFormat],
@@ -150,12 +155,20 @@ impl Pipeline {
         dynamic_state: &VulkanPipelineDynamicStateCreateInfo,
         device: &VulkanDevice,
     ) -> Result<Pipeline> {
-        let pipeline_layout = device
+        #[cfg_attr(not(debug_assertions), allow(unused_mut))]
+        let mut pipeline_layout = device
             .create_pipeline_layout(0, descriptor_set_layouts, push_constant_ranges)
+            .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        let layout_name = CString::new(format!("{} Layout", name)).unwrap();
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut pipeline_layout, &layout_name)
             .map_err(Error::new_inner)?;
 
         // Actually create the graphics pipeline
-        let pipeline = device
+        #[cfg_attr(not(debug_assertions), allow(unused_mut))]
+        let mut pipeline = device
             .create_graphics_pipeline(
                 [&mut VulkanPipelineRenderingCreateInfo::new(
                     0,
@@ -181,6 +194,12 @@ impl Pipeline {
                 None,
                 0,
             )
+            .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        let pipeline_name = CString::new(name).unwrap();
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut pipeline, &pipeline_name)
             .map_err(Error::new_inner)?;
 
         Ok(Pipeline {

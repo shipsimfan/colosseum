@@ -17,6 +17,7 @@ impl FrameGraphResourceList {
     pub fn resize(
         &mut self,
         info: &[FrameGraphDynamicTransientResourceInfo],
+        index: usize,
         size: Vector2u,
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,
@@ -29,7 +30,7 @@ impl FrameGraphResourceList {
         // and calculate the memory requirements
         let mut memory_requirements = VulkanMemoryRequirements::default();
         for info in info {
-            let resource = FrameGraphTransientResource::from_dynamic(info, size, device)?;
+            let resource = FrameGraphTransientResource::from_dynamic(info, index, size, device)?;
             memory_requirements = memory_requirements.extend(resource.memory_requirements());
             self.resources.push(resource);
         }

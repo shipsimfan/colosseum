@@ -76,11 +76,15 @@ impl<'surface> Swapchain<'surface> {
                 VulkanCommandPoolCreateFlag::ResetCommandBuffer,
             )
             .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut command_pool, c"Swapchain Command Pool")
+            .map_err(Error::new_inner)?;
 
         // Allocate per-frame data
         let mut frame_data = Vec::with_capacity(image_views.len());
-        for _ in 0..image_views.len() {
-            frame_data.push(FrameData::new(&mut command_pool, &device)?);
+        for i in 0..image_views.len() {
+            frame_data.push(FrameData::new(i, &mut command_pool, &device)?);
         }
 
         device.reserve_render_data(image_views.len())?;

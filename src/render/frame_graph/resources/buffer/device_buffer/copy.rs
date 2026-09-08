@@ -22,7 +22,12 @@ impl DeviceDataBuffer {
             let mut descriptor_sets = Vec::new();
             std::mem::swap(&mut descriptor_sets, &mut self.descriptor_sets);
 
-            *self = DeviceDataBuffer::new::<T>(
+            #[allow(invalid_value)]
+            let mut name = unsafe { std::mem::zeroed() };
+            std::mem::swap(&mut name, &mut self.name);
+
+            *self = DeviceDataBuffer::new_inner::<T>(
+                name,
                 local.capacity(),
                 self.usage,
                 self.descriptor_type,

@@ -21,10 +21,11 @@ impl FrameGraph {
         resources.clear_transient();
 
         // Create a common depth buffer
-        let depth_buffer = resources.create_render_scale_transient(VulkanFormat::D32SFloat);
+        let depth_buffer =
+            resources.create_render_scale_transient("Main Depth Buffer", VulkanFormat::D32SFloat);
 
         // Create the 3d color output
-        let color_output = resources.create_render_scale_transient(HDR_FORMAT);
+        let color_output = resources.create_render_scale_transient("Main Color Output", HDR_FORMAT);
 
         // Perform the main render passes
         nodes.push(ShadowMapNode::new().into());
@@ -34,12 +35,13 @@ impl FrameGraph {
         nodes.push(LitForwardRenderNode::new(color_output, depth_buffer).into());
 
         // Perform tone mapping
-        let tone_map_output = resources.create_render_scale_transient(SDR_FORMAT);
+        let tone_map_output =
+            resources.create_render_scale_transient("Tone Map Output", SDR_FORMAT);
         nodes.push(ToneMapNode::new(color_output, tone_map_output).into());
 
         // Perform render scaling, if needed
         let scaled_output = if structure.has_render_scale() {
-            let scale_output = resources.create_native_scale_transient(SDR_FORMAT);
+            let scale_output = resources.create_native_scale_transient("Scaled Output", SDR_FORMAT);
             nodes.push(RenderScaleNode::new(tone_map_output, scale_output).into());
             scale_output
         } else {
@@ -50,7 +52,7 @@ impl FrameGraph {
         let aa_output = match structure.anti_aliasing() {
             AntiAliasingMode::None => scaled_output,
             AntiAliasingMode::FXAA => {
-                let aa_output = resources.create_native_scale_transient(SDR_FORMAT);
+                let aa_output = resources.create_native_scale_transient("FXAA Output", SDR_FORMAT);
                 nodes.push(FxaaNode::new(scaled_output, aa_output).into());
                 aa_output
             }

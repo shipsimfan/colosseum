@@ -37,18 +37,17 @@ impl SpotLight {
         self.falloff_angle.acos()
     }
 
-    /// Get the view-proejction of this light
+    /// Get the view-projection of this light
     pub(in crate::update) fn view_projection(&mut self) -> Matrix4x4f {
         if self.dirty {
-            let projection =
-                Matrix4x4f::new_perspective(1.0, self.cutoff_angle * 2.0, 0.01, self.range);
+            let projection = Matrix4x4f::new_perspective(1.0, self.cutoff_angle, 0.01, self.range);
 
             let mut up = Vector3f::Y;
             if up.dot(self.direction).abs() > 0.999 {
                 up = Vector3f::X;
             }
 
-            let view = Matrix4x4f::new_look_at(self.position, self.position + self.direction, up);
+            let view = Matrix4x4f::new_look_at(-self.position, -self.position + self.direction, up);
 
             self.view_projection = projection * view;
 

@@ -4,9 +4,11 @@ use alexandria::gpu::VulkanFormat;
 impl FrameGraphDynamicTransientResourceInfo {
     /// Create a new [`FrameGraphDynamicTransientResourceInfo`]
     pub(in crate::render::frame_graph::resources) fn new(
+        name: &'static str,
         format: VulkanFormat,
     ) -> FrameGraphDynamicTransientResourceInfo {
         FrameGraphDynamicTransientResourceInfo {
+            name,
             format,
             is_color: false,
             is_depth: false,

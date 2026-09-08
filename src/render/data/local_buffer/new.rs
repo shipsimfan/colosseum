@@ -3,10 +3,23 @@ use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanBufferUsageFlag, VulkanDevice, VulkanMemoryPropertyFlag,
     VulkanSharingMode,
 };
+use std::ffi::CString;
 
 impl<T> LocalDataBuffer<T> {
     /// Create a new [`LocalDataBuffer`]
     pub(in crate::render::data) fn new(
+        name: String,
+        capacity: usize,
+        device: &VulkanDevice,
+        memory_properties: &VulkanAdapterMemoryProperties,
+    ) -> Result<LocalDataBuffer<T>> {
+        let name = CString::new(name).unwrap();
+        LocalDataBuffer::new_inner(name, capacity, device, memory_properties)
+    }
+
+    /// Create a new [`LocalDataBuffer`]
+    pub(in crate::render::data::local_buffer) fn new_inner(
+        #[cfg_attr(not(debug_assertions), allow(unused_variables))] name: CString,
         capacity: usize,
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,
@@ -22,6 +35,10 @@ impl<T> LocalDataBuffer<T> {
                 VulkanSharingMode::Exclusive,
                 &[],
             )
+            .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut buffer, &name)
             .map_err(Error::new_inner)?;
 
         // Allocate memory for the buffer
@@ -45,6 +62,7 @@ impl<T> LocalDataBuffer<T> {
             .map_err(|(error, _)| Error::new_inner(error))?;
 
         Ok(LocalDataBuffer {
+            name,
             capacity,
             count: 0,
 

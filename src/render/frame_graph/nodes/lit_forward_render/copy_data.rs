@@ -16,6 +16,7 @@ impl LitForwardRenderNode {
         device_buffers: &mut [DeviceDataBuffer],
         shadow_maps: &mut [ShadowMapBuffer],
         descriptor_sets: &[VulkanDescriptorSet],
+        fixed_objects: &FixedRenderObjects,
         cmd_buffer: &mut VulkanCommandBuffer,
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,
@@ -60,6 +61,12 @@ impl LitForwardRenderNode {
         )?;
 
         // Resize shadow maps
-        todo!("resize shadow maps")
+        shadow_maps[FixedRenderObjects::SPOT_LIGHT_SHADOW_MAPS].reserve(
+            render_data.lighting().spot_lights().capacity(),
+            descriptor_sets,
+            fixed_objects.sampler(FixedRenderObjects::LINEAR_CLAMP_SAMPLER),
+            device,
+            memory_properties,
+        )
     }
 }

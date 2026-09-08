@@ -5,6 +5,8 @@ use crate::{
     },
 };
 use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice};
+#[cfg(debug_assertions)]
+use std::ffi::CString;
 use std::sync::Arc;
 
 impl RenderData {
@@ -13,16 +15,31 @@ impl RenderData {
 
     /// Create a new set of [`RenderData`]
     pub(in crate::render) fn new(
+        index: usize,
         device: &VulkanDevice,
         memory_properties: &Arc<VulkanAdapterMemoryProperties>,
     ) -> Result<RenderData> {
-        let copy_fence = device.create_fence(0).map_err(Error::new_inner)?;
+        #[cfg_attr(not(debug_assertions), allow(unused_mut))]
+        let mut copy_fence = device.create_fence(0).map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(
+                &mut copy_fence,
+                &CString::new(format!("Copy Fence {}", index)).unwrap(),
+            )
+            .map_err(Error::new_inner)?;
 
-        let mut camera = LocalDataBuffer::new(1, device, memory_properties)?;
+        let mut camera = LocalDataBuffer::new(
+            format!("Camera Local Buffer {}", index),
+            1,
+            device,
+            memory_properties,
+        )?;
         camera.push(RenderCamera::new());
 
-        let lighting = LightingData::new(device, memory_properties)?;
+        let lighting = LightingData::new(index, device, memory_properties)?;
         let renderable_buffer = LocalDataBuffer::new(
+            format!("Renderable Local Buffer {}", index),
             RenderData::RENDERABLE_BUFFER_INIT_CAPACITY,
             device,
             memory_properties,

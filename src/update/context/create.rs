@@ -25,9 +25,10 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// The mesh cannot be used in rendering until the [`MeshTransfer`] has completed
     pub fn create_mesh(
         &mut self,
+        name: &str,
         vertices: Vec<Vertex>,
         indices: Vec<u32>,
     ) -> Result<MeshTransfer> {
-        self.render_objects.create_mesh(vertices, indices)
+        self.render_objects.create_mesh(name, vertices, indices)
     }
 }

@@ -1,6 +1,6 @@
 use crate::render::frame_graph::FrameGraphResource;
 use alexandria::{
-    gpu::{VulkanImage, VulkanImageAspectFlags, VulkanImageView},
+    gpu::{VulkanImage, VulkanImageAspectFlag, VulkanImageAspectFlags, VulkanImageView},
     math::Vector2u,
 };
 
@@ -10,6 +10,7 @@ impl<'a, 'b> FrameGraphResource<'a, 'b> {
         match self {
             FrameGraphResource::External(external) => external.size(),
             FrameGraphResource::Transient(transient) => transient.size(),
+            FrameGraphResource::ShadowMap(shadow_map) => shadow_map.size(),
         }
     }
 
@@ -18,6 +19,7 @@ impl<'a, 'b> FrameGraphResource<'a, 'b> {
         match self {
             FrameGraphResource::External(external) => external.image(),
             FrameGraphResource::Transient(transient) => transient.image(),
+            FrameGraphResource::ShadowMap(shadow_map) => shadow_map.image(),
         }
     }
 
@@ -26,6 +28,9 @@ impl<'a, 'b> FrameGraphResource<'a, 'b> {
         match self {
             FrameGraphResource::External(external) => external.image_view(),
             FrameGraphResource::Transient(transient) => transient.image_view(),
+            FrameGraphResource::ShadowMap(_) => {
+                panic!("cannot get the image view handle of a shadow map")
+            }
         }
     }
 
@@ -34,6 +39,7 @@ impl<'a, 'b> FrameGraphResource<'a, 'b> {
         match self {
             FrameGraphResource::External(external) => external.aspect_mask(),
             FrameGraphResource::Transient(transient) => transient.aspect_mask(),
+            FrameGraphResource::ShadowMap(_) => VulkanImageAspectFlag::Depth.into(),
         }
     }
 }

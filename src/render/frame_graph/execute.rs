@@ -62,10 +62,10 @@ impl FrameGraph {
             node.usages(|write_resources| {
                 for (id, usage) in write_resources {
                     let (resource, load_op) = resources.get_with_op(*id);
-                    render_area = resource.size();
 
                     match usage {
                         FrameGraphResourceUsage::ColorAttachment => {
+                            render_area = resource.size();
                             color_attachments.push(VulkanRenderingAttachmentInfo::new(
                                 resource.image_view(),
                                 VulkanImageLayout::ColorAttachmentOptimal,
@@ -78,6 +78,7 @@ impl FrameGraph {
                             ));
                         }
                         FrameGraphResourceUsage::DepthAttachment => {
+                            render_area = resource.size();
                             depth_attachment = Some(VulkanRenderingAttachmentInfo::new(
                                 resource.image_view(),
                                 VulkanImageLayout::DepthAttachmentOptimal,

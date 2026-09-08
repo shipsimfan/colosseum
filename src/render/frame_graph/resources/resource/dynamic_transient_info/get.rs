@@ -5,6 +5,12 @@ use alexandria::gpu::{
 };
 
 impl FrameGraphDynamicTransientResourceInfo {
+    /// Get the name of the transient
+    #[allow(unused)]
+    pub fn name(&self) -> &'static str {
+        self.name
+    }
+
     /// Get the format of the resource
     pub fn format(&self) -> VulkanFormat {
         self.format

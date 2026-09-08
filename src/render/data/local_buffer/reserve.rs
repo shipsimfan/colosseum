@@ -19,7 +19,11 @@ impl<T> LocalDataBuffer<T> {
             new_capacity *= 2;
         }
 
-        *self = LocalDataBuffer::new(new_capacity, device, memory_properties)?;
+        #[allow(invalid_value)]
+        let mut name = unsafe { std::mem::zeroed() };
+        std::mem::swap(&mut name, &mut self.name);
+
+        *self = LocalDataBuffer::new_inner(name, new_capacity, device, memory_properties)?;
         Ok(())
     }
 }

@@ -16,6 +16,7 @@ impl UnlitForwardRenderNode {
         device_buffers: &mut [DeviceDataBuffer],
         _: &mut [ShadowMapBuffer],
         descriptor_sets: &[VulkanDescriptorSet],
+        _: &FixedRenderObjects,
         cmd_buffer: &mut VulkanCommandBuffer,
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,

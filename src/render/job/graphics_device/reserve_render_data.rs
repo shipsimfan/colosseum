@@ -11,8 +11,11 @@ impl GraphicsDevice {
         }
 
         for _ in self.render_data.len()..num {
-            self.render_data
-                .push(RenderData::new(&self.device, &self.memory_properties)?);
+            self.render_data.push(RenderData::new(
+                self.render_data.len(),
+                &self.device,
+                &self.memory_properties,
+            )?);
         }
 
         Ok(())

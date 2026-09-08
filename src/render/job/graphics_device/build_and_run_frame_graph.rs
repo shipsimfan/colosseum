@@ -26,6 +26,7 @@ impl GraphicsDevice {
         self.frame_graph.build_and_run(
             render_data,
             &self.render_objects,
+            token.frame_index(),
             swapchain_size,
             swapchain_color_attachment.image(),
             swapchain_color_attachment,

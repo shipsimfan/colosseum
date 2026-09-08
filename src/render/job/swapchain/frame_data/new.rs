@@ -6,29 +6,56 @@ use crate::{
     },
 };
 use alexandria::gpu::{VulkanCommandBufferLevel, VulkanCommandPool, VulkanFenceCreateFlag};
+#[cfg(debug_assertions)]
+use std::ffi::CString;
 
 impl FrameData {
     /// Creates a new [`FrameData`]
     pub(in crate::render::job::swapchain) fn new(
+        index: usize,
         command_pool: &mut VulkanCommandPool,
         device: &GraphicsDevice,
     ) -> Result<FrameData> {
         let copy_command_buffer = command_pool
             .allocate_command_buffer(VulkanCommandBufferLevel::Primary)
             .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(
+                &mut command_pool[copy_command_buffer],
+                &CString::new(format!("Copy Command Buffer {}", index)).unwrap(),
+            )
+            .map_err(Error::new_inner)?;
+
         let render_command_buffer = command_pool
             .allocate_command_buffer(VulkanCommandBufferLevel::Primary)
+            .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(
+                &mut command_pool[render_command_buffer],
+                &CString::new(format!("Render Command Buffer {}", index)).unwrap(),
+            )
             .map_err(Error::new_inner)?;
 
         let acquire_image_semaphore = device.create_semaphore().map_err(Error::new_inner)?;
         let copy_complete_semaphore = device.create_semaphore().map_err(Error::new_inner)?;
         let render_complete_semaphore = device.create_semaphore().map_err(Error::new_inner)?;
 
-        let draw_fence = device
+        #[cfg_attr(not(debug_assertions), allow(unused_mut))]
+        let mut draw_fence = device
             .create_fence(VulkanFenceCreateFlag::Signalled)
+            .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(
+                &mut draw_fence,
+                &CString::new(format!("Draw Fence {}", index)).unwrap(),
+            )
             .map_err(Error::new_inner)?;
 
         let transient_buffer = FrameGraphTransientBuffer::new(
+            index,
             device.fixed_render_objects(),
             device,
             device.memory_properties(),

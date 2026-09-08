@@ -25,6 +25,7 @@ impl ToneMapNode {
     ) -> Result<()> {
         // Create post processing descriptor set layout
         fixed_render_objects.add_descriptor_set_layout(
+            c"Post Process Descriptor Set Layout",
             &[VulkanDescriptorSetLayoutBinding::new(
                 0,
                 VulkanDescriptorType::CombinedImageSampler,
@@ -46,6 +47,7 @@ impl ToneMapNode {
         let shader = Shader::new(&FRAGMENT_SHADER, device)?;
         fixed_render_objects.add_pipeline(
             Pipeline::new_post_process(
+                "Tone Map Pipeline",
                 fixed_render_objects.fullscreen_quad(),
                 &shader,
                 std::mem::size_of::<PushConstants>(),

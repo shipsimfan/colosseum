@@ -9,6 +9,8 @@ use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanCommandBufferLevel, VulkanCommandPoolCreateFlag,
     VulkanDevice, VulkanQueue,
 };
+#[cfg(debug_assertions)]
+use std::ffi::CString;
 use std::sync::{Arc, mpsc::Receiver};
 
 const INITIAL_STAGING_BUFFER_CAPACITY: usize = 64;
@@ -28,20 +30,42 @@ impl RenderGpuTransferQueue {
                 VulkanCommandPoolCreateFlag::ResetCommandBuffer,
             )
             .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut command_pool, c"Transfer Command Pool")
+            .map_err(Error::new_inner)?;
+
         let command_buffer_id = command_pool
             .allocate_command_buffer(VulkanCommandBufferLevel::Primary)
             .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(
+                &mut command_pool[command_buffer_id],
+                c"Transfer Command Buffer",
+            )
+            .map_err(Error::new_inner)?;
 
         // Create the transfer fence
-        let fence = device.create_fence(0).map_err(Error::new_inner)?;
+        #[cfg_attr(not(debug_assertions), allow(unused_mut))]
+        let mut fence = device.create_fence(0).map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(
+                &mut fence,
+                &CString::new(format!("Transfer Fence")).unwrap(),
+            )
+            .map_err(Error::new_inner)?;
 
         // Create staging buffers
         let vertex_staging_buffer = StagingBuffer::new(
+            c"Vertex Staging Buffer",
             INITIAL_STAGING_BUFFER_CAPACITY,
             device.clone(),
             &memory_properties,
         )?;
         let index_staging_buffer = StagingBuffer::new(
+            c"Indice Staging Buffer",
             INITIAL_STAGING_BUFFER_CAPACITY,
             device.clone(),
             &memory_properties,

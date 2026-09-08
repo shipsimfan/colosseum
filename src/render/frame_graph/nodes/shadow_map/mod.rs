@@ -7,3 +7,9 @@ mod usages;
 /// A node that renders shadow maps for lights
 #[derive(Debug)]
 pub(in crate::render::frame_graph) struct ShadowMapNode {}
+
+#[repr(C)]
+struct PushConstants {
+    light_index: u32,
+    object_index: u32,
+}

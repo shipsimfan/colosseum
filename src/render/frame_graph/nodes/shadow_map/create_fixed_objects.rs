@@ -1,7 +1,8 @@
 use crate::{
     Result,
     render::{
-        FixedRenderObjects, Pipeline, Shader, ShadowMapBuffer, Vertex, frame_graph::ShadowMapNode,
+        FixedRenderObjects, Pipeline, Shader, ShadowMapBuffer, Vertex,
+        frame_graph::{ShadowMapNode, nodes::shadow_map::PushConstants},
     },
 };
 use alexandria::{
@@ -42,12 +43,21 @@ fn create_shadow_map_descriptor_set_layout(
     device: &VulkanDevice,
 ) -> Result<()> {
     fixed_render_objects.add_descriptor_set_layout(
-        &[VulkanDescriptorSetLayoutBinding::new(
-            0,
-            VulkanDescriptorType::StorageBuffer,
-            1,
-            VulkanShaderStageFlag::Vertex,
-        )],
+        c"Shadow Map Descriptor Set Layout",
+        &[
+            VulkanDescriptorSetLayoutBinding::new(
+                0,
+                VulkanDescriptorType::StorageBuffer,
+                1,
+                VulkanShaderStageFlag::Vertex,
+            ),
+            VulkanDescriptorSetLayoutBinding::new(
+                1,
+                VulkanDescriptorType::StorageBuffer,
+                1,
+                VulkanShaderStageFlag::Vertex,
+            ),
+        ],
         1,
         FixedRenderObjects::SHADOW_MAP_DESCRIPTOR_SET_LAYOUT,
         device,
@@ -61,12 +71,13 @@ fn create_shadow_map_pipeline(
     let shader = Shader::new(&SHADER, device)?;
 
     let pipeline = Pipeline::new(
+        "Shadow Map Pipeline",
         &[fixed_render_objects
             .descriptor_set_layout(FixedRenderObjects::SHADOW_MAP_DESCRIPTOR_SET_LAYOUT)],
         &[VulkanPushConstantRange::new(
             VulkanShaderStageFlag::Vertex,
             0,
-            std::mem::size_of::<u32>() as _,
+            std::mem::size_of::<PushConstants>() as _,
         )],
         &[],
         ShadowMapBuffer::FORMAT,

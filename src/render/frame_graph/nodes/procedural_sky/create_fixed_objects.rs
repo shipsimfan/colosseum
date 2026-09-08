@@ -35,6 +35,7 @@ impl ProceduralSkyNode {
     ) -> Result<()> {
         // Create the descriptor set layout for the camera
         fixed_render_objects.add_descriptor_set_layout(
+            c"Camera Descriptor Set Layout",
             &[VulkanDescriptorSetLayoutBinding::new(
                 0,
                 VulkanDescriptorType::UniformBuffer,
@@ -50,6 +51,7 @@ impl ProceduralSkyNode {
         let shader = Shader::new(&SHADER, device)?;
 
         let pipeline = Pipeline::new(
+            "Procedural Sky Pipeline",
             &[fixed_render_objects
                 .descriptor_set_layout(FixedRenderObjects::CAMERA_DESCRIPTOR_SET_LAYOUT)],
             &[VulkanPushConstantRange::new(

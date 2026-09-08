@@ -8,6 +8,10 @@ mod transition;
 
 /// The information describing a transient resource which has a size determined externally at runtime
 pub(in crate::render::frame_graph) struct FrameGraphDynamicTransientResourceInfo {
+    /// The name of the transient resource
+    #[allow(unused)]
+    name: &'static str,
+
     /// The format of the resource
     format: VulkanFormat,
 

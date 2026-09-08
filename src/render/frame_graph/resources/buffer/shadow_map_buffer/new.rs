@@ -1,31 +1,64 @@
 use crate::{Error, Result, render::ShadowMapBuffer};
 use alexandria::{
     gpu::{
-        VulkanAdapterMemoryProperties, VulkanComponentMapping, VulkanDevice, VulkanImageAspectFlag,
-        VulkanImageCreateFlag, VulkanImageLayout, VulkanImageTiling, VulkanImageType,
-        VulkanImageUsageFlag, VulkanImageViewType, VulkanMemoryPropertyFlag, VulkanSampleCountFlag,
-        VulkanSharingMode,
+        VulkanAdapterMemoryProperties, VulkanComponentMapping, VulkanDescriptorImageInfo,
+        VulkanDescriptorSet, VulkanDescriptorType, VulkanDevice, VulkanImageAspectFlag,
+        VulkanImageLayout, VulkanImageTiling, VulkanImageType, VulkanImageUsageFlag,
+        VulkanImageViewType, VulkanMemoryPropertyFlag, VulkanSampleCountFlag, VulkanSampler,
+        VulkanSharingMode, VulkanWriteDescriptorSet,
     },
     math::Vector2u,
 };
+use std::ffi::CString;
 
 impl ShadowMapBuffer {
     /// Create a new [`ShadowMapBuffer`]
     pub(in crate::render::frame_graph::resources::buffer) fn new(
+        name: String,
         size: Vector2u,
         count: usize,
+        descriptor_set: usize,
+        binding: u32,
+        descriptor_sets: &[VulkanDescriptorSet],
+        sampler: &VulkanSampler,
+        device: &VulkanDevice,
+        memory_properties: &VulkanAdapterMemoryProperties,
+    ) -> Result<ShadowMapBuffer> {
+        let name = CString::new(name).unwrap();
+        ShadowMapBuffer::new_inner(
+            name,
+            size,
+            count,
+            descriptor_set,
+            binding,
+            descriptor_sets,
+            sampler,
+            device,
+            memory_properties,
+        )
+    }
+
+    /// Create a new [`ShadowMapBuffer`]
+    pub(in crate::render::frame_graph::resources::buffer) fn new_inner(
+        name: CString,
+        size: Vector2u,
+        count: usize,
+        descriptor_set: usize,
+        binding: u32,
+        descriptor_sets: &[VulkanDescriptorSet],
+        sampler: &VulkanSampler,
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,
     ) -> Result<ShadowMapBuffer> {
         // Create the image
         let mut image = device
             .create_image(
-                VulkanImageCreateFlag::_2dArrayCompatible,
-                VulkanImageType::_3d,
+                0,
+                VulkanImageType::_2d,
                 ShadowMapBuffer::FORMAT,
-                size.extend(count as _),
+                size.extend(1),
                 1,
-                1,
+                count as _,
                 VulkanSampleCountFlag::_1,
                 VulkanImageTiling::Optimal,
                 VulkanImageUsageFlag::DepthStencilAttachment | VulkanImageUsageFlag::Sampled,
@@ -33,6 +66,10 @@ impl ShadowMapBuffer {
                 &[],
                 VulkanImageLayout::Undefined,
             )
+            .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut image, &name)
             .map_err(Error::new_inner)?;
 
         // Allocate and bind the memory for the image
@@ -85,12 +122,32 @@ impl ShadowMapBuffer {
             );
         }
 
+        // Bind the complete image view to the descriptor set
+        device.update_descriptor_sets(
+            &[VulkanWriteDescriptorSet::new(
+                &descriptor_sets[descriptor_set],
+                binding,
+                0,
+                VulkanDescriptorType::SampledImage,
+                &[VulkanDescriptorImageInfo::new(
+                    sampler,
+                    &complete_image_view,
+                    VulkanImageLayout::ShaderReadOnlyOptimal,
+                )],
+                &[],
+            )],
+            &[],
+        );
+
         Ok(ShadowMapBuffer {
+            name,
             image,
             memory,
             complete_image_view,
             layer_image_views,
             size,
+            descriptor_set,
+            binding,
         })
     }
 }

@@ -76,23 +76,34 @@ impl UpdateRenderObjects {
 
         // Transfer primitive meshes to the GPU
         render_objects.quad = render_objects.transfer_primitive_mesh(
+            "Quad Primitive",
             QUAD_VERTICES.to_vec(),
             QUAD_INDICES.to_vec(),
             render_job,
         )?;
         render_objects.cube = render_objects.transfer_primitive_mesh(
+            "Cube Primitive",
             CUBE_VERTICES.to_vec(),
             CUBE_INDICES.to_vec(),
             render_job,
         )?;
         let (plane_vertices, plane_indices) = primitives::plane();
-        render_objects.plane =
-            render_objects.transfer_primitive_mesh(plane_vertices, plane_indices, render_job)?;
+        render_objects.plane = render_objects.transfer_primitive_mesh(
+            "Plane Primitive",
+            plane_vertices,
+            plane_indices,
+            render_job,
+        )?;
         let (sphere_vertices, sphere_indices) = primitives::sphere();
-        render_objects.sphere =
-            render_objects.transfer_primitive_mesh(sphere_vertices, sphere_indices, render_job)?;
+        render_objects.sphere = render_objects.transfer_primitive_mesh(
+            "Sphere Primitive",
+            sphere_vertices,
+            sphere_indices,
+            render_job,
+        )?;
         let (cylinder_vertices, cylinder_indices) = primitives::cylinder();
         render_objects.cylinder = render_objects.transfer_primitive_mesh(
+            "Cylinder Primitive",
             cylinder_vertices,
             cylinder_indices,
             render_job,
@@ -103,11 +114,12 @@ impl UpdateRenderObjects {
 
     fn transfer_primitive_mesh(
         &mut self,
+        name: &str,
         vertices: Vec<Vertex>,
         indices: Vec<u32>,
         render_job: &mut RenderJob,
     ) -> Result<Id<Mesh>> {
-        let mut transfer = self.create_mesh(vertices, indices)?;
+        let mut transfer = self.create_mesh(name, vertices, indices)?;
 
         render_job.wait_for_transfer(&mut transfer)?;
 

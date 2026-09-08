@@ -24,6 +24,7 @@ fn create_lighting_descriptor_set_layout(
     device: &VulkanDevice,
 ) -> Result<()> {
     fixed_render_objects.add_descriptor_set_layout(
+        c"Lighting Descriptor Set Layout",
         &[
             // Metadata
             VulkanDescriptorSetLayoutBinding::new(
@@ -59,6 +60,12 @@ fn create_lighting_descriptor_set_layout(
                 1,
                 VulkanShaderStageFlag::Fragment,
             ),
+            VulkanDescriptorSetLayoutBinding::new(
+                5,
+                VulkanDescriptorType::SampledImage,
+                1,
+                VulkanShaderStageFlag::Fragment,
+            ),
         ],
         1,
         FixedRenderObjects::LIGHTING_DESCRIPTOR_SET_LAYOUT,
@@ -70,7 +77,8 @@ fn create_lit_forward_pipeline_layout(
     fixed_render_objects: &mut FixedRenderObjects,
     device: &VulkanDevice,
 ) -> Result<()> {
-    let pipeline_layout = device
+    #[cfg_attr(not(debug_assertions), allow(unused_mut))]
+    let mut pipeline_layout = device
         .create_pipeline_layout(
             0,
             &[
@@ -87,6 +95,10 @@ fn create_lit_forward_pipeline_layout(
                 std::mem::size_of::<LitMaterialPushConstants>() as _,
             )],
         )
+        .map_err(Error::new_inner)?;
+    #[cfg(debug_assertions)]
+    device
+        .set_object_name(&mut pipeline_layout, c"Lit Forward Pipeline Layout")
         .map_err(Error::new_inner)?;
 
     fixed_render_objects.add_pipeline_layout(

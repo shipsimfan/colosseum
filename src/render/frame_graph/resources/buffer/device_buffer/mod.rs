@@ -1,6 +1,7 @@
 use alexandria::gpu::{
     VulkanBuffer, VulkanBufferUsageFlags, VulkanDescriptorType, VulkanDeviceMemory,
 };
+use std::ffi::CString;
 
 mod descriptor_set;
 
@@ -11,6 +12,9 @@ pub(in crate::render) use descriptor_set::*;
 
 /// A contiguous buffer that holds a set number of elements
 pub(in crate::render) struct DeviceDataBuffer {
+    /// The name of the data buffer
+    name: CString,
+
     /// The current capacity of the buffer, in bytes
     capacity: usize,
 

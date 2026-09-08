@@ -79,7 +79,7 @@ impl GraphicsDevice {
         let render_objects = RenderObjects::new(adapter.swapchain_format(), &device)?;
 
         // Create the initial render data
-        let render_data = vec![RenderData::new(&device, adapter.memory_properties())?];
+        let render_data = vec![RenderData::new(0, &device, adapter.memory_properties())?];
 
         Ok((
             GraphicsDevice {
