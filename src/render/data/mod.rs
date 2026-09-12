@@ -2,6 +2,7 @@ use crate::render::{Material, Mesh};
 use alexandria::{
     Id,
     gpu::{VulkanAdapterMemoryProperties, VulkanDevice, VulkanFence},
+    math::Vector3f,
 };
 use std::sync::Arc;
 
@@ -80,6 +81,9 @@ pub(crate) struct RenderData {
 
     /// The camera data for the current frame
     camera: LocalDataBuffer<RenderCamera>,
+
+    /// The corners for the camera's frustum, one for each directional light cascade plane
+    camera_corners: [[Vector3f; 4]; 2],
 
     /// The data about lighting for the current frame
     lighting: LightingData,

@@ -1,5 +1,6 @@
 mod default;
 mod matrix;
+mod shadow_corners;
 
 /// A projection for a camera, which defines how 3D points are projected onto the 2D screen
 pub enum CameraProjection {
@@ -23,22 +24,18 @@ pub enum CameraProjection {
 
         /// The near clipping plane distance
         near: f32,
+
+        /// The distance at which directional light shadows are rendered
+        shadow_distance: f32,
     },
 
     /// The orthographic projection, which keeps parallel lines parallel and does not simulate
     /// perspective
     Orthographic {
-        /// The left clipping plane distance
-        left: f32,
-
-        /// The right clipping plane distance
-        right: f32,
-
-        /// The bottom clipping plane distance
-        bottom: f32,
-
-        /// The top clipping plane distance
-        top: f32,
+        /// The half-height of the orthographic view volume
+        ///
+        /// The width is determined by the aspect ratio of the camera
+        size: f32,
 
         /// The near clipping plane distance
         near: f32,

@@ -4,6 +4,7 @@ impl LightingData {
     /// Reset the lighting data for a new frame
     pub fn reset(&mut self) {
         self.directional_lights.reset();
+        self.directional_light_matrices.reset();
         self.point_lights.reset();
         self.spot_lights.reset();
         self.spot_light_matrices.reset();

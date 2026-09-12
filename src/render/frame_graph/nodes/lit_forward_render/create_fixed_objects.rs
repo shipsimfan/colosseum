@@ -40,29 +40,41 @@ fn create_lighting_descriptor_set_layout(
                 1,
                 VulkanShaderStageFlag::Fragment,
             ),
-            // Point Lights
             VulkanDescriptorSetLayoutBinding::new(
                 2,
                 VulkanDescriptorType::StorageBuffer,
                 1,
                 VulkanShaderStageFlag::Fragment,
             ),
-            // Spot Lights
             VulkanDescriptorSetLayoutBinding::new(
                 3,
-                VulkanDescriptorType::StorageBuffer,
+                VulkanDescriptorType::CombinedImageSampler,
                 1,
                 VulkanShaderStageFlag::Fragment,
             ),
+            // Point Lights
             VulkanDescriptorSetLayoutBinding::new(
                 4,
                 VulkanDescriptorType::StorageBuffer,
                 1,
                 VulkanShaderStageFlag::Fragment,
             ),
+            // Spot Lights
             VulkanDescriptorSetLayoutBinding::new(
                 5,
-                VulkanDescriptorType::SampledImage,
+                VulkanDescriptorType::StorageBuffer,
+                1,
+                VulkanShaderStageFlag::Fragment,
+            ),
+            VulkanDescriptorSetLayoutBinding::new(
+                6,
+                VulkanDescriptorType::StorageBuffer,
+                1,
+                VulkanShaderStageFlag::Fragment,
+            ),
+            VulkanDescriptorSetLayoutBinding::new(
+                7,
+                VulkanDescriptorType::CombinedImageSampler,
                 1,
                 VulkanShaderStageFlag::Fragment,
             ),

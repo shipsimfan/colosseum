@@ -67,15 +67,21 @@ ConstantBuffer<LightingMetadata> lighting_metadata;
 StructuredBuffer<DirectionalLight> directional_lights;
 
 [[vk::binding(2, 2)]]
-StructuredBuffer<PointLight> point_lights;
+StructuredBuffer<float4x4> directional_light_matrices;
 
 [[vk::binding(3, 2)]]
-StructuredBuffer<SpotLight> spot_lights;
+Sampler2D directional_shadow_maps[];
 
 [[vk::binding(4, 2)]]
-StructuredBuffer<float4x4> spot_light_matrices;
+StructuredBuffer<PointLight> point_lights;
 
 [[vk::binding(5, 2)]]
+StructuredBuffer<SpotLight> spot_lights;
+
+[[vk::binding(6, 2)]]
+StructuredBuffer<float4x4> spot_light_matrices;
+
+[[vk::binding(7, 2)]]
 Sampler2D spot_light_shadow_maps[];
 
 [push_constant]

@@ -10,7 +10,12 @@ impl ShadowMapNode {
         index: usize,
     ) -> Result<()> {
         per_frame_objects.add_descriptor_set(
-            format!("Shadow Map Descriptor Set {}", index),
+            format!("Directional Light Descriptor Set {}", index),
+            FixedRenderObjects::SHADOW_MAP_DESCRIPTOR_SET_LAYOUT,
+            FixedRenderObjects::DIRECTIONAL_LIGHT_DESCRIPTOR_SET,
+        )?;
+        per_frame_objects.add_descriptor_set(
+            format!("Spot Light Descriptor Set {}", index),
             FixedRenderObjects::SHADOW_MAP_DESCRIPTOR_SET_LAYOUT,
             FixedRenderObjects::SPOT_LIGHT_DESCRIPTOR_SET,
         )

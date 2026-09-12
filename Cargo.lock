@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "alexandria"
 version = "0.15.0"
-source = "git+https://github.com/shipsimfan/alexandria#e1d3bd8b3e0a847e63c9e93812890fb59fcf20d1"
+source = "git+https://github.com/shipsimfan/alexandria#8eeb9f6b12a0b60edffc4e5284d90e534802d2c7"
 dependencies = [
  "alexandria-macros",
  "data-format",
@@ -21,7 +21,7 @@ dependencies = [
 [[package]]
 name = "alexandria-macros"
 version = "0.15.0"
-source = "git+https://github.com/shipsimfan/alexandria#e1d3bd8b3e0a847e63c9e93812890fb59fcf20d1"
+source = "git+https://github.com/shipsimfan/alexandria#8eeb9f6b12a0b60edffc4e5284d90e534802d2c7"
 dependencies = [
  "proc-macro-util",
 ]
@@ -72,8 +72,8 @@ dependencies = [
 
 [[package]]
 name = "dioptra"
-version = "1.0.0"
-source = "git+https://github.com/shipsimfan/lib-dioptra#536cf5f72453c7513cf48dbea1b09a17c58e8167"
+version = "1.1.0"
+source = "git+https://github.com/shipsimfan/lib-dioptra#8cea461271d420acca44e1c0a4f683d3fab9ea7a"
 dependencies = [
  "data-format",
  "vulkan",

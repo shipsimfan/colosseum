@@ -7,11 +7,13 @@ impl DirectionalLight {
         color: C,
         intensity: f32,
         direction: D,
+        shadow_depth: f32,
     ) -> DirectionalLight {
         DirectionalLight {
             color: color.into().into_linear(),
             intensity,
             direction: direction.into().normalized(),
+            shadow_depth,
         }
     }
 }

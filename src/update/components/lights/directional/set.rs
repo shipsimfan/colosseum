@@ -16,4 +16,9 @@ impl DirectionalLight {
     pub fn set_direction<D: Into<Vector3f>>(&mut self, direction: D) {
         self.direction = direction.into().normalized();
     }
+
+    /// Set the depth to render shadows outside of the camera's frustum in the direction of the light
+    pub fn set_shadow_depth(&mut self, shadow_depth: f32) {
+        self.shadow_depth = shadow_depth;
+    }
 }

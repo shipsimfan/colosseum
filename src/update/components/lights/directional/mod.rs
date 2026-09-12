@@ -15,4 +15,7 @@ pub struct DirectionalLight {
 
     /// The direction of the light
     direction: Vector3f,
+
+    /// The depth to render shadows outside of the camera's frustum in the direction of the light
+    shadow_depth: f32,
 }

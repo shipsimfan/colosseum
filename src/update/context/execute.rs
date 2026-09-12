@@ -9,6 +9,21 @@ use crate::{
 };
 use alexandria::math::{Matrix4x4f, Vector3f};
 
+const DEFAULT_CORNERS: [[Vector3f; 4]; 2] = [
+    [
+        Vector3f::new(0.0, 0.0, 0.0),
+        Vector3f::new(1.0, 0.0, 0.0),
+        Vector3f::new(0.0, 1.0, 0.0),
+        Vector3f::new(1.0, 1.0, 0.0),
+    ],
+    [
+        Vector3f::new(0.0, 0.0, 1.0),
+        Vector3f::new(1.0, 0.0, 1.0),
+        Vector3f::new(0.0, 1.0, 1.0),
+        Vector3f::new(1.0, 1.0, 1.0),
+    ],
+];
+
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Execute all rendering systems on the archetypes in the ECS system
     pub(in crate::update) fn execute_rendering_systems(&mut self) -> Result<()> {
@@ -30,7 +45,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         if !self.update_camera() {
             warning!(self.logger, "no active camera set");
             self.render_data
-                .set_camera(Matrix4x4f::IDENTITY, Vector3f::ZERO);
+                .set_camera(Matrix4x4f::IDENTITY, Vector3f::ZERO, DEFAULT_CORNERS);
             return Ok(());
         }
         self.render_data
@@ -51,7 +66,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         };
 
         // Get the projection matrix from the active camera
-        let projection = match self.ecs.try_get_mut::<Camera>(active_camera) {
+        let (projection, mut corners) = match self.ecs.try_get_mut::<Camera>(active_camera) {
             Some(camera) => camera.projection_matrix(self.window_size),
             None => {
                 *self.active_camera = None;
@@ -60,13 +75,22 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         };
 
         // Get the transform associated with the camera and combine it with the projection matrix
-        let (view, position) = match self.ecs.try_get_mut::<Transform>(active_camera) {
-            Some(transform) => (transform.camera_matrix(), transform.position()),
-            None => (Matrix4x4f::IDENTITY, Vector3f::ZERO),
-        };
+        let ((view, inverse_view), position) =
+            match self.ecs.try_get_mut::<Transform>(active_camera) {
+                Some(transform) => (transform.camera_matrix(), transform.position()),
+                None => ((Matrix4x4f::IDENTITY, Matrix4x4f::IDENTITY), Vector3f::ZERO),
+            };
+
+        // Transform the shadow corners into world space
+        for plane in &mut corners {
+            for corner in plane {
+                *corner = inverse_view.transform_point(*corner);
+            }
+        }
 
         // Set the view-projection matrix in the render data
-        self.render_data.set_camera(projection * view, position);
+        self.render_data
+            .set_camera(projection * view, position, corners);
         true
     }
 }

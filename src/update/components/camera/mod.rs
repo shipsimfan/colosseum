@@ -1,4 +1,4 @@
-use alexandria::math::{Matrix4x4f, Vector2u};
+use alexandria::math::{Matrix4x4f, Vector2u, Vector3f};
 
 mod projection;
 
@@ -24,4 +24,7 @@ pub struct Camera {
 
     /// The projection matrix for the camera
     projection_matrix: Matrix4x4f,
+
+    /// The corners of this camera's view frustum at each cascade depth plane, in view coordinates
+    corners: [[Vector3f; 4]; 2],
 }

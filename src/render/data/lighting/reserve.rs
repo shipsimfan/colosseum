@@ -11,6 +11,8 @@ impl LightingData {
     ) -> Result<()> {
         self.metadata[0].num_directional_lights = directional_lights as _;
         self.directional_lights
+            .reserve(directional_lights, device, memory_properties)?;
+        self.directional_light_matrices
             .reserve(directional_lights, device, memory_properties)
     }
 

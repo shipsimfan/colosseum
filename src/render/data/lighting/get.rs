@@ -16,6 +16,11 @@ impl LightingData {
         &self.directional_lights
     }
 
+    /// Get a reference to the directional light matrix buffer
+    pub(in crate::render) fn directional_light_matrices(&self) -> &LocalDataBuffer<Matrix4x4f> {
+        &self.directional_light_matrices
+    }
+
     /// Get a reference to the point lights buffer
     pub(in crate::render) fn point_lights(&self) -> &LocalDataBuffer<RenderPointLight> {
         &self.point_lights

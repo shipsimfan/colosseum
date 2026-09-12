@@ -1,13 +1,13 @@
 # ToDo
  1. Add shadow mapping
    1. Directional light shadows
-     - Compute inverse camera matrix
-     - Calculate orthographic bounds from camera frustum + additional shadow depth (default 300)
-     - Create orthographic projection matrix for shadow map
-     - Add shadow map and matrix buffers
+     - Add Vulkan 1.2 Features to alexandria (+ add binding count limits to graphics info example)
      - Generalize shadow map node for different light types
      - Use shadow map result in lit shader
+     - Resolve shimmering
+     - Add cascading shadow maps (using layering + instance rendering)
    2. Point light shadows
+   3. Add soft-shadows (using hardware PCF)
  2. Combine all GPU transfer staging buffers into one 
  3. Continue adding names to all objects
  4. Add debug labels to all render passes

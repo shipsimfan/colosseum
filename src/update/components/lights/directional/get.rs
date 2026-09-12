@@ -16,4 +16,9 @@ impl DirectionalLight {
     pub fn direction(&self) -> Vector3f {
         self.direction
     }
+
+    /// Get the depth to render shadows outside of the camera's frustum in the direction of the light
+    pub fn shadow_depth(&self) -> f32 {
+        self.shadow_depth
+    }
 }

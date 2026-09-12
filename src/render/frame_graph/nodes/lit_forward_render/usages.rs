@@ -15,6 +15,10 @@ impl LitForwardRenderNode {
             (self.output, FrameGraphResourceUsage::ColorAttachment),
             (self.depth_buffer, FrameGraphResourceUsage::DepthAttachment),
             (
+                FrameGraphResourceId::DIRECTIONAL_LIGHT_SHADOW_MAPS,
+                FrameGraphResourceUsage::SampledImage,
+            ),
+            (
                 FrameGraphResourceId::SPOT_LIGHT_SHADOW_MAPS,
                 FrameGraphResourceUsage::SampledImage,
             ),

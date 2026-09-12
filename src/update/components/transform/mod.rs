@@ -24,4 +24,9 @@ pub struct Transform {
 
     /// The matrix representing this transform
     matrix: Matrix4x4f,
+
+    /// The inverse matrix representing this transform
+    ///
+    /// This is only set for camera's
+    inverse_matrix: Matrix4x4f,
 }

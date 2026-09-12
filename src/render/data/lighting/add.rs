@@ -3,8 +3,13 @@ use alexandria::math::Matrix4x4f;
 
 impl LightingData {
     /// Add a new directional light to the data
-    pub fn add_directional_light(&mut self, directional_light: RenderDirectionalLight) {
+    pub fn add_directional_light(
+        &mut self,
+        directional_light: RenderDirectionalLight,
+        view_projection: Matrix4x4f,
+    ) {
         self.directional_lights.push(directional_light);
+        self.directional_light_matrices.push(view_projection);
     }
 
     /// Add a new point light to the data

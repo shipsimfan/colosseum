@@ -13,27 +13,16 @@ impl Camera {
     }
 
     /// Set the projection for the camera to an infinite perspective projection
-    pub fn set_infinite_perspective(&mut self, fov_y: f32, near: f32) {
-        self.set_projection(CameraProjection::InfinitePerspective { fov_y, near });
+    pub fn set_infinite_perspective(&mut self, fov_y: f32, near: f32, shadow_distance: f32) {
+        self.set_projection(CameraProjection::InfinitePerspective {
+            fov_y,
+            near,
+            shadow_distance,
+        });
     }
 
     /// Set the projection for the camera to an orthographic projection
-    pub fn set_orthographic(
-        &mut self,
-        left: f32,
-        right: f32,
-        bottom: f32,
-        top: f32,
-        near: f32,
-        far: f32,
-    ) {
-        self.set_projection(CameraProjection::Orthographic {
-            left,
-            right,
-            bottom,
-            top,
-            near,
-            far,
-        });
+    pub fn set_orthographic(&mut self, size: f32, near: f32, far: f32) {
+        self.set_projection(CameraProjection::Orthographic { size, near, far });
     }
 }

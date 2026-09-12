@@ -15,6 +15,7 @@ impl Transform {
             dirty: true,
             camera: false,
             matrix: Matrix4x4f::IDENTITY,
+            inverse_matrix: Matrix4x4f::IDENTITY,
         }
     }
 }

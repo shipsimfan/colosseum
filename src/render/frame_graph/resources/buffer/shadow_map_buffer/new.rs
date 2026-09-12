@@ -128,7 +128,7 @@ impl ShadowMapBuffer {
                 &descriptor_sets[descriptor_set],
                 binding,
                 0,
-                VulkanDescriptorType::SampledImage,
+                VulkanDescriptorType::CombinedImageSampler,
                 &[VulkanDescriptorImageInfo::new(
                     sampler,
                     &complete_image_view,

@@ -2,7 +2,7 @@ use crate::render::{
     AntiAliasingMode, LightingData, LocalDataBuffer, ObjectData, RenderCamera, RenderData,
     RenderObjectRemoveConfirm, RenderSkybox, Renderable,
 };
-use alexandria::gpu::VulkanFence;
+use alexandria::{gpu::VulkanFence, math::Vector3f};
 use std::vec::Drain;
 
 impl RenderData {
@@ -64,6 +64,11 @@ impl RenderData {
     /// Get a reference to the local camera data buffer
     pub(in crate::render) fn camera(&self) -> &LocalDataBuffer<RenderCamera> {
         &self.camera
+    }
+
+    /// Get the corners that make up the camera's view frustum
+    pub fn camera_corners(&self) -> [[Vector3f; 4]; 2] {
+        self.camera_corners
     }
 
     /// Get a reference to the renderables data buffer

@@ -58,7 +58,7 @@ fn create_shadow_map_descriptor_set_layout(
                 VulkanShaderStageFlag::Vertex,
             ),
         ],
-        1,
+        2,
         FixedRenderObjects::SHADOW_MAP_DESCRIPTOR_SET_LAYOUT,
         device,
     )

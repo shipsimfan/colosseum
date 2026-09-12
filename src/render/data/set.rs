@@ -38,7 +38,13 @@ impl RenderData {
     }
 
     /// Set the camera data for the frame
-    pub fn set_camera(&mut self, view_projection: Matrix4x4f, position: Vector3f) {
+    pub fn set_camera(
+        &mut self,
+        view_projection: Matrix4x4f,
+        position: Vector3f,
+        corners: [[Vector3f; 4]; 2],
+    ) {
         self.camera[0].set(view_projection, position);
+        self.camera_corners = corners;
     }
 }

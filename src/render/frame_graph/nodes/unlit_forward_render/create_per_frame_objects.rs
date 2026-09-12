@@ -28,7 +28,8 @@ impl UnlitForwardRenderNode {
             VulkanDescriptorType::StorageBuffer,
             vec![
                 (0, FixedRenderObjects::RENDERABLES_DESCRIPTOR_SET).into(),
-                (1, FixedRenderObjects::SHADOW_MAP_DESCRIPTOR_SET_LAYOUT).into(),
+                (1, FixedRenderObjects::DIRECTIONAL_LIGHT_DESCRIPTOR_SET).into(),
+                (1, FixedRenderObjects::SPOT_LIGHT_DESCRIPTOR_SET).into(),
             ],
             FixedRenderObjects::RENDERABLES_DEVICE_BUFFER,
         )?;

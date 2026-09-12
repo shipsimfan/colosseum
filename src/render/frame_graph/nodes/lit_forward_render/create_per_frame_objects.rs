@@ -41,12 +41,23 @@ impl LitForwardRenderNode {
             vec![(1, FixedRenderObjects::LIGHTING_DESCRIPTOR_SET).into()],
             FixedRenderObjects::DIRECTIONAL_LIGHTS_DEVICE_BUFFER,
         )?;
+        per_frame_objects.add_device_data_buffer::<Matrix4x4f, _>(
+            format!("Directional Light Matrix Buffer {}", index),
+            LightingData::INITIAL_DIRECTIONAL_LIGHT_CAPACITY,
+            VulkanBufferUsageFlag::StorageBuffer,
+            VulkanDescriptorType::StorageBuffer,
+            vec![
+                (2, FixedRenderObjects::LIGHTING_DESCRIPTOR_SET).into(),
+                (0, FixedRenderObjects::DIRECTIONAL_LIGHT_DESCRIPTOR_SET).into(),
+            ],
+            FixedRenderObjects::DIRECTIONAL_LIGHT_MATRICES_DEVICE_BUFFER,
+        )?;
         per_frame_objects.add_device_data_buffer::<RenderPointLight, _>(
             format!("Point Light Buffer {}", index),
             LightingData::INITIAL_POINT_LIGHT_CAPACITY,
             VulkanBufferUsageFlag::StorageBuffer,
             VulkanDescriptorType::StorageBuffer,
-            vec![(2, FixedRenderObjects::LIGHTING_DESCRIPTOR_SET).into()],
+            vec![(4, FixedRenderObjects::LIGHTING_DESCRIPTOR_SET).into()],
             FixedRenderObjects::POINT_LIGHTS_DEVICE_BUFFER,
         )?;
         per_frame_objects.add_device_data_buffer::<RenderSpotLight, _>(
@@ -54,7 +65,7 @@ impl LitForwardRenderNode {
             LightingData::INITIAL_SPOT_LIGHT_CAPACITY,
             VulkanBufferUsageFlag::StorageBuffer,
             VulkanDescriptorType::StorageBuffer,
-            vec![(3, FixedRenderObjects::LIGHTING_DESCRIPTOR_SET).into()],
+            vec![(5, FixedRenderObjects::LIGHTING_DESCRIPTOR_SET).into()],
             FixedRenderObjects::SPOT_LIGHTS_DEVICE_BUFFER,
         )?;
         per_frame_objects.add_device_data_buffer::<Matrix4x4f, _>(
@@ -63,7 +74,7 @@ impl LitForwardRenderNode {
             VulkanBufferUsageFlag::StorageBuffer,
             VulkanDescriptorType::StorageBuffer,
             vec![
-                (4, FixedRenderObjects::LIGHTING_DESCRIPTOR_SET).into(),
+                (6, FixedRenderObjects::LIGHTING_DESCRIPTOR_SET).into(),
                 (0, FixedRenderObjects::SPOT_LIGHT_DESCRIPTOR_SET).into(),
             ],
             FixedRenderObjects::SPOT_LIGHT_MATRICES_DEVICE_BUFFER,
@@ -71,11 +82,19 @@ impl LitForwardRenderNode {
 
         // Create the shadow map buffers
         per_frame_objects.add_shadow_map_buffer(
-            format!("Spot Ligth Shadow Map Buffer {}", index),
+            format!("Directional Light Shadow Map Buffer {}", index),
+            (2048, 2048),
+            LightingData::INITIAL_DIRECTIONAL_LIGHT_CAPACITY,
+            FixedRenderObjects::LIGHTING_DESCRIPTOR_SET,
+            3,
+            FixedRenderObjects::DIRECTIONAL_LIGHT_SHADOW_MAPS,
+        )?;
+        per_frame_objects.add_shadow_map_buffer(
+            format!("Spot Light Shadow Map Buffer {}", index),
             (1024, 1024),
             LightingData::INITIAL_SPOT_LIGHT_CAPACITY,
             FixedRenderObjects::LIGHTING_DESCRIPTOR_SET,
-            5,
+            7,
             FixedRenderObjects::SPOT_LIGHT_SHADOW_MAPS,
         )?;
 

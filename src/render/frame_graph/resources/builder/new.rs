@@ -30,7 +30,10 @@ impl<'a> FrameGraphResourceBuilder<'a> {
             external,
             transient_render_scale,
             transient_native_scale,
-            shadow_map_states: [FrameGraphResourceState::default()],
+            shadow_map_states: [
+                FrameGraphResourceState::default(),
+                FrameGraphResourceState::default(),
+            ],
         }
     }
 }
