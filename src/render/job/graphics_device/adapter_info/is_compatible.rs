@@ -8,7 +8,8 @@ use alexandria::{
     MemorySize,
     gpu::{
         VulkanAdapter, VulkanDeviceExtendedDynamicStateFeatures, VulkanDeviceFeatures,
-        VulkanDeviceVulkan11Features, VulkanDeviceVulkan13Features, VulkanFormat, VulkanSurface,
+        VulkanDeviceVulkan11Features, VulkanDeviceVulkan12Features, VulkanDeviceVulkan13Features,
+        VulkanFormat, VulkanSurface,
     },
 };
 use std::sync::Arc;
@@ -76,11 +77,13 @@ impl<'instance> VulkanAdapterInfo<'instance> {
 /// Check if the given adapter has the required features
 fn has_required_features(adapter: &VulkanAdapter, device_name: &str, logger: &Logger) -> bool {
     let mut vulkan_11_features = VulkanDeviceVulkan11Features::default();
+    let mut vulkan_12_features = VulkanDeviceVulkan12Features::default();
     let mut vulkan_13_features = VulkanDeviceVulkan13Features::default();
     let mut extended_dynamic_state = VulkanDeviceExtendedDynamicStateFeatures::default();
     adapter.get_features([
         &mut VulkanDeviceFeatures::default() as _,
         &mut vulkan_11_features as _,
+        &mut vulkan_12_features as _,
         &mut vulkan_13_features as _,
         &mut extended_dynamic_state as _,
     ]);
@@ -89,6 +92,15 @@ fn has_required_features(adapter: &VulkanAdapter, device_name: &str, logger: &Lo
         warning!(
             logger,
             "Adapter \"{}\" rejected because it does not support required Vulkan 1.1 features",
+            device_name,
+        );
+        return false;
+    }
+
+    if !vulkan_12_features.runtime_descriptor_array() {
+        warning!(
+            logger,
+            "Adapter \"{}\" rejected because it does not support required Vulkan 1.2 features",
             device_name,
         );
         return false;
@@ -133,7 +145,7 @@ fn find_swapchain_format(
             }
 
             match format.format {
-                VulkanFormat::B8G8R8A8UNorm | VulkanFormat::R8G8B8A8UNorm => Some(format.format),
+                VulkanFormat::B8G8R8A8Unorm | VulkanFormat::R8G8B8A8Unorm => Some(format.format),
                 _ => None,
             }
         })

@@ -38,5 +38,5 @@ pub struct ShadowMapBuffer {
 }
 
 impl ShadowMapBuffer {
-    pub const FORMAT: VulkanFormat = VulkanFormat::D32SFloat;
+    pub const FORMAT: VulkanFormat = VulkanFormat::D32Sfloat;
 }

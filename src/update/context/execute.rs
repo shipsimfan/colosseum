@@ -45,7 +45,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         if !self.update_camera() {
             warning!(self.logger, "no active camera set");
             self.render_data
-                .set_camera(Matrix4x4f::IDENTITY, Vector3f::ZERO, DEFAULT_CORNERS);
+                .set_camera(Matrix4x4f::IDENTITY, Vector3f::ZERO, DEFAULT_CORNERS, 1.0);
             return Ok(());
         }
         self.render_data
@@ -66,7 +66,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         };
 
         // Get the projection matrix from the active camera
-        let (projection, mut corners) = match self.ecs.try_get_mut::<Camera>(active_camera) {
+        let (projection, mut corners, depth) = match self.ecs.try_get_mut::<Camera>(active_camera) {
             Some(camera) => camera.projection_matrix(self.window_size),
             None => {
                 *self.active_camera = None;
@@ -90,7 +90,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
 
         // Set the view-projection matrix in the render data
         self.render_data
-            .set_camera(projection * view, position, corners);
+            .set_camera(projection * view, position, corners, depth);
         true
     }
 }

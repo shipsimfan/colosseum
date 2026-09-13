@@ -1,10 +1,6 @@
 # ToDo
  1. Add shadow mapping
    1. Directional light shadows
-     - Add Vulkan 1.2 Features to alexandria (+ add binding count limits to graphics info example)
-     - Generalize shadow map node for different light types
-     - Use shadow map result in lit shader
-     - Resolve shimmering
      - Add cascading shadow maps (using layering + instance rendering)
    2. Point light shadows
    3. Add soft-shadows (using hardware PCF)

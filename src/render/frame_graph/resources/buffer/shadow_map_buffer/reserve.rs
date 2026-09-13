@@ -2,6 +2,7 @@ use crate::{Result, render::ShadowMapBuffer};
 use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanDescriptorSet, VulkanDevice, VulkanSampler,
 };
+use std::ffi::CString;
 
 impl ShadowMapBuffer {
     /// Make sure the buffer has enough space for `capacity` shadow maps
@@ -14,8 +15,7 @@ impl ShadowMapBuffer {
         memory_properties: &VulkanAdapterMemoryProperties,
     ) -> Result<()> {
         if self.layer_image_views.len() < capacity {
-            #[allow(invalid_value)]
-            let mut name = unsafe { std::mem::zeroed() };
+            let mut name = CString::new("").unwrap();
             std::mem::swap(&mut name, &mut self.name);
 
             *self = ShadowMapBuffer::new_inner(

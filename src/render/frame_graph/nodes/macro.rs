@@ -2,33 +2,17 @@ macro_rules! nodes {
     [
         simple: [$(
             $(#[$meta: meta])*
-            $module: ident::$name: ident($type: ident),
+            $name: ident($type: ty),
         )*],
         data_buffer: [$(
             $(#[$data_buffer_meta: meta])*
-            $data_buffer_module: ident::$data_buffer_name: ident($data_buffer_type: ident),
+            $data_buffer_name: ident($data_buffer_type: ty),
         )*],
         post_process: [$(
             $(#[$post_process_meta: meta])*
-            $post_process_module: ident::$post_process_name: ident($post_process_type: ident),
+            $post_process_name: ident($post_process_type: ty),
         )*]
     ] => {
-        $(
-            mod $module;
-
-            pub(in crate::render::frame_graph) use $module::$type;
-        )*
-        $(
-            mod $data_buffer_module;
-
-            pub(in crate::render::frame_graph) use $data_buffer_module::$data_buffer_type;
-        )*
-        $(
-            mod $post_process_module;
-
-            pub(in crate::render::frame_graph) use $post_process_module::$post_process_type;
-        )*
-
         /// A single node in the frame graph
         #[derive(Debug)]
         #[allow(private_interfaces)]
@@ -91,21 +75,21 @@ macro_rules! nodes {
                 device: &VulkanDevice,
             ) -> Result<()> {
                 $(
-                    $type::create_fixed_objects(
+                    <$type>::create_fixed_objects(
                         fixed_render_objects,
                         swapchain_format,
                         device
                     )?;
                 )*
                 $(
-                    $data_buffer_type::create_fixed_objects(
+                    <$data_buffer_type>::create_fixed_objects(
                         fixed_render_objects,
                         swapchain_format,
                         device
                     )?;
                 )*
                 $(
-                    $post_process_type::create_fixed_objects(
+                    <$post_process_type>::create_fixed_objects(
                         fixed_render_objects,
                         swapchain_format,
                         device
@@ -120,9 +104,9 @@ macro_rules! nodes {
                 mut per_frame_objects: PerFrameObjectBuilder,
                 index: usize,
             ) -> Result<()> {
-                $($type::create_per_frame_objects(&mut per_frame_objects, index)?;)*
-                $($data_buffer_type::create_per_frame_objects(&mut per_frame_objects, index)?;)*
-                $($post_process_type::create_per_frame_objects(&mut per_frame_objects, index)?;)*
+                $(<$type>::create_per_frame_objects(&mut per_frame_objects, index)?;)*
+                $(<$data_buffer_type>::create_per_frame_objects(&mut per_frame_objects, index)?;)*
+                $(<$post_process_type>::create_per_frame_objects(&mut per_frame_objects, index)?;)*
 
                 Ok(())
             }
@@ -138,7 +122,7 @@ macro_rules! nodes {
                 device: &VulkanDevice,
                 memory_properties: &VulkanAdapterMemoryProperties,
             ) -> Result<()> {
-                $($data_buffer_type::copy_data(
+                $(<$data_buffer_type>::copy_data(
                     render_data,
                     device_buffers,
                     shadow_maps,

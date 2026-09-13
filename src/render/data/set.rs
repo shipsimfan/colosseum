@@ -43,8 +43,10 @@ impl RenderData {
         view_projection: Matrix4x4f,
         position: Vector3f,
         corners: [[Vector3f; 4]; 2],
+        depth: f32,
     ) {
         self.camera[0].set(view_projection, position);
         self.camera_corners = corners;
+        self.camera_depth = depth;
     }
 }

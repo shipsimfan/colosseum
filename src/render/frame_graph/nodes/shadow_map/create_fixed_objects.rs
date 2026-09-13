@@ -2,7 +2,7 @@ use crate::{
     Result,
     render::{
         FixedRenderObjects, Pipeline, Shader, ShadowMapBuffer, Vertex,
-        frame_graph::{ShadowMapNode, nodes::shadow_map::PushConstants},
+        frame_graph::{ShadowMapLight, ShadowMapNode, nodes::shadow_map::PushConstants},
     },
 };
 use alexandria::{
@@ -26,15 +26,19 @@ compile_shader! {
     vert_main
 }
 
-impl ShadowMapNode {
+impl<L: ShadowMapLight> ShadowMapNode<L> {
     /// Create the persistent objects that are used by this node
     pub(in crate::render::frame_graph::nodes) fn create_fixed_objects(
         fixed_render_objects: &mut FixedRenderObjects,
         _: VulkanFormat,
         device: &VulkanDevice,
     ) -> Result<()> {
-        create_shadow_map_descriptor_set_layout(fixed_render_objects, device)?;
-        create_shadow_map_pipeline(fixed_render_objects, device)
+        if L::PRIMARY {
+            create_shadow_map_descriptor_set_layout(fixed_render_objects, device)?;
+            create_shadow_map_pipeline(fixed_render_objects, device)?;
+        }
+
+        Ok(())
     }
 }
 

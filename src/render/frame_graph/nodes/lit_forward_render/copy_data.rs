@@ -71,14 +71,14 @@ impl LitForwardRenderNode {
         shadow_maps[FixedRenderObjects::DIRECTIONAL_LIGHT_SHADOW_MAPS].reserve(
             render_data.lighting().directional_lights().capacity(),
             descriptor_sets,
-            fixed_objects.sampler(FixedRenderObjects::LINEAR_CLAMP_SAMPLER),
+            fixed_objects.sampler(FixedRenderObjects::PCF_SAMPLER),
             device,
             memory_properties,
         )?;
         shadow_maps[FixedRenderObjects::SPOT_LIGHT_SHADOW_MAPS].reserve(
             render_data.lighting().spot_lights().capacity(),
             descriptor_sets,
-            fixed_objects.sampler(FixedRenderObjects::LINEAR_CLAMP_SAMPLER),
+            fixed_objects.sampler(FixedRenderObjects::PCF_SAMPLER),
             device,
             memory_properties,
         )

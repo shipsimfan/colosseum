@@ -1,5 +1,5 @@
 use crate::render::{
-    AntiAliasingMode, FrameGraph, HDR_FORMAT, SDR_FORMAT,
+    AntiAliasingMode, FrameGraph, HDR_FORMAT, RenderDirectionalLight, RenderSpotLight, SDR_FORMAT,
     frame_graph::{
         FrameGraphNode, FrameGraphResourceBuilder, FrameGraphResourceId, FrameGraphStructure,
         FxaaNode, LitForwardRenderNode, QuantizationNode, RenderScaleNode, ShadowMapNode,
@@ -22,13 +22,14 @@ impl FrameGraph {
 
         // Create a common depth buffer
         let depth_buffer =
-            resources.create_render_scale_transient("Main Depth Buffer", VulkanFormat::D32SFloat);
+            resources.create_render_scale_transient("Main Depth Buffer", VulkanFormat::D32Sfloat);
 
         // Create the 3d color output
         let color_output = resources.create_render_scale_transient("Main Color Output", HDR_FORMAT);
 
         // Perform the main render passes
-        nodes.push(ShadowMapNode::new().into());
+        nodes.push(ShadowMapNode::<RenderDirectionalLight>::new().into());
+        nodes.push(ShadowMapNode::<RenderSpotLight>::new().into());
 
         nodes.push(structure.skybox().create_node(color_output));
         nodes.push(UnlitForwardRenderNode::new(color_output, depth_buffer).into());

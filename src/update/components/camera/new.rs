@@ -10,6 +10,7 @@ impl Camera {
             projection_dirty: true,
             projection_matrix: Matrix4x4f::IDENTITY,
             corners: [[Vector3f::ZERO; 4]; 2],
+            depth: 1.0,
         }
     }
 

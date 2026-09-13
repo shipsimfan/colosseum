@@ -47,7 +47,8 @@ impl SpotLight {
                 up = Vector3f::X;
             }
 
-            let view = Matrix4x4f::new_look_at(-self.position, -self.position + self.direction, up);
+            let view = Matrix4x4f::new_look_at(-self.position, -self.position + self.direction, up)
+                .inverse();
 
             self.view_projection = projection * view;
 

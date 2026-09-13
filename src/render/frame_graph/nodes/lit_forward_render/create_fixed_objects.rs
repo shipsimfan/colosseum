@@ -3,8 +3,9 @@ use crate::{
     render::{FixedRenderObjects, LitMaterialPushConstants, frame_graph::LitForwardRenderNode},
 };
 use alexandria::gpu::{
-    VulkanDescriptorSetLayoutBinding, VulkanDescriptorType, VulkanDevice, VulkanFormat,
-    VulkanPushConstantRange, VulkanShaderStageFlag,
+    VulkanBorderColor, VulkanCompareOp, VulkanDescriptorSetLayoutBinding, VulkanDescriptorType,
+    VulkanDevice, VulkanFilter, VulkanFormat, VulkanPushConstantRange, VulkanSamplerAddressMode,
+    VulkanSamplerMipmapMode, VulkanShaderStageFlag,
 };
 
 impl LitForwardRenderNode {
@@ -14,9 +15,40 @@ impl LitForwardRenderNode {
         _: VulkanFormat,
         device: &VulkanDevice,
     ) -> Result<()> {
+        create_pcf_sampler(fixed_render_objects, device)?;
         create_lighting_descriptor_set_layout(fixed_render_objects, device)?;
         create_lit_forward_pipeline_layout(fixed_render_objects, device)
     }
+}
+
+fn create_pcf_sampler(
+    fixed_render_objects: &mut FixedRenderObjects,
+    device: &VulkanDevice,
+) -> Result<()> {
+    let sampler = device
+        .create_sampler(
+            0,
+            VulkanFilter::Linear,
+            VulkanFilter::Linear,
+            VulkanSamplerMipmapMode::Nearest,
+            VulkanSamplerAddressMode::ClampToBorder,
+            VulkanSamplerAddressMode::ClampToBorder,
+            VulkanSamplerAddressMode::ClampToBorder,
+            0.0,
+            false,
+            1.0,
+            true,
+            VulkanCompareOp::Less,
+            0.0,
+            1.0,
+            VulkanBorderColor::FloatOpaqueWhite,
+            false,
+        )
+        .map_err(Error::new_inner)?;
+
+    fixed_render_objects.add_sampler(sampler, FixedRenderObjects::PCF_SAMPLER);
+
+    Ok(())
 }
 
 fn create_lighting_descriptor_set_layout(

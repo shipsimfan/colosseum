@@ -1,12 +1,20 @@
+use std::marker::PhantomData;
+
+mod light;
+
 mod create_fixed_objects;
 mod create_per_frame_objects;
+mod debug;
 mod execute;
 mod new;
 mod usages;
 
+pub(in crate::render::frame_graph) use light::ShadowMapLight;
+
 /// A node that renders shadow maps for lights
-#[derive(Debug)]
-pub(in crate::render::frame_graph) struct ShadowMapNode {}
+pub(in crate::render::frame_graph) struct ShadowMapNode<L: ShadowMapLight> {
+    _phantom: PhantomData<L>,
+}
 
 #[repr(C)]
 struct PushConstants {

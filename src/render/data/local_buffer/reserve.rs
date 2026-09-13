@@ -1,5 +1,6 @@
 use crate::{Result, render::LocalDataBuffer};
 use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice};
+use std::ffi::CString;
 
 impl<T> LocalDataBuffer<T> {
     /// Reserve enough capacity in the data buffer for `num` elements, returning if the buffer was
@@ -19,8 +20,7 @@ impl<T> LocalDataBuffer<T> {
             new_capacity *= 2;
         }
 
-        #[allow(invalid_value)]
-        let mut name = unsafe { std::mem::zeroed() };
+        let mut name = CString::new("").unwrap();
         std::mem::swap(&mut name, &mut self.name);
 
         *self = LocalDataBuffer::new_inner(name, new_capacity, device, memory_properties)?;

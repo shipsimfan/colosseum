@@ -9,7 +9,8 @@ use crate::{
 };
 use alexandria::gpu::{
     VulkanDeviceExtendedDynamicStateFeatures, VulkanDeviceExtension, VulkanDeviceVulkan11Features,
-    VulkanDeviceVulkan13Features, VulkanInstance, VulkanQueueCreateInfo, VulkanSurface,
+    VulkanDeviceVulkan12Features, VulkanDeviceVulkan13Features, VulkanInstance,
+    VulkanQueueCreateInfo, VulkanSurface,
 };
 
 impl GraphicsDevice {
@@ -29,6 +30,8 @@ impl GraphicsDevice {
         // Create the Vulkan device
         let mut vulkan_11_features =
             VulkanDeviceVulkan11Features::default().enable_shader_draw_parameters();
+        let mut vulkan_12_features =
+            VulkanDeviceVulkan12Features::default().enable_runtime_descriptor_array();
         let mut vulkan_13_features = VulkanDeviceVulkan13Features::default()
             .enable_synchronization2()
             .enable_dynamic_rendering();
@@ -43,6 +46,7 @@ impl GraphicsDevice {
                 &[1.0],
             ))
             .feature(&mut vulkan_11_features)
+            .feature(&mut vulkan_12_features)
             .feature(&mut vulkan_13_features)
             .feature(&mut extended_dynamic_state_features);
         if let Some(transfer_queue_family_index) = adapter.transfer_queue_family_index() {

@@ -71,6 +71,11 @@ impl RenderData {
         self.camera_corners
     }
 
+    /// Get the depth of the camera's view frustum
+    pub fn camera_depth(&self) -> f32 {
+        self.camera_depth
+    }
+
     /// Get a reference to the renderables data buffer
     pub(in crate::render) fn renderables(&self) -> &LocalDataBuffer<ObjectData> {
         &self.renderable_buffer

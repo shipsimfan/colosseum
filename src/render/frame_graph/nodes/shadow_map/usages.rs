@@ -1,6 +1,8 @@
-use crate::render::frame_graph::{FrameGraphResourceId, FrameGraphResourceUsage, ShadowMapNode};
+use crate::render::frame_graph::{
+    FrameGraphResourceId, FrameGraphResourceUsage, ShadowMapLight, ShadowMapNode,
+};
 
-impl ShadowMapNode {
+impl<L: ShadowMapLight> ShadowMapNode<L> {
     /// Get the usage types for the resources that this node uses
     pub(in crate::render::frame_graph::nodes) fn usages<
         T,
@@ -10,7 +12,7 @@ impl ShadowMapNode {
         f: F,
     ) -> T {
         f(&[(
-            FrameGraphResourceId::SPOT_LIGHT_SHADOW_MAPS,
+            L::RESOURCE_ID,
             FrameGraphResourceUsage::ShadowMapDepthAttachment,
         )])
     }

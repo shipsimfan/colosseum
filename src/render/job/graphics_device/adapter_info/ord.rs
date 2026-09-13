@@ -50,8 +50,8 @@ fn type_score(r#type: VulkanAdapterType) -> u8 {
 /// arbitrary, but they should reflect the relative desirability of the formats.
 fn format_score(format: VulkanFormat) -> u8 {
     match format {
-        VulkanFormat::B8G8R8A8UNorm => 0,
-        VulkanFormat::R8G8B8A8UNorm => 1,
+        VulkanFormat::B8G8R8A8Unorm => 0,
+        VulkanFormat::R8G8B8A8Unorm => 1,
         _ => 2,
     }
 }

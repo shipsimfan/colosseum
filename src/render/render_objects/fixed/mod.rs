@@ -47,7 +47,8 @@ impl FixedRenderObjects {
     pub const FXAA_PIPELINE: usize = 5;
 
     /** Samplers **/
-    pub const LINEAR_CLAMP_SAMPLER: usize = 0;
+    pub const PCF_SAMPLER: usize = 0;
+    pub const LINEAR_CLAMP_SAMPLER: usize = 1;
 
     /** Descriptor Set Layouts **/
     pub const CAMERA_DESCRIPTOR_SET_LAYOUT: usize = 0;

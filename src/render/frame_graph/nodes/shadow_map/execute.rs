@@ -1,6 +1,8 @@
 use crate::render::{
     FixedRenderObjects, RenderData, RenderObjects, as_bytes,
-    frame_graph::{FrameGraphResources, ShadowMapNode, nodes::shadow_map::PushConstants},
+    frame_graph::{
+        FrameGraphResources, ShadowMapLight, ShadowMapNode, nodes::shadow_map::PushConstants,
+    },
 };
 use alexandria::{
     gpu::{
@@ -11,7 +13,7 @@ use alexandria::{
     math::{Color4f, Linear, Recti, Vector2i},
 };
 
-impl ShadowMapNode {
+impl<L: ShadowMapLight> ShadowMapNode<L> {
     /// Execute the lit forward pass, rendering all lit objects in the scene
     pub(in crate::render::frame_graph::nodes) fn execute(
         &self,
@@ -20,10 +22,12 @@ impl ShadowMapNode {
         resources: &FrameGraphResources,
         cmd_buffer: &mut VulkanCommandBuffer,
     ) {
-        let shadow_map = resources.shadow_map_buffer(FixedRenderObjects::SPOT_LIGHT_SHADOW_MAPS);
+        let shadow_map = resources.shadow_map_buffer(L::SHADOW_MAP);
         let size = shadow_map.size();
 
-        for i in 0..render_data.lighting().spot_lights().count() {
+        let lights = L::get_lights(render_data.lighting());
+
+        for i in 0..lights.count() {
             // Begin the render pass for this light
             cmd_buffer.cmd_begin_rendering(
                 0,
@@ -62,7 +66,7 @@ impl ShadowMapNode {
                 VulkanPipelineBindPoint::Graphics,
                 pipeline_layout,
                 0,
-                resources.descriptor_set(FixedRenderObjects::SPOT_LIGHT_DESCRIPTOR_SET),
+                resources.descriptor_set(L::DESCRIPTOR_SET),
             );
 
             for (_, mesh, object_data) in render_data.lit_opaque_renderables() {

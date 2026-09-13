@@ -26,10 +26,10 @@ pub(crate) use render_objects::*;
 pub use alexandria::gpu::{VulkanShaderModuleCode as ShaderCode, compile_shader};
 
 /// The format to use for all depth attachments in the render graph
-const DEPTH_FORMAT: VulkanFormat = VulkanFormat::D32SFloat;
+const DEPTH_FORMAT: VulkanFormat = VulkanFormat::D32Sfloat;
 
 /// The format to use for all SDR attachments in the render graph
-const SDR_FORMAT: VulkanFormat = VulkanFormat::R16G16B16A16UNorm;
+const SDR_FORMAT: VulkanFormat = VulkanFormat::R16G16B16A16Unorm;
 
 /// The format to use for all HDR attachments in the render graph
-const HDR_FORMAT: VulkanFormat = VulkanFormat::R16G16B16A16SFloat;
+const HDR_FORMAT: VulkanFormat = VulkanFormat::R16G16B16A16Sfloat;

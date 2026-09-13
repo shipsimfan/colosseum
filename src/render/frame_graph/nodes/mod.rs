@@ -1,8 +1,8 @@
 use crate::{
     Result,
     render::{
-        DeviceDataBuffer, FixedRenderObjects, PerFrameObjectBuilder, RenderData, RenderObjects,
-        ShadowMapBuffer,
+        DeviceDataBuffer, FixedRenderObjects, PerFrameObjectBuilder, RenderData,
+        RenderDirectionalLight, RenderObjects, RenderSpotLight, ShadowMapBuffer,
         frame_graph::{FrameGraphResourceId, FrameGraphResourceUsage, FrameGraphResources},
     },
 };
@@ -14,38 +14,61 @@ use r#macro::nodes;
 
 mod r#macro;
 
+mod fxaa;
+mod lit_forward_render;
+mod procedural_sky;
+mod quantization;
+mod render_scale;
+mod shadow_map;
+mod solid_color_sky;
+mod tone_map;
+mod unlit_forward_render;
+
+pub(in crate::render::frame_graph) use fxaa::*;
+pub(in crate::render::frame_graph) use lit_forward_render::*;
+pub(in crate::render::frame_graph) use procedural_sky::*;
+pub(in crate::render::frame_graph) use quantization::*;
+pub(in crate::render::frame_graph) use render_scale::*;
+pub(in crate::render::frame_graph) use shadow_map::*;
+pub(in crate::render::frame_graph) use solid_color_sky::*;
+pub(in crate::render::frame_graph) use tone_map::*;
+pub(in crate::render::frame_graph) use unlit_forward_render::*;
+
 nodes![
     simple: [
         /// A node that renders the sky as a solid color
-        solid_color_sky::SolidColorSky(SolidColorSkyNode),
+        SolidColorSky(SolidColorSkyNode),
 
         /// A node that generates a procedural sky
-        procedural_sky::ProceduralSky(ProceduralSkyNode),
+        ProceduralSky(ProceduralSkyNode),
 
-        /// A node that renders shadow maps for lights
-        shadow_map::ShadowMap(ShadowMapNode),
+        /// A node that renders shadow maps for directional lights
+        DirectionalLightShadowMap(ShadowMapNode<RenderDirectionalLight>),
+
+        /// A node that renders shadow maps for spot lights
+        SpotLightShadowMap(ShadowMapNode<RenderSpotLight>),
     ],
 
     data_buffer:[
         /// A node that renders unlit objects using a forward rendering pipeline
-        unlit_forward_render::UnlitForwardRender(UnlitForwardRenderNode),
+        UnlitForwardRender(UnlitForwardRenderNode),
 
         /// A node that renders lit objects using a forward rendering pipeline
-        lit_forward_render::LitForwardRender(LitForwardRenderNode),
+        LitForwardRender(LitForwardRenderNode),
     ],
 
     post_process: [
         /// A node that changes the render scale of the input image and outputs it to a new image
-        render_scale::RenderScale(RenderScaleNode),
+        RenderScale(RenderScaleNode),
 
         /// A node that performs color correction, tone mapping, gamma correction, and color
         /// grading
-        tone_map::ToneMap(ToneMapNode),
+        ToneMap(ToneMapNode),
 
         /// A node that performs sharpening and dithering before quantizing an input image
-        quantization::Quantization(QuantizationNode),
+        Quantization(QuantizationNode),
 
         /// A node that performs FXAA anti-aliasing on an input image
-        fxaa::Fxaa(FxaaNode),
+        Fxaa(FxaaNode),
     ]
 ];

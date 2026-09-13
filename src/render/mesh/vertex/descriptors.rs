@@ -18,7 +18,7 @@ impl Vertex {
         [VulkanVertexInputAttributeDescription; 1] = [VulkanVertexInputAttributeDescription::new(
         0,
         0,
-        VulkanFormat::R32G32B32SFloat,
+        VulkanFormat::R32G32B32Sfloat,
         std::mem::offset_of!(Vertex, position) as u32,
     )];
 
@@ -28,13 +28,13 @@ impl Vertex {
         VulkanVertexInputAttributeDescription::new(
             0,
             0,
-            VulkanFormat::R32G32B32SFloat,
+            VulkanFormat::R32G32B32Sfloat,
             std::mem::offset_of!(Vertex, position) as u32,
         ),
         VulkanVertexInputAttributeDescription::new(
             1,
             0,
-            VulkanFormat::R32G32B32SFloat,
+            VulkanFormat::R32G32B32Sfloat,
             std::mem::offset_of!(Vertex, color) as u32,
         ),
     ];
@@ -45,19 +45,19 @@ impl Vertex {
         VulkanVertexInputAttributeDescription::new(
             0,
             0,
-            VulkanFormat::R32G32B32SFloat,
+            VulkanFormat::R32G32B32Sfloat,
             std::mem::offset_of!(Vertex, position) as u32,
         ),
         VulkanVertexInputAttributeDescription::new(
             1,
             0,
-            VulkanFormat::R32G32B32SFloat,
+            VulkanFormat::R32G32B32Sfloat,
             std::mem::offset_of!(Vertex, color) as u32,
         ),
         VulkanVertexInputAttributeDescription::new(
             2,
             0,
-            VulkanFormat::R32G32B32SFloat,
+            VulkanFormat::R32G32B32Sfloat,
             std::mem::offset_of!(Vertex, normal) as u32,
         ),
     ];
