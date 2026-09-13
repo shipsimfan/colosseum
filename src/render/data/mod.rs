@@ -83,10 +83,7 @@ pub(crate) struct RenderData {
     camera: LocalDataBuffer<RenderCamera>,
 
     /// The corners for the camera's frustum, one for each directional light cascade plane
-    camera_corners: [[Vector3f; 4]; 2],
-
-    /// The depth of the camera's view frustum
-    camera_depth: f32,
+    camera_corners: [([Vector3f; 4], f32); 5],
 
     /// The data about lighting for the current frame
     lighting: LightingData,

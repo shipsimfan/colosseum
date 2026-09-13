@@ -42,4 +42,12 @@ impl<'a, 'b> FrameGraphResource<'a, 'b> {
             FrameGraphResource::ShadowMap(_) => VulkanImageAspectFlag::Depth.into(),
         }
     }
+
+    pub fn layer_count(&self) -> u32 {
+        match self {
+            FrameGraphResource::External(external) => external.layer_count(),
+            FrameGraphResource::Transient(transient) => transient.layer_count(),
+            FrameGraphResource::ShadowMap(shadow_map) => shadow_map.layer_count(),
+        }
+    }
 }

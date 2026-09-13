@@ -20,7 +20,7 @@ impl FrameGraphPipelineBarrier {
             0,
             1,
             0,
-            1,
+            resource.layer_count(),
         )
     }
 }

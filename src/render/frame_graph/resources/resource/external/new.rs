@@ -9,12 +9,14 @@ impl<'a> FrameGraphExternalResource<'a> {
     /// Create a new [`FrameGraphExternalResource`]
     pub(in crate::render::frame_graph::resources) fn new<A: Into<VulkanImageAspectFlags>>(
         size: Vector2u,
+        layer_count: u32,
         image: &'a VulkanImage,
         image_view: &'a VulkanImageView,
         aspect_mask: A,
     ) -> FrameGraphExternalResource<'a> {
         FrameGraphExternalResource {
             size,
+            layer_count,
             image,
             image_view,
             aspect_mask: aspect_mask.into(),

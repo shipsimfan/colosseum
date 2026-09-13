@@ -4,7 +4,7 @@ use crate::{
 };
 use alexandria::gpu::{
     VulkanBuffer, VulkanBufferCopy, VulkanCommandBuffer, VulkanCommandBufferSubmitInfo,
-    VulkanFence, VulkanQueue, VulkanSubmitInfo,
+    VulkanFence, VulkanQueue, VulkanResult, VulkanSubmitInfo,
 };
 
 impl RenderGpuTransferQueue {
@@ -98,7 +98,10 @@ fn copy_buffers(
         .map_err(Error::new_inner)?;
 
     // Wait for the copy commands to complete
-    fence.wait(u64::MAX).map_err(Error::new_inner)?;
+    assert_eq!(
+        fence.wait(u64::MAX).map_err(Error::new_inner)?,
+        VulkanResult::VkSuccess
+    );
     fence.reset().map_err(Error::new_inner)?;
 
     Ok(())

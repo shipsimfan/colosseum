@@ -21,6 +21,7 @@ impl<'a> FrameGraphResourceBuilder<'a> {
         let mut external = external.arena();
         external.push(FrameGraphExternalResource::new(
             swapchain_size,
+            1,
             swapchain_image,
             swapchain_image_view,
             VulkanImageAspectFlag::Color,

@@ -37,6 +37,11 @@ impl FrameGraphTransientResource {
         self.aspect_mask
     }
 
+    /// Get the number of array layers for this resource
+    pub(in crate::render::frame_graph::resources::resource) fn layer_count(&self) -> u32 {
+        self.layer_count
+    }
+
     /// Get the load operation to use for this resource
     pub(in crate::render::frame_graph::resources) fn load_op(&self) -> VulkanAttachmentLoadOp {
         if unsafe { *self.used.get() } {

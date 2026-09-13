@@ -6,10 +6,12 @@ impl LightingData {
     pub fn add_directional_light(
         &mut self,
         directional_light: RenderDirectionalLight,
-        view_projection: Matrix4x4f,
+        view_projections: [Matrix4x4f; 4],
     ) {
         self.directional_lights.push(directional_light);
-        self.directional_light_matrices.push(view_projection);
+        for view_projection in view_projections {
+            self.directional_light_matrices.push(view_projection);
+        }
     }
 
     /// Add a new point light to the data

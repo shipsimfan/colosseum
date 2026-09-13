@@ -1,3 +1,5 @@
+use alexandria::math::Vector2u;
+
 use crate::render::{
     FixedRenderObjects, LightingData, LocalDataBuffer, RenderDirectionalLight, RenderSpotLight,
     frame_graph::FrameGraphResourceId,
@@ -22,6 +24,12 @@ pub(in crate::render::frame_graph) trait ShadowMapLight:
     /// The index of the descriptor set associated with this light
     const DESCRIPTOR_SET: usize;
 
+    /// The size of a single shadow map for this light
+    const SIZE: Vector2u;
+
+    /// The number of cascades for this light's shadow map
+    const CASCADES: usize;
+
     /// Get the list of lights from the lighting data
     fn get_lights(lighting: &LightingData) -> &LocalDataBuffer<Self>;
 }
@@ -32,6 +40,9 @@ impl ShadowMapLight for RenderDirectionalLight {
     const SHADOW_MAP: usize = FixedRenderObjects::DIRECTIONAL_LIGHT_SHADOW_MAPS;
     const RESOURCE_ID: FrameGraphResourceId = FrameGraphResourceId::DIRECTIONAL_LIGHT_SHADOW_MAPS;
     const DESCRIPTOR_SET: usize = FixedRenderObjects::DIRECTIONAL_LIGHT_DESCRIPTOR_SET;
+
+    const SIZE: Vector2u = (1024, 1024).into();
+    const CASCADES: usize = 4;
 
     fn get_lights(lighting: &LightingData) -> &LocalDataBuffer<Self> {
         lighting.directional_lights()
@@ -44,6 +55,9 @@ impl ShadowMapLight for RenderSpotLight {
     const SHADOW_MAP: usize = FixedRenderObjects::SPOT_LIGHT_SHADOW_MAPS;
     const RESOURCE_ID: FrameGraphResourceId = FrameGraphResourceId::SPOT_LIGHT_SHADOW_MAPS;
     const DESCRIPTOR_SET: usize = FixedRenderObjects::SPOT_LIGHT_DESCRIPTOR_SET;
+
+    const SIZE: Vector2u = (1024, 1024).into();
+    const CASCADES: usize = 1;
 
     fn get_lights(lighting: &LightingData) -> &LocalDataBuffer<Self> {
         lighting.spot_lights()

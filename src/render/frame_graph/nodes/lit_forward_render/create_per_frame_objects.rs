@@ -3,7 +3,7 @@ use crate::{
     render::{
         FixedRenderObjects, LightingData, LightingMetadata, PerFrameObjectBuilder,
         RenderDirectionalLight, RenderPointLight, RenderSpotLight,
-        frame_graph::LitForwardRenderNode,
+        frame_graph::{LitForwardRenderNode, ShadowMapLight},
     },
 };
 use alexandria::{
@@ -83,16 +83,18 @@ impl LitForwardRenderNode {
         // Create the shadow map buffers
         per_frame_objects.add_shadow_map_buffer(
             format!("Directional Light Shadow Map Buffer {}", index),
-            (2048, 2048),
+            RenderDirectionalLight::SIZE,
             LightingData::INITIAL_DIRECTIONAL_LIGHT_CAPACITY,
+            RenderDirectionalLight::CASCADES,
             FixedRenderObjects::LIGHTING_DESCRIPTOR_SET,
             3,
             FixedRenderObjects::DIRECTIONAL_LIGHT_SHADOW_MAPS,
         )?;
         per_frame_objects.add_shadow_map_buffer(
             format!("Spot Light Shadow Map Buffer {}", index),
-            (1024, 1024),
+            RenderSpotLight::SIZE,
             LightingData::INITIAL_SPOT_LIGHT_CAPACITY,
+            RenderSpotLight::CASCADES,
             FixedRenderObjects::LIGHTING_DESCRIPTOR_SET,
             7,
             FixedRenderObjects::SPOT_LIGHT_SHADOW_MAPS,

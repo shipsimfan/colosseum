@@ -70,7 +70,7 @@ StructuredBuffer<DirectionalLight> directional_lights;
 StructuredBuffer<float4x4> directional_light_matrices;
 
 [[vk::binding(3, 2)]]
-Sampler2DShadow directional_light_shadow_maps[];
+Sampler2DArrayShadow directional_light_shadow_maps;
 
 [[vk::binding(4, 2)]]
 StructuredBuffer<PointLight> point_lights;
@@ -82,7 +82,7 @@ StructuredBuffer<SpotLight> spot_lights;
 StructuredBuffer<float4x4> spot_light_matrices;
 
 [[vk::binding(7, 2)]]
-Sampler2DShadow spot_light_shadow_maps[];
+Sampler2DArrayShadow spot_light_shadow_maps;
 
 [push_constant]
 ConstantBuffer<PushConstants> pc;
@@ -110,27 +110,53 @@ float specular(float3 light_direction, float3 normal, float3 view_direction) {
     return pow(max(dot(view_direction, reflect_direction), 0.0), pc.shininess) * pc.specular_strength;
 }
 
-float shadow_factor(float3 position, float4x4 view_projection, Sampler2DShadow shadow_map) {
-    float4 view_position = mul(view_projection, float4(position, 1.0));
-
-    float3 ndc = view_position.xyz / view_position.w;
+float direct_shadow_factor(float4 clip_position, Sampler2DArrayShadow shadow_map, uint layer) {
+    float3 ndc = clip_position.xyz / clip_position.w;
 
     float2 tex_coords = ndc.xy * 0.5 + 0.5;
     float ref_depth = ndc.z;
 
-    float depth = shadow_map.Sample(tex_coords);
+    float depth = shadow_map.Sample(float3(tex_coords, layer));
     if (ref_depth > depth)
         return 0.0;
     return 1.0;
 }
 
+float shadow_factor(float3 position, float4x4 view_projection, Sampler2DArrayShadow shadow_map, uint index) {
+    float4 clip_position = mul(view_projection, float4(position, 1.0));
+    return direct_shadow_factor(clip_position, shadow_map, index);
+}
+
+float cascade_shadow_factor(float3 position, uint index)
+{
+    static const int NUM_CASCADES = 4;
+
+    uint base = index * NUM_CASCADES;
+
+    for (uint cascade = 0; cascade < NUM_CASCADES; cascade++)
+    {
+        float4x4 view_projection = directional_light_matrices[base + cascade];
+        float4 clip_pos = mul(view_projection, float4(position, 1.0));
+
+        // Check if position is within this cascade's frustum
+        // Comparing against clipPos.w directly avoids the perspective divide
+        if (clip_pos.w > 0.0 && all(abs(clip_pos.xy) <= clip_pos.w) && clip_pos.z >= 0.0 && clip_pos.z <= clip_pos.w)
+        {
+            return direct_shadow_factor(clip_pos, directional_light_shadow_maps, base + cascade);
+        }
+    }
+
+    // Position not covered by any cascade - fully lit
+    return 1.0;
+}
+
 float3 directional_light(
     DirectionalLight light,
+    uint index,
     float3 normal,
     float3 view_direction,
     float3 position, 
-    float4x4 view_projection, 
-    Sampler2DShadow shadow_map
+    float4x4 view_projection
 ) {
     // Calculate diffuse contribution
     float diffuse = diffuse(-light.direction, normal);
@@ -139,7 +165,7 @@ float3 directional_light(
     float specular = specular(-light.direction, normal, view_direction);
 
     // Calculate shadow factor
-    float shadow_factor = shadow_factor(position, view_projection, shadow_map);
+    float shadow_factor = cascade_shadow_factor(position, index);
 
     return (diffuse + specular) * shadow_factor * light.color.rgb;
 }
@@ -173,11 +199,11 @@ float3 point_light(PointLight light, float3 normal, float3 view_direction, float
 
 float3 spot_light(
     SpotLight light, 
+    uint index,
     float3 normal, 
     float3 view_direction, 
     float3 position, 
-    float4x4 view_projection, 
-    Sampler2DShadow shadow_map
+    float4x4 view_projection
 ) { 
     float3 difference = light.position - position;
     float3 direction = normalize(difference);
@@ -198,7 +224,7 @@ float3 spot_light(
     float attenuation = attenuation(distance, light.range);
 
     // Calculate shadow factor
-    float shadow_factor = shadow_factor(position, view_projection, shadow_map);
+    float shadow_factor = shadow_factor(position, view_projection, spot_light_shadow_maps, index);
 
     return (diffuse + specular) * attenuation * intensity * shadow_factor * light.color.rgb;
 }
@@ -215,11 +241,11 @@ float4 frag_main(VertexOutput vertex) : SV_Target {
     for (uint i = 0; i < lighting_metadata.directional_light_count; i++) {
         lighting += directional_light(
             directional_lights[i],
+            i,
             normal,
             view_direction,
             vertex.world_position,
             directional_light_matrices[i],
-            directional_light_shadow_maps[i]
         );
     }
 
@@ -229,11 +255,11 @@ float4 frag_main(VertexOutput vertex) : SV_Target {
     for (uint i = 0; i < lighting_metadata.spot_light_count; i++) {
         lighting += spot_light(
             spot_lights[i],
+            i,
             normal,
             view_direction,
             vertex.world_position,
-            spot_light_matrices[i],
-            spot_light_shadow_maps[i]
+            spot_light_matrices[i]
         );
     }
 

@@ -33,7 +33,7 @@ impl<L: ShadowMapLight> ShadowMapNode<L> {
                 0,
                 Vector2i::ZERO,
                 size,
-                1,
+                L::CASCADES as _,
                 0,
                 &[],
                 Some(&VulkanRenderingAttachmentInfo::new(
@@ -75,7 +75,7 @@ impl<L: ShadowMapLight> ShadowMapNode<L> {
                 mesh.bind(cmd_buffer);
 
                 let push_constants = PushConstants {
-                    light_index: i as _,
+                    light_index: (i * L::CASCADES) as _,
                     object_index: object_data as _,
                 };
                 cmd_buffer.cmd_push_constants(
@@ -85,7 +85,7 @@ impl<L: ShadowMapLight> ShadowMapNode<L> {
                     unsafe { as_bytes(&push_constants) },
                 );
 
-                cmd_buffer.cmd_draw_indexed(mesh.index_count(), 1, 0, 0, 0);
+                cmd_buffer.cmd_draw_indexed(mesh.index_count(), L::CASCADES as _, 0, 0, 0);
             }
 
             cmd_buffer.cmd_end_rendering();

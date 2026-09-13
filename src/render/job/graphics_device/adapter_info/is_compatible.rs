@@ -97,7 +97,7 @@ fn has_required_features(adapter: &VulkanAdapter, device_name: &str, logger: &Lo
         return false;
     }
 
-    if !vulkan_12_features.runtime_descriptor_array() {
+    if !vulkan_12_features.shader_output_layer() {
         warning!(
             logger,
             "Adapter \"{}\" rejected because it does not support required Vulkan 1.2 features",

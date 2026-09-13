@@ -17,6 +17,7 @@ impl ShadowMapBuffer {
         name: String,
         size: Vector2u,
         count: usize,
+        cascades: usize,
         descriptor_set: usize,
         binding: u32,
         descriptor_sets: &[VulkanDescriptorSet],
@@ -29,6 +30,7 @@ impl ShadowMapBuffer {
             name,
             size,
             count,
+            cascades,
             descriptor_set,
             binding,
             descriptor_sets,
@@ -43,6 +45,7 @@ impl ShadowMapBuffer {
         name: CString,
         size: Vector2u,
         count: usize,
+        cascades: usize,
         descriptor_set: usize,
         binding: u32,
         descriptor_sets: &[VulkanDescriptorSet],
@@ -58,7 +61,7 @@ impl ShadowMapBuffer {
                 ShadowMapBuffer::FORMAT,
                 size.extend(1),
                 1,
-                count as _,
+                (count * cascades) as _,
                 VulkanSampleCountFlag::_1,
                 VulkanImageTiling::Optimal,
                 VulkanImageUsageFlag::DepthStencilAttachment | VulkanImageUsageFlag::Sampled,
@@ -98,25 +101,31 @@ impl ShadowMapBuffer {
                 0,
                 1,
                 0,
-                count as _,
+                (count * cascades) as _,
             )
             .map_err(Error::new_inner)?;
 
         // Create the individual image views
+        let view_type = if cascades > 1 {
+            VulkanImageViewType::_2dArray
+        } else {
+            VulkanImageViewType::_2d
+        };
+
         let mut layer_image_views = Vec::with_capacity(count);
         for i in 0..count {
             layer_image_views.push(
                 image
                     .create_image_view(
                         0,
-                        VulkanImageViewType::_2d,
+                        view_type,
                         ShadowMapBuffer::FORMAT,
                         VulkanComponentMapping::default(),
                         VulkanImageAspectFlag::Depth,
                         0,
                         1,
-                        i as _,
-                        1,
+                        (i * cascades) as _,
+                        cascades as _,
                     )
                     .map_err(Error::new_inner)?,
             );
@@ -146,6 +155,7 @@ impl ShadowMapBuffer {
             complete_image_view,
             layer_image_views,
             size,
+            cascades,
             descriptor_set,
             binding,
         })

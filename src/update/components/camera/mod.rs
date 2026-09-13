@@ -26,8 +26,5 @@ pub struct Camera {
     projection_matrix: Matrix4x4f,
 
     /// The corners of this camera's view frustum at each cascade depth plane, in view coordinates
-    corners: [[Vector3f; 4]; 2],
-
-    /// The depth of the camera's view frustum
-    depth: f32,
+    corners: [([Vector3f; 4], f32); 5],
 }

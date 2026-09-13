@@ -42,11 +42,9 @@ impl RenderData {
         &mut self,
         view_projection: Matrix4x4f,
         position: Vector3f,
-        corners: [[Vector3f; 4]; 2],
-        depth: f32,
+        corners: [([Vector3f; 4], f32); 5],
     ) {
         self.camera[0].set(view_projection, position);
         self.camera_corners = corners;
-        self.camera_depth = depth;
     }
 }

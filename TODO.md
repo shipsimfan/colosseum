@@ -1,9 +1,8 @@
 # ToDo
  1. Add shadow mapping
-   1. Directional light shadows
-     - Add cascading shadow maps (using layering + instance rendering)
-   2. Point light shadows
-   3. Add soft-shadows (using hardware PCF)
+   1. Point light shadows
+   2. Add soft-shadows
+   3. Add cascade blending
  2. Combine all GPU transfer staging buffers into one 
  3. Continue adding names to all objects
  4. Add debug labels to all render passes

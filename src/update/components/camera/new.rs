@@ -9,8 +9,7 @@ impl Camera {
             last_viewport_size: Vector2u::new(0, 0),
             projection_dirty: true,
             projection_matrix: Matrix4x4f::IDENTITY,
-            corners: [[Vector3f::ZERO; 4]; 2],
-            depth: 1.0,
+            corners: [([Vector3f::ZERO; 4], 0.0); 5],
         }
     }
 

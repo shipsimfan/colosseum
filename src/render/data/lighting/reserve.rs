@@ -13,7 +13,7 @@ impl LightingData {
         self.directional_lights
             .reserve(directional_lights, device, memory_properties)?;
         self.directional_light_matrices
-            .reserve(directional_lights, device, memory_properties)
+            .reserve(directional_lights * 4, device, memory_properties)
     }
 
     /// Reserve enough space for the specified number of point lights

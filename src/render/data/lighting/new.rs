@@ -35,7 +35,7 @@ impl LightingData {
         )?;
         let directional_light_matrices = LocalDataBuffer::new(
             format!("Directional Light Matrix Local Buffer {}", index),
-            LightingData::INITIAL_DIRECTIONAL_LIGHT_CAPACITY,
+            LightingData::INITIAL_DIRECTIONAL_LIGHT_CAPACITY * 4,
             device,
             memory_properties,
         )?;

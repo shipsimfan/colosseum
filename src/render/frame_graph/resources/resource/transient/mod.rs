@@ -14,6 +14,9 @@ pub(in crate::render::frame_graph) struct FrameGraphTransientResource {
     /// The size of the resource, in pixels
     size: Vector2u,
 
+    /// The number of layers in the image
+    layer_count: u32,
+
     /// The image itself
     image: VulkanImage,
 

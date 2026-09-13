@@ -50,6 +50,7 @@ impl FrameGraphTransientResource {
 
         Ok(FrameGraphTransientResource {
             size,
+            layer_count: 1,
             image,
             image_view: None,
             memory_requirements,

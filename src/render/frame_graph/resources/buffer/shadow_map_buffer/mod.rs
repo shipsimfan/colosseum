@@ -9,7 +9,7 @@ mod new;
 mod reserve;
 
 /// A buffer for holding shadow maps
-pub struct ShadowMapBuffer {
+pub(in crate::render) struct ShadowMapBuffer {
     /// The name of the shadow map buffer
     name: CString,
 
@@ -29,6 +29,9 @@ pub struct ShadowMapBuffer {
 
     /// The size of the individual shadow maps
     size: Vector2u,
+
+    /// The number of cascades per shadow map layer
+    cascades: usize,
 
     /// The descriptor set the complete shadow map buffer should be bound to
     descriptor_set: usize,

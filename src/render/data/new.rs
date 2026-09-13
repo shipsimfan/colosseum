@@ -63,8 +63,7 @@ impl RenderData {
 
             skybox: RenderSkybox::default(),
             camera,
-            camera_corners: [[Vector3f::ZERO; 4]; 2],
-            camera_depth: 0.0,
+            camera_corners: [([Vector3f::ZERO; 4], 0.0); 5],
             lighting,
 
             unlit_opaque_renderables: Vec::new(),

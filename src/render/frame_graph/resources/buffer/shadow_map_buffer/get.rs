@@ -19,4 +19,9 @@ impl ShadowMapBuffer {
     pub fn size(&self) -> Vector2u {
         self.size
     }
+
+    /// Get the number of layers in the shadow map buffer
+    pub fn layer_count(&self) -> u32 {
+        (self.layer_image_views.len() * self.cascades) as u32
+    }
 }

@@ -67,13 +67,8 @@ impl RenderData {
     }
 
     /// Get the corners that make up the camera's view frustum
-    pub fn camera_corners(&self) -> [[Vector3f; 4]; 2] {
+    pub fn camera_corners(&self) -> [([Vector3f; 4], f32); 5] {
         self.camera_corners
-    }
-
-    /// Get the depth of the camera's view frustum
-    pub fn camera_depth(&self) -> f32 {
-        self.camera_depth
     }
 
     /// Get a reference to the renderables data buffer
