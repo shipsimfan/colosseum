@@ -46,22 +46,30 @@ float4 frag_main(VertexOutput vertex) : SV_Target {
 
     // Sky gradient
     float vertical_t = saturate(y);
-    float3 sky_gradient = lerp(pc.sky_color * 0.5, pc.sky_color, vertical_t);
+    float3 sky_gradient = lerp(pc.sky_color, pc.sky_color * 0.5, vertical_t);
 
-    // Scattering approximation
-    float cos_sun_angle = dot(view_direction, -pc.sun_direction);
-    float rayleigh = 1.0 + cos_sun_angle * cos_sun_angle;
-    float mie = pow(max(cos_sun_angle, 0.0), pc.sun_sharpness);
+    // Sun angle cosine
+    float cos_sun_angle = max(dot(view_direction, -pc.sun_direction), 0.0);
 
-    float3 scatter = pc.sky_color * rayleigh * pc.atmosphere_thickness;
-    scatter += pc.sun_color * mie * pc.atmosphere_thickness;
+    // Rayleigh scattering
+    float rayleigh_phase = 0.75 * (1.0 + cos_sun_angle * cos_sun_angle);
+    float3 rayleigh = sky_gradient * rayleigh_phase * pc.atmosphere_thickness;
+
+    // Attenuation
+    float sun_elevation = max(-pc.sun_direction.y, 0.0);
+    float sun_path_factor = 1.0 / (sun_elevation + 0.05);
+    float sun_attenuation = exp(-sun_path_factor * 0.04);
+
+    // Mie scattering
+    float mie_phase = pow(cos_sun_angle, pc.sun_sharpness);
+    float3 mie = pc.sun_color * mie_phase * pc.atmosphere_thickness * 0.5 * sun_attenuation;
 
     // Sun disk
-    float sun_disk = smoothstep(1.0 - pc.sun_size, 1.0 - pc.sun_size * 0.5, cos_sun_angle);
-    float3 sun = pc.sun_color * sun_disk;
+    float sun_disk = smoothstep(1.0 - pc.sun_size, 1.0 - pc.sun_size * (1.0 / pc.sun_sharpness), cos_sun_angle);
+    float3 sun = pc.sun_color * sun_disk * 30.0 * sun_attenuation;
 
     // Combine sky
-    float3 sky = sky_gradient + scatter + sun;
+    float3 sky = rayleigh + mie + sun;
 
     // Blend sky and ground
     float3 final_color = lerp(pc.ground_color, sky, horizon_blend);

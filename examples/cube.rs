@@ -351,7 +351,7 @@ impl CubeMainScene {
         context.set_skybox(colosseum::update::ProceduralSkybox::new_light(
             (0.5, 0.7, 0.9),
             directional_light,
-            0.02,
+            0.003,
             5.0,
             1.0,
             (0.37, 0.29, 0.20),
