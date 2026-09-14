@@ -1,5 +1,5 @@
 use crate::{
-    Error, Result,
+    Error, Result, Window, debug,
     render::job::{GraphicsDevice, Swapchain},
 };
 use alexandria::math::Vector2u;
@@ -11,6 +11,7 @@ impl<'surface> Swapchain<'surface> {
         &'frame mut self,
         size: Vector2u,
         device: &mut GraphicsDevice,
+        window: &Window,
     ) -> Result<bool> {
         // Get the next frame data
         let frame_index = self.frame_index;
@@ -38,7 +39,12 @@ impl<'surface> Swapchain<'surface> {
         )?;
 
         // Acquire the next image to render into
-        let image_index = match self
+        if window.size() == Vector2u::ZERO {
+            debug!(device.logger(), "Window size is zero, recreating swapchain");
+            return Ok(true);
+        }
+
+        let (image_index, suboptimal) = match self
             .swapchain
             .as_mut()
             .unwrap()
@@ -46,7 +52,10 @@ impl<'surface> Swapchain<'surface> {
             .map_err(Error::new_inner)?
         {
             Some(image_index) => image_index,
-            None => return Ok(true),
+            None => {
+                debug!(device.logger(), "Swapchain is out of date ({})", size);
+                return Ok(true);
+            }
         };
 
         // Begin the command buffer for rendering the frame
@@ -81,6 +90,9 @@ impl<'surface> Swapchain<'surface> {
             image_index as _,
         )?;
 
-        Ok(false)
+        if suboptimal {
+            debug!(device.logger(), "Swapchain is suboptimal");
+        }
+        Ok(suboptimal)
     }
 }

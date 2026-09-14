@@ -65,8 +65,6 @@ fn perspective_plane_corners(
     let half_height = half_width * aspect;
     let depth = (half_width * half_width + half_height * half_height).sqrt();
 
-    println!("Depth: {}", far - near);
-
     let corner = perspective_corner(aspect, tan_fov, far);
     (
         [

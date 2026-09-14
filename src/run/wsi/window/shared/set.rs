@@ -1,5 +1,6 @@
 use crate::{
-    Error, Result,
+    Error, Result, debug,
+    logging::Logger,
     run::wsi::{
         SharedWindow,
         window::shared::{encode_position, encode_size},
@@ -16,10 +17,11 @@ impl SharedWindow {
     }
 
     /// Set the size of the window
-    pub(in crate::run::wsi) fn set_size(&self, size: Vector2u) -> Result<()> {
+    pub(in crate::run::wsi) fn set_size(&self, size: Vector2u, logger: &Logger) -> Result<()> {
         let encoded_size = encode_size(size);
         let old_value = self.size.swap(encoded_size, Ordering::Release);
         if old_value == 0 && encoded_size != 0 {
+            debug!(logger, "Window restored from zero size");
             self.restored_notify.notify().map_err(Error::new_inner)?;
         }
         Ok(())

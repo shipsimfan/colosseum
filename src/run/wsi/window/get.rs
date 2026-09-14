@@ -8,7 +8,7 @@ impl Window {
     }
 
     /// Gets the current size of the window
-    pub(in crate::run) fn size(&self) -> Vector2u {
+    pub fn size(&self) -> Vector2u {
         self.shared.size()
     }
 

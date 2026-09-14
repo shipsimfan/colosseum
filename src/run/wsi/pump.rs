@@ -31,16 +31,19 @@ impl Wsi {
             }
             EventKind::WindowResized { new_size, .. } => {
                 if !self.window.is_minimized() {
-                    self.shared_window
-                        .set_size(Vector2u::new(new_size.x as _, new_size.y as _))?;
+                    self.shared_window.set_size(
+                        Vector2u::new(new_size.x as _, new_size.y as _),
+                        &self.logger,
+                    )?;
                 }
             }
             EventKind::WindowMinimized { .. } => {
-                self.shared_window.set_size(Vector2u::new(0, 0))?;
+                self.shared_window
+                    .set_size(Vector2u::new(0, 0), &self.logger)?;
             }
             EventKind::WindowRestored { .. } => {
                 let new_size = self.window.size();
-                self.shared_window.set_size(new_size)?;
+                self.shared_window.set_size(new_size, &self.logger)?;
                 self.shared_window.set_maximized(false);
             }
             EventKind::WindowEnteredFullscreen { .. } => {

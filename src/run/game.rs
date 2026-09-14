@@ -1,5 +1,5 @@
 use crate::{
-    GlobalSharedState, Result, ThreadManager, Window,
+    GlobalSharedState, Result, ThreadManager, Window, debug,
     file_io::FileIo,
     info,
     logging::{LogController, Logger},
@@ -53,6 +53,7 @@ pub(in crate::run) fn run<Game: crate::Game>(
         // Get the window size for this frame atomically
         window_size = window.size();
         if window_size == Vector2u::ZERO {
+            debug!(logger, "Window size is zero, waiting for restore");
             window.wait_for_restore()?;
             last_time = Instant::now(); // Reset the timer to avoid a large delta time after restoring the window
             continue;
@@ -72,7 +73,7 @@ pub(in crate::run) fn run<Game: crate::Game>(
             info!(logger, "Update job requested exit");
             break;
         }
-        render_job = render_job.run(window_size)?;
+        render_job = render_job.run(window_size, &window)?;
     }
 
     Ok(())
