@@ -43,6 +43,11 @@ const CUBE_INDICES: &[u32] = &[
     20, 21, 22, 22, 21, 23, // Right
 ];
 
+const INITIAL_CUBE_POSITION: colosseum::math::Vector3f =
+    colosseum::math::Vector3f::new(0.0, 0.0, 3.0);
+
+const SPOT_LIGHT_RADIUS: f32 = 4.0;
+
 /// The cube example
 struct Cube;
 
@@ -132,6 +137,12 @@ struct CubeMainScene {
 
     /// The ID of the camera
     camera: colosseum::Id<colosseum::update::Entity>,
+
+    /// The ID of the spot light
+    spot_light: colosseum::Id<colosseum::update::Entity>,
+
+    /// The angle of the spot light
+    spot_light_angle: f32,
 
     /// Should the cube be rendered?
     render_state: bool,
@@ -249,6 +260,31 @@ impl colosseum::update::Scene for CubeMainScene {
             }
         }
 
+        // Update the spot light angle based on user input
+        if context.inputs().key(colosseum::Key::OpenBracket) {
+            self.spot_light_angle -= speed;
+        }
+        if context.inputs().key(colosseum::Key::CloseBracket) {
+            self.spot_light_angle += speed;
+        }
+
+        self.spot_light_angle = self.spot_light_angle % (2.0 * std::f32::consts::PI);
+
+        let position = colosseum::math::Vector3f::new(
+            self.spot_light_angle.cos(),
+            0.0,
+            self.spot_light_angle.sin(),
+        ) * SPOT_LIGHT_RADIUS
+            + INITIAL_CUBE_POSITION;
+
+        let direction = INITIAL_CUBE_POSITION - position;
+
+        let spotlight = context
+            .ecs_mut()
+            .get_mut::<colosseum::update::components::SpotLight>(self.spot_light);
+        spotlight.set_position(position);
+        spotlight.set_direction(direction);
+
         // Display the FPS every second
         self.frames += 1;
         self.fps_timer += context.delta_time().as_secs_f32();
@@ -333,9 +369,9 @@ impl CubeMainScene {
             colosseum::update::components::SpotLight::new(
                 (1.0, 0.95, 0.85),
                 1.0,
-                (-3.0, 0.0, 7.0),
+                (0.0, 0.0, 0.0),
                 10.0,
-                (1.0, 0.0, -1.0),
+                (0.0, 0.0, 0.0),
                 3.14 / 8.0,
                 3.14 / 12.0,
             ),
@@ -365,6 +401,8 @@ impl CubeMainScene {
             mesh,
             cube,
             camera,
+            spot_light,
+            spot_light_angle: std::f32::consts::PI,
             render_state: true,
         })
     }

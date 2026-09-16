@@ -80,7 +80,7 @@ fn find_view_projection_matrix(
         up = Vector3f::X;
     }
 
-    let view = Matrix4x4f::new_look_at(Vector3f::ZERO, direction, up).inverse();
+    let view = Matrix4x4f::new_look_at(Vector3f::ZERO, direction, up);
 
     // Convert the camera corner's into view space and find the bounds for the orthographic projection
     let mut min = Vector3f::INFINITY;

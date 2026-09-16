@@ -4,8 +4,8 @@ version = 4
 
 [[package]]
 name = "alexandria"
-version = "0.16.3"
-source = "git+https://github.com/shipsimfan/alexandria#b5ef760224e91504fdd8d97282e6a455eeddea3d"
+version = "0.16.4"
+source = "git+https://github.com/shipsimfan/alexandria#0c45edad262bd43df7b7e6fb1640fe364b37217d"
 dependencies = [
  "alexandria-macros",
  "data-format",
@@ -20,8 +20,8 @@ dependencies = [
 
 [[package]]
 name = "alexandria-macros"
-version = "0.16.3"
-source = "git+https://github.com/shipsimfan/alexandria#b5ef760224e91504fdd8d97282e6a455eeddea3d"
+version = "0.16.4"
+source = "git+https://github.com/shipsimfan/alexandria#0c45edad262bd43df7b7e6fb1640fe364b37217d"
 dependencies = [
  "proc-macro-util",
 ]
@@ -36,7 +36,7 @@ dependencies = [
 
 [[package]]
 name = "colosseum"
-version = "0.19.3"
+version = "0.19.4"
 dependencies = [
  "alexandria",
  "argparse",
@@ -49,7 +49,7 @@ dependencies = [
 
 [[package]]
 name = "colosseum-build"
-version = "0.19.3"
+version = "0.19.4"
 dependencies = [
  "alexandria",
  "time",
@@ -57,7 +57,7 @@ dependencies = [
 
 [[package]]
 name = "colosseum-macros"
-version = "0.19.3"
+version = "0.19.4"
 dependencies = [
  "proc-macro-util",
 ]
@@ -72,8 +72,8 @@ dependencies = [
 
 [[package]]
 name = "dioptra"
-version = "1.1.0"
-source = "git+https://github.com/shipsimfan/lib-dioptra#8cea461271d420acca44e1c0a4f683d3fab9ea7a"
+version = "1.1.1"
+source = "git+https://github.com/shipsimfan/lib-dioptra#1fc2853e1c1dbad953bd34e2d966b791f0812011"
 dependencies = [
  "data-format",
  "vulkan",
