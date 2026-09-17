@@ -42,9 +42,10 @@ impl FixedRenderObjects {
     pub const SOLID_COLOR_SKY_PIPELINE: usize = 0;
     pub const PROCEDURAL_SKY_PIPELINE: usize = 1;
     pub const SHADOW_MAP_PIPELINE: usize = 2;
-    pub const TONE_MAP_PIPELINE: usize = 3;
-    pub const QUANTIZATION_PIPELINE: usize = 4;
-    pub const FXAA_PIPELINE: usize = 5;
+    pub const POINT_LIGHT_SHADOW_MAP_PIPELINE: usize = 3;
+    pub const TONE_MAP_PIPELINE: usize = 4;
+    pub const QUANTIZATION_PIPELINE: usize = 5;
+    pub const FXAA_PIPELINE: usize = 6;
 
     /** Samplers **/
     pub const PCF_SAMPLER: usize = 0;
@@ -53,20 +54,22 @@ impl FixedRenderObjects {
     /** Descriptor Set Layouts **/
     pub const CAMERA_DESCRIPTOR_SET_LAYOUT: usize = 0;
     pub const SHADOW_MAP_DESCRIPTOR_SET_LAYOUT: usize = 1;
-    pub const RENDERABLES_DESCRIPTOR_SET_LAYOUT: usize = 2;
-    pub const LIGHTING_DESCRIPTOR_SET_LAYOUT: usize = 3;
-    pub const POST_PROCESS_DESCRIPTOR_SET_LAYOUT: usize = 4;
+    pub const POINT_LIGHT_SHADOW_MAP_DESCRIPTOR_SET_LAYOUT: usize = 2;
+    pub const RENDERABLES_DESCRIPTOR_SET_LAYOUT: usize = 3;
+    pub const LIGHTING_DESCRIPTOR_SET_LAYOUT: usize = 4;
+    pub const POST_PROCESS_DESCRIPTOR_SET_LAYOUT: usize = 5;
 
     /** Descriptor Sets **/
     pub const CAMERA_DESCRIPTOR_SET: usize = 0;
     pub const DIRECTIONAL_LIGHT_DESCRIPTOR_SET: usize = 1;
-    pub const SPOT_LIGHT_DESCRIPTOR_SET: usize = 2;
-    pub const RENDERABLES_DESCRIPTOR_SET: usize = 3;
-    pub const LIGHTING_DESCRIPTOR_SET: usize = 4;
+    pub const POINT_LIGHT_DESCRIPTOR_SET: usize = 2;
+    pub const SPOT_LIGHT_DESCRIPTOR_SET: usize = 3;
+    pub const RENDERABLES_DESCRIPTOR_SET: usize = 4;
+    pub const LIGHTING_DESCRIPTOR_SET: usize = 5;
 
-    pub const TONE_MAP_DESCRIPTOR_SET: usize = 5;
-    pub const QUANTIZATION_DESCRIPTOR_SET: usize = 6;
-    pub const FXAA_DESCRIPTOR_SET: usize = 7;
+    pub const TONE_MAP_DESCRIPTOR_SET: usize = 6;
+    pub const QUANTIZATION_DESCRIPTOR_SET: usize = 7;
+    pub const FXAA_DESCRIPTOR_SET: usize = 8;
 
     /** Device Buffers **/
     pub const CAMERA_DEVICE_BUFFER: usize = 0;
@@ -75,10 +78,12 @@ impl FixedRenderObjects {
     pub const DIRECTIONAL_LIGHTS_DEVICE_BUFFER: usize = 3;
     pub const DIRECTIONAL_LIGHT_MATRICES_DEVICE_BUFFER: usize = 4;
     pub const POINT_LIGHTS_DEVICE_BUFFER: usize = 5;
-    pub const SPOT_LIGHTS_DEVICE_BUFFER: usize = 6;
-    pub const SPOT_LIGHT_MATRICES_DEVICE_BUFFER: usize = 7;
+    pub const POINT_LIGHT_MATRICES_DEVICE_BUFFER: usize = 6;
+    pub const SPOT_LIGHTS_DEVICE_BUFFER: usize = 7;
+    pub const SPOT_LIGHT_MATRICES_DEVICE_BUFFER: usize = 8;
 
     /** Shadow Maps **/
     pub const DIRECTIONAL_LIGHT_SHADOW_MAPS: usize = 0;
-    pub const SPOT_LIGHT_SHADOW_MAPS: usize = 1;
+    pub const POINT_LIGHT_SHADOW_MAPS: usize = 1;
+    pub const SPOT_LIGHT_SHADOW_MAPS: usize = 2;
 }

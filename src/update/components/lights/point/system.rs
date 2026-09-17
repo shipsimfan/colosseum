@@ -14,13 +14,14 @@ impl PointLight {
                     .unwrap();
 
                 for light in point_lights {
-                    render_data
-                        .lighting_mut()
-                        .add_point_light(RenderPointLight {
+                    render_data.lighting_mut().add_point_light(
+                        RenderPointLight {
                             color: (light.color * light.intensity).with_alpha(1.0),
                             position: light.position,
                             range: light.range,
-                        });
+                        },
+                        light.view_projections(),
+                    );
                 }
             });
         System::new(type_ids, system)

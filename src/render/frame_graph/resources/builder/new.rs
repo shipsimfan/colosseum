@@ -34,6 +34,7 @@ impl<'a> FrameGraphResourceBuilder<'a> {
             shadow_map_states: [
                 FrameGraphResourceState::default(),
                 FrameGraphResourceState::default(),
+                FrameGraphResourceState::default(),
             ],
         }
     }

@@ -43,6 +43,10 @@ impl FrameGraphResourceId {
     pub const DIRECTIONAL_LIGHT_SHADOW_MAPS: FrameGraphResourceId =
         FrameGraphResourceId::new_shadow_map(FixedRenderObjects::DIRECTIONAL_LIGHT_SHADOW_MAPS);
 
+    /// The ID for the point light shadow maps
+    pub const POINT_LIGHT_SHADOW_MAPS: FrameGraphResourceId =
+        FrameGraphResourceId::new_shadow_map(FixedRenderObjects::POINT_LIGHT_SHADOW_MAPS);
+
     /// The ID for the spot light shadow maps
     pub const SPOT_LIGHT_SHADOW_MAPS: FrameGraphResourceId =
         FrameGraphResourceId::new_shadow_map(FixedRenderObjects::SPOT_LIGHT_SHADOW_MAPS);

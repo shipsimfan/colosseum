@@ -38,7 +38,7 @@ fn create_pcf_sampler(
             false,
             1.0,
             true,
-            VulkanCompareOp::Less,
+            VulkanCompareOp::LessOrEqual,
             0.0,
             1.0,
             VulkanBorderColor::FloatOpaqueWhite,
@@ -91,7 +91,6 @@ fn create_lighting_descriptor_set_layout(
                 1,
                 VulkanShaderStageFlag::Fragment,
             ),
-            // Spot Lights
             VulkanDescriptorSetLayoutBinding::new(
                 5,
                 VulkanDescriptorType::StorageBuffer,
@@ -100,12 +99,25 @@ fn create_lighting_descriptor_set_layout(
             ),
             VulkanDescriptorSetLayoutBinding::new(
                 6,
+                VulkanDescriptorType::CombinedImageSampler,
+                1,
+                VulkanShaderStageFlag::Fragment,
+            ),
+            // Spot Lights
+            VulkanDescriptorSetLayoutBinding::new(
+                7,
                 VulkanDescriptorType::StorageBuffer,
                 1,
                 VulkanShaderStageFlag::Fragment,
             ),
             VulkanDescriptorSetLayoutBinding::new(
-                7,
+                8,
+                VulkanDescriptorType::StorageBuffer,
+                1,
+                VulkanShaderStageFlag::Fragment,
+            ),
+            VulkanDescriptorSetLayoutBinding::new(
+                9,
                 VulkanDescriptorType::CombinedImageSampler,
                 1,
                 VulkanShaderStageFlag::Fragment,

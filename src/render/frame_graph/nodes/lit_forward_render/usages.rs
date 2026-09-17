@@ -19,6 +19,10 @@ impl LitForwardRenderNode {
                 FrameGraphResourceUsage::SampledImage,
             ),
             (
+                FrameGraphResourceId::POINT_LIGHT_SHADOW_MAPS,
+                FrameGraphResourceUsage::SampledImage,
+            ),
+            (
                 FrameGraphResourceId::SPOT_LIGHT_SHADOW_MAPS,
                 FrameGraphResourceUsage::SampledImage,
             ),

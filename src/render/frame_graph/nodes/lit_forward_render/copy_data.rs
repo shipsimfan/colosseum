@@ -59,6 +59,13 @@ impl LitForwardRenderNode {
             device,
             memory_properties,
         )?;
+        device_buffers[FixedRenderObjects::POINT_LIGHT_MATRICES_DEVICE_BUFFER].copy(
+            render_data.lighting().point_light_matrices(),
+            descriptor_sets,
+            cmd_buffer,
+            device,
+            memory_properties,
+        )?;
         device_buffers[FixedRenderObjects::SPOT_LIGHT_MATRICES_DEVICE_BUFFER].copy(
             render_data.lighting().spot_light_matrices(),
             descriptor_sets,
@@ -70,6 +77,13 @@ impl LitForwardRenderNode {
         // Resize shadow maps
         shadow_maps[FixedRenderObjects::DIRECTIONAL_LIGHT_SHADOW_MAPS].reserve(
             render_data.lighting().directional_lights().capacity(),
+            descriptor_sets,
+            fixed_objects.sampler(FixedRenderObjects::PCF_SAMPLER),
+            device,
+            memory_properties,
+        )?;
+        shadow_maps[FixedRenderObjects::POINT_LIGHT_SHADOW_MAPS].reserve(
+            render_data.lighting().point_lights().capacity(),
             descriptor_sets,
             fixed_objects.sampler(FixedRenderObjects::PCF_SAMPLER),
             device,

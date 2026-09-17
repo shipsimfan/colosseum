@@ -72,8 +72,8 @@ dependencies = [
 
 [[package]]
 name = "dioptra"
-version = "1.1.1"
-source = "git+https://github.com/shipsimfan/lib-dioptra#1fc2853e1c1dbad953bd34e2d966b791f0812011"
+version = "1.1.2"
+source = "git+https://github.com/shipsimfan/lib-dioptra#a094a64268dd96f9202a0a570a830e3dc845d413"
 dependencies = [
  "data-format",
  "vulkan",

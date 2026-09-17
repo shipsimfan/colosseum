@@ -33,6 +33,9 @@ pub(in crate::render) struct ShadowMapBuffer {
     /// The number of cascades per shadow map layer
     cascades: usize,
 
+    /// Does this buffer contain cube maps?
+    cube: bool,
+
     /// The descriptor set the complete shadow map buffer should be bound to
     descriptor_set: usize,
 

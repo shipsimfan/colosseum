@@ -23,6 +23,7 @@ impl ShadowMapBuffer {
                 self.size,
                 capacity,
                 self.cascades,
+                self.cube,
                 self.descriptor_set,
                 self.binding,
                 descriptor_sets,

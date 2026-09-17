@@ -25,7 +25,9 @@ impl LightingData {
     ) -> Result<()> {
         self.metadata[0].num_point_lights = point_lights as _;
         self.point_lights
-            .reserve(point_lights, device, memory_properties)
+            .reserve(point_lights, device, memory_properties)?;
+        self.point_light_matrices
+            .reserve(point_lights * 6, device, memory_properties)
     }
 
     /// Reserve enough space for the specified number of spot lights

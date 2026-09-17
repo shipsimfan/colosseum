@@ -1,7 +1,7 @@
 use crate::{
     Result,
     render::{
-        FixedRenderObjects, PerFrameObjectBuilder,
+        PerFrameObjectBuilder,
         frame_graph::{ShadowMapLight, ShadowMapNode},
     },
 };
@@ -14,7 +14,7 @@ impl<L: ShadowMapLight> ShadowMapNode<L> {
     ) -> Result<()> {
         per_frame_objects.add_descriptor_set(
             format!("{} Light Descriptor Set {}", L::NAME, index),
-            FixedRenderObjects::SHADOW_MAP_DESCRIPTOR_SET_LAYOUT,
+            L::DESCRIPTOR_SET_LAYOUT,
             L::DESCRIPTOR_SET,
         )
     }

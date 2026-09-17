@@ -1,5 +1,5 @@
 use crate::update::components::PointLight;
-use alexandria::math::{Color3f, Srgb, Vector3f};
+use alexandria::math::{Color3f, Matrix4x4f, Srgb, Vector3f};
 
 impl PointLight {
     /// Create a new [`PointLight`] component
@@ -14,6 +14,8 @@ impl PointLight {
             intensity,
             position: position.into(),
             range,
+            view_projections: [Matrix4x4f::ZERO; 6],
+            dirty: true,
         }
     }
 }

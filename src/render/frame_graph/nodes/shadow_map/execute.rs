@@ -1,5 +1,5 @@
 use crate::render::{
-    FixedRenderObjects, RenderData, RenderObjects, as_bytes,
+    RenderData, RenderObjects, as_bytes,
     frame_graph::{
         FrameGraphResources, ShadowMapLight, ShadowMapNode, nodes::shadow_map::PushConstants,
     },
@@ -56,7 +56,7 @@ impl<L: ShadowMapLight> ShadowMapNode<L> {
             cmd_buffer.cmd_set_scissor(0, &[scissor]);
 
             // Bind the pipeline
-            let pipeline = render_objects.pipeline(FixedRenderObjects::SHADOW_MAP_PIPELINE);
+            let pipeline = render_objects.pipeline(L::PIPELINE);
             pipeline.bind(cmd_buffer);
 
             let pipeline_layout = pipeline.layout();
@@ -80,7 +80,7 @@ impl<L: ShadowMapLight> ShadowMapNode<L> {
                 };
                 cmd_buffer.cmd_push_constants(
                     pipeline_layout,
-                    VulkanShaderStageFlag::Vertex,
+                    VulkanShaderStageFlag::Vertex | VulkanShaderStageFlag::Fragment,
                     0,
                     unsafe { as_bytes(&push_constants) },
                 );

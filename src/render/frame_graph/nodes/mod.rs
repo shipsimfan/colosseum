@@ -2,7 +2,7 @@ use crate::{
     Result,
     render::{
         DeviceDataBuffer, FixedRenderObjects, PerFrameObjectBuilder, RenderData,
-        RenderDirectionalLight, RenderObjects, RenderSpotLight, ShadowMapBuffer,
+        RenderDirectionalLight, RenderObjects, RenderPointLight, RenderSpotLight, ShadowMapBuffer,
         frame_graph::{FrameGraphResourceId, FrameGraphResourceUsage, FrameGraphResources},
     },
 };
@@ -44,6 +44,9 @@ nodes![
 
         /// A node that renders shadow maps for directional lights
         DirectionalLightShadowMap(ShadowMapNode<RenderDirectionalLight>),
+
+        /// A node that renders shadow maps for point lights
+        PointLightShadowMap(ShadowMapNode<RenderPointLight>),
 
         /// A node that renders shadow maps for spot lights
         SpotLightShadowMap(ShadowMapNode<RenderSpotLight>),

@@ -76,17 +76,27 @@ impl<'instance> VulkanAdapterInfo<'instance> {
 
 /// Check if the given adapter has the required features
 fn has_required_features(adapter: &VulkanAdapter, device_name: &str, logger: &Logger) -> bool {
+    let mut vulkan_10_features = VulkanDeviceFeatures::default();
     let mut vulkan_11_features = VulkanDeviceVulkan11Features::default();
     let mut vulkan_12_features = VulkanDeviceVulkan12Features::default();
     let mut vulkan_13_features = VulkanDeviceVulkan13Features::default();
     let mut extended_dynamic_state = VulkanDeviceExtendedDynamicStateFeatures::default();
     adapter.get_features([
-        &mut VulkanDeviceFeatures::default() as _,
+        &mut vulkan_10_features as _,
         &mut vulkan_11_features as _,
         &mut vulkan_12_features as _,
         &mut vulkan_13_features as _,
         &mut extended_dynamic_state as _,
     ]);
+
+    if !vulkan_10_features.image_cube_array() {
+        warning!(
+            logger,
+            "Adapter \"{}\" rejected because it does not support required Vulkan 1.0 features",
+            device_name,
+        );
+        return false;
+    }
 
     if !vulkan_11_features.shader_draw_parameters() {
         warning!(

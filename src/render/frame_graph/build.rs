@@ -1,5 +1,6 @@
 use crate::render::{
-    AntiAliasingMode, FrameGraph, HDR_FORMAT, RenderDirectionalLight, RenderSpotLight, SDR_FORMAT,
+    AntiAliasingMode, FrameGraph, HDR_FORMAT, RenderDirectionalLight, RenderPointLight,
+    RenderSpotLight, SDR_FORMAT,
     frame_graph::{
         FrameGraphNode, FrameGraphResourceBuilder, FrameGraphResourceId, FrameGraphStructure,
         FxaaNode, LitForwardRenderNode, QuantizationNode, RenderScaleNode, ShadowMapNode,
@@ -29,6 +30,7 @@ impl FrameGraph {
 
         // Perform the main render passes
         nodes.push(ShadowMapNode::<RenderDirectionalLight>::new().into());
+        nodes.push(ShadowMapNode::<RenderPointLight>::new().into());
         nodes.push(ShadowMapNode::<RenderSpotLight>::new().into());
 
         nodes.push(structure.skybox().create_node(color_output));

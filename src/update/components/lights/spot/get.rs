@@ -38,7 +38,7 @@ impl SpotLight {
     }
 
     /// Get the view-projection of this light
-    pub(in crate::update) fn view_projection(&mut self) -> Matrix4x4f {
+    pub(in crate::update::components::lights::spot) fn view_projection(&mut self) -> Matrix4x4f {
         if self.dirty {
             let projection = Matrix4x4f::new_perspective(1.0, self.cutoff_angle, 0.01, self.range);
 

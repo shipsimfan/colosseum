@@ -76,12 +76,18 @@ Sampler2DArrayShadow directional_light_shadow_maps;
 StructuredBuffer<PointLight> point_lights;
 
 [[vk::binding(5, 2)]]
-StructuredBuffer<SpotLight> spot_lights;
+StructuredBuffer<float4x4> point_light_matrices;
 
 [[vk::binding(6, 2)]]
-StructuredBuffer<float4x4> spot_light_matrices;
+SamplerCubeArrayShadow point_light_shadow_maps;
 
 [[vk::binding(7, 2)]]
+StructuredBuffer<SpotLight> spot_lights;
+
+[[vk::binding(8, 2)]]
+StructuredBuffer<float4x4> spot_light_matrices;
+
+[[vk::binding(9, 2)]]
 Sampler2DArrayShadow spot_light_shadow_maps;
 
 [push_constant]
@@ -91,10 +97,11 @@ ConstantBuffer<PushConstants> pc;
 VertexOutput vert_main(VertexInput input) {
     Object object = objects[pc.object_index];
 
+    float4 world_position = mul(object.model, float4(input.position, 1.0)); 
+
     VertexOutput output;
-    float4x4 mvp = mul(camera.view_projection, object.model);
-    output.position = mul(mvp, float4(input.position, 1.0));
-    output.world_position = mul(object.model, float4(input.position, 1.0)).xyz;
+    output.position = mul(camera.view_projection, world_position);
+    output.world_position = world_position.xyz;
     output.color = input.color * pc.color.rgb;
     output.normal = mul(float3x3(object.model), input.normal);
     return output;
@@ -150,6 +157,16 @@ float cascade_shadow_factor(float3 position, uint index)
     return 1.0;
 }
 
+float point_shadow_factor(float3 difference, float3 direction, uint index)
+{
+    float ref_depth = length(difference) / point_lights[index].range;
+
+    float depth = point_light_shadow_maps.Sample(float4(-direction, index));
+    if (ref_depth > depth)
+        return 0.0;
+    return 1.0;
+}
+
 float3 directional_light(
     DirectionalLight light,
     uint index,
@@ -180,7 +197,7 @@ float attenuation(float distance, float range) {
     return (c * c) / (distance * distance + 1.0);
 }
 
-float3 point_light(PointLight light, float3 normal, float3 view_direction, float3 position) {
+float3 point_light(PointLight light, uint index, float3 normal, float3 view_direction, float3 position) {
     float3 difference = light.position - position;
     float3 direction = normalize(difference); 
 
@@ -194,7 +211,10 @@ float3 point_light(PointLight light, float3 normal, float3 view_direction, float
     float distance = length(light.position - position);
     float attenuation = attenuation(distance, light.range);
 
-    return (diffuse + specular) * attenuation * light.color.rgb;
+    // Calculate shadow factor
+    float shadow_factor = point_shadow_factor(difference, direction, index);
+
+    return (diffuse + specular) * attenuation * shadow_factor * light.color.rgb;
 }
 
 float3 spot_light(
@@ -250,7 +270,7 @@ float4 frag_main(VertexOutput vertex) : SV_Target {
     }
 
     for (uint i = 0; i < lighting_metadata.point_light_count; i++)
-        lighting += point_light(point_lights[i], normal, view_direction, vertex.world_position);
+        lighting += point_light(point_lights[i], i, normal, view_direction, vertex.world_position);
 
     for (uint i = 0; i < lighting_metadata.spot_light_count; i++) {
         lighting += spot_light(

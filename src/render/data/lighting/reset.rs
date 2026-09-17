@@ -6,6 +6,7 @@ impl LightingData {
         self.directional_lights.reset();
         self.directional_light_matrices.reset();
         self.point_lights.reset();
+        self.point_light_matrices.reset();
         self.spot_lights.reset();
         self.spot_light_matrices.reset();
 

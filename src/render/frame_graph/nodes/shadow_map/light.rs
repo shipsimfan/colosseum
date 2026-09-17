@@ -1,8 +1,8 @@
 use alexandria::math::Vector2u;
 
 use crate::render::{
-    FixedRenderObjects, LightingData, LocalDataBuffer, RenderDirectionalLight, RenderSpotLight,
-    frame_graph::FrameGraphResourceId,
+    FixedRenderObjects, LightingData, LocalDataBuffer, RenderDirectionalLight, RenderPointLight,
+    RenderSpotLight, frame_graph::FrameGraphResourceId,
 };
 
 /// A light that can be used in a shadow map
@@ -21,8 +21,14 @@ pub(in crate::render::frame_graph) trait ShadowMapLight:
     /// The ID of the shadow map resource associated with this light
     const RESOURCE_ID: FrameGraphResourceId;
 
+    /// The index of the descriptor set layout associated with this light
+    const DESCRIPTOR_SET_LAYOUT: usize;
+
     /// The index of the descriptor set associated with this light
     const DESCRIPTOR_SET: usize;
+
+    /// The index of the pipeline associated with this light
+    const PIPELINE: usize;
 
     /// The size of a single shadow map for this light
     const SIZE: Vector2u;
@@ -39,7 +45,9 @@ impl ShadowMapLight for RenderDirectionalLight {
     const PRIMARY: bool = true;
     const SHADOW_MAP: usize = FixedRenderObjects::DIRECTIONAL_LIGHT_SHADOW_MAPS;
     const RESOURCE_ID: FrameGraphResourceId = FrameGraphResourceId::DIRECTIONAL_LIGHT_SHADOW_MAPS;
+    const DESCRIPTOR_SET_LAYOUT: usize = FixedRenderObjects::SHADOW_MAP_DESCRIPTOR_SET_LAYOUT;
     const DESCRIPTOR_SET: usize = FixedRenderObjects::DIRECTIONAL_LIGHT_DESCRIPTOR_SET;
+    const PIPELINE: usize = FixedRenderObjects::SHADOW_MAP_PIPELINE;
 
     const SIZE: Vector2u = (1024, 1024).into();
     const CASCADES: usize = 4;
@@ -49,12 +57,32 @@ impl ShadowMapLight for RenderDirectionalLight {
     }
 }
 
+impl ShadowMapLight for RenderPointLight {
+    const NAME: &str = "Point";
+    const PRIMARY: bool = false;
+    const SHADOW_MAP: usize = FixedRenderObjects::POINT_LIGHT_SHADOW_MAPS;
+    const RESOURCE_ID: FrameGraphResourceId = FrameGraphResourceId::POINT_LIGHT_SHADOW_MAPS;
+    const DESCRIPTOR_SET_LAYOUT: usize =
+        FixedRenderObjects::POINT_LIGHT_SHADOW_MAP_DESCRIPTOR_SET_LAYOUT;
+    const DESCRIPTOR_SET: usize = FixedRenderObjects::POINT_LIGHT_DESCRIPTOR_SET;
+    const PIPELINE: usize = FixedRenderObjects::POINT_LIGHT_SHADOW_MAP_PIPELINE;
+
+    const SIZE: Vector2u = (1024, 1024).into();
+    const CASCADES: usize = 6;
+
+    fn get_lights(lighting: &LightingData) -> &LocalDataBuffer<Self> {
+        lighting.point_lights()
+    }
+}
+
 impl ShadowMapLight for RenderSpotLight {
     const NAME: &str = "Spot";
     const PRIMARY: bool = false;
     const SHADOW_MAP: usize = FixedRenderObjects::SPOT_LIGHT_SHADOW_MAPS;
     const RESOURCE_ID: FrameGraphResourceId = FrameGraphResourceId::SPOT_LIGHT_SHADOW_MAPS;
+    const DESCRIPTOR_SET_LAYOUT: usize = FixedRenderObjects::SHADOW_MAP_DESCRIPTOR_SET_LAYOUT;
     const DESCRIPTOR_SET: usize = FixedRenderObjects::SPOT_LIGHT_DESCRIPTOR_SET;
+    const PIPELINE: usize = FixedRenderObjects::SHADOW_MAP_PIPELINE;
 
     const SIZE: Vector2u = (1024, 1024).into();
     const CASCADES: usize = 1;

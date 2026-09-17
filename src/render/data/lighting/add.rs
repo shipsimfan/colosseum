@@ -15,8 +15,15 @@ impl LightingData {
     }
 
     /// Add a new point light to the data
-    pub fn add_point_light(&mut self, point_light: RenderPointLight) {
+    pub fn add_point_light(
+        &mut self,
+        point_light: RenderPointLight,
+        view_projections: [Matrix4x4f; 6],
+    ) {
         self.point_lights.push(point_light);
+        for view_projection in view_projections {
+            self.point_light_matrices.push(view_projection);
+        }
     }
 
     /// Add a new point light to the data

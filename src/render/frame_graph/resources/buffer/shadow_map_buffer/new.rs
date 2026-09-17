@@ -3,9 +3,9 @@ use alexandria::{
     gpu::{
         VulkanAdapterMemoryProperties, VulkanComponentMapping, VulkanDescriptorImageInfo,
         VulkanDescriptorSet, VulkanDescriptorType, VulkanDevice, VulkanImageAspectFlag,
-        VulkanImageLayout, VulkanImageTiling, VulkanImageType, VulkanImageUsageFlag,
-        VulkanImageViewType, VulkanMemoryPropertyFlag, VulkanSampleCountFlag, VulkanSampler,
-        VulkanSharingMode, VulkanWriteDescriptorSet,
+        VulkanImageCreateFlag, VulkanImageCreateFlags, VulkanImageLayout, VulkanImageTiling,
+        VulkanImageType, VulkanImageUsageFlag, VulkanImageViewType, VulkanMemoryPropertyFlag,
+        VulkanSampleCountFlag, VulkanSampler, VulkanSharingMode, VulkanWriteDescriptorSet,
     },
     math::Vector2u,
 };
@@ -18,6 +18,7 @@ impl ShadowMapBuffer {
         size: Vector2u,
         count: usize,
         cascades: usize,
+        cube: bool,
         descriptor_set: usize,
         binding: u32,
         descriptor_sets: &[VulkanDescriptorSet],
@@ -31,6 +32,7 @@ impl ShadowMapBuffer {
             size,
             count,
             cascades,
+            cube,
             descriptor_set,
             binding,
             descriptor_sets,
@@ -46,6 +48,7 @@ impl ShadowMapBuffer {
         size: Vector2u,
         count: usize,
         cascades: usize,
+        cube: bool,
         descriptor_set: usize,
         binding: u32,
         descriptor_sets: &[VulkanDescriptorSet],
@@ -56,7 +59,11 @@ impl ShadowMapBuffer {
         // Create the image
         let mut image = device
             .create_image(
-                0,
+                if cube {
+                    VulkanImageCreateFlag::CubeCompatible.into()
+                } else {
+                    VulkanImageCreateFlags::empty()
+                },
                 VulkanImageType::_2d,
                 ShadowMapBuffer::FORMAT,
                 size.extend(1),
@@ -94,7 +101,11 @@ impl ShadowMapBuffer {
         let complete_image_view = image
             .create_image_view(
                 0,
-                VulkanImageViewType::_2dArray,
+                if cube {
+                    VulkanImageViewType::CubeArray
+                } else {
+                    VulkanImageViewType::_2dArray
+                },
                 ShadowMapBuffer::FORMAT,
                 VulkanComponentMapping::default(),
                 VulkanImageAspectFlag::Depth,
@@ -106,7 +117,9 @@ impl ShadowMapBuffer {
             .map_err(Error::new_inner)?;
 
         // Create the individual image views
-        let view_type = if cascades > 1 {
+        let view_type = if cube {
+            VulkanImageViewType::Cube
+        } else if cascades > 1 {
             VulkanImageViewType::_2dArray
         } else {
             VulkanImageViewType::_2d
@@ -156,6 +169,7 @@ impl ShadowMapBuffer {
             layer_image_views,
             size,
             cascades,
+            cube,
             descriptor_set,
             binding,
         })

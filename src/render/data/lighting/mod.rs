@@ -33,6 +33,9 @@ pub(crate) struct LightingData {
     /// The buffer containing the point light data
     point_lights: LocalDataBuffer<RenderPointLight>,
 
+    /// The buffer containing the view-projection matrices of the point lights
+    point_light_matrices: LocalDataBuffer<Matrix4x4f>,
+
     /// The buffer containing the spot light data
     spot_lights: LocalDataBuffer<RenderSpotLight>,
 
