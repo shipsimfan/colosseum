@@ -93,7 +93,7 @@ impl<'a> PerFrameObjectBuilder<'a> {
             binding,
             self.descriptor_sets,
             self.fixed_render_objects
-                .sampler(FixedRenderObjects::LINEAR_CLAMP_SAMPLER),
+                .sampler(FixedRenderObjects::PCF_SAMPLER),
             self.device,
             self.memory_properties,
         )?;

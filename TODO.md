@@ -1,8 +1,9 @@
 # ToDo
  1. Add shadow mapping
-   1. Point light shadows
-   2. Add soft-shadows
-   3. Add cascade blending
+   1. Add cascade blending
+   2. Add shadow settings
+     - Expose lambda in directional lights
+     - Change shadow map sizes based on quality
  2. Combine all GPU transfer staging buffers into one 
  3. Continue adding names to all objects
  4. Add debug labels to all render passes
@@ -25,26 +26,27 @@
  12. Add mouse support
  13. Add UI system
  14. Add gamepad support
- 15. Add camera culling
- 16. Add shadow map culling
- 17. Add light culling
- 18. Add transient texture aliasing system
- 19. Add vignette
- 20. Add bloom
- 21. Add lens flare
- 22. Add deferred rendering
- 23. Add auto-exposure to tone mapping
- 24. Add other input support
- 25. Add multiple keyboard support
- 26. Add multiple mouse support
- 27. Add input translation system
- 28. Add custom shadow map shaders to materials
- 29. Add transparency
- 30. Add resource and dependency support for ECS systems
- 31. Add job system
- 32. Parallelize frame graph execution
- 33. Parallelize ECS systems
- 34. Pipeline update and render jobs
- 35. Add localization system
- 36. Add VR support
- 37. Add TAA
+ 15. Add Poisson Disk PCF with kernel size controlled by shadow quality
+ 16. Add camera culling
+ 17. Add shadow map culling
+ 18. Add light culling
+ 19. Add transient texture aliasing system
+ 20. Add vignette
+ 21. Add bloom
+ 22. Add lens flare
+ 23. Add deferred rendering
+ 24. Add auto-exposure to tone mapping
+ 25. Add other input support
+ 26. Add multiple keyboard support
+ 27. Add multiple mouse support
+ 28. Add input translation system
+ 29. Add custom shadow map shaders to materials
+ 30. Add transparency
+ 31. Add resource and dependency support for ECS systems
+ 32. Add job system
+ 33. Parallelize frame graph execution
+ 34. Parallelize ECS systems
+ 35. Pipeline update and render jobs
+ 36. Add localization system
+ 37. Add VR support
+ 38. Add TAA

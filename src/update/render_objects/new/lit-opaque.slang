@@ -123,10 +123,7 @@ float direct_shadow_factor(float4 clip_position, Sampler2DArrayShadow shadow_map
     float2 tex_coords = ndc.xy * 0.5 + 0.5;
     float ref_depth = ndc.z;
 
-    float depth = shadow_map.Sample(float3(tex_coords, layer));
-    if (ref_depth > depth)
-        return 0.0;
-    return 1.0;
+    return shadow_map.SampleCmp(float3(tex_coords, layer), ref_depth);
 }
 
 float shadow_factor(float3 position, float4x4 view_projection, Sampler2DArrayShadow shadow_map, uint index) {
@@ -161,10 +158,7 @@ float point_shadow_factor(float3 difference, float3 direction, uint index)
 {
     float ref_depth = length(difference) / point_lights[index].range;
 
-    float depth = point_light_shadow_maps.Sample(float4(-direction, index));
-    if (ref_depth > depth)
-        return 0.0;
-    return 1.0;
+    return point_light_shadow_maps.SampleCmp(float4(-direction, index), ref_depth);
 }
 
 float3 directional_light(
