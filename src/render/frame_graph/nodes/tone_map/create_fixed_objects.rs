@@ -71,7 +71,7 @@ fn create_sampler(device: &VulkanDevice) -> Result<VulkanSampler> {
             VulkanFilter::Linear,
             VulkanFilter::Linear,
             VulkanSamplerMipmapMode::Linear,
-            VulkanSamplerAddressMode::ClampToBorder,
+            VulkanSamplerAddressMode::ClampToEdge,
             VulkanSamplerAddressMode::ClampToEdge,
             VulkanSamplerAddressMode::ClampToEdge,
             0.0,
