@@ -3,7 +3,6 @@ use alexandria::{
     gpu::{VulkanAdapterMemoryProperties, VulkanDescriptorSet, VulkanDevice, VulkanSampler},
     math::Vector2u,
 };
-use std::ffi::CString;
 
 impl ShadowMapBuffer {
     /// Make sure the buffer has enough space for `capacity` shadow maps
@@ -17,11 +16,11 @@ impl ShadowMapBuffer {
         memory_properties: &VulkanAdapterMemoryProperties,
     ) -> Result<()> {
         if self.layer_image_views.len() < capacity || self.size != size {
-            let mut name = CString::new("").unwrap();
-            std::mem::swap(&mut name, &mut self.name);
-
             *self = ShadowMapBuffer::new_inner(
-                name,
+                self.image_name.clone(),
+                self.memory_name.clone(),
+                self.complete_image_view_name.clone(),
+                self.layer_base_name.clone(),
                 size,
                 capacity,
                 self.cascades,

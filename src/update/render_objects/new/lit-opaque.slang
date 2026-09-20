@@ -148,23 +148,7 @@ float cascade_shadow_factor(float3 position, uint index, float depth)
         // Check if position is within this cascade's frustum
         // Comparing against clipPos.w directly avoids the perspective divide
         if (clip_pos.w > 0.0 && all(abs(clip_pos.xy) <= clip_pos.w) && clip_pos.z >= 0.0 && clip_pos.z <= clip_pos.w)
-        {
-            float shadow_factor = direct_shadow_factor(clip_pos, directional_light_shadow_maps, base + cascade);
-            if (cascade == NUM_CASCADES - 1)
-                return shadow_factor;
-
-            float far_depth = directional_lights[index].cascade_far_depths[cascade];
-            float blend_start = far_depth * (1.0 - BLEND_FACTOR);
-            if (depth > blend_start)
-            {
-                float blend_factor = (depth - blend_start) / (far_depth - blend_start);
-                float shadow_factor2 = direct_shadow_factor(clip_pos, directional_light_shadow_maps, base + cascade + 1);
-
-                shadow_factor = lerp(shadow_factor, shadow_factor2, blend_factor);
-            }
-
-            return shadow_factor;
-        }
+            return direct_shadow_factor(clip_pos, directional_light_shadow_maps, base + cascade);
     }
 
     // Position not covered by any cascade - fully lit
@@ -263,6 +247,7 @@ float3 spot_light(
 
 [shader("fragment")]
 float4 frag_main(VertexOutput vertex) : SV_Target {
+
     // Calculate common properties
     float3 normal = normalize(vertex.normal);
     float3 view_direction = normalize(vertex.world_position - camera.position);
@@ -270,6 +255,7 @@ float4 frag_main(VertexOutput vertex) : SV_Target {
     // Calculate light contributions
     float3 lighting = lighting_metadata.ambient_light.rgb;
 
+    float depth = vertex.position.z * vertex.position.w;
     for (uint i = 0; i < lighting_metadata.directional_light_count; i++) {
         lighting += directional_light(
             directional_lights[i],
@@ -278,7 +264,7 @@ float4 frag_main(VertexOutput vertex) : SV_Target {
             view_direction,
             vertex.world_position,
             directional_light_matrices[i],
-            vertex.position.z
+            depth
         );
     }
 

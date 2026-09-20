@@ -2,7 +2,7 @@ use alexandria::{
     gpu::{VulkanDeviceMemory, VulkanFormat, VulkanImage, VulkanImageView},
     math::Vector2u,
 };
-use std::ffi::CString;
+use std::{ffi::CString, rc::Rc};
 
 mod get;
 mod new;
@@ -11,7 +11,16 @@ mod reserve;
 /// A buffer for holding shadow maps
 pub(in crate::render) struct ShadowMapBuffer {
     /// The name of the shadow map buffer
-    name: CString,
+    image_name: Rc<CString>,
+
+    /// The name of the memory associated with the shadow map buffer
+    memory_name: Rc<CString>,
+
+    /// The name for the complete image view
+    complete_image_view_name: Rc<CString>,
+
+    /// The base name for individual shadow map image views
+    layer_base_name: Rc<String>,
 
     /// The GPU image containing the object data
     image: VulkanImage,

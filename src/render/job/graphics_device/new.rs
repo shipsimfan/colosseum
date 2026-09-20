@@ -61,19 +61,31 @@ impl GraphicsDevice {
         let (device, mut queues) = device_builder.create().map_err(Error::new_inner)?;
 
         let mut queue = queues.swap_remove(0);
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut queue, c"Graphics Queue")
+            .map_err(Error::new_inner)?;
 
         // Create the transfer queue
         let (transfer_queue, gpu_transfer_queue) = match adapter.transfer_queue_family_index() {
-            Some(_) => (
-                GpuTransferQueue::new_dedicated(
-                    thread_manager,
-                    &device,
-                    queues.swap_remove(0),
-                    adapter.memory_properties(),
-                    &logger,
-                )?,
-                None,
-            ),
+            Some(_) => {
+                let mut queue = queues.swap_remove(0);
+                #[cfg(debug_assertions)]
+                device
+                    .set_object_name(&mut queue, c"Transfer Queue")
+                    .map_err(Error::new_inner)?;
+
+                (
+                    GpuTransferQueue::new_dedicated(
+                        thread_manager,
+                        &device,
+                        queue,
+                        adapter.memory_properties(),
+                        &logger,
+                    )?,
+                    None,
+                )
+            }
             None => {
                 let (transfer_queue, gpu_transfer_queue) =
                     GpuTransferQueue::new(&device, &mut queue, adapter.memory_properties())?;

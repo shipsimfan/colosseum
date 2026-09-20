@@ -46,41 +46,52 @@ impl RenderGpuTransferQueue {
     ) -> Result<()> {
         let command_buffer = &mut self.command_pool[self.command_buffer_id];
 
-        let vertex_staging_buffer = self.vertex_staging_buffer.set(mesh.vertices())?;
-        let index_staging_buffer = self.index_staging_buffer.set(mesh.indices())?;
+        let vertices_size = mesh.vertices().len() * std::mem::size_of::<Vertex>();
+        let indices_size = mesh.indices().len() * std::mem::size_of::<u32>();
+        let size = vertices_size + indices_size;
+        self.staging_buffer.resize(size)?;
+
+        self.staging_buffer.set(mesh.vertices(), 0)?;
+        let staging_buffer = self.staging_buffer.set(mesh.indices(), vertices_size)?;
 
         copy_buffers(
             command_buffer,
             queue,
             &mut self.fence,
-            &[
+            [
                 (
-                    vertex_staging_buffer,
+                    staging_buffer,
                     render_mesh.vertex_buffer(),
                     0,
-                    (mesh.vertices().len() * std::mem::size_of::<Vertex>()) as u64,
+                    0,
+                    vertices_size as _,
                 ),
                 (
-                    index_staging_buffer,
+                    staging_buffer,
                     render_mesh.index_buffer(),
+                    vertices_size as _,
                     0,
-                    (mesh.indices().len() * std::mem::size_of::<u32>()) as u64,
+                    indices_size as _,
                 ),
             ],
         )
     }
 }
 
-fn copy_buffers(
+fn copy_buffers<const N: usize>(
     command_buffer: &mut VulkanCommandBuffer,
     queue: &mut VulkanQueue,
     fence: &mut VulkanFence,
-    buffers: &[(&VulkanBuffer, &VulkanBuffer, u32, u64)],
+    buffers: [(&VulkanBuffer, &VulkanBuffer, u64, u64, u64); N],
 ) -> Result<()> {
     // Recored the copy commands
     command_buffer.begin().map_err(Error::new_inner)?;
-    for (src, dst, offset, size) in buffers {
-        command_buffer.cmd_copy_buffer(src, dst, &[VulkanBufferCopy::new(0, *offset as _, *size)]);
+    for (src, dst, src_offset, dst_offset, size) in buffers {
+        command_buffer.cmd_copy_buffer(
+            src,
+            dst,
+            &[VulkanBufferCopy::new(src_offset, dst_offset, size)],
+        );
     }
     command_buffer.end().map_err(Error::new_inner)?;
 

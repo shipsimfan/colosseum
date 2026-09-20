@@ -1,7 +1,4 @@
-use crate::render::{
-    Vertex,
-    transfer::{GpuTransferCommand, StagingBuffer},
-};
+use crate::render::transfer::{GpuTransferCommand, StagingBuffer};
 use alexandria::{
     Id,
     gpu::{VulkanCommandBuffer, VulkanCommandPool, VulkanFence},
@@ -25,9 +22,6 @@ pub(in crate::render) struct RenderGpuTransferQueue {
     /// The fence used to wait for transfer commands to complete
     fence: VulkanFence,
 
-    /// The staging buffer used for vertex data
-    vertex_staging_buffer: StagingBuffer<Vertex>,
-
-    /// The staging buffer used for index data
-    index_staging_buffer: StagingBuffer<u32>,
+    /// The staging buffer to copy data with
+    staging_buffer: StagingBuffer,
 }

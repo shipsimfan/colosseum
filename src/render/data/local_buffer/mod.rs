@@ -1,5 +1,5 @@
 use alexandria::gpu::{VulkanBuffer, VulkanMappedMemory};
-use std::ffi::CString;
+use std::{ffi::CString, rc::Rc};
 
 mod get;
 mod index;
@@ -11,7 +11,10 @@ mod reset;
 /// A contiguous buffer that holds a set number of elements
 pub(in crate::render) struct LocalDataBuffer<T> {
     /// The name of the data buffer
-    name: CString,
+    buffer_name: Rc<CString>,
+
+    /// The name of the memory associated with the buffer
+    memory_name: Rc<CString>,
 
     /// The capacity of the buffer
     capacity: usize,

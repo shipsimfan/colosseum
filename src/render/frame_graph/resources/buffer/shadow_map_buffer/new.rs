@@ -9,7 +9,7 @@ use alexandria::{
     },
     math::Vector2u,
 };
-use std::ffi::CString;
+use std::{ffi::CString, rc::Rc};
 
 impl ShadowMapBuffer {
     /// Create a new [`ShadowMapBuffer`]
@@ -26,9 +26,16 @@ impl ShadowMapBuffer {
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,
     ) -> Result<ShadowMapBuffer> {
-        let name = CString::new(name).unwrap();
+        let memory_name = Rc::new(CString::new(format!("{} Memory", name)).unwrap());
+        let complete_image_view_name =
+            Rc::new(CString::new(format!("{} Complete Image View", name)).unwrap());
+        let layer_base_name = Rc::new(format!("{} Layer", name));
+        let image_name = Rc::new(CString::new(name).unwrap());
         ShadowMapBuffer::new_inner(
-            name,
+            image_name,
+            memory_name,
+            complete_image_view_name,
+            layer_base_name,
             size,
             count,
             cascades,
@@ -44,7 +51,10 @@ impl ShadowMapBuffer {
 
     /// Create a new [`ShadowMapBuffer`]
     pub(in crate::render::frame_graph::resources::buffer) fn new_inner(
-        name: CString,
+        image_name: Rc<CString>,
+        memory_name: Rc<CString>,
+        complete_image_view_name: Rc<CString>,
+        layer_base_name: Rc<String>,
         size: Vector2u,
         count: usize,
         cascades: usize,
@@ -79,7 +89,7 @@ impl ShadowMapBuffer {
             .map_err(Error::new_inner)?;
         #[cfg(debug_assertions)]
         device
-            .set_object_name(&mut image, &name)
+            .set_object_name(&mut image, &image_name)
             .map_err(Error::new_inner)?;
 
         // Allocate and bind the memory for the image
@@ -91,14 +101,18 @@ impl ShadowMapBuffer {
             )
             .ok_or(Error::new("unable to find memory for a shadow map buffer"))?;
 
-        let memory = device
+        let mut memory = device
             .allocate_memory(memory_requirements.size(), memory_type_index)
+            .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut memory, &memory_name)
             .map_err(Error::new_inner)?;
 
         image.bind_memory(&memory, 0).map_err(Error::new_inner)?;
 
         // Create the complete image view
-        let complete_image_view = image
+        let mut complete_image_view = image
             .create_image_view(
                 0,
                 if cube {
@@ -115,6 +129,10 @@ impl ShadowMapBuffer {
                 (count * cascades) as _,
             )
             .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut complete_image_view, &complete_image_view_name)
+            .map_err(Error::new_inner)?;
 
         // Create the individual image views
         let view_type = if cube {
@@ -127,21 +145,28 @@ impl ShadowMapBuffer {
 
         let mut layer_image_views = Vec::with_capacity(count);
         for i in 0..count {
-            layer_image_views.push(
-                image
-                    .create_image_view(
-                        0,
-                        view_type,
-                        ShadowMapBuffer::FORMAT,
-                        VulkanComponentMapping::default(),
-                        VulkanImageAspectFlag::Depth,
-                        0,
-                        1,
-                        (i * cascades) as _,
-                        cascades as _,
-                    )
-                    .map_err(Error::new_inner)?,
-            );
+            let mut image_view = image
+                .create_image_view(
+                    0,
+                    view_type,
+                    ShadowMapBuffer::FORMAT,
+                    VulkanComponentMapping::default(),
+                    VulkanImageAspectFlag::Depth,
+                    0,
+                    1,
+                    (i * cascades) as _,
+                    cascades as _,
+                )
+                .map_err(Error::new_inner)?;
+
+            #[cfg(debug_assertions)]
+            let image_view_name = CString::new(format!("{} {}", layer_base_name, i)).unwrap();
+            #[cfg(debug_assertions)]
+            device
+                .set_object_name(&mut image_view, &image_view_name)
+                .map_err(Error::new_inner)?;
+
+            layer_image_views.push(image_view);
         }
 
         // Bind the complete image view to the descriptor set
@@ -162,7 +187,10 @@ impl ShadowMapBuffer {
         );
 
         Ok(ShadowMapBuffer {
-            name,
+            image_name,
+            memory_name,
+            complete_image_view_name,
+            layer_base_name,
             image,
             memory,
             complete_image_view,

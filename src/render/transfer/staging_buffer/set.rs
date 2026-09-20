@@ -1,20 +1,19 @@
 use crate::{Result, render::transfer::StagingBuffer};
 use alexandria::gpu::VulkanBuffer;
 
-impl<T> StagingBuffer<T> {
+impl StagingBuffer {
     /// Set the contents of the staging buffer to the specified data
-    pub fn set(&mut self, data: &[T]) -> Result<&VulkanBuffer> {
-        if data.len() > self.capacity {
-            while data.len() > self.capacity {
-                self.capacity *= 2;
-            }
+    pub fn set<T>(&mut self, data: &[T], offset: usize) -> Result<&VulkanBuffer> {
+        let size = data.len() * std::mem::size_of::<T>();
 
-            self.resize(self.capacity)?;
-        }
+        assert!(offset + size <= self.memory.len());
 
-        // Copy the data into the mapped memory
         unsafe {
-            std::ptr::copy_nonoverlapping(data.as_ptr(), self.memory.as_mut_ptr(), data.len());
+            std::ptr::copy_nonoverlapping(
+                data.as_ptr().cast(),
+                self.memory.as_mut_ptr().add(offset),
+                size,
+            );
         }
 
         Ok(&self.buffer)

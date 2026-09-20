@@ -35,6 +35,7 @@ impl UpdateRenderObjects {
 
         // Create allocator for GPU meshes
         let mesh_allocator = GpuAllocator::new(
+            "Mesh Allocator",
             16 * 1024 * 1024, // 16 MB
             256,              // 256 B
             4 * 1024 * 1024,  // 4 MB

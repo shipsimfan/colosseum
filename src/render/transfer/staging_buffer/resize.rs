@@ -5,40 +5,40 @@ use alexandria::gpu::{
 };
 use std::ffi::CStr;
 
-impl<T> StagingBuffer<T> {
+impl StagingBuffer {
     /// Resize the staging buffer to the specified capacity
-    pub(in crate::render::transfer::staging_buffer) fn resize(
-        &mut self,
-        new_capacity: usize,
-    ) -> Result<()> {
+    pub fn resize(&mut self, new_size: usize) -> Result<()> {
+        if self.memory.len() >= new_size {
+            return Ok(());
+        }
+
         let (buffer, memory) = StagingBuffer::allocate(
-            self.name,
+            &self.buffer_name,
+            &self.memory_name,
             &self.device,
             &self.memory_properties,
-            new_capacity,
+            new_size,
         )?;
 
         self.buffer = buffer;
         self.memory = memory;
-        self.capacity = new_capacity;
 
         Ok(())
     }
 
     /// Allocate a new staging buffer with the specified capacity
     pub(in crate::render::transfer::staging_buffer) fn allocate(
-        #[cfg_attr(not(debug_assertions), allow(unused_variables))] name: &CStr,
+        #[cfg_attr(not(debug_assertions), allow(unused_variables))] buffer_name: &CStr,
+        #[cfg_attr(not(debug_assertions), allow(unused_variables))] memory_name: &CStr,
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,
-        capacity: usize,
-    ) -> Result<(VulkanBuffer, VulkanMappedMemory<T>)> {
-        let size = capacity as u64 * std::mem::size_of::<T>() as u64;
-
+        size: usize,
+    ) -> Result<(VulkanBuffer, VulkanMappedMemory<u8>)> {
         // Create the buffer
         let mut buffer = device
             .create_buffer(
                 0,
-                size,
+                size as _,
                 VulkanBufferUsageFlag::TransferSrc,
                 VulkanSharingMode::Exclusive,
                 &[],
@@ -46,7 +46,7 @@ impl<T> StagingBuffer<T> {
             .map_err(Error::new_inner)?;
         #[cfg(debug_assertions)]
         device
-            .set_object_name(&mut buffer, name)
+            .set_object_name(&mut buffer, buffer_name)
             .map_err(Error::new_inner)?;
 
         // Allocate the memory for the buffer
@@ -59,8 +59,12 @@ impl<T> StagingBuffer<T> {
             .ok_or(Error::new(
                 "unable to find a suitable memory type for a staging buffer",
             ))?;
-        let memory = device
+        let mut memory = device
             .allocate_memory(memory_requirements.size(), memory_type)
+            .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut memory, memory_name)
             .map_err(Error::new_inner)?;
 
         // Bind the buffer and memory

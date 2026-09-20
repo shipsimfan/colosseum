@@ -17,6 +17,8 @@ use alexandria::{
     },
     math::{Color4f, Linear},
 };
+#[cfg(debug_assertions)]
+use std::ffi::CString;
 use std::{ffi::CStr, sync::Arc};
 
 const VERTEX_ENTRY: &CStr = c"vert_main";
@@ -25,6 +27,7 @@ const FRAGMENT_ENTRY: &CStr = c"frag_main";
 impl RenderMaterial {
     /// Create a new [`RenderMaterial`]
     pub(in crate::render::material) fn new(
+        name: &str,
         kind: MaterialKind,
         shader: &Arc<Shader>,
         pipeline_layout: &VulkanPipelineLayout,
@@ -129,7 +132,7 @@ impl RenderMaterial {
         );
 
         // Actually create the graphics pipeline
-        let pipeline = device
+        let mut pipeline = device
             .create_graphics_pipeline(
                 [&mut VulkanPipelineRenderingCreateInfo::new(
                     0,
@@ -155,6 +158,13 @@ impl RenderMaterial {
                 None,
                 0,
             )
+            .map_err(Error::new_inner)?;
+
+        #[cfg(debug_assertions)]
+        let name = CString::new(format!("{} Pipeline", name)).unwrap();
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut pipeline, &name)
             .map_err(Error::new_inner)?;
 
         Ok(RenderMaterial {

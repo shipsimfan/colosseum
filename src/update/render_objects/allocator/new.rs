@@ -5,6 +5,7 @@ use std::sync::Arc;
 impl GpuAllocator {
     /// Create a new [`GpuAllocator`]
     pub fn new(
+        name: &'static str,
         chunk_size: u32,
         min_block_size: u32,
         max_block_size: u32,
@@ -33,6 +34,7 @@ impl GpuAllocator {
         );
 
         GpuAllocator {
+            name,
             memory_types: Vec::new(),
             chunk_size,
             min_block_size,

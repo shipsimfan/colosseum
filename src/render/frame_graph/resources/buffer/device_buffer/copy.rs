@@ -6,7 +6,6 @@ use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanBufferCopy, VulkanCommandBuffer, VulkanDescriptorSet,
     VulkanDevice,
 };
-use std::ffi::CString;
 
 impl DeviceDataBuffer {
     /// Record the command to copy `local` to this buffer, binding a new buffer if needed
@@ -20,18 +19,13 @@ impl DeviceDataBuffer {
     ) -> Result<()> {
         let local_capacity = local.capacity() * std::mem::size_of::<T>();
         if self.capacity < local_capacity {
-            let mut descriptor_sets = Vec::new();
-            std::mem::swap(&mut descriptor_sets, &mut self.descriptor_sets);
-
-            let mut name = CString::new("").unwrap();
-            std::mem::swap(&mut name, &mut self.name);
-
             *self = DeviceDataBuffer::new_inner::<T>(
-                name,
+                self.buffer_name.clone(),
+                self.memory_name.clone(),
                 local.capacity(),
                 self.usage,
                 self.descriptor_type,
-                descriptor_sets,
+                self.descriptor_sets.clone(),
                 created_descriptor_sets,
                 device,
                 memory_properties,

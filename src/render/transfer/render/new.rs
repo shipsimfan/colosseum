@@ -13,8 +13,6 @@ use alexandria::gpu::{
 use std::ffi::CString;
 use std::sync::{Arc, mpsc::Receiver};
 
-const INITIAL_STAGING_BUFFER_CAPACITY: usize = 64;
-
 impl RenderGpuTransferQueue {
     /// Create a new [`RenderGpuTransferQueue`]
     pub(in crate::render::transfer) fn new(
@@ -58,15 +56,9 @@ impl RenderGpuTransferQueue {
             .map_err(Error::new_inner)?;
 
         // Create staging buffers
-        let vertex_staging_buffer = StagingBuffer::new(
-            c"Vertex Staging Buffer",
-            INITIAL_STAGING_BUFFER_CAPACITY,
-            device.clone(),
-            &memory_properties,
-        )?;
-        let index_staging_buffer = StagingBuffer::new(
-            c"Indice Staging Buffer",
-            INITIAL_STAGING_BUFFER_CAPACITY,
+        let staging_buffer = StagingBuffer::new(
+            "General Staging Buffer",
+            32 * 1024, // 32 KB
             device.clone(),
             &memory_properties,
         )?;
@@ -76,8 +68,7 @@ impl RenderGpuTransferQueue {
             command_pool,
             command_buffer_id,
             fence,
-            vertex_staging_buffer,
-            index_staging_buffer,
+            staging_buffer,
         })
     }
 }

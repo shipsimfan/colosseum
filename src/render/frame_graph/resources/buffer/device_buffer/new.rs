@@ -7,7 +7,7 @@ use alexandria::gpu::{
     VulkanDescriptorBufferInfo, VulkanDescriptorSet, VulkanDescriptorType, VulkanDevice,
     VulkanMemoryPropertyFlag, VulkanSharingMode, VulkanWriteDescriptorSet,
 };
-use std::ffi::CString;
+use std::{ffi::CString, rc::Rc};
 
 impl DeviceDataBuffer {
     /// Create a new [`DeviceDataBuffer`]
@@ -22,13 +22,15 @@ impl DeviceDataBuffer {
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,
     ) -> Result<DeviceDataBuffer> {
-        let name = CString::new(name).unwrap();
+        let memory_name = Rc::new(CString::new(format!("{} Memory", name)).unwrap());
+        let buffer_name = Rc::new(CString::new(name).unwrap());
         DeviceDataBuffer::new_inner::<T>(
-            name,
+            buffer_name,
+            memory_name,
             capacity,
             usage,
             descriptor_type,
-            descriptor_sets,
+            descriptor_sets.into(),
             created_descriptor_sets,
             device,
             memory_properties,
@@ -37,11 +39,12 @@ impl DeviceDataBuffer {
 
     /// Create a new [`DeviceDataBuffer`]
     pub(in crate::render::frame_graph::resources::buffer) fn new_inner<T>(
-        #[cfg_attr(not(debug_assertions), allow(unused_variables))] name: CString,
+        #[cfg_attr(not(debug_assertions), allow(unused_variables))] buffer_name: Rc<CString>,
+        #[cfg_attr(not(debug_assertions), allow(unused_variables))] memory_name: Rc<CString>,
         capacity: usize,
         usage: VulkanBufferUsageFlags,
         descriptor_type: VulkanDescriptorType,
-        descriptor_sets: Vec<DeviceBufferDescriptorSet>,
+        descriptor_sets: Rc<[DeviceBufferDescriptorSet]>,
 
         created_descriptor_sets: &[VulkanDescriptorSet],
         device: &VulkanDevice,
@@ -54,6 +57,10 @@ impl DeviceDataBuffer {
         let mut buffer = device
             .create_buffer(0, size, usage, VulkanSharingMode::Exclusive, &[])
             .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut buffer, &buffer_name)
+            .map_err(Error::new_inner)?;
 
         // Allocate memory for the buffer
         let memory_requirements = buffer.get_memory_requirements();
@@ -63,15 +70,19 @@ impl DeviceDataBuffer {
                 VulkanMemoryPropertyFlag::DeviceLocal,
             )
             .ok_or(Error::new("cannot find memory for a device buffer"))?;
-        let memory = device
+        let mut memory = device
             .allocate_memory(memory_requirements.size(), memory_type_index)
+            .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut memory, &memory_name)
             .map_err(Error::new_inner)?;
 
         // Bind the buffer to the allocated memory
         buffer.bind_memory(&memory, 0).map_err(Error::new_inner)?;
 
         // Bind the buffer to a descriptor set
-        for descriptor_set in &descriptor_sets {
+        for descriptor_set in descriptor_sets.iter() {
             device.update_descriptor_sets(
                 &[VulkanWriteDescriptorSet::new(
                     &created_descriptor_sets[descriptor_set.descriptor_set],
@@ -86,7 +97,8 @@ impl DeviceDataBuffer {
         }
 
         Ok(DeviceDataBuffer {
-            name,
+            buffer_name,
+            memory_name,
             capacity: size as usize,
             buffer,
             memory,

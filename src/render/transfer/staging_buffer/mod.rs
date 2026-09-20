@@ -1,25 +1,25 @@
 use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanBuffer, VulkanDevice, VulkanMappedMemory,
 };
-use std::{ffi::CStr, sync::Arc};
+use std::{ffi::CString, sync::Arc};
 
 mod new;
 mod resize;
 mod set;
 
 /// A staging buffer for temporarily holding data before transferring it to the GPU
-pub(in crate::render::transfer) struct StagingBuffer<T> {
+pub(in crate::render::transfer) struct StagingBuffer {
     /// The name of the buffer
-    name: &'static CStr,
+    buffer_name: CString,
+
+    /// The name of the memory associated with the staging buffer
+    memory_name: CString,
 
     /// The Vulkan buffer used for staging
     buffer: VulkanBuffer,
 
     /// The mapped memory of the staging buffer
-    memory: VulkanMappedMemory<T>,
-
-    /// The capacity of the staging buffer in elements
-    capacity: usize,
+    memory: VulkanMappedMemory<u8>,
 
     /// The device to use when resizing the staging buffer
     device: VulkanDevice,
@@ -28,4 +28,4 @@ pub(in crate::render::transfer) struct StagingBuffer<T> {
     memory_properties: Arc<VulkanAdapterMemoryProperties>,
 }
 
-unsafe impl<T: Send> Send for StagingBuffer<T> {}
+unsafe impl Send for StagingBuffer {}

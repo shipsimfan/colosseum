@@ -15,6 +15,9 @@ pub(crate) use allocated_memory::*;
 
 /// An allocator for Vulkan resources on the GPU
 pub(in crate::update::render_objects) struct GpuAllocator {
+    /// The name of the allocator
+    name: &'static str,
+
     /// The memory types that can be used to allocate GPU resources
     memory_types: Vec<GpuMemoryType>,
 

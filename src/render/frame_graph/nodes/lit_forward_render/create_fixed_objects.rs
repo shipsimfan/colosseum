@@ -25,7 +25,7 @@ fn create_pcf_sampler(
     fixed_render_objects: &mut FixedRenderObjects,
     device: &VulkanDevice,
 ) -> Result<()> {
-    let sampler = device
+    let mut sampler = device
         .create_sampler(
             0,
             VulkanFilter::Linear,
@@ -44,6 +44,11 @@ fn create_pcf_sampler(
             VulkanBorderColor::FloatOpaqueWhite,
             false,
         )
+        .map_err(Error::new_inner)?;
+
+    #[cfg(debug_assertions)]
+    device
+        .set_object_name(&mut sampler, c"PCF Sampler")
         .map_err(Error::new_inner)?;
 
     fixed_render_objects.add_sampler(sampler, FixedRenderObjects::PCF_SAMPLER);

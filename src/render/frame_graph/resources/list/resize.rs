@@ -48,14 +48,18 @@ impl FrameGraphResourceList {
             return Ok(());
         }
 
-        let memory = device
+        let mut memory = device
             .allocate_memory(memory_requirements.size(), memory_type_index)
+            .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut memory, &self.name)
             .map_err(Error::new_inner)?;
 
         // Bind the required memory to the new transient resources
         let mut offset = 0;
         for (resource, info) in self.resources.iter_mut().zip(info) {
-            offset = resource.bind_memory(info, &memory, offset)?;
+            offset = resource.bind_memory(info, &memory, offset, device)?;
         }
 
         self.memory = Some(memory);

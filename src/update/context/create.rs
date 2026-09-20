@@ -15,9 +15,14 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     }
 
     /// Create a new material
-    pub fn create_material(&mut self, kind: MaterialKind, shader: ShaderId) -> Result<MaterialId> {
+    pub fn create_material(
+        &mut self,
+        name: &str,
+        kind: MaterialKind,
+        shader: ShaderId,
+    ) -> Result<MaterialId> {
         self.render_objects
-            .create_material(kind, shader, self.render_data)
+            .create_material(name, kind, shader, self.render_data)
     }
 
     /// Create a new mesh

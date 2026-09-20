@@ -1,11 +1,10 @@
 # ToDo
- 1. Combine all GPU transfer staging buffers into one 
- 2. Continue adding names to all objects
- 3. Add debug labels to all render passes
- 4. Add mesh loading
- 5. Add texture loading
- 6. Add PBR material system
- 7. Add color grading to tone map node
+ 1. Add names to shader modules and swapchain images
+ 2. Add debug labels to all render passes
+ 3. Add mesh loading
+ 4. Add texture loading
+ 5. Add PBR material system
+ 6. Add color grading to tone map node
    1. Add CPU LUT type w/ SlotMap
    2. Add render side LUT (dedicated allocations)
    3. Add LUTs to transfer queue
@@ -15,34 +14,34 @@
    7. Add binding of descriptor set to tone map node
    8. Add sampling of LUT in tone map node fragment shader
    9. Add reading .cube files
- 8. Add physics system
- 9. Add collision system
- 10. Add audio system
- 11. Add mouse support
- 12. Add UI system
- 13. Add gamepad support
- 14. Add Poisson Disk PCF with kernel size controlled by shadow quality
- 15. Add depth bias settings for shadow mapping
- 16. Add camera culling
- 17. Add shadow map culling
- 18. Add light culling
- 19. Add transient texture aliasing system
- 20. Add vignette
- 21. Add bloom
- 22. Add lens flare
- 23. Add deferred rendering
- 24. Add auto-exposure to tone mapping
- 25. Add other input support
- 26. Add multiple keyboard support
- 27. Add multiple mouse support
- 28. Add input translation system
- 29. Add custom shadow map shaders to materials
- 30. Add transparency
- 31. Add resource and dependency support for ECS systems
- 32. Add job system
- 33. Parallelize frame graph execution
- 34. Parallelize ECS systems
- 35. Pipeline update and render jobs
- 36. Add localization system
- 37. Add VR support
- 38. Add TAA
+ 7. Add physics system
+ 8. Add collision system
+ 9. Add audio system
+ 10. Add mouse support
+ 11. Add UI system
+ 12. Add gamepad support
+ 13. Add Poisson Disk PCF with kernel size controlled by shadow quality
+ 14. Add depth bias settings for shadow mapping
+ 15. Add camera culling
+ 16. Add shadow map culling
+ 17. Add light culling
+ 18. Add transient texture aliasing system
+ 19. Add vignette
+ 20. Add bloom
+ 21. Add lens flare
+ 22. Add deferred rendering
+ 23. Add auto-exposure to tone mapping
+ 24. Add other input support
+ 25. Add multiple keyboard support
+ 26. Add multiple mouse support
+ 27. Add input translation system
+ 28. Add custom shadow map shaders to materials
+ 29. Add transparency
+ 30. Add resource and dependency support for ECS systems
+ 31. Add job system
+ 32. Parallelize frame graph execution
+ 33. Parallelize ECS systems
+ 34. Pipeline update and render jobs
+ 35. Add localization system
+ 36. Add VR support
+ 37. Add TAA

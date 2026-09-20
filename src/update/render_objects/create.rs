@@ -28,6 +28,7 @@ impl UpdateRenderObjects {
     /// Create a new [`Material`]
     pub fn create_material(
         &mut self,
+        name: &str,
         kind: MaterialKind,
         shader: ShaderId,
         render_data: &mut RenderData,
@@ -44,6 +45,7 @@ impl UpdateRenderObjects {
         };
 
         let (material, render_material) = Material::new(
+            name,
             kind,
             shader,
             self.fixed_render_objects.material_pipeline_layout(kind),
@@ -112,7 +114,7 @@ impl UpdateRenderObjects {
             .next_multiple_of(index_memory_requirements.alignment())
             as u32;
 
-        let memory = self.mesh_allocator.allocate(&memory_requirements)?;
+        let memory = self.mesh_allocator.allocate(&memory_requirements, name)?;
         memory.bind_buffer(&mut vertex_buffer, 0)?;
         memory.bind_buffer(&mut index_buffer, index_buffer_offset)?;
 

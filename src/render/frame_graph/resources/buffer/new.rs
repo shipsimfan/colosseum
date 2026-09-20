@@ -36,8 +36,8 @@ impl FrameGraphTransientBuffer {
 
         Ok(FrameGraphTransientBuffer {
             epoch: 0,
-            render_scale: FrameGraphResourceList::new(),
-            native_scale: FrameGraphResourceList::new(),
+            render_scale: FrameGraphResourceList::new("Render Scale", index),
+            native_scale: FrameGraphResourceList::new("Native Scale", index),
 
             descriptor_pool,
             descriptor_sets,

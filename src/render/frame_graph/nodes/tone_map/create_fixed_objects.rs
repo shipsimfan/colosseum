@@ -65,7 +65,7 @@ impl ToneMapNode {
 }
 
 fn create_sampler(device: &VulkanDevice) -> Result<VulkanSampler> {
-    device
+    let mut sampler = device
         .create_sampler(
             0,
             VulkanFilter::Linear,
@@ -84,5 +84,12 @@ fn create_sampler(device: &VulkanDevice) -> Result<VulkanSampler> {
             VulkanBorderColor::FloatTransparentBlack,
             false,
         )
-        .map_err(Error::new_inner)
+        .map_err(Error::new_inner)?;
+
+    #[cfg(debug_assertions)]
+    device
+        .set_object_name(&mut sampler, c"Linear Clamp Sampler")
+        .map_err(Error::new_inner)?;
+
+    Ok(sampler)
 }

@@ -309,8 +309,11 @@ impl CubeMainScene {
 
         // Create material for the cube
         let shader = context.default_lit_shader();
-        let material =
-            context.create_material(colosseum::render::MaterialKind::LitOpaque, shader)?;
+        let material = context.create_material(
+            "Cube Material",
+            colosseum::render::MaterialKind::LitOpaque,
+            shader,
+        )?;
         context.set_material_specular_strength(material, 1.0);
         context.set_material_shininess(material, 256.0);
 
@@ -347,7 +350,7 @@ impl CubeMainScene {
                 0.5,
                 (-1.0, -1.5, 1.0),
                 10.0,
-                0.95,
+                0.97,
             ),
         );
 

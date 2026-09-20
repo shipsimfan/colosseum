@@ -10,6 +10,8 @@ use alexandria::{
     },
     math::Vector2u,
 };
+#[cfg(debug_assertions)]
+use std::ffi::CString;
 
 const MIN_FRAMES_IN_FLIGHT: usize = 2;
 
@@ -48,25 +50,32 @@ impl<'surface> Swapchain<'surface> {
             )
             .map_err(Error::new_inner)?;
 
-        let image_views = swapchain
-            .images()
-            .iter()
-            .map(|image| {
-                image
-                    .create_image_view(
-                        0,
-                        VulkanImageViewType::_2d,
-                        device.swapchain_format(),
-                        VulkanComponentMapping::default(),
-                        VulkanImageAspectFlag::Color,
-                        0,
-                        1,
-                        0,
-                        1,
-                    )
-                    .map_err(Error::new_inner)
-            })
-            .collect::<Result<Vec<_>>>()?;
+        let mut image_views = Vec::with_capacity(swapchain.images().len());
+        for (i, image) in swapchain.images().iter().enumerate() {
+            let mut image_view = image
+                .create_image_view(
+                    0,
+                    VulkanImageViewType::_2d,
+                    device.swapchain_format(),
+                    VulkanComponentMapping::default(),
+                    VulkanImageAspectFlag::Color,
+                    0,
+                    1,
+                    0,
+                    1,
+                )
+                .map_err(Error::new_inner)?;
+
+            #[cfg(debug_assertions)]
+            {
+                let image_view_name = CString::new(format!("Swapchain Image View {}", i)).unwrap();
+                device
+                    .set_object_name(&mut image_view, &image_view_name)
+                    .map_err(Error::new_inner)?;
+            }
+
+            image_views.push(image_view)
+        }
 
         // Create the command pool
         let render_queue_family = device.render_queue_family();

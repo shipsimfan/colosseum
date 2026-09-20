@@ -3,7 +3,7 @@ use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanBufferUsageFlag, VulkanDevice, VulkanMemoryPropertyFlag,
     VulkanSharingMode,
 };
-use std::ffi::CString;
+use std::{ffi::CString, rc::Rc};
 
 impl<T> LocalDataBuffer<T> {
     /// Create a new [`LocalDataBuffer`]
@@ -13,13 +13,21 @@ impl<T> LocalDataBuffer<T> {
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,
     ) -> Result<LocalDataBuffer<T>> {
-        let name = CString::new(name).unwrap();
-        LocalDataBuffer::new_inner(name, capacity, device, memory_properties)
+        let memory_name = Rc::new(CString::new(format!("{} Memory", name)).unwrap());
+        let buffer_name = Rc::new(CString::new(name).unwrap());
+        LocalDataBuffer::new_inner(
+            buffer_name,
+            memory_name,
+            capacity,
+            device,
+            memory_properties,
+        )
     }
 
     /// Create a new [`LocalDataBuffer`]
     pub(in crate::render::data::local_buffer) fn new_inner(
-        #[cfg_attr(not(debug_assertions), allow(unused_variables))] name: CString,
+        #[cfg_attr(not(debug_assertions), allow(unused_variables))] buffer_name: Rc<CString>,
+        #[cfg_attr(not(debug_assertions), allow(unused_variables))] memory_name: Rc<CString>,
         capacity: usize,
         device: &VulkanDevice,
         memory_properties: &VulkanAdapterMemoryProperties,
@@ -38,7 +46,7 @@ impl<T> LocalDataBuffer<T> {
             .map_err(Error::new_inner)?;
         #[cfg(debug_assertions)]
         device
-            .set_object_name(&mut buffer, &name)
+            .set_object_name(&mut buffer, &buffer_name)
             .map_err(Error::new_inner)?;
 
         // Allocate memory for the buffer
@@ -49,8 +57,12 @@ impl<T> LocalDataBuffer<T> {
                 VulkanMemoryPropertyFlag::HostVisible | VulkanMemoryPropertyFlag::HostCoherent,
             )
             .ok_or(Error::new("cannot find memory for a buffer"))?;
-        let memory = device
+        let mut memory = device
             .allocate_memory(memory_requirements.size(), memory_type_index)
+            .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut memory, &memory_name)
             .map_err(Error::new_inner)?;
 
         // Bind the buffer to the allocated memory
@@ -62,7 +74,8 @@ impl<T> LocalDataBuffer<T> {
             .map_err(|(error, _)| Error::new_inner(error))?;
 
         Ok(LocalDataBuffer {
-            name,
+            buffer_name,
+            memory_name,
             capacity,
             count: 0,
 

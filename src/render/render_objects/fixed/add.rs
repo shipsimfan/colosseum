@@ -28,8 +28,6 @@ impl FixedRenderObjects {
     /// Add a new sampler
     pub(in crate::render) fn add_sampler(&mut self, sampler: VulkanSampler, index: usize) {
         assert_eq!(index, self.samplers.len());
-        println!("Created sampler {}", index);
-
         self.samplers.push(sampler);
     }
 

@@ -39,9 +39,35 @@ impl FrameData {
             )
             .map_err(Error::new_inner)?;
 
-        let acquire_image_semaphore = device.create_semaphore().map_err(Error::new_inner)?;
-        let copy_complete_semaphore = device.create_semaphore().map_err(Error::new_inner)?;
-        let render_complete_semaphore = device.create_semaphore().map_err(Error::new_inner)?;
+        let mut acquire_image_semaphore = device.create_semaphore().map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        let acquire_image_semaphore_name =
+            CString::new(format!("Acquire Image Semaphore {}", index)).unwrap();
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut acquire_image_semaphore, &acquire_image_semaphore_name)
+            .map_err(Error::new_inner)?;
+
+        let mut copy_complete_semaphore = device.create_semaphore().map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        let copy_complete_semaphore_name =
+            CString::new(format!("Copy Complete Semaphore {}", index)).unwrap();
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut copy_complete_semaphore, &copy_complete_semaphore_name)
+            .map_err(Error::new_inner)?;
+
+        let mut render_complete_semaphore = device.create_semaphore().map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        let render_complete_semaphore_name =
+            CString::new(format!("Render Complete Semaphore {}", index)).unwrap();
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(
+                &mut render_complete_semaphore,
+                &render_complete_semaphore_name,
+            )
+            .map_err(Error::new_inner)?;
 
         #[cfg_attr(not(debug_assertions), allow(unused_mut))]
         let mut draw_fence = device

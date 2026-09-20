@@ -3,6 +3,8 @@ use crate::{
     update::render_objects::{GpuAllocatedMemory, GpuAllocator, allocator::GpuMemoryType},
 };
 use alexandria::gpu::{VulkanMemoryPropertyFlag, VulkanMemoryRequirements};
+#[cfg(debug_assertions)]
+use std::ffi::CString;
 use std::sync::Arc;
 
 impl GpuAllocator {
@@ -10,11 +12,12 @@ impl GpuAllocator {
     pub(in crate::update::render_objects) fn allocate(
         &mut self,
         memory_requirements: &VulkanMemoryRequirements,
+        name: &str,
     ) -> Result<GpuAllocatedMemory> {
         // Check if we need to have a dedicated allocation
         let size = *memory_requirements.size() as u32;
         if size > self.max_block_size {
-            return self.dedicated_allocation(memory_requirements);
+            return self.dedicated_allocation(memory_requirements, name);
         }
 
         // Determine the block index based on the size of the allocation
@@ -28,7 +31,7 @@ impl GpuAllocator {
         // Check if a memory type supports the given memory requirements and allocate from it
         for memory_type in &mut self.memory_types {
             if memory_type.supports(memory_requirements) {
-                return memory_type.allocate(block_index);
+                return memory_type.allocate(block_index, self.name);
             }
         }
 
@@ -51,13 +54,17 @@ impl GpuAllocator {
             self.device.clone(),
         ));
 
-        self.memory_types.last_mut().unwrap().allocate(block_index)
+        self.memory_types
+            .last_mut()
+            .unwrap()
+            .allocate(block_index, self.name)
     }
 
     /// Allocate a dedicated block of GPU memory for the given memory requirements
     fn dedicated_allocation(
         &self,
         memory_requirements: &VulkanMemoryRequirements,
+        name: &str,
     ) -> Result<GpuAllocatedMemory> {
         let memory_type_index = self
             .memory_properties
@@ -69,12 +76,17 @@ impl GpuAllocator {
                 "unable to find a suitable memory type for a buffer",
             ))?;
 
-        let device_memory = Arc::new(
-            self.device
-                .allocate_memory(memory_requirements.size(), memory_type_index as _)
-                .map_err(Error::new_inner)?,
-        );
+        let mut device_memory = self
+            .device
+            .allocate_memory(memory_requirements.size(), memory_type_index as _)
+            .map_err(Error::new_inner)?;
+        #[cfg(debug_assertions)]
+        let name = CString::new(format!("\"{}\" Memory", name)).unwrap();
+        #[cfg(debug_assertions)]
+        self.device
+            .set_object_name(&mut device_memory, &name)
+            .map_err(Error::new_inner)?;
 
-        Ok(GpuAllocatedMemory::new_dedicated(device_memory))
+        Ok(GpuAllocatedMemory::new_dedicated(Arc::new(device_memory)))
     }
 }
