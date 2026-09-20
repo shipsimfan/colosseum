@@ -3,6 +3,7 @@ mod matrix;
 mod shadow_corners;
 
 /// A projection for a camera, which defines how 3D points are projected onto the 2D screen
+#[derive(Debug, Clone)]
 pub enum CameraProjection {
     /// The perspective projection, which simulates the way the human eye sees the world
     Perspective {

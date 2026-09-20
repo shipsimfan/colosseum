@@ -2,7 +2,6 @@
 
 use alexandria::gpu::VulkanFormat;
 use as_bytes::*;
-use frame_graph::*;
 use pipeline::*;
 
 mod as_bytes;
@@ -20,6 +19,7 @@ pub use material::*;
 pub use mesh::*;
 pub use transfer::*;
 
+pub(crate) use frame_graph::*;
 pub(crate) use job::*;
 pub(crate) use render_objects::*;
 

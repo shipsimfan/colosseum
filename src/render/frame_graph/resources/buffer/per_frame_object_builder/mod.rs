@@ -1,9 +1,10 @@
-use crate::render::{DeviceDataBuffer, FixedRenderObjects, ShadowMapBuffer};
+use crate::render::{DeviceDataBuffer, FixedRenderObjects, ShadowMapBuffer, ShadowQuality};
 use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanDescriptorPool, VulkanDescriptorSet, VulkanDevice,
 };
 
 mod add;
+mod get;
 mod new;
 
 /// A builder for per-frame objects used by the frame graph transient buffer
@@ -28,4 +29,7 @@ pub(in crate::render) struct PerFrameObjectBuilder<'a> {
 
     /// The memory properties to use for buffer allocation
     memory_properties: &'a VulkanAdapterMemoryProperties,
+
+    /// The quality level for shadows
+    shadow_quality: ShadowQuality,
 }

@@ -4,6 +4,7 @@ use alexandria::math::Matrix4x4f;
 mod directional;
 mod metadata;
 mod point;
+mod shadow_quality;
 mod spot;
 
 mod add;
@@ -12,6 +13,8 @@ mod new;
 mod reserve;
 mod reset;
 mod set;
+
+pub use shadow_quality::*;
 
 pub(crate) use directional::*;
 pub(crate) use point::*;
@@ -41,4 +44,7 @@ pub(crate) struct LightingData {
 
     /// The buffer containing the view-projection matrices of the spot lights
     spot_light_matrices: LocalDataBuffer<Matrix4x4f>,
+
+    /// The quality to use for shadow maps
+    shadow_quality: ShadowQuality,
 }

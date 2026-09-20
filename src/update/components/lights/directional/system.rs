@@ -1,7 +1,10 @@
 use crate::{
-    render::{RenderData, RenderDirectionalLight},
+    render::{RenderData, RenderDirectionalLight, ShadowMapLight},
     system_with_extra_data,
-    update::{components::DirectionalLight, ecs::System},
+    update::{
+        components::{CameraProjection, DirectionalLight},
+        ecs::System,
+    },
 };
 use alexandria::math::{Matrix4x4f, Vector3f};
 
@@ -14,19 +17,31 @@ impl DirectionalLight {
                     .reserve_directional_lights(directional_lights.len())
                     .unwrap();
 
-                let camera_corners = render_data.camera_corners();
+                let (camera_projection, inverse_view, aspect) =
+                    render_data.camera_projection().clone();
+
+                let shadow_quality = render_data.lighting().shadow_quality() as usize;
+                let size = RenderDirectionalLight::SIZE[shadow_quality].x as _;
 
                 for light in directional_lights {
+                    let (view_projection_matrices, far_depths) = find_view_projection_matrices(
+                        &camera_projection,
+                        inverse_view,
+                        aspect,
+                        light.direction,
+                        light.shadow_depth,
+                        light.lambda,
+                        size,
+                    );
+
                     render_data.lighting_mut().add_directional_light(
                         RenderDirectionalLight {
                             color: (light.color * light.intensity).with_alpha(1.0),
                             direction: light.direction,
+                            reserved: 0,
+                            cascade_far_depths: far_depths,
                         },
-                        find_view_projection_matrices(
-                            camera_corners,
-                            light.direction,
-                            light.shadow_depth,
-                        ),
+                        view_projection_matrices,
                     );
                 }
             }
@@ -36,36 +51,58 @@ impl DirectionalLight {
 }
 
 fn find_view_projection_matrices(
-    camera_corners: [([Vector3f; 4], f32); 5],
+    camera_projection: &CameraProjection,
+    inverse_view: Matrix4x4f,
+    aspect: f32,
+
     direction: Vector3f,
     shadow_depth: f32,
-) -> [Matrix4x4f; 4] {
-    [
-        find_view_projection_matrix(
-            [camera_corners[0].0, camera_corners[1].0],
-            direction,
-            shadow_depth,
-            camera_corners[1].1,
-        ),
-        find_view_projection_matrix(
-            [camera_corners[0].0, camera_corners[2].0],
-            direction,
-            shadow_depth,
-            camera_corners[2].1,
-        ),
-        find_view_projection_matrix(
-            [camera_corners[0].0, camera_corners[3].0],
-            direction,
-            shadow_depth,
-            camera_corners[3].1,
-        ),
-        find_view_projection_matrix(
-            [camera_corners[0].0, camera_corners[4].0],
-            direction,
-            shadow_depth,
-            camera_corners[4].1,
-        ),
-    ]
+    lambda: f32,
+
+    size: f32,
+) -> ([Matrix4x4f; 4], [f32; 4]) {
+    let (mut camera_corners, far_depths) = camera_projection.shadow_corners(aspect, lambda);
+
+    // Transform the shadow corners into world space
+    for (plane, _) in &mut camera_corners {
+        for corner in plane {
+            *corner = inverse_view.transform_point(*corner);
+        }
+    }
+
+    (
+        [
+            find_view_projection_matrix(
+                [camera_corners[0].0, camera_corners[1].0],
+                direction,
+                shadow_depth,
+                camera_corners[1].1,
+                size,
+            ),
+            find_view_projection_matrix(
+                [camera_corners[0].0, camera_corners[2].0],
+                direction,
+                shadow_depth,
+                camera_corners[2].1,
+                size,
+            ),
+            find_view_projection_matrix(
+                [camera_corners[0].0, camera_corners[3].0],
+                direction,
+                shadow_depth,
+                camera_corners[3].1,
+                size,
+            ),
+            find_view_projection_matrix(
+                [camera_corners[0].0, camera_corners[4].0],
+                direction,
+                shadow_depth,
+                camera_corners[4].1,
+                size,
+            ),
+        ],
+        far_depths,
+    )
 }
 
 fn find_view_projection_matrix(
@@ -73,6 +110,7 @@ fn find_view_projection_matrix(
     direction: Vector3f,
     shadow_depth: f32,
     depth: f32,
+    size: f32,
 ) -> Matrix4x4f {
     // Compute the view matrix for the directional light
     let mut up = Vector3f::Y;
@@ -98,9 +136,8 @@ fn find_view_projection_matrix(
     min.z -= shadow_depth;
 
     // Round the bounds based on texel size
-    const SHADOW_MAP_SIZE: f32 = 1024.0;
-    let texel_size: f32 = (depth * 2.0) / SHADOW_MAP_SIZE;
-    let half_span = texel_size * SHADOW_MAP_SIZE * 0.5;
+    let texel_size: f32 = (depth * 2.0) / size;
+    let half_span = texel_size * size * 0.5;
 
     // Snap the CENTER only
     let center = (min.xy() + max.xy()) * 0.5;

@@ -95,9 +95,10 @@ impl LitForwardRenderNode {
         )?;
 
         // Create the shadow map buffers
+        let shadow_quality = per_frame_objects.shadow_quality() as usize;
         per_frame_objects.add_shadow_map_buffer(
             format!("Directional Light Shadow Map Buffer {}", index),
-            RenderDirectionalLight::SIZE,
+            RenderDirectionalLight::SIZE[shadow_quality],
             LightingData::INITIAL_DIRECTIONAL_LIGHT_CAPACITY,
             RenderDirectionalLight::CASCADES,
             false,
@@ -107,7 +108,7 @@ impl LitForwardRenderNode {
         )?;
         per_frame_objects.add_shadow_map_buffer(
             format!("Point Light Shadow Map Buffer {}", index),
-            RenderPointLight::SIZE,
+            RenderPointLight::SIZE[shadow_quality],
             LightingData::INITIAL_POINT_LIGHT_CAPACITY,
             RenderPointLight::CASCADES,
             true,
@@ -117,7 +118,7 @@ impl LitForwardRenderNode {
         )?;
         per_frame_objects.add_shadow_map_buffer(
             format!("Spot Light Shadow Map Buffer {}", index),
-            RenderSpotLight::SIZE,
+            RenderSpotLight::SIZE[shadow_quality],
             LightingData::INITIAL_SPOT_LIGHT_CAPACITY,
             RenderSpotLight::CASCADES,
             false,

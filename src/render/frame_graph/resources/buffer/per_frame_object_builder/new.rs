@@ -1,4 +1,6 @@
-use crate::render::{DeviceDataBuffer, FixedRenderObjects, PerFrameObjectBuilder, ShadowMapBuffer};
+use crate::render::{
+    DeviceDataBuffer, FixedRenderObjects, PerFrameObjectBuilder, ShadowMapBuffer, ShadowQuality,
+};
 use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanDescriptorPool, VulkanDescriptorSet, VulkanDevice,
 };
@@ -13,6 +15,7 @@ impl<'a> PerFrameObjectBuilder<'a> {
         shadow_map_buffers: &'a mut Vec<ShadowMapBuffer>,
         device: &'a VulkanDevice,
         memory_properties: &'a VulkanAdapterMemoryProperties,
+        shadow_quality: ShadowQuality,
     ) -> PerFrameObjectBuilder<'a> {
         PerFrameObjectBuilder {
             fixed_render_objects,
@@ -23,6 +26,7 @@ impl<'a> PerFrameObjectBuilder<'a> {
 
             device,
             memory_properties,
+            shadow_quality,
         }
     }
 }

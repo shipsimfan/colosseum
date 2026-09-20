@@ -1,8 +1,11 @@
-use crate::render::{Material, Mesh};
+use crate::{
+    render::{Material, Mesh},
+    update::components::CameraProjection,
+};
 use alexandria::{
     Id,
     gpu::{VulkanAdapterMemoryProperties, VulkanDevice, VulkanFence},
-    math::Vector3f,
+    math::Matrix4x4f,
 };
 use std::sync::Arc;
 
@@ -25,9 +28,9 @@ mod set;
 mod wait;
 
 pub use anti_aliasing::*;
+pub use lighting::*;
 pub use skybox::*;
 
-pub(crate) use lighting::*;
 pub(crate) use object::*;
 pub(crate) use remove_confirm::*;
 pub(crate) use render_object_change::*;
@@ -82,8 +85,8 @@ pub(crate) struct RenderData {
     /// The camera data for the current frame
     camera: LocalDataBuffer<RenderCamera>,
 
-    /// The corners for the camera's frustum, one for each directional light cascade plane
-    camera_corners: [([Vector3f; 4], f32); 5],
+    /// The projection, inverse view matrix, and aspect ratio of the camera for the current frame
+    camera_projection: (CameraProjection, Matrix4x4f, f32),
 
     /// The data about lighting for the current frame
     lighting: LightingData,

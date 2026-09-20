@@ -3,59 +3,11 @@ use crate::{
     settings::SettingsCache,
     update::{
         UpdateContext,
-        components::{Camera, Transform},
+        components::{Camera, CameraProjection, Transform},
     },
     warning,
 };
 use alexandria::math::{Matrix4x4f, Vector3f};
-
-const DEFAULT_CORNERS: [([Vector3f; 4], f32); 5] = [
-    (
-        [
-            Vector3f::new(0.0, 0.0, 0.0),
-            Vector3f::new(1.0, 0.0, 0.0),
-            Vector3f::new(0.0, 1.0, 0.0),
-            Vector3f::new(1.0, 1.0, 0.0),
-        ],
-        0.0,
-    ),
-    (
-        [
-            Vector3f::new(0.0, 0.0, 0.25),
-            Vector3f::new(1.0, 0.0, 0.25),
-            Vector3f::new(0.0, 1.0, 0.25),
-            Vector3f::new(1.0, 1.0, 0.25),
-        ],
-        0.25,
-    ),
-    (
-        [
-            Vector3f::new(0.0, 0.0, 0.5),
-            Vector3f::new(1.0, 0.0, 0.5),
-            Vector3f::new(0.0, 1.0, 0.5),
-            Vector3f::new(1.0, 1.0, 0.5),
-        ],
-        0.5,
-    ),
-    (
-        [
-            Vector3f::new(0.0, 0.0, 0.75),
-            Vector3f::new(1.0, 0.0, 0.75),
-            Vector3f::new(0.0, 1.0, 0.75),
-            Vector3f::new(1.0, 1.0, 0.75),
-        ],
-        0.75,
-    ),
-    (
-        [
-            Vector3f::new(0.0, 0.0, 1.0),
-            Vector3f::new(1.0, 0.0, 1.0),
-            Vector3f::new(0.0, 1.0, 1.0),
-            Vector3f::new(1.0, 1.0, 1.0),
-        ],
-        1.0,
-    ),
-];
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Execute all rendering systems on the archetypes in the ECS system
@@ -74,11 +26,19 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
             .set_skybox(self.skybox.to_render(self.ecs, self.render_objects.cube()));
         self.render_data
             .set_anti_aliasing(self.settings.display_settings().anti_aliasing());
+        self.render_data
+            .lighting_mut()
+            .set_shadow_quality(self.settings.display_settings().shadow_quality());
 
         if !self.update_camera() {
             warning!(self.logger, "no active camera set");
-            self.render_data
-                .set_camera(Matrix4x4f::IDENTITY, Vector3f::ZERO, DEFAULT_CORNERS);
+            self.render_data.set_camera(
+                Matrix4x4f::IDENTITY,
+                Vector3f::ZERO,
+                CameraProjection::default(),
+                Matrix4x4f::IDENTITY,
+                1.0,
+            );
             return Ok(());
         }
         self.render_data
@@ -99,13 +59,14 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         };
 
         // Get the projection matrix from the active camera
-        let (projection, mut corners) = match self.ecs.try_get_mut::<Camera>(active_camera) {
-            Some(camera) => camera.projection_matrix(self.window_size),
-            None => {
-                *self.active_camera = None;
-                return false;
-            }
-        };
+        let (projection_matrix, projection, aspect) =
+            match self.ecs.try_get_mut::<Camera>(active_camera) {
+                Some(camera) => camera.projection_matrix(self.window_size),
+                None => {
+                    *self.active_camera = None;
+                    return false;
+                }
+            };
 
         // Get the transform associated with the camera and combine it with the projection matrix
         let ((view, inverse_view), position) =
@@ -114,16 +75,14 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
                 None => ((Matrix4x4f::IDENTITY, Matrix4x4f::IDENTITY), Vector3f::ZERO),
             };
 
-        // Transform the shadow corners into world space
-        for (plane, _) in &mut corners {
-            for corner in plane {
-                *corner = inverse_view.transform_point(*corner);
-            }
-        }
-
         // Set the view-projection matrix in the render data
-        self.render_data
-            .set_camera(projection * view, position, corners);
+        self.render_data.set_camera(
+            projection_matrix * view,
+            position,
+            projection,
+            inverse_view,
+            aspect,
+        );
         true
     }
 }

@@ -1,3 +1,4 @@
+use crate::render::data::lighting::ShadowQuality;
 use crate::{
     Result,
     render::{
@@ -72,6 +73,7 @@ impl LightingData {
             point_light_matrices,
             spot_lights,
             spot_light_matrices,
+            shadow_quality: ShadowQuality::Low,
         })
     }
 }

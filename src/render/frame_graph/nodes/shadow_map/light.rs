@@ -1,14 +1,12 @@
-use alexandria::math::Vector2u;
-
+#![allow(private_interfaces)]
 use crate::render::{
     FixedRenderObjects, LightingData, LocalDataBuffer, RenderDirectionalLight, RenderPointLight,
     RenderSpotLight, frame_graph::FrameGraphResourceId,
 };
+use alexandria::math::Vector2u;
 
 /// A light that can be used in a shadow map
-pub(in crate::render::frame_graph) trait ShadowMapLight:
-    Sized
-{
+pub(crate) trait ShadowMapLight: Sized {
     /// The name of this type of light
     const NAME: &str;
 
@@ -30,8 +28,8 @@ pub(in crate::render::frame_graph) trait ShadowMapLight:
     /// The index of the pipeline associated with this light
     const PIPELINE: usize;
 
-    /// The size of a single shadow map for this light
-    const SIZE: Vector2u;
+    /// The size of a single shadow map for this light, one for each quality level
+    const SIZE: [Vector2u; 3];
 
     /// The number of cascades for this light's shadow map
     const CASCADES: usize;
@@ -49,7 +47,7 @@ impl ShadowMapLight for RenderDirectionalLight {
     const DESCRIPTOR_SET: usize = FixedRenderObjects::DIRECTIONAL_LIGHT_DESCRIPTOR_SET;
     const PIPELINE: usize = FixedRenderObjects::SHADOW_MAP_PIPELINE;
 
-    const SIZE: Vector2u = (1024, 1024).into();
+    const SIZE: [Vector2u; 3] = [(512, 512).into(), (1024, 1024).into(), (2048, 2048).into()];
     const CASCADES: usize = 4;
 
     fn get_lights(lighting: &LightingData) -> &LocalDataBuffer<Self> {
@@ -67,7 +65,7 @@ impl ShadowMapLight for RenderPointLight {
     const DESCRIPTOR_SET: usize = FixedRenderObjects::POINT_LIGHT_DESCRIPTOR_SET;
     const PIPELINE: usize = FixedRenderObjects::POINT_LIGHT_SHADOW_MAP_PIPELINE;
 
-    const SIZE: Vector2u = (1024, 1024).into();
+    const SIZE: [Vector2u; 3] = [(256, 256).into(), (512, 512).into(), (1024, 1024).into()];
     const CASCADES: usize = 6;
 
     fn get_lights(lighting: &LightingData) -> &LocalDataBuffer<Self> {
@@ -84,7 +82,7 @@ impl ShadowMapLight for RenderSpotLight {
     const DESCRIPTOR_SET: usize = FixedRenderObjects::SPOT_LIGHT_DESCRIPTOR_SET;
     const PIPELINE: usize = FixedRenderObjects::SHADOW_MAP_PIPELINE;
 
-    const SIZE: Vector2u = (1024, 1024).into();
+    const SIZE: [Vector2u; 3] = [(512, 512).into(), (1024, 1024).into(), (2048, 2048).into()];
     const CASCADES: usize = 1;
 
     fn get_lights(lighting: &LightingData) -> &LocalDataBuffer<Self> {

@@ -18,7 +18,8 @@ mod compile;
 mod execute;
 mod new;
 
-pub(in crate::render) use nodes::*;
+pub(crate) use nodes::*;
+
 pub(in crate::render) use resources::*;
 
 /// A frame graph, which can be built and executed to render a frame

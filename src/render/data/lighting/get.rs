@@ -1,9 +1,8 @@
-use alexandria::math::Matrix4x4f;
-
 use crate::render::{
     LightingData, LightingMetadata, LocalDataBuffer, RenderDirectionalLight, RenderPointLight,
-    RenderSpotLight,
+    RenderSpotLight, ShadowQuality,
 };
+use alexandria::math::Matrix4x4f;
 
 impl LightingData {
     /// Get a reference to the metadata buffer
@@ -39,5 +38,10 @@ impl LightingData {
     /// Get a reference to the spot light matrix buffer
     pub(in crate::render) fn spot_light_matrices(&self) -> &LocalDataBuffer<Matrix4x4f> {
         &self.spot_light_matrices
+    }
+
+    /// Get the shadow quality
+    pub fn shadow_quality(&self) -> ShadowQuality {
+        self.shadow_quality
     }
 }

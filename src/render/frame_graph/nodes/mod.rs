@@ -24,12 +24,13 @@ mod solid_color_sky;
 mod tone_map;
 mod unlit_forward_render;
 
+pub(crate) use shadow_map::*;
+
 pub(in crate::render::frame_graph) use fxaa::*;
 pub(in crate::render::frame_graph) use lit_forward_render::*;
 pub(in crate::render::frame_graph) use procedural_sky::*;
 pub(in crate::render::frame_graph) use quantization::*;
 pub(in crate::render::frame_graph) use render_scale::*;
-pub(in crate::render::frame_graph) use shadow_map::*;
 pub(in crate::render::frame_graph) use solid_color_sky::*;
 pub(in crate::render::frame_graph) use tone_map::*;
 pub(in crate::render::frame_graph) use unlit_forward_render::*;

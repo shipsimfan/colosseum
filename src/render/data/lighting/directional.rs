@@ -8,4 +8,10 @@ pub(crate) struct RenderDirectionalLight {
 
     /// The direction of the light
     pub direction: Vector3f,
+
+    /// A reserved value for padding
+    pub reserved: u32,
+
+    /// The camera-local far depths of the cascades
+    pub cascade_far_depths: [f32; 4],
 }

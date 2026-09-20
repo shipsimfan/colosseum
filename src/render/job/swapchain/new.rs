@@ -82,9 +82,15 @@ impl<'surface> Swapchain<'surface> {
             .map_err(Error::new_inner)?;
 
         // Allocate per-frame data
+        let shadow_quality = device.render_data().lighting().shadow_quality();
         let mut frame_data = Vec::with_capacity(image_views.len());
         for i in 0..image_views.len() {
-            frame_data.push(FrameData::new(i, &mut command_pool, &device)?);
+            frame_data.push(FrameData::new(
+                i,
+                &mut command_pool,
+                &device,
+                shadow_quality,
+            )?);
         }
 
         device.reserve_render_data(image_views.len())?;

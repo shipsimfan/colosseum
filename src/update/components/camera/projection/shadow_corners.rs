@@ -3,56 +3,64 @@ use alexandria::math::Vector3f;
 
 impl CameraProjection {
     /// Get the eight corners that make up this projection
-    pub(in crate::update::components::camera) fn shadow_corners(
+    pub(in crate::update) fn shadow_corners(
         &self,
         aspect: f32,
-    ) -> [([Vector3f; 4], f32); 5] {
+        lambda: f32,
+    ) -> ([([Vector3f; 4], f32); 5], [f32; 4]) {
         match self {
             &CameraProjection::Perspective { fov_y, near, far } => {
-                perspective_corners(aspect, fov_y, near, far)
+                perspective_corners(aspect, fov_y, near, far, lambda)
             }
             &CameraProjection::InfinitePerspective {
                 fov_y,
                 near,
                 shadow_distance,
-            } => perspective_corners(aspect, fov_y, near, shadow_distance),
+            } => perspective_corners(aspect, fov_y, near, shadow_distance, lambda),
             &CameraProjection::Orthographic { size, near, far } => {
-                orthographic_corners(aspect, size, near, far)
+                orthographic_corners(aspect, size, near, far, lambda)
             }
         }
     }
 }
 
-fn find_far_plane(near: f32, far: f32, index: u32) -> f32 {
-    const LAMBDA: f32 = 0.95;
-
+fn find_far_plane(near: f32, far: f32, index: u32, lambda: f32) -> f32 {
     let index = index as f32 / 4.0;
 
     let log = near * (far / near).powf(index);
     let linear = near + (far - near) * index;
 
-    LAMBDA * log + (1.0 - LAMBDA) * linear
+    lambda * log + (1.0 - lambda) * linear
 }
 
-fn find_far_planes(near: f32, far: f32) -> [f32; 3] {
+fn find_far_planes(near: f32, far: f32, lambda: f32) -> [f32; 3] {
     [
-        find_far_plane(near, far, 1),
-        find_far_plane(near, far, 2),
-        find_far_plane(near, far, 3),
+        find_far_plane(near, far, 1, lambda),
+        find_far_plane(near, far, 2, lambda),
+        find_far_plane(near, far, 3, lambda),
     ]
 }
 
-fn perspective_corners(aspect: f32, fov_y: f32, near: f32, far: f32) -> [([Vector3f; 4], f32); 5] {
+fn perspective_corners(
+    aspect: f32,
+    fov_y: f32,
+    near: f32,
+    far: f32,
+    lambda: f32,
+) -> ([([Vector3f; 4], f32); 5], [f32; 4]) {
     let tan_fov = (fov_y / 2.0).tan();
-    let far_planes = find_far_planes(near, far);
+    let far_planes = find_far_planes(near, far, lambda);
 
-    [
-        perspective_plane_corners(aspect, tan_fov, near, near),
-        perspective_plane_corners(aspect, tan_fov, near, far_planes[0]),
-        perspective_plane_corners(aspect, tan_fov, near, far_planes[1]),
-        perspective_plane_corners(aspect, tan_fov, near, far_planes[2]),
-        perspective_plane_corners(aspect, tan_fov, near, far),
-    ]
+    (
+        [
+            perspective_plane_corners(aspect, tan_fov, near, near),
+            perspective_plane_corners(aspect, tan_fov, near, far_planes[0]),
+            perspective_plane_corners(aspect, tan_fov, near, far_planes[1]),
+            perspective_plane_corners(aspect, tan_fov, near, far_planes[2]),
+            perspective_plane_corners(aspect, tan_fov, near, far),
+        ],
+        [far_planes[0], far_planes[1], far_planes[2], far],
+    )
 }
 
 fn perspective_plane_corners(
@@ -81,17 +89,26 @@ fn perspective_corner(aspect: f32, tan_fov: f32, depth: f32) -> Vector3f {
     Vector3f::new(aspect * tan_fov * depth, tan_fov * depth, depth)
 }
 
-fn orthographic_corners(aspect: f32, size: f32, near: f32, far: f32) -> [([Vector3f; 4], f32); 5] {
+fn orthographic_corners(
+    aspect: f32,
+    size: f32,
+    near: f32,
+    far: f32,
+    lambda: f32,
+) -> ([([Vector3f; 4], f32); 5], [f32; 4]) {
     let half_width = size * aspect;
-    let far_planes = find_far_planes(near, far);
+    let far_planes = find_far_planes(near, far, lambda);
 
-    [
-        orthographic_plane_corners(half_width, size, near, near),
-        orthographic_plane_corners(half_width, size, near, far_planes[0]),
-        orthographic_plane_corners(half_width, size, near, far_planes[1]),
-        orthographic_plane_corners(half_width, size, near, far_planes[2]),
-        orthographic_plane_corners(half_width, size, near, far),
-    ]
+    (
+        [
+            orthographic_plane_corners(half_width, size, near, near),
+            orthographic_plane_corners(half_width, size, near, far_planes[0]),
+            orthographic_plane_corners(half_width, size, near, far_planes[1]),
+            orthographic_plane_corners(half_width, size, near, far_planes[2]),
+            orthographic_plane_corners(half_width, size, near, far),
+        ],
+        [far_planes[0], far_planes[1], far_planes[2], far],
+    )
 }
 
 fn orthographic_plane_corners(

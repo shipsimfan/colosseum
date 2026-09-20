@@ -9,7 +9,7 @@ mod execute;
 mod new;
 mod usages;
 
-pub(in crate::render::frame_graph) use light::ShadowMapLight;
+pub(crate) use light::ShadowMapLight;
 
 /// A node that renders shadow maps for lights
 pub(in crate::render::frame_graph) struct ShadowMapNode<L: ShadowMapLight> {

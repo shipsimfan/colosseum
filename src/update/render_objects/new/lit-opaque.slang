@@ -30,6 +30,8 @@ struct LightingMetadata {
 struct DirectionalLight {
     float4 color;
     float3 direction;
+    float _reserved;
+    float cascade_far_depths[4];
 };
 
 struct PointLight {
@@ -131,11 +133,12 @@ float shadow_factor(float3 position, float4x4 view_projection, Sampler2DArraySha
     return direct_shadow_factor(clip_position, shadow_map, index);
 }
 
-float cascade_shadow_factor(float3 position, uint index)
+float cascade_shadow_factor(float3 position, uint index, float depth)
 {
     static const int NUM_CASCADES = 4;
+    static const float BLEND_FACTOR = 0.15;
 
-    uint base = index * NUM_CASCADES;
+    uint base = index * NUM_CASCADES; 
 
     for (uint cascade = 0; cascade < NUM_CASCADES; cascade++)
     {
@@ -146,7 +149,21 @@ float cascade_shadow_factor(float3 position, uint index)
         // Comparing against clipPos.w directly avoids the perspective divide
         if (clip_pos.w > 0.0 && all(abs(clip_pos.xy) <= clip_pos.w) && clip_pos.z >= 0.0 && clip_pos.z <= clip_pos.w)
         {
-            return direct_shadow_factor(clip_pos, directional_light_shadow_maps, base + cascade);
+            float shadow_factor = direct_shadow_factor(clip_pos, directional_light_shadow_maps, base + cascade);
+            if (cascade == NUM_CASCADES - 1)
+                return shadow_factor;
+
+            float far_depth = directional_lights[index].cascade_far_depths[cascade];
+            float blend_start = far_depth * (1.0 - BLEND_FACTOR);
+            if (depth > blend_start)
+            {
+                float blend_factor = (depth - blend_start) / (far_depth - blend_start);
+                float shadow_factor2 = direct_shadow_factor(clip_pos, directional_light_shadow_maps, base + cascade + 1);
+
+                shadow_factor = lerp(shadow_factor, shadow_factor2, blend_factor);
+            }
+
+            return shadow_factor;
         }
     }
 
@@ -167,7 +184,8 @@ float3 directional_light(
     float3 normal,
     float3 view_direction,
     float3 position, 
-    float4x4 view_projection
+    float4x4 view_projection,
+    float depth,
 ) {
     // Calculate diffuse contribution
     float diffuse = diffuse(-light.direction, normal);
@@ -176,7 +194,7 @@ float3 directional_light(
     float specular = specular(-light.direction, normal, view_direction);
 
     // Calculate shadow factor
-    float shadow_factor = cascade_shadow_factor(position, index);
+    float shadow_factor = cascade_shadow_factor(position, index, depth);
 
     return (diffuse + specular) * shadow_factor * light.color.rgb;
 }
@@ -260,6 +278,7 @@ float4 frag_main(VertexOutput vertex) : SV_Target {
             view_direction,
             vertex.world_position,
             directional_light_matrices[i],
+            vertex.position.z
         );
     }
 

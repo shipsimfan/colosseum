@@ -1,4 +1,7 @@
-use crate::{render::AntiAliasingMode, settings::DisplaySettings};
+use crate::{
+    render::{AntiAliasingMode, ShadowQuality},
+    settings::DisplaySettings,
+};
 
 impl Default for DisplaySettings {
     fn default() -> Self {
@@ -11,6 +14,7 @@ impl Default for DisplaySettings {
             render_scale: 1.0,
             gamma: 2.2,
             anti_aliasing: AntiAliasingMode::None,
+            shadow_quality: ShadowQuality::Medium,
         }
     }
 }

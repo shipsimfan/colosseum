@@ -1,4 +1,7 @@
-use crate::render::{AntiAliasingMode, RenderData, RenderSkybox};
+use crate::{
+    render::{AntiAliasingMode, RenderData, RenderSkybox},
+    update::components::CameraProjection,
+};
 use alexandria::math::{Matrix4x4f, Vector3f};
 
 impl RenderData {
@@ -42,9 +45,11 @@ impl RenderData {
         &mut self,
         view_projection: Matrix4x4f,
         position: Vector3f,
-        corners: [([Vector3f; 4], f32); 5],
+        projection: CameraProjection,
+        inverse_view: Matrix4x4f,
+        aspect: f32,
     ) {
         self.camera[0].set(view_projection, position);
-        self.camera_corners = corners;
+        self.camera_projection = (projection, inverse_view, aspect);
     }
 }

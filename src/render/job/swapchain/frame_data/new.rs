@@ -1,7 +1,7 @@
 use crate::{
     Error, Result,
     render::{
-        FrameGraphTransientBuffer,
+        FrameGraphTransientBuffer, ShadowQuality,
         job::{GraphicsDevice, swapchain::FrameData},
     },
 };
@@ -15,6 +15,7 @@ impl FrameData {
         index: usize,
         command_pool: &mut VulkanCommandPool,
         device: &GraphicsDevice,
+        shadow_quality: ShadowQuality,
     ) -> Result<FrameData> {
         let copy_command_buffer = command_pool
             .allocate_command_buffer(VulkanCommandBufferLevel::Primary)
@@ -59,6 +60,7 @@ impl FrameData {
             device.fixed_render_objects(),
             device,
             device.memory_properties(),
+            shadow_quality,
         )?;
 
         Ok(FrameData {

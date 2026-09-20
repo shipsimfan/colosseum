@@ -18,4 +18,7 @@ pub struct DirectionalLight {
 
     /// The depth to render shadows outside of the camera's frustum in the direction of the light
     shadow_depth: f32,
+
+    /// The lambda value for determining the distribution of shadow cascades
+    lambda: f32,
 }

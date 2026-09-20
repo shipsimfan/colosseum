@@ -3,10 +3,11 @@ use crate::{
     render::{
         AntiAliasingMode, LightingData, LocalDataBuffer, RenderCamera, RenderData, RenderSkybox,
     },
+    update::components::CameraProjection,
 };
 use alexandria::{
     gpu::{VulkanAdapterMemoryProperties, VulkanDevice},
-    math::Vector3f,
+    math::Matrix4x4f,
 };
 #[cfg(debug_assertions)]
 use std::ffi::CString;
@@ -63,7 +64,7 @@ impl RenderData {
 
             skybox: RenderSkybox::default(),
             camera,
-            camera_corners: [([Vector3f::ZERO; 4], 0.0); 5],
+            camera_projection: (CameraProjection::default(), Matrix4x4f::IDENTITY, 1.0),
             lighting,
 
             unlit_opaque_renderables: Vec::new(),

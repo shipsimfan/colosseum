@@ -1,15 +1,15 @@
 use crate::update::components::{Camera, CameraProjection};
-use alexandria::math::{Matrix4x4f, Vector2u, Vector3f};
+use alexandria::math::{Matrix4x4f, Vector2u};
 
 impl Camera {
     /// Create a new [`Camera`]
     pub fn new(projection: CameraProjection) -> Camera {
         Camera {
             projection,
+            aspect: 1.0,
             last_viewport_size: Vector2u::new(0, 0),
             projection_dirty: true,
             projection_matrix: Matrix4x4f::IDENTITY,
-            corners: [([Vector3f::ZERO; 4], 0.0); 5],
         }
     }
 

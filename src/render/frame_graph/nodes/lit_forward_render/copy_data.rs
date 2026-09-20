@@ -1,8 +1,9 @@
 use crate::{
     Result,
     render::{
-        DeviceDataBuffer, FixedRenderObjects, RenderData, ShadowMapBuffer,
-        frame_graph::LitForwardRenderNode,
+        DeviceDataBuffer, FixedRenderObjects, RenderData, RenderDirectionalLight, RenderPointLight,
+        RenderSpotLight, ShadowMapBuffer,
+        frame_graph::{LitForwardRenderNode, ShadowMapLight},
     },
 };
 use alexandria::gpu::{
@@ -75,8 +76,10 @@ impl LitForwardRenderNode {
         )?;
 
         // Resize shadow maps
+        let shadow_quality = render_data.lighting().shadow_quality() as usize;
         shadow_maps[FixedRenderObjects::DIRECTIONAL_LIGHT_SHADOW_MAPS].reserve(
             render_data.lighting().directional_lights().capacity(),
+            RenderDirectionalLight::SIZE[shadow_quality],
             descriptor_sets,
             fixed_objects.sampler(FixedRenderObjects::PCF_SAMPLER),
             device,
@@ -84,6 +87,7 @@ impl LitForwardRenderNode {
         )?;
         shadow_maps[FixedRenderObjects::POINT_LIGHT_SHADOW_MAPS].reserve(
             render_data.lighting().point_lights().capacity(),
+            RenderPointLight::SIZE[shadow_quality],
             descriptor_sets,
             fixed_objects.sampler(FixedRenderObjects::PCF_SAMPLER),
             device,
@@ -91,6 +95,7 @@ impl LitForwardRenderNode {
         )?;
         shadow_maps[FixedRenderObjects::SPOT_LIGHT_SHADOW_MAPS].reserve(
             render_data.lighting().spot_lights().capacity(),
+            RenderSpotLight::SIZE[shadow_quality],
             descriptor_sets,
             fixed_objects.sampler(FixedRenderObjects::PCF_SAMPLER),
             device,

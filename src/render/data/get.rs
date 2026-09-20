@@ -1,8 +1,11 @@
-use crate::render::{
-    AntiAliasingMode, LightingData, LocalDataBuffer, ObjectData, RenderCamera, RenderData,
-    RenderObjectRemoveConfirm, RenderSkybox, Renderable,
+use crate::{
+    render::{
+        AntiAliasingMode, LightingData, LocalDataBuffer, ObjectData, RenderCamera, RenderData,
+        RenderObjectRemoveConfirm, RenderSkybox, Renderable,
+    },
+    update::components::CameraProjection,
 };
-use alexandria::{gpu::VulkanFence, math::Vector3f};
+use alexandria::{gpu::VulkanFence, math::Matrix4x4f};
 use std::vec::Drain;
 
 impl RenderData {
@@ -57,7 +60,7 @@ impl RenderData {
     }
 
     /// Get the lighting data for the current frame
-    pub(in crate::render) fn lighting(&self) -> &LightingData {
+    pub fn lighting(&self) -> &LightingData {
         &self.lighting
     }
 
@@ -67,8 +70,8 @@ impl RenderData {
     }
 
     /// Get the corners that make up the camera's view frustum
-    pub fn camera_corners(&self) -> [([Vector3f; 4], f32); 5] {
-        self.camera_corners
+    pub fn camera_projection(&self) -> &(CameraProjection, Matrix4x4f, f32) {
+        &self.camera_projection
     }
 
     /// Get a reference to the renderables data buffer

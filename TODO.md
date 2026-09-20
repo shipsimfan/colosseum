@@ -1,16 +1,11 @@
 # ToDo
- 1. Add shadow mapping
-   1. Add cascade blending
-   2. Add shadow settings
-     - Expose lambda in directional lights
-     - Change shadow map sizes based on quality
- 2. Combine all GPU transfer staging buffers into one 
- 3. Continue adding names to all objects
- 4. Add debug labels to all render passes
- 5. Add mesh loading
- 6. Add texture loading
- 7. Add PBR material system
- 8. Add color grading to tone map node
+ 1. Combine all GPU transfer staging buffers into one 
+ 2. Continue adding names to all objects
+ 3. Add debug labels to all render passes
+ 4. Add mesh loading
+ 5. Add texture loading
+ 6. Add PBR material system
+ 7. Add color grading to tone map node
    1. Add CPU LUT type w/ SlotMap
    2. Add render side LUT (dedicated allocations)
    3. Add LUTs to transfer queue
@@ -20,13 +15,14 @@
    7. Add binding of descriptor set to tone map node
    8. Add sampling of LUT in tone map node fragment shader
    9. Add reading .cube files
- 9. Add physics system
- 10. Add collision system
- 11. Add audio system
- 12. Add mouse support
- 13. Add UI system
- 14. Add gamepad support
- 15. Add Poisson Disk PCF with kernel size controlled by shadow quality
+ 8. Add physics system
+ 9. Add collision system
+ 10. Add audio system
+ 11. Add mouse support
+ 12. Add UI system
+ 13. Add gamepad support
+ 14. Add Poisson Disk PCF with kernel size controlled by shadow quality
+ 15. Add depth bias settings for shadow mapping
  16. Add camera culling
  17. Add shadow map culling
  18. Add light culling

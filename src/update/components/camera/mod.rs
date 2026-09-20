@@ -1,4 +1,4 @@
-use alexandria::math::{Matrix4x4f, Vector2u, Vector3f};
+use alexandria::math::{Matrix4x4f, Vector2u};
 
 mod projection;
 
@@ -16,6 +16,9 @@ pub struct Camera {
     /// The current projection for the camera
     projection: CameraProjection,
 
+    /// The aspect ratio of the camera's viewport
+    aspect: f32,
+
     /// The last seen viewport size, used to determine if the projection matrix needs to be recalculated
     last_viewport_size: Vector2u,
 
@@ -24,7 +27,4 @@ pub struct Camera {
 
     /// The projection matrix for the camera
     projection_matrix: Matrix4x4f,
-
-    /// The corners of this camera's view frustum at each cascade depth plane, in view coordinates
-    corners: [([Vector3f; 4], f32); 5],
 }
