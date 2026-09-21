@@ -7,7 +7,7 @@ use std::any::TypeId;
 
 impl Archetype {
     /// Get the number of entities in this archetype
-    pub(in crate::update::ecs) fn len(&self) -> usize {
+    pub fn len(&self) -> usize {
         self.components[0].len()
     }
 

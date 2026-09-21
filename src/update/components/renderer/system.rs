@@ -1,6 +1,6 @@
 use crate::{
     render::{MaterialKind, ObjectData, RenderData},
-    system_with_extra_data,
+    system_with_extra_data_and_setup,
     update::{
         components::{Renderer, Transform},
         ecs::System,
@@ -10,12 +10,11 @@ use crate::{
 impl Renderer {
     /// Create a system that operates on the [`Renderer`] component
     pub(in crate::update) fn system() -> System<RenderData> {
-        let (type_ids, system) =
-            system_with_extra_data!(|render_data: RenderData,
-                                     renderer: Renderer,
-                                     transform: Transform| {
-                render_data.reserve_renderables(renderer.len()).unwrap();
-
+        let (type_ids, system) = system_with_extra_data_and_setup!(
+            |entity_count, render_data: RenderData| {
+                render_data.reserve_renderables(entity_count).unwrap();
+            },
+            |render_data, renderer: Renderer, transform: Transform| {
                 for (renderer, transform) in renderer.iter().zip(transform) {
                     let object = ObjectData::new(transform.matrix());
 
@@ -32,7 +31,8 @@ impl Renderer {
                         ),
                     }
                 }
-            });
+            }
+        );
         System::new(type_ids, system)
     }
 }
