@@ -10,6 +10,11 @@ use crate::{
 use alexandria::math::{Matrix4x4f, Vector3f};
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
+    /// Execute all physics systems on the archetypes in the ECS system
+    pub(in crate::update) fn execute_physics_systems(&mut self) {
+        self.ecs.execute_physics_systems(self.physics);
+    }
+
     /// Execute all rendering systems on the archetypes in the ECS system
     pub(in crate::update) fn execute_rendering_systems(&mut self) -> Result<()> {
         self.render_data.wait_for_copy()?;

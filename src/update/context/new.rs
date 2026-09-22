@@ -3,7 +3,7 @@ use crate::{
     file_io::FileIo,
     logging::Logger,
     render::RenderData,
-    update::{ECS, Entity, Inputs, Skybox, UpdateContext, UpdateRenderObjects},
+    update::{ECS, Entity, Inputs, PhysicsData, Skybox, UpdateContext, UpdateRenderObjects},
 };
 use alexandria::{
     Id,
@@ -21,6 +21,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
         inputs: &'a Inputs,
         file_io: &'a FileIo,
         ecs: &'a mut ECS,
+        physics: &'a mut PhysicsData,
         active_camera: &'a mut Option<Id<Entity>>,
         window: &'a Window,
         skybox: &'a mut Skybox,
@@ -41,6 +42,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
             inputs,
             file_io,
             ecs,
+            physics,
             active_camera,
             window,
             skybox,

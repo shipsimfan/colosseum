@@ -32,6 +32,7 @@ pub struct ECS {
     /// The set of archetypes in the ECS system
     archetypes: ArchetypeSet,
 
+    /// The logger for the ECS
     logger: Logger,
 }
 

@@ -3,7 +3,7 @@ use crate::{
     file_io::FileIo,
     logging::Logger,
     render::RenderData,
-    update::{ECS, Entity, Inputs, Scene, Skybox, UpdateRenderObjects},
+    update::{ECS, Entity, Inputs, PhysicsData, Scene, Skybox, UpdateRenderObjects},
 };
 use alexandria::{
     Id,
@@ -49,6 +49,9 @@ pub struct UpdateContext<'a, Game: crate::Game> {
 
     /// The ECS system for the game
     ecs: &'a mut ECS,
+
+    /// The physics data for the current scene
+    physics: &'a mut PhysicsData,
 
     /// The index of the currently active camera
     active_camera: &'a mut Option<Id<Entity>>,

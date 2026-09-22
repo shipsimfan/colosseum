@@ -1,7 +1,10 @@
 use crate::{
     logging::Logger,
     render::RenderData,
-    update::ecs::{Archetype, System},
+    update::{
+        PhysicsData,
+        ecs::{Archetype, System},
+    },
 };
 use alexandria::{PackedMap, SlotMap};
 
@@ -17,6 +20,9 @@ mod unregister_system;
 pub(in crate::update::ecs) struct ArchetypeSet {
     /// The actual archetypes in the ECS system
     archetypes: Vec<Archetype>,
+
+    /// The set of systems run for the physics update
+    physics_systems: PackedMap<System<PhysicsData>>,
 
     /// The set of pre-update systems registered with the ECS system
     pre_update_systems: PackedMap<System>,

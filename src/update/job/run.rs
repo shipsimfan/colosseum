@@ -87,6 +87,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
             &self.inputs,
             &self.file_io,
             &mut self.ecs,
+            &mut self.physics,
             &mut self.active_camera,
             window,
             &mut self.skybox,
@@ -131,6 +132,12 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
         }
 
         // Update the current scene
+        self.physics_time += delta_time.as_secs_f32();
+        while self.physics_time >= update_context.physics().delta_time() {
+            update_context.execute_physics_systems();
+            self.physics_time -= update_context.physics().delta_time();
+        }
+
         update_context.ecs_mut().execute_pre_update_systems();
         self.scene.update(&mut update_context)?;
         update_context.ecs_mut().execute_post_update_systems();

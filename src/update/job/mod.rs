@@ -2,7 +2,7 @@ use crate::{
     Result,
     file_io::FileIo,
     logging::Logger,
-    update::{ECS, Entity, Inputs, Scene, Skybox, UpdateContext, UpdateRenderObjects},
+    update::{ECS, Entity, Inputs, PhysicsData, Scene, Skybox, UpdateContext, UpdateRenderObjects},
 };
 use alexandria::{
     Id,
@@ -42,6 +42,12 @@ pub(crate) struct UpdateJob<'a, Game: crate::Game> {
 
     /// The ECS system for the game
     ecs: ECS,
+
+    /// The physics data for the current scene
+    physics: PhysicsData,
+
+    /// The time left over from the previous physics updates
+    physics_time: f32,
 
     /// The currently active camera
     active_camera: Option<Id<Entity>>,

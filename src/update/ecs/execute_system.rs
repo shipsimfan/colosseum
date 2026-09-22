@@ -1,12 +1,17 @@
 use crate::{
     render::RenderData,
-    update::{ECS, SystemId},
+    update::{ECS, PhysicsData, SystemId},
 };
 
 impl ECS {
     /// Execute an ad hoc system on the archetypes in the ECS system
     pub fn execute_system(&mut self, system: SystemId) {
         self.archetypes.execute_system(system);
+    }
+
+    /// Execute all physics systems on the archetypes in the ECS system
+    pub(in crate::update) fn execute_physics_systems(&mut self, physics_data: &mut PhysicsData) {
+        self.archetypes.execute_physics_systems(physics_data);
     }
 
     /// Execute all pre-update systems on the archetypes in the ECS system

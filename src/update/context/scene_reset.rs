@@ -1,4 +1,4 @@
-use crate::update::{DEFAULT_AMBIENT_LIGHT, Skybox, UpdateContext};
+use crate::update::{DEFAULT_AMBIENT_LIGHT, PhysicsData, Skybox, UpdateContext};
 
 impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Reset the data to its default state for a new scene
@@ -12,5 +12,7 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
 
         self.ecs.scene_reset();
         *self.active_camera = None;
+
+        *self.physics = PhysicsData::new();
     }
 }

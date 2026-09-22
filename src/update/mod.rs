@@ -3,6 +3,7 @@
 mod context;
 mod input;
 mod job;
+mod physics_data;
 mod render_objects;
 mod scene;
 mod skybox;
@@ -13,6 +14,7 @@ pub mod ecs;
 pub use context::*;
 pub use ecs::{ECS, Entity, SystemId, SystemPhase};
 pub use input::*;
+pub use physics_data::*;
 pub use scene::*;
 pub use skybox::*;
 

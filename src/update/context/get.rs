@@ -3,7 +3,7 @@ use crate::{
     file_io::FileIo,
     logging::Logger,
     render::{Material, MaterialId, Mesh, ShaderId},
-    update::{ECS, Inputs, Scene, Skybox, UpdateContext},
+    update::{ECS, Inputs, PhysicsData, Scene, Skybox, UpdateContext},
 };
 use alexandria::{Id, math::Vector2u};
 use std::time::Duration;
@@ -42,6 +42,16 @@ impl<'a, Game: crate::Game> UpdateContext<'a, Game> {
     /// Get a mutable reference to the ECS system
     pub fn ecs_mut(&mut self) -> &mut ECS {
         &mut self.ecs
+    }
+
+    /// Get a reference to the physics data for the current scene
+    pub fn physics(&self) -> &PhysicsData {
+        &self.physics
+    }
+
+    /// Get a mutable reference to the physics data for the current scene
+    pub fn physics_mut(&mut self) -> &mut PhysicsData {
+        &mut self.physics
     }
 
     /// Get a reference to the skybox used for this update

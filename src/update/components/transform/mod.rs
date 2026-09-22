@@ -6,6 +6,7 @@ mod new;
 mod set;
 
 /// A Transform is a component that represents the position, rotation, and scale of an entity in 3D space.
+#[derive(Clone)]
 pub struct Transform {
     /// The position of the entity in 3D space.
     position: Vector3f,

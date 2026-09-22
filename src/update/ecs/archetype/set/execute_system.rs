@@ -1,6 +1,6 @@
 use crate::{
     render::RenderData,
-    update::{SystemId, SystemPhase, ecs::ArchetypeSet},
+    update::{PhysicsData, SystemId, SystemPhase, ecs::ArchetypeSet},
 };
 
 impl ArchetypeSet {
@@ -12,6 +12,13 @@ impl ArchetypeSet {
             SystemPhase::PostUpdate => &mut self.post_update_systems[system.id()],
         }
         .execute(&mut self.archetypes, &mut ())
+    }
+
+    /// Execute all physics systems on the archetypes in the ECS system
+    pub fn execute_physics_systems(&mut self, physics_data: &mut PhysicsData) {
+        for system in &mut self.physics_systems {
+            system.execute(&mut self.archetypes, physics_data);
+        }
     }
 
     /// Execute all pre-update systems on the archetypes in the ECS system
