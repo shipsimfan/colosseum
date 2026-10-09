@@ -10,3 +10,6 @@ license.workspace = true
 publish.workspace = true
 
 [dependencies]
+colosseum-core.workspace = true
+
+alexandria.workspace = true

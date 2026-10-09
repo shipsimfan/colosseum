@@ -1,9 +1,10 @@
-use crate::{FileIo, GameOptions, Result, SettingsCache};
+use crate::{FileIo, GameOptions, Result, SettingsCache, update::Scene};
 use argparse::Command;
 use colosseum_core::{Error, LogController, ThreadManager, logger, new_error};
 use log_metadata::*;
 use time::{DateTime, SimpleTimeZone};
 
+mod game;
 mod log_metadata;
 mod r#macro;
 mod user_event;
@@ -12,22 +13,17 @@ mod wsi;
 pub(crate) use user_event::*;
 pub(crate) use wsi::*;
 
-/*
-mod game;
-mod options;
-
-pub use options::*;
-*/
-
 /// Begins the game engine with the provided options, quiting the application based on the result
 /// of running
-pub fn run<Game: crate::Game, F: FnOnce() -> Result<()>>(
-    initial_scene: F,
+pub fn run<Game: crate::Game, InitialScene: Scene>(
+    initial_scene: InitialScene,
     game_branch: Option<&str>,
     game_hash: Option<&str>,
     game_build_time: Option<&str>,
 ) -> ! {
-    if let Err(error) = do_run::<Game, F>(initial_scene, game_branch, game_hash, game_build_time) {
+    if let Err(error) =
+        do_run::<Game, InitialScene>(initial_scene, game_branch, game_hash, game_build_time)
+    {
         display_error(&error);
         std::process::exit(1);
     }
@@ -36,8 +32,8 @@ pub fn run<Game: crate::Game, F: FnOnce() -> Result<()>>(
 }
 
 /// Begins the game engine with the provided options
-fn do_run<Game: crate::Game, F: FnOnce() -> Result<()>>(
-    initial_scene: F,
+fn do_run<Game: crate::Game, InitialScene: Scene>(
+    initial_scene: InitialScene,
     game_branch: Option<&str>,
     game_hash: Option<&str>,
     game_build_time: Option<&str>,
@@ -82,7 +78,7 @@ fn do_run<Game: crate::Game, F: FnOnce() -> Result<()>>(
     settings.save(&new_settings);
 
     // Create the core WSI components
-    let (mut wsi, _vulkan_instance, _surface, _inputs) = Wsi::new(
+    let (mut wsi, vulkan_instance, surface, inputs) = Wsi::new(
         Game::NAME,
         Game::VERSION,
         &init_logger,
@@ -90,7 +86,6 @@ fn do_run<Game: crate::Game, F: FnOnce() -> Result<()>>(
     )?;
     thread_manager.set_event_queue(wsi.event_queue().clone());
 
-    /*
     // Start the game thread
     let window = wsi.window(inputs);
     let shared_window = wsi.shared_window().clone();
@@ -98,15 +93,14 @@ fn do_run<Game: crate::Game, F: FnOnce() -> Result<()>>(
     thread_manager.spawn(
         "Game".to_string(),
         move |shared_state| {
-            game::run::<Game>(
-                shared_state,
-                vulkan_instance,
-                surface,
+            game::run::<Game, InitialScene>(
                 settings,
                 options,
+                initial_scene,
                 window,
-                init_logger,
-                log_controller,
+                vulkan_instance,
+                surface,
+                shared_state,
                 file_io,
                 child_thread_manager,
             )
@@ -115,9 +109,6 @@ fn do_run<Game: crate::Game, F: FnOnce() -> Result<()>>(
             shared_window.restored_notify().notify().ok();
         },
     )?;
-    */
-
-    (initial_scene)()?;
 
     // Run the WSI event loop
     let mut error = None;

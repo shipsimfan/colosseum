@@ -26,9 +26,6 @@ pub(in crate::update) use system::System;
 
 /// The container for the Entity Component System (ECS) system
 pub struct ECS {
-    /// The set of entities in the ECS system, identified by the (archetype, entity) pair
-    entities: SlotMap<(usize, usize)>,
-
     /// The set of archetypes in the ECS system
     archetypes: ArchetypeSet,
 

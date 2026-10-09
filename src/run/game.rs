@@ -1,31 +1,36 @@
-use crate::{
-    GlobalSharedState, Result, ThreadManager, Window, debug,
-    file_io::FileIo,
-    info,
-    logging::{LogController, Logger},
-    render::RenderJob,
-    settings::SettingsCache,
-    update::UpdateJob,
-};
-use alexandria::{
-    gpu::{VulkanInstance, VulkanSurface},
-    math::Vector2u,
-};
-use std::{sync::Arc, time::Instant};
+use crate::{Result, UserEvent, Window, file_io::FileIo, update::Scene};
+use alexandria::gpu::{VulkanInstance, VulkanSurface};
+use colosseum_core::{GlobalSharedState, ThreadManager, logger};
+use colosseum_ecs::World;
+use std::{sync::Arc, time::Duration};
 
 /// Run the main game thread
-pub(in crate::run) fn run<Game: crate::Game>(
-    shared_state: &GlobalSharedState,
-    instance: VulkanInstance,
-    mut surface: VulkanSurface,
+pub(in crate::run) fn run<Game: crate::Game, InitialScene: Scene>(
     mut settings: Game::SettingsCache,
     options: Game::Options,
+    initial_scene: InitialScene,
+
     window: Window,
-    logger: Logger,
-    log_controller: Arc<LogController>,
+    instance: VulkanInstance,
+    mut surface: VulkanSurface,
+
+    shared_state: &GlobalSharedState<UserEvent>,
     file_io: FileIo,
-    thread_manager: Arc<ThreadManager>,
+    thread_manager: Arc<ThreadManager<UserEvent>>,
 ) -> Result<()> {
+    let logger = logger!("game");
+
+    let mut world = World::new();
+    initial_scene.start(&mut world)?;
+
+    while shared_state.is_running() {
+        logger.frame();
+        std::thread::sleep(Duration::from_millis(16));
+    }
+
+    Ok(())
+
+    /*
     // Initialize the render and update jobs
     let mut window_size = window.size();
     let (mut render_job, transfer_queue) = RenderJob::new(
@@ -77,4 +82,5 @@ pub(in crate::run) fn run<Game: crate::Game>(
     }
 
     Ok(())
+    */
 }

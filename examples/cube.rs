@@ -1,4 +1,4 @@
-colosseum::run!(Cube, || {
+colosseum::run!(Cube, |_: &mut colosseum::World| {
     colosseum::info_s!("cube", "Starting cube example");
     Ok(())
 });

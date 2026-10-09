@@ -31,6 +31,7 @@ pub use colosseum_core::{
     SingleValueSender, debug, debug_s, error, error_s, info, info_s, log, log_s, logger,
     single_value_channel, warning, warning_s,
 };
+pub use colosseum_ecs::*;
 
 pub use alexandria::{MemorySize, Uuid, input::KeyCode as Key, math};
 
