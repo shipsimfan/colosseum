@@ -1,5 +1,5 @@
 use crate::{
-    Error, Result,
+    Result,
     run::wsi::{
         SharedWindow,
         window::shared::{encode_position, encode_size},
@@ -9,6 +9,7 @@ use alexandria::{
     Notify,
     math::{Vector2i, Vector2u},
 };
+use colosseum_core::new_error;
 use std::sync::atomic::{AtomicBool, AtomicU64};
 
 impl SharedWindow {
@@ -19,7 +20,8 @@ impl SharedWindow {
         fullscreen: bool,
         maximized: bool,
     ) -> Result<SharedWindow> {
-        let restored_notify = Notify::new(true, false).map_err(Error::new_inner)?;
+        let restored_notify = Notify::new(true, false)
+            .map_err(|error| new_error!("unable to create the restore notify - {}", error))?;
 
         Ok(SharedWindow {
             position: AtomicU64::new(encode_position(position)),

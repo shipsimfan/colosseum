@@ -1,6 +1,5 @@
 use crate::{
-    Error, InputEvent, Result, UserEvent, debug,
-    logging::Logger,
+    InputEvent, Logger, Result, UserEvent, debug, logger,
     run::{Wsi, wsi::SharedWindow},
     settings::DisplaySettings,
 };
@@ -8,6 +7,7 @@ use alexandria::{
     AlexandriaContext,
     gpu::{VulkanInstance, VulkanSurface, VulkanVersion},
 };
+use colosseum_core::new_error;
 use std::{
     str::FromStr,
     sync::{
@@ -36,7 +36,7 @@ impl Wsi {
             .gpu()
             .window()
             .create()
-            .map_err(Error::new_inner)?;
+            .map_err(|error| new_error!("unable to create Alexandria context - {}", error))?;
         debug!(logger, "Created Alexandria context");
 
         // Create window
@@ -55,7 +55,9 @@ impl Wsi {
             builder.maximized();
         }
 
-        let window = builder.create().map_err(Error::new_inner)?;
+        let window = builder
+            .create()
+            .map_err(|error| new_error!("unable to create window - {}", error))?;
 
         // Create the shared window state
         let shared_window = Arc::new(SharedWindow::new(
@@ -66,14 +68,14 @@ impl Wsi {
         )?);
 
         // Create the Vulkan instance and check for validation layers
-        let vulkan_logger = logger.logger("vulkan");
+        let vulkan_logger = logger!("vulkan");
         #[cfg_attr(not(debug_assertions), allow(unused_variables))]
         let (vulkan_instance, create_debug_messenger) = vulkan_instance::create(
             &context.gpu(),
             &vulkan_logger,
             game_name,
             VulkanVersion::from_str(game_version)
-                .map_err(|_| Error::new("invalid game version"))?,
+                .map_err(|_| new_error!("invalid game version"))?,
             &window,
         )?;
 
@@ -88,14 +90,14 @@ impl Wsi {
         // Create the window surface
         let surface = vulkan_instance
             .create_window_surface(&window)
-            .map_err(Error::new_inner)?;
+            .map_err(|error| new_error!("unable to create Vulkan window surface - {}", error))?;
 
         // Create the input event channel
         let (input_sender, input_receiver) = mpsc::channel();
 
         Ok((
             Wsi {
-                logger: logger.logger("wsi"),
+                logger: logger!("wsi"),
                 context,
                 event_pump,
                 window,

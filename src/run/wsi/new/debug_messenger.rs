@@ -1,11 +1,9 @@
-use crate::{
-    Error, Result, log,
-    logging::{LogSeverity, Logger},
-};
+use crate::{LogSeverity, Logger, Result, log};
 use alexandria::gpu::{
     VulkanDebugMessageSeverityFlag, VulkanDebugMessageTypeFlag, VulkanDebugMessageTypeFlags,
     VulkanDebugMessenger, VulkanDebugMessengerCallback, VulkanInstance,
 };
+use colosseum_core::new_error;
 
 /// Create a new [`VulkanDebugMessenger`]
 pub(in crate::run::wsi::new) fn create(
@@ -26,7 +24,7 @@ pub(in crate::run::wsi::new) fn create(
                 logger: logger.clone(),
             },
         )
-        .map_err(Error::new_inner)
+        .map_err(|error| new_error!("unable to create Vulkan debug messenger - {}", error))
 }
 
 /// The callbacks for the Vulkan debug messenger

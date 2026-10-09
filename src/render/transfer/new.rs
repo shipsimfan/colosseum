@@ -18,7 +18,7 @@ impl GpuTransferQueue {
         let (transfer_queue, render_transfer_queue) =
             GpuTransferQueue::new(device, &mut device_queue, memory_properties)?;
 
-        let logger = logger.logger("gpu-transfer");
+        let logger = logger!("gpu-transfer");
         thread_manager.spawn(
             format!("GPU Transfer"),
             move |shared_state| {

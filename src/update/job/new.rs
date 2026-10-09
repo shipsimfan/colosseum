@@ -28,7 +28,7 @@ impl<'a, Game: crate::Game> UpdateJob<'a, Game> {
                     .map(|scene| Box::new(scene) as _)
             })),
             first_scene: true,
-            logger: logger.logger("scenes"),
+            logger: logger!("scenes"),
             settings,
             inputs: Inputs::new(),
             file_io,

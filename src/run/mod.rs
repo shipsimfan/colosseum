@@ -7,17 +7,16 @@ use time::{DateTime, SimpleTimeZone};
 mod log_metadata;
 mod r#macro;
 mod user_event;
+mod wsi;
 
 pub(crate) use user_event::*;
+pub(crate) use wsi::*;
 
 /*
 mod game;
 mod options;
-mod wsi;
 
 pub use options::*;
-
-pub(crate) use wsi::*;
 */
 
 /// Begins the game engine with the provided options, quiting the application based on the result
@@ -82,9 +81,8 @@ fn do_run<Game: crate::Game, F: FnOnce() -> Result<()>>(
     let new_settings = settings.begin_modify();
     settings.save(&new_settings);
 
-    /*
     // Create the core WSI components
-    let (mut wsi, vulkan_instance, surface, inputs) = Wsi::new(
+    let (mut wsi, _vulkan_instance, _surface, _inputs) = Wsi::new(
         Game::NAME,
         Game::VERSION,
         &init_logger,
@@ -92,6 +90,7 @@ fn do_run<Game: crate::Game, F: FnOnce() -> Result<()>>(
     )?;
     thread_manager.set_event_queue(wsi.event_queue().clone());
 
+    /*
     // Start the game thread
     let window = wsi.window(inputs);
     let shared_window = wsi.shared_window().clone();
@@ -121,18 +120,16 @@ fn do_run<Game: crate::Game, F: FnOnce() -> Result<()>>(
     (initial_scene)()?;
 
     // Run the WSI event loop
-    let error = None;
+    let mut error = None;
     while thread_manager.is_running() {
-        std::thread::sleep(std::time::Duration::from_millis(100));
-
-        /*match wsi.pump() {
+        match wsi.pump() {
             Ok(true) => {}
             Ok(false) => break,
             Err(e) => {
                 error = Some(e);
                 break;
             }
-        }*/
+        }
     }
 
     // Cleanup all running threads

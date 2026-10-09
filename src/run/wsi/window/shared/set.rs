@@ -1,12 +1,12 @@
 use crate::{
-    Error, Result, debug,
-    logging::Logger,
+    Logger, Result, debug,
     run::wsi::{
         SharedWindow,
         window::shared::{encode_position, encode_size},
     },
 };
 use alexandria::math::{Vector2i, Vector2u};
+use colosseum_core::new_error;
 use std::sync::atomic::Ordering;
 
 impl SharedWindow {
@@ -22,7 +22,9 @@ impl SharedWindow {
         let old_value = self.size.swap(encoded_size, Ordering::Release);
         if old_value == 0 && encoded_size != 0 {
             debug!(logger, "Window restored from zero size");
-            self.restored_notify.notify().map_err(Error::new_inner)?;
+            self.restored_notify
+                .notify()
+                .map_err(|error| new_error!("unable to notify window restore - {}", error))?;
         }
         Ok(())
     }

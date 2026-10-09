@@ -1,5 +1,6 @@
-use crate::{Error, Result, debug, logging::Logger, warning};
+use crate::{Logger, Result, debug, warning};
 use alexandria::gpu::{GpuSubsystem, VulkanInstanceExtension};
+use colosseum_core::new_error;
 
 const VALIDATION_LAYER_NAME: &str = "VK_LAYER_KHRONOS_validation";
 
@@ -11,7 +12,10 @@ pub(in crate::run::wsi::new::vulkan_instance) fn get_layers_and_extensions(
 ) -> Result<(Vec<String>, Vec<VulkanInstanceExtension>, bool)> {
     // Check for validation layers
     let mut has_validation_layers = false;
-    for layer in gpu.layers().map_err(Error::new_inner)? {
+    for layer in gpu
+        .layers()
+        .map_err(|error| new_error!("unable to get Vulkan layers - {}", error))?
+    {
         if layer.name() == VALIDATION_LAYER_NAME {
             has_validation_layers = true;
             break;
@@ -32,7 +36,10 @@ pub(in crate::run::wsi::new::vulkan_instance) fn get_layers_and_extensions(
 
     // Check for the debug utils extension
     let mut has_debug_utils_extension = false;
-    for extension in gpu.extensions(None).map_err(Error::new_inner)? {
+    for extension in gpu
+        .extensions(None)
+        .map_err(|error| new_error!("unable to get Vulkan extensions - {}", error))?
+    {
         if extension == VulkanInstanceExtension::DebugUtils {
             has_debug_utils_extension = true;
             break;

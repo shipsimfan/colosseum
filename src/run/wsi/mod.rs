@@ -1,4 +1,4 @@
-use crate::{UserEvent, logging::Logger};
+use crate::{Logger, UserEvent};
 #[cfg(debug_assertions)]
 use alexandria::gpu::VulkanDebugMessenger;
 use alexandria::{AlexandriaContext, EventPump, window::Window as AlexandriaWindow};

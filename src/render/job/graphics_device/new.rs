@@ -22,7 +22,7 @@ impl GraphicsDevice {
         logger: &Logger,
         thread_manager: &ThreadManager,
     ) -> Result<(GraphicsDevice, GpuTransferQueue)> {
-        let logger = logger.logger("vulkan");
+        let logger = logger!("vulkan");
 
         // Select the adapter
         let adapter = select_adapter(adapter, instance, &surface, &logger)?;

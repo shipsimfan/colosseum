@@ -1,5 +1,5 @@
 use crate::{Error, FileIo, UserEvent};
-use colosseum_core::ThreadManager;
+use colosseum_core::{ThreadManager, logger};
 use std::sync::mpsc::channel;
 
 impl FileIo {
@@ -12,8 +12,8 @@ impl FileIo {
         let child_sender = sender.clone();
         thread_manager.spawn(
             "File I/O".to_string(),
-            move |shared_state| {
-                FileIo::thread(shared_state.logger().logger("file"), receiver);
+            move |_| {
+                FileIo::thread(logger!("file"), receiver);
                 Ok(())
             },
             move || {

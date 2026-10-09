@@ -1,15 +1,23 @@
-use crate::{Error, InputEvent, Key, Result, UserEvent, debug, run::Wsi};
+use crate::{InputEvent, Key, Result, UserEvent, debug, run::Wsi};
 use alexandria::{Event, EventKind, math::Vector2u};
+use colosseum_core::new_error;
 
 impl Wsi {
     /// Pump the event loop, handling events as they come in. This will block until an event is received
     pub fn pump(&mut self) -> Result<bool> {
-        let event = self.event_pump.wait().map_err(Error::new_inner)?;
+        let event = self
+            .event_pump
+            .wait()
+            .map_err(|error| new_error!("unable to wait for window event - {}", error))?;
         if !self.handle_event(event)? {
             return Ok(false);
         }
 
-        while let Some(event) = self.event_pump.poll().map_err(Error::new_inner)? {
+        while let Some(event) = self
+            .event_pump
+            .poll()
+            .map_err(|error| new_error!("unable to poll window event - {}", error))?
+        {
             if !self.handle_event(event)? {
                 return Ok(false);
             }
@@ -74,12 +82,14 @@ impl Wsi {
             }
 
             EventKind::User(UserEvent::SetFullscreen) => {
-                self.window.set_fullscreen(true).map_err(Error::new_inner)?;
+                self.window.set_fullscreen(true).map_err(|error| {
+                    new_error!("unable to set window to fullscreen - {}", error)
+                })?;
             }
             EventKind::User(UserEvent::UnsetFullscreen) => {
-                self.window
-                    .set_fullscreen(false)
-                    .map_err(Error::new_inner)?;
+                self.window.set_fullscreen(false).map_err(|error| {
+                    new_error!("unable to unset window from fullscreen - {}", error)
+                })?;
             }
 
             _ => {}

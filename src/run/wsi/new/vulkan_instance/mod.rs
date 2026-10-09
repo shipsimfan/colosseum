@@ -1,4 +1,4 @@
-use crate::{Error, Result, UserEvent, logging::Logger};
+use crate::{Logger, Result, UserEvent};
 use alexandria::{
     cargo_vulkan_version,
     gpu::{GpuSubsystem, VulkanInstance, VulkanVersion},
@@ -10,6 +10,7 @@ mod debug;
 #[cfg(not(debug_assertions))]
 mod release;
 
+use colosseum_core::new_error;
 #[cfg(debug_assertions)]
 use debug::*;
 #[cfg(not(debug_assertions))]
@@ -32,7 +33,7 @@ pub(in crate::run::wsi::new) fn create(
         .extensions(extensions)
         .window_extensions(window)
         .create()
-        .map_err(Error::new_inner)?;
+        .map_err(|error| new_error!("unable to create Vulkan instance - {}", error))?;
 
     Ok((vulkan_instance, create_debug_messenger))
 }
