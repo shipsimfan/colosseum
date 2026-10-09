@@ -1,0 +1,12 @@
+[package]
+name = "colosseum-ecs"
+description = "ECS system for Colosseum"
+
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]

@@ -41,6 +41,8 @@ dependencies = [
  "alexandria",
  "argparse",
  "colosseum-build",
+ "colosseum-core",
+ "colosseum-ecs",
  "colosseum-macros",
  "data-format",
  "json",
@@ -54,6 +56,17 @@ dependencies = [
  "alexandria",
  "time",
 ]
+
+[[package]]
+name = "colosseum-core"
+version = "0.20.0"
+dependencies = [
+ "data-format",
+]
+
+[[package]]
+name = "colosseum-ecs"
+version = "0.20.0"
 
 [[package]]
 name = "colosseum-macros"

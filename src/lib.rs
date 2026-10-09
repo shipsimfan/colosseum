@@ -11,15 +11,12 @@
 #![feature(const_convert)]
 
 pub mod file_io;
-pub mod logging;
 pub mod render;
 pub mod settings;
 pub mod update;
 
-mod error;
 mod game;
 mod run;
-mod threads;
 
 pub use error::*;
 pub use game::*;

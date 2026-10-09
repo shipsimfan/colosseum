@@ -1,8 +1,6 @@
-use inner::InnerError;
 use std::borrow::Cow;
 
-mod inner;
-
+mod add;
 mod display;
 mod new;
 
@@ -13,10 +11,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 #[derive(Debug)]
 pub struct Error {
     /// A human-readable message describing the error
-    message: Option<Cow<'static, str>>,
-
-    /// The inner error that caused this error, if any
-    inner: Option<InnerError>,
+    message: Cow<'static, str>,
 }
 
 impl std::error::Error for Error {}

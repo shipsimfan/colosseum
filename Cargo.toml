@@ -10,6 +10,9 @@ publish = false
 colosseum-build.path = "build"
 colosseum-macros.path = "macros"
 
+colosseum-core.path = "core"
+colosseum-ecs.path = "ecs"
+
 alexandria = { git = "https://github.com/shipsimfan/alexandria", features = [
     "data-format",
 ] }
@@ -45,6 +48,9 @@ publish.workspace = true
 
 [dependencies]
 colosseum-macros.workspace = true
+
+colosseum-core.workspace = true
+colosseum-ecs.workspace = true
 
 alexandria.workspace = true
 
