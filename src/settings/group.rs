@@ -1,9 +1,5 @@
-use crate::{
-    Error, Result,
-    file_io::{FileIo, WriteFullFile},
-    info,
-    logging::Logger,
-};
+use crate::{FileIo, Logger, Result, WriteFullFile, info};
+use colosseum_core::new_error;
 use data_format::{Deserialize, Serialize};
 use std::path::Path;
 
@@ -43,9 +39,8 @@ pub trait SettingsGroup: for<'de> Deserialize<'de> + Serialize + Send + Clone + 
 
         let file = file_io.read_full_file_blocking(path.clone())?;
 
-        let settings_group = json::from_bytes(&file).map_err(|error| {
-            Error::new_with(format!("unable to load \"{}\"", path.display()), error)
-        })?;
+        let settings_group = json::from_bytes(&file)
+            .map_err(|error| new_error!("unable to load \"{}\" - {}", path.display(), error))?;
 
         info!(
             logger,

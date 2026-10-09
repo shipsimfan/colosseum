@@ -1,8 +1,8 @@
-use crate::logging::LogPath;
+use crate::{GameMetadata, logging::LogPath};
 use argparse::{DefaultDisplay, Flag};
 use std::path::PathBuf;
 
-impl<Game: crate::Game> Flag for LogPath<Game> {
+impl<Game: GameMetadata> Flag for LogPath<Game> {
     fn parse(
         this: &mut Option<Self>,
         source: &mut dyn argparse::ArgumentSource,
@@ -16,7 +16,7 @@ impl<Game: crate::Game> Flag for LogPath<Game> {
     }
 }
 
-impl<Game: crate::Game> DefaultDisplay for LogPath<Game> {
+impl<Game: GameMetadata> DefaultDisplay for LogPath<Game> {
     type Display<'a>
         = &'a Self
     where

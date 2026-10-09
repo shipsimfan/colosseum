@@ -1,4 +1,4 @@
-use crate::file_io::{FileIo, WriteFullFile, WriteFullFileOp};
+use crate::{FileIo, WriteFullFile, file_io::WriteFullFileOp};
 use std::path::PathBuf;
 
 impl FileIo {

@@ -14,7 +14,7 @@ impl<'a> ToTokens for SettingsCacheOutputTrait<'a> {
         let modifiable_name2 = modifiable_name.clone();
 
         to_tokens! { generator
-            impl ::colosseum::settings::SettingsCache for #name {
+            impl ::colosseum::SettingsCache for #name {
                 type Modifiable = #modifiable_name;
 
                 #load_fn
@@ -40,13 +40,13 @@ impl<'a> ToTokens for SettingsCacheOutputTrait<'a> {
                     !self.__write_states.is_empty()
                 }
 
-                fn display_settings(&self) -> &::colosseum::settings::DisplaySettings {
+                fn display_settings(&self) -> &::colosseum::DisplaySettings {
                     &self.display
                 }
             }
 
-            impl ::colosseum::settings::ModifiableSettingsCache for #modifiable_name2 {
-                fn display_settings_mut(&mut self) -> &mut ::colosseum::settings::DisplaySettings {
+            impl ::colosseum::ModifiableSettingsCache for #modifiable_name2 {
+                fn display_settings_mut(&mut self) -> &mut ::colosseum::DisplaySettings {
                     self.display_mut()
                 }
             }

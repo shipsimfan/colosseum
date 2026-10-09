@@ -1,32 +1,23 @@
 use argparse::Command;
-use colosseum::{
-    ColosseumOptions, Game, GameOptions, Id, Key, Result, info,
-    logging::Logger,
-    render::{MaterialId, MaterialKind},
-    run,
-    update::{
-        Entity, InitialScene, ProceduralSkybox, Scene, UpdateContext,
-        components::{Camera, DirectionalLight, Renderer, Rigidbody, Transform},
-    },
-};
-use colosseum_macros::settings_cache;
-use std::collections::VecDeque;
+use colosseum::{ColosseumOptions, Game, GameMetadata, GameOptions, info_s, run, settings_cache};
 
-const MAX_OBJECTS: usize = 16;
-
-run!(PhysicsPlayground);
+run!(PhysicsPlayground, || {
+    info_s!("physics-playground", "Starting physics example");
+    Ok(())
+});
 
 /// The physics playground game structure
 struct PhysicsPlayground;
 
-impl Game for PhysicsPlayground {
-    type Options = PhysicsPlaygroundOptions;
-    type SettingsCache = PhysicsPlaygroundSettings;
-    type InitialScene = PhysicsPlaygroundScene;
-
+impl GameMetadata for PhysicsPlayground {
     const NAME: &str = "Physics Playground";
     const COMPANY: &str = "Lance Hart";
     const VERSION: &str = env!("CARGO_PKG_VERSION");
+}
+
+impl Game for PhysicsPlayground {
+    type Options = PhysicsPlaygroundOptions;
+    type SettingsCache = PhysicsPlaygroundSettings;
 }
 
 /// The command line options to control the physics playground game
@@ -51,6 +42,9 @@ impl GameOptions<PhysicsPlayground> for PhysicsPlaygroundOptions {
 /// The settings cache for the physics playground game
 #[settings_cache]
 struct PhysicsPlaygroundSettings {}
+/*
+const MAX_OBJECTS: usize = 16;
+
 
 struct PhysicsPlaygroundScene {
     /// The logger for the scene
@@ -237,3 +231,4 @@ fn move_camera(camera: Id<Entity>, context: &mut UpdateContext<PhysicsPlayground
         }
     }
 }
+*/

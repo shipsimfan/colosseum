@@ -1,4 +1,4 @@
-use crate::{Result, file_io::FileIo, logging::Logger, settings::DisplaySettings};
+use crate::{DisplaySettings, FileIo, Logger, Result};
 use std::path::Path;
 
 /// A cache of settings groups

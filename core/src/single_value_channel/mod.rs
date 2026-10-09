@@ -6,11 +6,13 @@ mod receiver;
 mod sender;
 mod shared;
 
-pub(crate) use receiver::*;
-pub(crate) use sender::*;
+pub use receiver::*;
+pub use sender::*;
 
 /// Create a channel that can be used to send a single value from one thread to another
-pub fn create<T>(notify: bool) -> Result<(SingleValueSender<T>, SingleValueReceiver<T>)> {
+pub fn single_value_channel<T>(
+    notify: bool,
+) -> Result<(SingleValueSender<T>, SingleValueReceiver<T>)> {
     let shared_state = Arc::new(SingleValueSharedState::new(notify)?);
 
     Ok((

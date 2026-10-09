@@ -1,9 +1,8 @@
-use crate::{GlobalSharedState, ThreadManager};
-use std::sync::Arc;
+use crate::ThreadManager;
 
-impl ThreadManager {
-    /// Get a reference to the shared state
-    pub fn shared_state(&self) -> &Arc<GlobalSharedState> {
-        &self.shared_state
+impl<UserEvent: 'static + Send> ThreadManager<UserEvent> {
+    /// Is the system currently running?
+    pub fn is_running(&self) -> bool {
+        self.shared_state.is_running()
     }
 }

@@ -1,4 +1,4 @@
-use crate::{Error, Result, logging::StdoutOutput};
+use crate::{Result, logging::StdoutOutput, new_error};
 use std::io::stdout;
 
 impl<Formatter: crate::logging::Formatter> StdoutOutput<Formatter> {
@@ -8,7 +8,7 @@ impl<Formatter: crate::logging::Formatter> StdoutOutput<Formatter> {
 
         formatter
             .start(&mut stdout)
-            .map_err(|error| Error::new_with("unable to write to stdout", error))?;
+            .map_err(|error| new_error!("unable to write to stdout - {}", error))?;
 
         Ok(StdoutOutput { stdout, formatter })
     }

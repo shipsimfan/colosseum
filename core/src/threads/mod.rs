@@ -1,8 +1,6 @@
-use crate::logging::Logger;
+use crate::{Logger, SingleValueReceiver};
 use std::sync::{Arc, Mutex};
 use thread::*;
-
-pub(crate) mod single_value_channel;
 
 mod shared_state;
 mod thread;
@@ -14,13 +12,12 @@ mod new;
 mod set_event_queue;
 mod spawn;
 
-pub(crate) use shared_state::*;
-pub(crate) use single_value_channel::*;
+pub use shared_state::*;
 
 /// Tracks all running threads on the system
-pub(crate) struct ThreadManager {
+pub struct ThreadManager<UserEvent: 'static + Send> {
     /// The state shared between all threads
-    shared_state: Arc<GlobalSharedState>,
+    shared_state: Arc<GlobalSharedState<UserEvent>>,
 
     /// The threads that have been spawned
     threads: Mutex<Vec<Thread>>,

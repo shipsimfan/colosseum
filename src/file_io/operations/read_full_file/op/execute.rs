@@ -1,4 +1,5 @@
-use crate::{Error, debug, file_io::ReadFullFileOp, logging::Logger, warning};
+use crate::{Logger, debug, file_io::ReadFullFileOp, warning};
+use colosseum_core::new_error;
 
 impl ReadFullFileOp {
     /// Execute the file I/O operation
@@ -20,8 +21,9 @@ impl ReadFullFileOp {
                     self.path.display(),
                     error
                 );
-                Error::new_with(
-                    format!("unable to read from \"{}\"", self.path.display()),
+                new_error!(
+                    "unable to read from \"{}\" - {}",
+                    self.path.display(),
                     error,
                 )
             });

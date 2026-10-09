@@ -1,11 +1,11 @@
-use crate::{GlobalSharedState, logging::LogController};
-use std::sync::{Arc, Mutex, atomic::AtomicBool};
+use crate::{GlobalSharedState, logger};
+use std::sync::{Mutex, atomic::AtomicBool};
 
-impl GlobalSharedState {
-    pub(in crate::threads) fn new(log_controller: &Arc<LogController>) -> GlobalSharedState {
+impl<UserEvent: 'static + Send> GlobalSharedState<UserEvent> {
+    pub(in crate::threads) fn new() -> GlobalSharedState<UserEvent> {
         GlobalSharedState {
             is_running: AtomicBool::new(true),
-            logger: log_controller.logger("threads"),
+            logger: logger!("threads"),
             event_queue: Mutex::new(None),
         }
     }

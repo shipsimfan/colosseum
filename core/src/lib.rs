@@ -7,7 +7,13 @@
 #![warn(rustdoc::broken_intra_doc_links)]
 
 mod error;
+mod game_metadata;
 mod logging;
+mod single_value_channel;
 mod threads;
 
 pub use error::*;
+pub use game_metadata::*;
+pub use logging::*;
+pub use single_value_channel::*;
+pub use threads::*;

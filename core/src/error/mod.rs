@@ -1,4 +1,7 @@
-use std::borrow::Cow;
+use message::*;
+
+mod macros;
+mod message;
 
 mod add;
 mod display;
@@ -10,8 +13,8 @@ pub type Result<T> = std::result::Result<T, Error>;
 /// An error that can occur while running Alexandria
 #[derive(Debug)]
 pub struct Error {
-    /// A human-readable message describing the error
-    message: Cow<'static, str>,
+    /// The messages describing the error
+    messages: Vec<ErrorMessage>,
 }
 
 impl std::error::Error for Error {}

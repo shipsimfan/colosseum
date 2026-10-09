@@ -1,7 +1,7 @@
-use crate::{GlobalSharedState, logging::Logger};
+use crate::{GlobalSharedState, Logger};
 use std::sync::atomic::Ordering;
 
-impl GlobalSharedState {
+impl<UserEvent: 'static + Send> GlobalSharedState<UserEvent> {
     /// Get the logger for thread operations
     pub fn logger(&self) -> &Logger {
         &self.logger

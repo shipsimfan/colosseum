@@ -1,4 +1,4 @@
-use crate::settings::SettingsPath;
+use crate::SettingsPath;
 use std::marker::PhantomData;
 
 impl<Game: crate::Game> Default for SettingsPath<Game> {

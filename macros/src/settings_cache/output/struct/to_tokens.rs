@@ -17,10 +17,10 @@ impl<'a> ToTokens for SettingsCacheOutputStruct<'a> {
             #visibility struct #name #generic_params #where_clause {
                 #fields
 
-                __logger: ::colosseum::logging::Logger,
+                __logger: ::colosseum::Logger,
                 __path: ::std::path::PathBuf,
-                __file_io: ::colosseum::file_io::FileIo,
-                __write_states: ::std::vec::Vec<::colosseum::file_io::WriteFullFile>,
+                __file_io: ::colosseum::FileIo,
+                __write_states: ::std::vec::Vec<::colosseum::WriteFullFile>,
             }
         }
     }

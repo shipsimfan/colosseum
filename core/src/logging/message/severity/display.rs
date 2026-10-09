@@ -1,4 +1,4 @@
-use crate::logging::LogSeverity;
+use crate::LogSeverity;
 
 impl std::fmt::Display for LogSeverity {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

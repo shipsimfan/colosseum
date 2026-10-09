@@ -1,6 +1,7 @@
 use crate::{
-    Error, Result,
+    Result,
     logging::{LogMessage, outputs::scope_files::ScopeFile},
+    new_error,
 };
 
 impl<Formatter: crate::logging::Formatter> ScopeFile<Formatter> {
@@ -9,10 +10,7 @@ impl<Formatter: crate::logging::Formatter> ScopeFile<Formatter> {
         self.formatter
             .format(message, &mut self.file)
             .map_err(|error| {
-                Error::new_with(
-                    format!("unable to write to \"{}\"", self.path.display()),
-                    error,
-                )
+                new_error!("unable to write to \"{}\" - {}", self.path.display(), error)
             })
     }
 }

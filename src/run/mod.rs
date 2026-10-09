@@ -1,31 +1,34 @@
-use crate::{
-    Error, ThreadManager, file_io::FileIo, logging::LogController, run::log_metadata::log_metadata,
-    settings::SettingsCache,
-};
+use crate::{FileIo, GameOptions, Result, SettingsCache};
 use argparse::Command;
+use colosseum_core::{Error, LogController, ThreadManager, logger, new_error};
+use log_metadata::*;
 use time::{DateTime, SimpleTimeZone};
-use wsi::Wsi;
 
-mod game;
 mod log_metadata;
 mod r#macro;
-mod options;
 mod user_event;
+
+pub(crate) use user_event::*;
+
+/*
+mod game;
+mod options;
 mod wsi;
 
 pub use options::*;
 
-pub(crate) use user_event::*;
 pub(crate) use wsi::*;
+*/
 
 /// Begins the game engine with the provided options, quiting the application based on the result
 /// of running
-pub fn run<Game: crate::Game>(
+pub fn run<Game: crate::Game, F: FnOnce() -> Result<()>>(
+    initial_scene: F,
     game_branch: Option<&str>,
     game_hash: Option<&str>,
     game_build_time: Option<&str>,
 ) -> ! {
-    if let Err(error) = do_run::<Game>(game_branch, game_hash, game_build_time) {
+    if let Err(error) = do_run::<Game, F>(initial_scene, game_branch, game_hash, game_build_time) {
         display_error(&error);
         std::process::exit(1);
     }
@@ -34,11 +37,12 @@ pub fn run<Game: crate::Game>(
 }
 
 /// Begins the game engine with the provided options
-fn do_run<Game: crate::Game>(
+fn do_run<Game: crate::Game, F: FnOnce() -> Result<()>>(
+    initial_scene: F,
     game_branch: Option<&str>,
     game_hash: Option<&str>,
     game_build_time: Option<&str>,
-) -> Result<(), Error> {
+) -> Result<()> {
     // Get the start time
     let start_time = DateTime::<SimpleTimeZone>::now_local();
 
@@ -47,14 +51,14 @@ fn do_run<Game: crate::Game>(
         Ok(Some(options)) => options,
         Ok(None) => return Ok(()),
         Err(error) => {
-            return Err(Error::new_with("unable to parse arguments", error));
+            return Err(new_error!("unable to parse arguments - {}", error));
         }
     };
 
     // Create the logging interface
-    let log_controller = LogController::new(&options.colosseum_options().logging_options)?;
+    LogController::new(&options.colosseum_options().logging_options)?;
 
-    let init_logger = log_controller.logger("init");
+    let init_logger = logger!("init");
     log_metadata::<Game>(
         &init_logger,
         start_time,
@@ -64,13 +68,7 @@ fn do_run<Game: crate::Game>(
     )?;
 
     // Create the thread manager
-    let thread_manager = ThreadManager::new(&log_controller)?;
-
-    // Start the logging thread
-    log_controller.spawn_thread(
-        &thread_manager,
-        &options.colosseum_options().logging_options,
-    )?;
+    let thread_manager = ThreadManager::new()?;
 
     // Start the file I/O thread
     let file_io = FileIo::new(&thread_manager)?;
@@ -78,12 +76,13 @@ fn do_run<Game: crate::Game>(
     // Load settings and save them back
     let mut settings = <Game::SettingsCache as SettingsCache>::load(
         &options.colosseum_options().settings_path.as_path(),
-        log_controller.logger("settings"),
+        logger!("settings"),
         &file_io,
     )?;
     let new_settings = settings.begin_modify();
     settings.save(&new_settings);
 
+    /*
     // Create the core WSI components
     let (mut wsi, vulkan_instance, surface, inputs) = Wsi::new(
         Game::NAME,
@@ -117,18 +116,23 @@ fn do_run<Game: crate::Game>(
             shared_window.restored_notify().notify().ok();
         },
     )?;
+    */
+
+    (initial_scene)()?;
 
     // Run the WSI event loop
-    let mut error = None;
-    while thread_manager.shared_state().is_running() {
-        match wsi.pump() {
+    let error = None;
+    while thread_manager.is_running() {
+        std::thread::sleep(std::time::Duration::from_millis(100));
+
+        /*match wsi.pump() {
             Ok(true) => {}
             Ok(false) => break,
             Err(e) => {
                 error = Some(e);
                 break;
             }
-        }
+        }*/
     }
 
     // Cleanup all running threads

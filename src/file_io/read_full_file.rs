@@ -1,7 +1,4 @@
-use crate::{
-    Result,
-    file_io::{FileIo, ReadFullFile, ReadFullFileOp},
-};
+use crate::{FileIo, ReadFullFile, Result, file_io::ReadFullFileOp};
 use std::path::PathBuf;
 
 impl FileIo {

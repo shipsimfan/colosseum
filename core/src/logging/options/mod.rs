@@ -1,4 +1,4 @@
-use crate::logging::LogSeverity;
+use crate::{GameMetadata, LogSeverity};
 use argparse::FlagGroup;
 use std::marker::PhantomData;
 
@@ -18,7 +18,7 @@ const DEFAULT_MIN_LOG_SEVERITY: LogSeverity = LogSeverity::Info;
 
 /// The options to control the logger
 #[derive(FlagGroup)]
-pub struct LoggingOptions<Game: crate::Game> {
+pub struct LoggingOptions<Game: GameMetadata> {
     /// The folder to place log files into
     #[flag(value = "PATH", default = LogPath::Default(PhantomData))]
     pub(in crate::logging) log_folder: LogPath<Game>,

@@ -53,7 +53,6 @@ colosseum-core.workspace = true
 colosseum-ecs.workspace = true
 
 alexandria.workspace = true
-
 argparse.workspace = true
 data-format.workspace = true
 json.workspace = true

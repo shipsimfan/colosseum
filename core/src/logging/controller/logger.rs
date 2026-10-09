@@ -1,4 +1,4 @@
-use crate::logging::{LogController, Logger};
+use crate::{LogController, Logger};
 use std::sync::Arc;
 
 impl LogController {

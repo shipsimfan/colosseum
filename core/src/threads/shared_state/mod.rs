@@ -1,4 +1,4 @@
-use crate::{UserEvent, logging::Logger};
+use crate::Logger;
 use alexandria::EventQueue;
 use std::sync::{Mutex, atomic::AtomicBool};
 
@@ -8,7 +8,7 @@ mod new;
 mod set_event_queue;
 
 /// The state shared between all threads
-pub(crate) struct GlobalSharedState {
+pub struct GlobalSharedState<UserEvent: 'static + Send> {
     /// Should the application continue running?
     is_running: AtomicBool,
 

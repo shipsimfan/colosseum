@@ -1,4 +1,4 @@
-use crate::logging::{LogController, LogMessage, LogSeverity};
+use crate::{LogController, LogSeverity, logging::LogMessage};
 use std::sync::atomic::Ordering;
 
 impl LogController {
@@ -6,7 +6,7 @@ impl LogController {
     ///
     /// This function does not check if the message should be emitted, use
     /// [`LogController::should_log`] first
-    pub(in crate::logging) fn log(
+    pub fn log(
         &self,
         severity: LogSeverity,
         message: String,

@@ -1,11 +1,15 @@
 //! Items used during the update phase of the game loop
 
+mod scene;
+
+pub use scene::*;
+
+/*
 mod context;
 mod input;
 mod job;
 mod physics_data;
 mod render_objects;
-mod scene;
 mod skybox;
 
 pub mod components;
@@ -15,8 +19,8 @@ pub use context::*;
 pub use ecs::{ECS, Entity, SystemId, SystemPhase};
 pub use input::*;
 pub use physics_data::*;
-pub use scene::*;
 pub use skybox::*;
 
 pub(crate) use job::*;
 pub(crate) use render_objects::*;
+*/

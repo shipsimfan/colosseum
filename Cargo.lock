@@ -61,7 +61,11 @@ dependencies = [
 name = "colosseum-core"
 version = "0.20.0"
 dependencies = [
+ "alexandria",
+ "argparse",
  "data-format",
+ "json",
+ "time",
 ]
 
 [[package]]

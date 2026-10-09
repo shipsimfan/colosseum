@@ -4,7 +4,7 @@ use std::{cell::UnsafeCell, sync::atomic::AtomicBool};
 mod new;
 
 /// The state shared between the sender and receiver of a single value channel
-pub(in crate::threads::single_value_channel) struct SingleValueSharedState<T> {
+pub(in crate::single_value_channel) struct SingleValueSharedState<T> {
     /// A boolean to track if the value has been sent or not
     pub sent: AtomicBool,
 

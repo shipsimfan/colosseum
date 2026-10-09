@@ -1,4 +1,4 @@
-use crate::settings::SettingsPath;
+use crate::SettingsPath;
 use std::{borrow::Cow, path::Path};
 
 impl<Game: crate::Game> SettingsPath<Game> {

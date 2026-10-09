@@ -1,6 +1,6 @@
-use crate::{Error, ThreadManager};
+use crate::{Error, ThreadManager, new_error};
 
-impl ThreadManager {
+impl<UserData: 'static + Send> ThreadManager<UserData> {
     /// Signal all threads to stop running and join them
     pub fn kill(&self, source: &str) -> Result<(), Vec<Error>> {
         self.shared_state.kill(source);
@@ -13,7 +13,7 @@ impl ThreadManager {
             .map(|mut receiver| receiver.take())
         {
             if let Ok(panic) = receiver.try_take() {
-                errors.push(Error::new(panic));
+                errors.push(new_error!(panic));
             }
         }
 

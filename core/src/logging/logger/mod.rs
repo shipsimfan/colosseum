@@ -1,4 +1,4 @@
-use crate::logging::LogController;
+use crate::LogController;
 use std::sync::Arc;
 
 mod deref;

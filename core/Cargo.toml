@@ -10,4 +10,8 @@ license.workspace = true
 publish.workspace = true
 
 [dependencies]
+alexandria.workspace = true
+argparse.workspace = true
 data-format.workspace = true
+json.workspace = true
+time.workspace = true

@@ -1,4 +1,4 @@
-use crate::{Result, file_io::WriteFullFile};
+use crate::{Result, WriteFullFile};
 
 impl WriteFullFile {
     /// Get the result of the write operation

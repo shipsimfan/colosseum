@@ -1,4 +1,4 @@
-use crate::{Result, file_io::ReadFullFile};
+use crate::{ReadFullFile, Result};
 
 impl ReadFullFile {
     /// Wait for the file read operation to complete and return the file contents

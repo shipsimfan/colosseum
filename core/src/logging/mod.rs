@@ -1,5 +1,8 @@
 //! Logging utilities for the game engine
 
+use formatters::*;
+use outputs::*;
+
 mod controller;
 mod formatters;
 mod logger;
@@ -12,6 +15,3 @@ pub use controller::*;
 pub use logger::*;
 pub use message::*;
 pub use options::*;
-
-pub(in crate::logging) use formatters::*;
-pub(in crate::logging) use outputs::*;

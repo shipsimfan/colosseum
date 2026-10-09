@@ -1,4 +1,4 @@
-use crate::file_io::WriteFullFile;
+use crate::WriteFullFile;
 
 impl WriteFullFile {
     /// Has the write completed?

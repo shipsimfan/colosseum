@@ -1,4 +1,4 @@
-use crate::{Error, SingleValueReceiver};
+use crate::{Error, SingleValueReceiver, new_error};
 
 impl<T> SingleValueReceiver<T> {
     /// Take the value from the channel, if it is available
@@ -30,7 +30,7 @@ impl<T> SingleValueReceiver<T> {
             .as_ref()
             .unwrap()
             .wait(None)
-            .map_err(Error::new_inner)?;
+            .map_err(|error| new_error!("unable to wait for single value - {}", error))?;
         Ok(())
     }
 

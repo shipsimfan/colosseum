@@ -8,8 +8,8 @@ impl<'a> ToTokens for SettingsCacheOutputLoadFn<'a> {
         to_tokens! { generator
             fn load(
                 path: &::std::path::Path,
-                logger: ::colosseum::logging::Logger,
-                file_io: &::colosseum::file_io::FileIo
+                logger: ::colosseum::Logger,
+                file_io: &::colosseum::FileIo
             ) -> ::colosseum::Result<Self> {
                 Ok(Self {
                     #fields

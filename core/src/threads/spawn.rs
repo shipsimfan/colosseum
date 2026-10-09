@@ -1,9 +1,9 @@
 use crate::{GlobalSharedState, Result, ThreadManager, threads::Thread};
 
-impl ThreadManager {
+impl<UserEvent: 'static + Send> ThreadManager<UserEvent> {
     /// Spawn a new thread
     pub fn spawn<
-        F1: 'static + FnOnce(&GlobalSharedState) -> Result<()> + Send,
+        F1: 'static + FnOnce(&GlobalSharedState<UserEvent>) -> Result<()> + Send,
         F2: 'static + FnOnce() + Send,
     >(
         &self,

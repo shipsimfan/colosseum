@@ -1,4 +1,5 @@
-use crate::{Error, Result, debug, file_io::WriteFullFileOp, logging::Logger, warning};
+use crate::{Logger, Result, debug, file_io::WriteFullFileOp, warning};
+use colosseum_core::new_error;
 use std::path::Path;
 
 impl WriteFullFileOp {
@@ -23,11 +24,9 @@ impl WriteFullFileOp {
 
 fn write_file(path: &Path, data: &[u8]) -> Result<()> {
     if let Some(parent) = path.parent() {
-        std::fs::create_dir_all(parent).map_err(|error| {
-            Error::new_with(format!("unable to create \"{}\"", parent.display()), error)
-        })?;
+        std::fs::create_dir_all(parent)
+            .map_err(|error| new_error!("unable to create \"{}\" - {}", parent.display(), error))?;
     }
-    std::fs::write(path, data).map_err(|error| {
-        Error::new_with(format!("unable to write to \"{}\"", path.display()), error)
-    })
+    std::fs::write(path, data)
+        .map_err(|error| new_error!("unable to write to \"{}\" - {}", path.display(), error))
 }

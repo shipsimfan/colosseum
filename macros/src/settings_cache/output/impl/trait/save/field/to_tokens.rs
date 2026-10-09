@@ -12,7 +12,7 @@ impl<'a> ToTokens for SettingsCacheOutputSaveFnField<'a> {
         to_tokens! { generator
             if new_settings.#name.1 {
                 self.__write_states.push(unsafe {
-                    ::colosseum::settings::SettingsGroup::save(
+                    ::colosseum::SettingsGroup::save(
                         &new_settings.#name2.0,
                         &self.__path,
                         &self.__logger,

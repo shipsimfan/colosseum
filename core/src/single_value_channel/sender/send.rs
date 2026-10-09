@@ -1,4 +1,4 @@
-use crate::{Error, Result, SingleValueSender};
+use crate::{Result, SingleValueSender, new_error};
 use std::sync::atomic::Ordering;
 
 impl<T> SingleValueSender<T> {
@@ -10,7 +10,9 @@ impl<T> SingleValueSender<T> {
         self.shared_state.sent.store(true, Ordering::Release);
 
         if let Some(notify) = &self.shared_state.notify {
-            notify.notify().map_err(Error::new_inner)
+            notify
+                .notify()
+                .map_err(|error| new_error!("unable to send a single value - {}", error))
         } else {
             Ok(())
         }

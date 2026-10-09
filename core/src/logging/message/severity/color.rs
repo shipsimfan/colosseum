@@ -1,4 +1,4 @@
-use crate::logging::LogSeverity;
+use crate::LogSeverity;
 
 impl LogSeverity {
     /// Get the ANSI escape sequence for this log severity

@@ -1,4 +1,4 @@
-use crate::logging::{LogController, LogSeverity};
+use crate::{LogController, LogSeverity};
 
 impl LogController {
     /// Should a message with the given parameters be logged?

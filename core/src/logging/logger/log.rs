@@ -1,4 +1,4 @@
-use crate::logging::{LogSeverity, Logger};
+use crate::{LogSeverity, Logger};
 
 impl Logger {
     /// Log a message

@@ -1,6 +1,44 @@
+colosseum::run!(Cube, || {
+    colosseum::info_s!("cube", "Starting cube example");
+    Ok(())
+});
+
+/// The cube example
+struct Cube;
+
+impl colosseum::GameMetadata for Cube {
+    const NAME: &str = "Cube Example";
+    const COMPANY: &str = "Lance Hart";
+    const VERSION: &str = env!("CARGO_PKG_VERSION");
+}
+
+impl colosseum::Game for Cube {
+    type Options = CubeOptions;
+    type SettingsCache = CubeSettings;
+}
+
+/// The command line options to control the cube example
+#[derive(argparse::Command)]
+#[command(help, version, description = "Displays a controllable cube")]
+struct CubeOptions {
+    /// The options for controlling colosseum
+    #[flag_group]
+    colosseum_options: colosseum::ColosseumOptions<Cube>,
+}
+
+impl colosseum::GameOptions<Cube> for CubeOptions {
+    fn colosseum_options(&self) -> &colosseum::ColosseumOptions<Cube> {
+        &self.colosseum_options
+    }
+}
+
+/// The settings cache for the cube example
+#[colosseum::settings_cache]
+struct CubeSettings {}
+
+/*
 #![feature(const_trait_impl)]
 
-colosseum::run!(Cube);
 
 const CUBE_VERTICES: &[colosseum::render::Vertex] = &[
     // Front (+Z)
@@ -47,38 +85,6 @@ const INITIAL_CUBE_POSITION: colosseum::math::Vector3f =
     colosseum::math::Vector3f::new(0.0, 0.0, 3.0);
 
 const SPOT_LIGHT_RADIUS: f32 = 4.0;
-
-/// The cube example
-struct Cube;
-
-impl colosseum::Game for Cube {
-    type Options = CubeOptions;
-    type SettingsCache = CubeSettings;
-    type InitialScene = CubeInitialScene;
-
-    const NAME: &str = "Cube Example";
-    const COMPANY: &str = "Lance Hart";
-    const VERSION: &str = env!("CARGO_PKG_VERSION");
-}
-
-/// The command line options to control the cube example
-#[derive(argparse::Command)]
-#[command(help, version, description = "Displays a controllable cube")]
-struct CubeOptions {
-    /// The options for controlling colosseum
-    #[flag_group]
-    colosseum_options: colosseum::ColosseumOptions<Cube>,
-}
-
-impl colosseum::GameOptions<Cube> for CubeOptions {
-    fn colosseum_options(&self) -> &colosseum::ColosseumOptions<Cube> {
-        &self.colosseum_options
-    }
-}
-
-/// The settings cache for the cube example
-#[colosseum::settings::settings_cache]
-struct CubeSettings {}
 
 /// The initial scene for the cube example
 struct CubeInitialScene {
@@ -411,3 +417,4 @@ impl CubeMainScene {
         })
     }
 }
+*/

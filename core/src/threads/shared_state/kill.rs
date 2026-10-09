@@ -2,7 +2,7 @@ use crate::{GlobalSharedState, debug};
 use alexandria::EventKind;
 use std::sync::atomic::Ordering;
 
-impl GlobalSharedState {
+impl<UserEvent: 'static + Send> GlobalSharedState<UserEvent> {
     /// Signal all threads to stop running
     pub fn kill(&self, source: &str) {
         let old_value = self.is_running.swap(false, Ordering::Release);

@@ -1,13 +1,13 @@
 use crate::{
-    GlobalSharedState, Result, ThreadManager, logging::LogController, single_value_channel,
+    GlobalSharedState, LogController, Result, ThreadManager, logger, single_value_channel,
 };
 use std::sync::{Arc, Mutex};
 
-impl ThreadManager {
+impl<UserData: 'static + Send> ThreadManager<UserData> {
     /// Create a new [`ThreadManager`]
-    pub fn new(log_controller: &Arc<LogController>) -> Result<Arc<ThreadManager>> {
-        let shared_state = Arc::new(GlobalSharedState::new(log_controller));
-        let (panic_sender, panic_receiver) = single_value_channel::create(false)?;
+    pub fn new() -> Result<Arc<ThreadManager<UserData>>> {
+        let shared_state = Arc::new(GlobalSharedState::new());
+        let (panic_sender, panic_receiver) = single_value_channel(false)?;
 
         let child_shared_state = shared_state.clone();
         let panic_sender = Mutex::new(Some(panic_sender));
@@ -30,11 +30,14 @@ impl ThreadManager {
             child_shared_state.kill(&thread_name);
         }));
 
-        Ok(Arc::new(ThreadManager {
+        let thread_manager = Arc::new(ThreadManager {
             shared_state,
             threads: Mutex::new(Vec::new()),
-            logger: log_controller.logger("threads"),
+            logger: logger!("threads"),
             panic_receiver: Mutex::new(Some(panic_receiver)),
-        }))
+        });
+        LogController::get().spawn_thread(&thread_manager)?;
+
+        Ok(thread_manager)
     }
 }

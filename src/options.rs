@@ -1,4 +1,4 @@
-use crate::{logging::LoggingOptions, settings::SettingsPath};
+use crate::{LoggingOptions, SettingsPath};
 use argparse::{Command, FlagGroup};
 
 /// Options for controlling how Colosseum runs

@@ -1,4 +1,4 @@
-use crate::logging::{LogMessage, LogSeverity};
+use crate::{LogSeverity, logging::LogMessage};
 
 impl LogMessage {
     /// Get the severity of the this message

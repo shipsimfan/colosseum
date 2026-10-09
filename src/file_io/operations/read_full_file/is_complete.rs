@@ -1,4 +1,4 @@
-use crate::file_io::ReadFullFile;
+use crate::ReadFullFile;
 
 impl ReadFullFile {
     /// Has the read completed?

@@ -1,7 +1,4 @@
-use crate::{
-    file_io::{FileIo, FileIoOperation},
-    logging::Logger,
-};
+use crate::{FileIo, Logger, file_io::FileIoOperation};
 use std::sync::mpsc::Receiver;
 
 impl FileIo {

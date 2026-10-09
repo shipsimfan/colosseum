@@ -1,4 +1,4 @@
-use crate::logging::{LogController, Logger};
+use crate::{LogController, Logger};
 use std::{ops::Deref, sync::Arc};
 
 impl Deref for Logger {

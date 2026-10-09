@@ -1,4 +1,5 @@
-use crate::{Error, Result, info, logging::Logger};
+use crate::{Logger, Result, info};
+use colosseum_core::new_error;
 use std::path::PathBuf;
 use time::DateTime;
 
@@ -81,7 +82,8 @@ pub(in crate::run) fn log_metadata<Game: crate::Game>(
         logger,
         "Operating System: {} ({})",
         alexandria::system::os_name(),
-        alexandria::system::os_version().map_err(|error| Error::new_inner(error.to_string()))?
+        alexandria::system::os_version()
+            .map_err(|error| new_error!("unable to find OS version - {}", error))?
     );
 
     // Log CPU

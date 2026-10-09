@@ -1,4 +1,4 @@
-use crate::logging::LogSeverity;
+use crate::LogSeverity;
 use argparse::{DefaultDisplay, Error, Flag};
 
 #[derive(Debug)]

@@ -20,7 +20,7 @@ impl<'a> SettingsCacheInputField<'a> {
             set.push(SettingsCacheInputField {
                 attributes: Vec::new(),
                 name: Identifier::new(group_name).into(),
-                r#type: built_type_name(&["colosseum", "settings", group_type]),
+                r#type: built_type_name(&["colosseum", group_type]),
             });
         }
 

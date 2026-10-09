@@ -1,7 +1,7 @@
-use crate::logging::LogPath;
+use crate::{GameMetadata, logging::LogPath};
 use std::{borrow::Cow, path::Path};
 
-impl<Game: crate::Game> LogPath<Game> {
+impl<Game: GameMetadata> LogPath<Game> {
     /// Get the path
     #[cfg(debug_assertions)]
     pub(in crate::logging) fn as_path<'a>(&'a self) -> Cow<'a, Path> {

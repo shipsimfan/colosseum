@@ -1,23 +1,23 @@
 use crate::{
-    Error, GlobalSharedState, Result, debug, error,
-    logging::Logger,
-    threads::{Thread, single_value_channel},
+    GlobalSharedState, Logger, Result, debug, error, new_error, single_value_channel,
+    threads::Thread,
 };
 use std::sync::Arc;
 
 impl Thread {
     /// Create a new thread with the provided name
     pub fn new<
-        F1: 'static + FnOnce(&GlobalSharedState) -> Result<()> + Send,
+        UserData: 'static + Send,
+        F1: 'static + FnOnce(&GlobalSharedState<UserData>) -> Result<()> + Send,
         F2: 'static + FnOnce() + Send,
     >(
         name: String,
-        global_shared_state: Arc<GlobalSharedState>,
+        global_shared_state: Arc<GlobalSharedState<UserData>>,
         f: F1,
         on_kill: F2,
         logger: &Logger,
     ) -> Result<Thread> {
-        let (result_sender, result_receiver) = single_value_channel::create(true)?;
+        let (result_sender, result_receiver) = single_value_channel(true)?;
 
         let child_name = name.clone();
         debug!(logger, "Spawning thread \"{}\"", child_name);
@@ -49,9 +49,7 @@ impl Thread {
                 result_sender.send(result).unwrap();
                 global_shared_state.kill(&child_name);
             })
-            .map_err(|error| {
-                Error::new_with(format!("unable to spawn \"{}\" thread", name), error)
-            })?;
+            .map_err(|error| new_error!("unable to spawn \"{}\" thread - {}", name, error))?;
 
         Ok(Thread {
             join_handle,

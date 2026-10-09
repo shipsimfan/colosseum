@@ -1,9 +1,10 @@
-use crate::{Error, ThreadManager, file_io::FileIo};
+use crate::{Error, FileIo, UserEvent};
+use colosseum_core::ThreadManager;
 use std::sync::mpsc::channel;
 
 impl FileIo {
     /// Create a new [`FileIo`] thread`
-    pub(crate) fn new(thread_manager: &ThreadManager) -> Result<FileIo, Error> {
+    pub(crate) fn new(thread_manager: &ThreadManager<UserEvent>) -> Result<FileIo, Error> {
         // Create the channel for sending file I/O requests to the thread
         let (sender, receiver) = channel();
 

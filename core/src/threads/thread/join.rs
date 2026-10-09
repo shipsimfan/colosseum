@@ -1,4 +1,4 @@
-use crate::{Result, error, logging::Logger, threads::Thread};
+use crate::{Logger, Result, error, threads::Thread};
 
 impl Thread {
     /// Join the thread, returning any error that occurred in the thread

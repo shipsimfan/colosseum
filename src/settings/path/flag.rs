@@ -1,4 +1,4 @@
-use crate::settings::SettingsPath;
+use crate::SettingsPath;
 use argparse::{DefaultDisplay, Flag};
 use std::path::PathBuf;
 

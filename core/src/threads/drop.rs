@@ -1,6 +1,6 @@
 use crate::ThreadManager;
 
-impl Drop for ThreadManager {
+impl<UserData: 'static + Send> Drop for ThreadManager<UserData> {
     fn drop(&mut self) {
         self.kill("ThreadManager drop").unwrap();
     }
