@@ -1,6 +1,9 @@
 use crate::{Archetypes, Resources, Systems};
 
+mod get;
+mod insert;
 mod new;
+mod remove;
 
 /// A representation of the world in the ECS system
 pub struct World {

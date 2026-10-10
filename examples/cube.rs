@@ -1,5 +1,14 @@
-colosseum::run!(Cube, |_: &mut colosseum::World| {
+colosseum::run!(Cube, |world: &mut colosseum::World| {
     colosseum::info_s!("cube", "Starting cube example");
+
+    assert!(!world.insert_resource(10));
+    assert!(!world.insert_resource("testing"));
+
+    assert_eq!(world.replace_resource(20), Some(10));
+    assert_eq!(world.replace_resource("new"), Some("testing"));
+
+    colosseum::info_s!("cube", "Resources have been set up");
+
     Ok(())
 });
 

@@ -1,6 +1,9 @@
 use slot::*;
 
+mod get;
+mod insert;
 mod new;
+mod remove;
 
 mod slot;
 

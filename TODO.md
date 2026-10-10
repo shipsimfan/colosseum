@@ -1,17 +1,13 @@
 # ToDo
  1. Rewrite ECS
-   1. Add resource management 
-     1. `add`
-     2. `try_get`, `get`, `try_get_mut`, `get_mut`
-     3. `try_remove`, `remove`
-   2. Add archetype management
+   1. Add archetype management
      1. `add_entity`
      2. `remove_entity`
      3. `add_component`
      4. `try_get`, `get`, `try_get_mut`, `get_mut`
      5. `try_remove_component`, `remove_component`
      6. `add` helper
-   3. Add systems management
+   2. Add systems management
      1. `add_phase`
      2. `clear_phase`
      3. `run_phase`
@@ -19,7 +15,7 @@
      5. `add_system`
      6. `remove_system`
      7. `run_system`
-   4. Implement system parameters
+   3. Implement system parameters
      1. `Res`
      2. `ResMut`
      3. `Query`
