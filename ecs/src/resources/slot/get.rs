@@ -1,5 +1,8 @@
 use crate::resources::ResourceSlot;
-use std::any::{Any, TypeId};
+use std::{
+    any::{Any, TypeId},
+    cell::{Ref, RefMut},
+};
 
 impl ResourceSlot {
     /// Is this resource slot of the specified type?
@@ -8,12 +11,12 @@ impl ResourceSlot {
     }
 
     /// Get a reference to the resource stored in this slot
-    pub fn get(&self) -> Option<&Box<dyn Any>> {
-        self.resource.as_ref()
+    pub fn get<'a>(&'a self) -> Option<Ref<'a, Box<dyn Any>>> {
+        self.resource.as_ref().map(|resource| resource.borrow())
     }
 
     /// Get a mutable reference to the resource stored in this slot
-    pub fn get_mut(&mut self) -> Option<&mut Box<dyn Any>> {
-        self.resource.as_mut()
+    pub fn get_mut<'a>(&'a self) -> Option<RefMut<'a, Box<dyn Any>>> {
+        self.resource.as_ref().map(|resource| resource.borrow_mut())
     }
 }

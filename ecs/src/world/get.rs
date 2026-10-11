@@ -1,24 +1,27 @@
-use crate::World;
+use crate::{Res, ResMut, World};
 
 impl World {
     /// Get a reference to a resource in the world, if it exists
-    pub fn try_get_resource<T: 'static>(&self) -> Option<&T> {
-        self.resources.get::<T>()
+    pub fn try_get_resource<'a, Resource: 'static>(&'a self) -> Option<Res<'a, Resource>> {
+        self.resources.get::<Resource>()
     }
 
     /// Get a reference to a resource in the world, panicking if it does not exist
-    pub fn get_resource<T: 'static>(&self) -> &T {
-        self.try_get_resource::<T>().expect("Resource not found")
+    pub fn get_resource<'a, Resource: 'static>(&'a self) -> Res<'a, Resource> {
+        self.try_get_resource::<Resource>()
+            .expect("Resource not found")
     }
 
     /// Get a mutable reference to a resource in the world, if it exists
-    pub fn try_get_resource_mut<T: 'static>(&mut self) -> Option<&mut T> {
-        self.resources.get_mut::<T>()
+    pub fn try_get_resource_mut<'a, Resource: 'static>(
+        &'a mut self,
+    ) -> Option<ResMut<'a, Resource>> {
+        self.resources.get_mut::<Resource>()
     }
 
     /// Get a mutable reference to a resource in the world, panicking if it does not exist
-    pub fn get_resource_mut<T: 'static>(&mut self) -> &mut T {
-        self.try_get_resource_mut::<T>()
+    pub fn get_resource_mut<'a, Resource: 'static>(&'a mut self) -> ResMut<'a, Resource> {
+        self.try_get_resource_mut::<Resource>()
             .expect("Resource not found")
     }
 }

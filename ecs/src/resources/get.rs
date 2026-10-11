@@ -1,19 +1,19 @@
-use crate::{Resources, resources::ResourceSlot};
+use crate::{Res, ResMut, Resources, resources::ResourceSlot};
 use std::any::TypeId;
 
 impl Resources {
     /// Get a reference to a resource, if there is one available
-    pub fn get<T: 'static>(&self) -> Option<&T> {
-        self.get_slot(TypeId::of::<T>())
+    pub fn get<'a, Resource: 'static>(&'a self) -> Option<Res<'a, Resource>> {
+        self.get_slot(TypeId::of::<Resource>())
             .and_then(|slot| slot.get())
-            .and_then(|resource| resource.downcast_ref())
+            .map(Res::new)
     }
 
     /// Get a mutable reference to a resource, if there is one available
-    pub fn get_mut<T: 'static>(&mut self) -> Option<&mut T> {
-        self.get_slot_mut(TypeId::of::<T>())
+    pub fn get_mut<'a, Resource: 'static>(&'a mut self) -> Option<ResMut<'a, Resource>> {
+        self.get_slot_mut(TypeId::of::<Resource>())
             .and_then(|slot| slot.get_mut())
-            .and_then(|resource| resource.downcast_mut())
+            .map(ResMut::new)
     }
 
     /// Get a reference to a resource slot, if there is one available

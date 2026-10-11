@@ -1,4 +1,7 @@
-use std::any::{Any, TypeId};
+use std::{
+    any::{Any, TypeId},
+    cell::RefCell,
+};
 
 mod get;
 mod new;
@@ -11,5 +14,5 @@ pub(in crate::resources) struct ResourceSlot {
     r#type: TypeId,
 
     /// The actual resource stored in this slot
-    resource: Option<Box<dyn Any>>,
+    resource: Option<RefCell<Box<dyn Any>>>,
 }

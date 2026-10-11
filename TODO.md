@@ -1,26 +1,26 @@
 # ToDo
  1. Rewrite ECS
-   1. Add archetype management
+   1. Implement systems
+   2. Implement resource system parameters
+     1. `Res`
+     2. `ResMut`
+   3. Add archetype management
      1. `add_entity`
      2. `remove_entity`
      3. `add_component`
      4. `try_get`, `get`, `try_get_mut`, `get_mut`
      5. `try_remove_component`, `remove_component`
      6. `add` helper
-   2. Add systems management
-     1. `add_phase`
-     2. `clear_phase`
-     3. `run_phase`
-     4. `remove_phase`
-     5. `add_system`
-     6. `remove_system`
-     7. `run_system`
-   3. Implement system parameters
-     1. `Res`
-     2. `ResMut`
-     3. `Query`
-     4. `Commands`
-     5. `&mut World`
+   4. Implement `Query` system parameter
+     1. Single component
+     2. Multiple components
+     3. Optional components
+     4. Filters
+       1. `With` filter
+       2. `Without` filter
+   5. Implement `Commands` system parameter
+   6. Implement clearing and compacting
+   7. Update engine to new ECS
  2. Add names to shader modules and swapchain images
  3. Add debug labels to all render passes
  4. Add mesh loading
