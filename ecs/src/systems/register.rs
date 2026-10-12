@@ -1,4 +1,4 @@
-use crate::{System, Systems, systems};
+use crate::{IntoSystem, Systems, systems};
 use std::any::TypeId;
 
 impl Systems {
@@ -11,7 +11,11 @@ impl Systems {
     }
 
     /// Register a new system in a specific phase
-    pub fn register_system<Phase: 'static>(&mut self, system: System) {
+    pub fn register_system<Phase: 'static, Input: 'static, System: 'static + IntoSystem<Input>>(
+        &mut self,
+        system: System,
+    ) {
+        let system: Box<dyn crate::System> = Box::new(system.into_system());
         let r#type = TypeId::of::<Phase>();
         match self.get_phase_mut(r#type) {
             Some(phase) => phase.add_system(system),

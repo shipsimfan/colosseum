@@ -9,8 +9,20 @@ colosseum::run!(Cube, |world: &mut colosseum::World| {
 
     colosseum::info_s!("cube", "Resources have been set up");
 
+    world.register_system::<ExamplePhase, _, _>(|mut int: colosseum::ResMut<i32>| {
+        *int += 1;
+
+        colosseum::info_s!("system", "system hello world! ({})", *int)
+    });
+
+    world.run::<ExamplePhase>()?;
+    world.run::<ExamplePhase>()?;
+    world.run::<ExamplePhase>()?;
+
     Ok(())
 });
+
+struct ExamplePhase;
 
 /// The cube example
 struct Cube;

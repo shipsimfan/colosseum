@@ -10,8 +10,8 @@ impl Resources {
     }
 
     /// Get a mutable reference to a resource, if there is one available
-    pub fn get_mut<'a, Resource: 'static>(&'a mut self) -> Option<ResMut<'a, Resource>> {
-        self.get_slot_mut(TypeId::of::<Resource>())
+    pub fn get_mut<'a, Resource: 'static>(&'a self) -> Option<ResMut<'a, Resource>> {
+        self.get_slot(TypeId::of::<Resource>())
             .and_then(|slot| slot.get_mut())
             .map(ResMut::new)
     }

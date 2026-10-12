@@ -1,4 +1,4 @@
-use crate::{System, World};
+use crate::{IntoSystem, World};
 
 impl World {
     /// Register a new phase of systems
@@ -7,7 +7,10 @@ impl World {
     }
 
     /// Register a new system into a phase
-    pub fn register_system<Phase: 'static>(&mut self, system: System) {
-        self.systems.register_system::<Phase>(system)
+    pub fn register_system<Phase: 'static, Input: 'static, System: 'static + IntoSystem<Input>>(
+        &mut self,
+        system: System,
+    ) {
+        self.systems.register_system::<Phase, Input, System>(system)
     }
 }

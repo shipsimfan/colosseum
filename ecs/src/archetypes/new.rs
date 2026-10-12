@@ -3,7 +3,7 @@ use alexandria::SlotMap;
 
 impl Archetypes {
     /// Create a new, empty set of [`Archetypes`]
-    pub fn new() -> Archetypes {
+    pub(crate) fn new() -> Archetypes {
         Archetypes {
             entities: SlotMap::new(),
         }

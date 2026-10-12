@@ -8,7 +8,7 @@ mod remove;
 mod slot;
 
 /// The set of resources in the ECS system
-pub(crate) struct Resources {
+pub struct Resources {
     /// The currently registered resources in the ECS system
     resources: Vec<ResourceSlot>,
 }
