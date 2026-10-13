@@ -1,26 +1,7 @@
-//! Items used during the update phase of the game loop
+//! Items sed during the update phase of the game loop
 
+mod phases;
 mod scene;
 
+pub use phases::*;
 pub use scene::*;
-
-/*
-mod context;
-mod input;
-mod job;
-mod physics_data;
-mod render_objects;
-mod skybox;
-
-pub mod components;
-pub mod ecs;
-
-pub use context::*;
-pub use ecs::{ECS, Entity, SystemId, SystemPhase};
-pub use input::*;
-pub use physics_data::*;
-pub use skybox::*;
-
-pub(crate) use job::*;
-pub(crate) use render_objects::*;
-*/

@@ -12,6 +12,7 @@
 #![feature(const_convert)]
 */
 
+pub mod render;
 pub mod update;
 
 mod file_io;

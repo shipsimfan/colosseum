@@ -1,4 +1,9 @@
-use crate::{Result, UserEvent, Window, file_io::FileIo, update::Scene};
+use crate::{
+    Result, UserEvent, Window,
+    file_io::FileIo,
+    render::execute_render_systems,
+    update::{Scene, execute_update_systems},
+};
 use alexandria::gpu::{VulkanInstance, VulkanSurface};
 use colosseum_core::{GlobalSharedState, ThreadManager, logger};
 use colosseum_ecs::World;
@@ -25,6 +30,10 @@ pub(in crate::run) fn run<Game: crate::Game, InitialScene: Scene>(
 
     while shared_state.is_running() {
         logger.frame();
+
+        execute_update_systems(&mut world)?;
+        execute_render_systems(&mut world)?;
+
         std::thread::sleep(Duration::from_millis(16));
     }
 
