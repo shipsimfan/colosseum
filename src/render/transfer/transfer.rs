@@ -1,11 +1,7 @@
-use crate::{
-    Error, Result,
-    render::{GpuTransferQueue, Mesh, MeshTransfer, RenderMesh, transfer::GpuTransferCommand},
-    single_value_channel,
-    update::GpuAllocatedMemory,
-};
+use crate::render::GpuTransferQueue;
 
 impl GpuTransferQueue {
+    /*
     /// Transfer a mesh to the GPU
     pub(in crate::render) fn transfer_mesh(
         &mut self,
@@ -27,4 +23,5 @@ impl GpuTransferQueue {
 
         Ok(transfer)
     }
+    */
 }

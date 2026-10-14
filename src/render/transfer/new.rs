@@ -1,19 +1,18 @@
 use crate::{
-    Result, ThreadManager,
-    logging::Logger,
+    Result, UserEvent,
     render::{GpuTransferQueue, RenderGpuTransferQueue},
 };
 use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice, VulkanQueue};
+use colosseum_core::{ThreadManager, logger};
 use std::sync::{Arc, mpsc::channel};
 
 impl GpuTransferQueue {
     /// Create a new [`GpuTransferQueue`] with a dedicated transfer queue
     pub(in crate::render) fn new_dedicated(
-        thread_manager: &ThreadManager,
+        thread_manager: &ThreadManager<UserEvent>,
         device: &VulkanDevice,
         mut device_queue: VulkanQueue,
         memory_properties: &Arc<VulkanAdapterMemoryProperties>,
-        logger: &Logger,
     ) -> Result<GpuTransferQueue> {
         let (transfer_queue, render_transfer_queue) =
             GpuTransferQueue::new(device, &mut device_queue, memory_properties)?;

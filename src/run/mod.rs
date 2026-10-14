@@ -88,7 +88,6 @@ fn do_run<Game: crate::Game, InitialScene: Scene>(
 
     // Start the game thread
     let window = wsi.window(inputs);
-    let shared_window = wsi.shared_window().clone();
     let child_thread_manager = thread_manager.clone();
     thread_manager.spawn(
         "Game".to_string(),
@@ -105,9 +104,7 @@ fn do_run<Game: crate::Game, InitialScene: Scene>(
                 child_thread_manager,
             )
         },
-        move || {
-            shared_window.restored_notify().notify().ok();
-        },
+        || {},
     )?;
 
     // Run the WSI event loop

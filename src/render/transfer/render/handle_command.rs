@@ -1,11 +1,9 @@
-use crate::{
-    Error, Result,
-    render::{Mesh, RenderGpuTransferQueue, RenderMesh, Vertex, transfer::GpuTransferCommand},
-};
+use crate::{Result, render::RenderGpuTransferQueue};
 use alexandria::gpu::{
     VulkanBuffer, VulkanBufferCopy, VulkanCommandBuffer, VulkanCommandBufferSubmitInfo,
     VulkanFence, VulkanQueue, VulkanResult, VulkanSubmitInfo,
 };
+use colosseum_core::new_error;
 
 impl RenderGpuTransferQueue {
     /// Handle a single command from the transfer queue, returning `true` if a command was handled
@@ -22,6 +20,7 @@ impl RenderGpuTransferQueue {
             }
         };
 
+        /*
         match command {
             GpuTransferCommand::Mesh {
                 mesh,
@@ -33,10 +32,12 @@ impl RenderGpuTransferQueue {
                 sender.send((mesh, render_mesh, allocation))?;
             }
         }
+        */
 
         Ok(true)
     }
 
+    /*
     /// Transfer a mesh to the GPU
     pub(in crate::render::transfer::render) fn transfer_mesh(
         &mut self,
@@ -76,6 +77,7 @@ impl RenderGpuTransferQueue {
             ],
         )
     }
+    */
 }
 
 fn copy_buffers<const N: usize>(
@@ -85,7 +87,9 @@ fn copy_buffers<const N: usize>(
     buffers: [(&VulkanBuffer, &VulkanBuffer, u64, u64, u64); N],
 ) -> Result<()> {
     // Recored the copy commands
-    command_buffer.begin().map_err(Error::new_inner)?;
+    command_buffer
+        .begin()
+        .map_err(|error| new_error!("unable to begin transfer command buffer - {}", error))?;
     for (src, dst, src_offset, dst_offset, size) in buffers {
         command_buffer.cmd_copy_buffer(
             src,
@@ -93,7 +97,9 @@ fn copy_buffers<const N: usize>(
             &[VulkanBufferCopy::new(src_offset, dst_offset, size)],
         );
     }
-    command_buffer.end().map_err(Error::new_inner)?;
+    command_buffer
+        .end()
+        .map_err(|error| new_error!("unable to end transfer command buffer - {}", error))?;
 
     // Submit the copy commands
     queue
@@ -106,14 +112,18 @@ fn copy_buffers<const N: usize>(
             )],
             Some(fence),
         )
-        .map_err(Error::new_inner)?;
+        .map_err(|error| new_error!("unable to submit transfer command buffer - {}", error))?;
 
     // Wait for the copy commands to complete
     assert_eq!(
-        fence.wait(u64::MAX).map_err(Error::new_inner)?,
+        fence
+            .wait(u64::MAX)
+            .map_err(|error| new_error!("unable to wait for transfer fence - {}", error))?,
         VulkanResult::VkSuccess
     );
-    fence.reset().map_err(Error::new_inner)?;
+    fence
+        .reset()
+        .map_err(|error| new_error!("unable to reset transfer fence - {}", error))?;
 
     Ok(())
 }

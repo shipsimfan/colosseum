@@ -13,12 +13,6 @@ mod unwrap;
 
 /// The swapchain for the render job, which holds the graphics device and the Vulkan swapchain itself
 pub(in crate::render::job) struct Swapchain<'surface> {
-    /// The swapchain itself
-    swapchain: Option<VulkanSwapchain<'surface>>,
-
-    /// The image views for the swapchain images
-    image_views: Vec<VulkanImageView>,
-
     /// The command pool for the graphics queue
     command_pool: VulkanCommandPool,
 
@@ -27,12 +21,6 @@ pub(in crate::render::job) struct Swapchain<'surface> {
 
     /// The index of the next frame to use
     frame_index: usize,
-
-    /// The size of the swapchain images
-    size: Vector2u,
-
-    /// The device the swapchain was created with
-    device: VulkanDevice,
 }
 
 impl<'surface> Swapchain<'surface> {

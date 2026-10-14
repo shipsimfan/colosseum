@@ -1,28 +1,14 @@
 colosseum::run!(Cube, |world: &mut colosseum::World| {
-    colosseum::info_s!("cube", "Starting cube example");
+    world.insert_resource(FpsCounter::new());
 
-    assert!(!world.insert_resource(10));
-    assert!(!world.insert_resource("testing"));
-
-    assert_eq!(world.replace_resource(20), Some(10));
-    assert_eq!(world.replace_resource("new"), Some("testing"));
-
-    colosseum::info_s!("cube", "Resources have been set up");
-
-    world.register_system::<ExamplePhase, _, _>(|mut int: colosseum::ResMut<i32>| {
-        *int += 1;
-
-        colosseum::info_s!("system", "system hello world! ({})", *int)
-    });
-
-    world.run::<ExamplePhase>()?;
-    world.run::<ExamplePhase>()?;
-    world.run::<ExamplePhase>()?;
+    world.register_system::<colosseum::update::Update, _, _>(
+        |mut fps_counter: colosseum::ResMut<FpsCounter>| {
+            fps_counter.tick();
+        },
+    );
 
     Ok(())
 });
-
-struct ExamplePhase;
 
 /// The cube example
 struct Cube;
@@ -56,6 +42,41 @@ impl colosseum::GameOptions<Cube> for CubeOptions {
 /// The settings cache for the cube example
 #[colosseum::settings_cache]
 struct CubeSettings {}
+
+/// A resource for counting frames per second (FPS)
+struct FpsCounter {
+    /// The current number of frames in the last second
+    frames: u32,
+
+    /// The time at which the last second started
+    last_time: std::time::Instant,
+
+    /// The logger for reporting FPS information
+    logger: colosseum::Logger,
+}
+
+impl FpsCounter {
+    /// Create a new [`FpsCounter`]
+    pub fn new() -> FpsCounter {
+        FpsCounter {
+            frames: 0,
+            last_time: std::time::Instant::now(),
+            logger: colosseum::logger!("cube"),
+        }
+    }
+
+    /// Tick the FPS counter
+    pub fn tick(&mut self) {
+        self.frames += 1;
+
+        let now = std::time::Instant::now();
+        if now.duration_since(self.last_time).as_secs() >= 1 {
+            colosseum::info!(self.logger, "FPS: {}", self.frames);
+            self.frames = 0;
+            self.last_time = now;
+        }
+    }
+}
 
 /*
 #![feature(const_trait_impl)]

@@ -1,12 +1,8 @@
-use crate::{
-    Logger, Result, debug,
-    run::wsi::{
-        SharedWindow,
-        window::shared::{encode_position, encode_size},
-    },
+use crate::run::wsi::{
+    SharedWindow,
+    window::shared::{encode_position, encode_size},
 };
 use alexandria::math::{Vector2i, Vector2u};
-use colosseum_core::new_error;
 use std::sync::atomic::Ordering;
 
 impl SharedWindow {
@@ -17,16 +13,8 @@ impl SharedWindow {
     }
 
     /// Set the size of the window
-    pub(in crate::run::wsi) fn set_size(&self, size: Vector2u, logger: &Logger) -> Result<()> {
-        let encoded_size = encode_size(size);
-        let old_value = self.size.swap(encoded_size, Ordering::Release);
-        if old_value == 0 && encoded_size != 0 {
-            debug!(logger, "Window restored from zero size");
-            self.restored_notify
-                .notify()
-                .map_err(|error| new_error!("unable to notify window restore - {}", error))?;
-        }
-        Ok(())
+    pub(in crate::run::wsi) fn set_size(&self, size: Vector2u) {
+        self.size.store(encode_size(size), Ordering::Release);
     }
 
     /// Set whether the window is currently fullscreen or not

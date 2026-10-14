@@ -26,29 +26,11 @@ pub(in crate::render::job) use render_token::*;
 
 /// The graphics device is responsible for managing the Vulkan device and related resources
 pub(in crate::render::job) struct GraphicsDevice {
-    /// The logger for operations related to the graphics device
-    logger: Logger,
-
-    /// The Vulkan device
-    device: VulkanDevice,
-
-    /// The queue to submit rendering commands to
-    queue: VulkanQueue,
-
-    /// The format of the swapchain images, which is determined when creating the swapchain
-    swapchain_format: VulkanFormat,
-
     /// The frame graph, which can be built and executed to render frames
     frame_graph: FrameGraph,
 
     /// The render objects that have been created by the update job
     render_objects: RenderObjects,
-
-    /// The render GPU transfer queue if there is no dedicated transfer queue
-    gpu_transfer_queue: Option<RenderGpuTransferQueue>,
-
-    /// The memory properties of the adapter
-    memory_properties: Arc<VulkanAdapterMemoryProperties>,
 
     /// The index of the current render data being used
     render_data_index: usize,

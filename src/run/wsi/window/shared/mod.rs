@@ -1,7 +1,4 @@
-use alexandria::{
-    Notify,
-    math::{Vector2i, Vector2u},
-};
+use alexandria::math::{Vector2i, Vector2u};
 use std::sync::atomic::{AtomicBool, AtomicU64};
 
 mod get;
@@ -23,9 +20,6 @@ pub(in crate::run) struct SharedWindow {
 
     /// Whether the window is currently maximized or not
     maximized: AtomicBool,
-
-    /// A notify for when the window has been restored from a minimized state
-    restored_notify: Notify,
 }
 
 /// Encode a [`Vector2i`] as a single `u64` with the x position in the upper 32 bits and the y

@@ -1,13 +1,13 @@
 use crate::{
-    GlobalSharedState, Result, debug,
-    logging::Logger,
+    Result, UserEvent, debug,
     render::{GpuTransferQueue, RenderGpuTransferQueue},
 };
 use alexandria::gpu::VulkanQueue;
+use colosseum_core::{GlobalSharedState, Logger};
 
 impl GpuTransferQueue {
     pub(in crate::render::transfer) fn thread(
-        shared_state: &GlobalSharedState,
+        shared_state: &GlobalSharedState<UserEvent>,
         mut queue: VulkanQueue,
         mut transfer_queue: RenderGpuTransferQueue,
         logger: Logger,

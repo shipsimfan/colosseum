@@ -1,5 +1,5 @@
 use crate::{
-    Error, Result,
+    Result,
     render::{
         RenderGpuTransferQueue,
         transfer::{GpuTransferCommand, StagingBuffer},
@@ -9,6 +9,7 @@ use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanCommandBufferLevel, VulkanCommandPoolCreateFlag,
     VulkanDevice, VulkanQueue,
 };
+use colosseum_core::new_error;
 #[cfg(debug_assertions)]
 use std::ffi::CString;
 use std::sync::{Arc, mpsc::Receiver};
@@ -27,33 +28,49 @@ impl RenderGpuTransferQueue {
                 queue.queue_family(),
                 VulkanCommandPoolCreateFlag::ResetCommandBuffer,
             )
-            .map_err(Error::new_inner)?;
+            .map_err(|error| new_error!("unable to create transfer command pool - {}", error))?;
         #[cfg(debug_assertions)]
         device
             .set_object_name(&mut command_pool, c"Transfer Command Pool")
-            .map_err(Error::new_inner)?;
+            .map_err(|error| {
+                new_error!(
+                    "unable to set object name for transfer command pool - {}",
+                    error
+                )
+            })?;
 
         let command_buffer_id = command_pool
             .allocate_command_buffer(VulkanCommandBufferLevel::Primary)
-            .map_err(Error::new_inner)?;
+            .map_err(|error| {
+                new_error!("unable to allocate transfer command buffer - {}", error)
+            })?;
         #[cfg(debug_assertions)]
         device
             .set_object_name(
                 &mut command_pool[command_buffer_id],
                 c"Transfer Command Buffer",
             )
-            .map_err(Error::new_inner)?;
+            .map_err(|error| {
+                new_error!(
+                    "unable to set object name for transfer command buffer - {}",
+                    error
+                )
+            })?;
 
         // Create the transfer fence
         #[cfg_attr(not(debug_assertions), allow(unused_mut))]
-        let mut fence = device.create_fence(0).map_err(Error::new_inner)?;
+        let mut fence = device
+            .create_fence(0)
+            .map_err(|error| new_error!("unable to create transfer fence - {}", error))?;
         #[cfg(debug_assertions)]
         device
             .set_object_name(
                 &mut fence,
                 &CString::new(format!("Transfer Fence")).unwrap(),
             )
-            .map_err(Error::new_inner)?;
+            .map_err(|error| {
+                new_error!("unable to set object name for transfer fence - {}", error)
+            })?;
 
         // Create staging buffers
         let staging_buffer = StagingBuffer::new(

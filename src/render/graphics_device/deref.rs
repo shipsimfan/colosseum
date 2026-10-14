@@ -1,4 +1,4 @@
-use crate::render::job::GraphicsDevice;
+use crate::render::GraphicsDevice;
 use alexandria::gpu::VulkanDevice;
 use std::ops::Deref;
 

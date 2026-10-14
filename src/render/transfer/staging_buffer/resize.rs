@@ -1,8 +1,9 @@
-use crate::{Error, Result, render::transfer::StagingBuffer};
+use crate::{Result, render::transfer::StagingBuffer};
 use alexandria::gpu::{
     VulkanAdapterMemoryProperties, VulkanBuffer, VulkanBufferUsageFlag, VulkanDevice,
     VulkanMappedMemory, VulkanMemoryPropertyFlag, VulkanSharingMode,
 };
+use colosseum_core::new_error;
 use std::ffi::CStr;
 
 impl StagingBuffer {
@@ -43,11 +44,13 @@ impl StagingBuffer {
                 VulkanSharingMode::Exclusive,
                 &[],
             )
-            .map_err(Error::new_inner)?;
+            .map_err(|error| new_error!("unable to create staging buffer - {}", error))?;
         #[cfg(debug_assertions)]
         device
             .set_object_name(&mut buffer, buffer_name)
-            .map_err(Error::new_inner)?;
+            .map_err(|error| {
+                new_error!("unable to set object name for staging buffer - {}", error)
+            })?;
 
         // Allocate the memory for the buffer
         let memory_requirements = buffer.get_memory_requirements();
@@ -56,16 +59,23 @@ impl StagingBuffer {
                 memory_requirements.memory_type_bits(),
                 VulkanMemoryPropertyFlag::HostVisible | VulkanMemoryPropertyFlag::HostCoherent,
             )
-            .ok_or(Error::new(
-                "unable to find a suitable memory type for a staging buffer",
-            ))?;
+            .ok_or_else(|| {
+                new_error!("unable to find a suitable memory type for a staging buffer")
+            })?;
         let mut memory = device
             .allocate_memory(memory_requirements.size(), memory_type)
-            .map_err(Error::new_inner)?;
+            .map_err(|error| {
+                new_error!("unable to allocate memory for staging buffer - {}", error)
+            })?;
         #[cfg(debug_assertions)]
         device
             .set_object_name(&mut memory, memory_name)
-            .map_err(Error::new_inner)?;
+            .map_err(|error| {
+                new_error!(
+                    "unable to set object name for staging buffer memory - {}",
+                    error
+                )
+            })?;
 
         // Bind the buffer and memory
         buffer.bind_memory(&memory, 0).unwrap();
@@ -73,7 +83,7 @@ impl StagingBuffer {
         // Map the memory
         let memory = memory
             .map(0, size, 0)
-            .map_err(|(error, _)| Error::new_inner(error))?;
+            .map_err(|(error, _)| new_error!("unable to map staging buffer memory - {}", error))?;
 
         Ok((buffer, memory))
     }

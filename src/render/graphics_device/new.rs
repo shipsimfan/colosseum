@@ -1,17 +1,13 @@
 use crate::{
-    Error, Result, ThreadManager, info,
-    logging::Logger,
-    render::{
-        FrameGraph, GpuTransferQueue, RenderData, RenderObjects,
-        job::{GraphicsDevice, graphics_device::VulkanAdapterInfo},
-    },
-    warning,
+    Result, UserEvent,
+    render::{GpuTransferQueue, GraphicsDevice, graphics_device::VulkanAdapterInfo},
 };
 use alexandria::gpu::{
     VulkanDeviceExtendedDynamicStateFeatures, VulkanDeviceExtension, VulkanDeviceFeatures,
     VulkanDeviceVulkan11Features, VulkanDeviceVulkan12Features, VulkanDeviceVulkan13Features,
     VulkanInstance, VulkanQueueCreateInfo, VulkanSurface,
 };
+use colosseum_core::{Logger, ThreadManager, info, logger, new_error, warning};
 
 impl GraphicsDevice {
     /// Locate a new graphics device based on the name or UUID of the adapter, or use a default if none is provided
@@ -19,8 +15,7 @@ impl GraphicsDevice {
         adapter: Option<&str>,
         instance: &VulkanInstance,
         surface: &VulkanSurface,
-        logger: &Logger,
-        thread_manager: &ThreadManager,
+        thread_manager: &ThreadManager<UserEvent>,
     ) -> Result<(GraphicsDevice, GpuTransferQueue)> {
         let logger = logger!("vulkan");
 
@@ -58,13 +53,17 @@ impl GraphicsDevice {
             ));
         }
 
-        let (device, mut queues) = device_builder.create().map_err(Error::new_inner)?;
+        let (device, mut queues) = device_builder
+            .create()
+            .map_err(|error| new_error!("unable to create Vulkan device - {}", error))?;
 
-        let mut queue = queues.swap_remove(0);
+        let mut render_queue = queues.swap_remove(0);
         #[cfg(debug_assertions)]
         device
-            .set_object_name(&mut queue, c"Graphics Queue")
-            .map_err(Error::new_inner)?;
+            .set_object_name(&mut render_queue, c"Render Queue")
+            .map_err(|error| {
+                new_error!("unable to set object name for render queue - {}", error)
+            })?;
 
         // Create the transfer queue
         let (transfer_queue, gpu_transfer_queue) = match adapter.transfer_queue_family_index() {
@@ -73,7 +72,9 @@ impl GraphicsDevice {
                 #[cfg(debug_assertions)]
                 device
                     .set_object_name(&mut queue, c"Transfer Queue")
-                    .map_err(Error::new_inner)?;
+                    .map_err(|error| {
+                        new_error!("unable to set object name for transfer queue - {}", error)
+                    })?;
 
                 (
                     GpuTransferQueue::new_dedicated(
@@ -81,36 +82,37 @@ impl GraphicsDevice {
                         &device,
                         queue,
                         adapter.memory_properties(),
-                        &logger,
                     )?,
                     None,
                 )
             }
             None => {
                 let (transfer_queue, gpu_transfer_queue) =
-                    GpuTransferQueue::new(&device, &mut queue, adapter.memory_properties())?;
+                    GpuTransferQueue::new(&device, &mut render_queue, adapter.memory_properties())?;
                 (transfer_queue, Some(gpu_transfer_queue))
             }
         };
 
+        /*
         // Create the render objects
         let render_objects = RenderObjects::new(adapter.swapchain_format(), &device)?;
 
         // Create the initial render data
         let render_data = vec![RenderData::new(0, &device, adapter.memory_properties())?];
+        */
 
         Ok((
             GraphicsDevice {
                 logger: logger.clone(),
                 device,
-                queue,
+                render_queue,
                 swapchain_format: adapter.swapchain_format(),
-                frame_graph: FrameGraph::new(),
-                render_objects,
+                /*frame_graph: FrameGraph::new(),
+                render_objects,*/
                 memory_properties: adapter.memory_properties().clone(),
                 gpu_transfer_queue,
-                render_data_index: 0,
-                render_data,
+                /*render_data_index: 0,
+                render_data,*/
             },
             transfer_queue,
         ))
@@ -127,7 +129,7 @@ fn select_adapter<'instance>(
     // Get compatible adapters
     let mut adapters = GraphicsDevice::get_adapters(instance, surface, &logger)?;
     if adapters.len() == 0 {
-        return Err(Error::new("no compatible graphics adapters found"));
+        return Err(new_error!("no compatible graphics adapters found"));
     }
 
     // Check for an adapter matching the provided name or UUID

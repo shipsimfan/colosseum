@@ -3,7 +3,7 @@ use staging_buffer::StagingBuffer;
 use std::sync::mpsc::Sender;
 
 mod commands;
-mod mesh;
+//mod mesh;
 mod render;
 mod staging_buffer;
 
@@ -11,7 +11,7 @@ mod new;
 mod thread;
 mod transfer;
 
-pub use mesh::*;
+//pub use mesh::*;
 
 pub(in crate::render) use render::*;
 

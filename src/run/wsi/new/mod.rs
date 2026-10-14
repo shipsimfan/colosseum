@@ -65,7 +65,7 @@ impl Wsi {
             window.size(),
             window.is_fullscreen(),
             window.is_maximized(),
-        )?);
+        ));
 
         // Create the Vulkan instance and check for validation layers
         let vulkan_logger = logger!("vulkan");

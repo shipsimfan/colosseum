@@ -1,6 +1,5 @@
-use crate::{InputEvent, Result, Window};
+use crate::{InputEvent, Window};
 use alexandria::math::{Vector2i, Vector2u};
-use colosseum_core::new_error;
 
 impl Window {
     /// Get the current position of the window
@@ -26,14 +25,5 @@ impl Window {
     /// Get the next input event
     pub fn next_input(&self) -> Option<InputEvent> {
         self.inputs.try_recv().ok()
-    }
-
-    /// Wait for the restored notify to be signalled
-    pub(in crate::run) fn wait_for_restore(&self) -> Result<()> {
-        self.shared
-            .restored_notify()
-            .wait(None)
-            .map(|_| ())
-            .map_err(|error| new_error!("unable to wait for window restore - {}", error))
     }
 }

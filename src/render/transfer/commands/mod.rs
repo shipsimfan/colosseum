@@ -1,11 +1,6 @@
-use crate::{
-    SingleValueSender,
-    render::{Mesh, RenderMesh},
-    update::GpuAllocatedMemory,
-};
-
 /// Transfer something to the GPU
 pub(in crate::render::transfer) enum GpuTransferCommand {
+    /*
     /// Transfer a mesh to the GPU
     Mesh {
         /// The mesh to be transferred
@@ -20,4 +15,5 @@ pub(in crate::render::transfer) enum GpuTransferCommand {
         /// The sender for the completion state
         sender: SingleValueSender<(Mesh, RenderMesh, GpuAllocatedMemory)>,
     },
+    */
 }

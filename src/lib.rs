@@ -6,6 +6,7 @@
 #![deny(rustdoc::redundant_explicit_links)]
 #![warn(rustdoc::broken_intra_doc_links)]
 #![allow(incomplete_features)]
+#![feature(arbitrary_self_types)]
 /*
 #![feature(generic_const_items)]
 #![feature(const_trait_impl)]
@@ -29,7 +30,7 @@ pub use settings::*;
 
 pub use colosseum_core::{
     Error, GameMetadata, LogSeverity, Logger, LoggingOptions, Result, SingleValueReceiver,
-    SingleValueSender, debug, debug_s, error, error_s, info, info_s, log, log_s, logger,
+    SingleValueSender, debug, debug_s, error, error_s, info, info_s, log, log_s, logger, new_error,
     single_value_channel, warning, warning_s,
 };
 pub use colosseum_ecs::*;
