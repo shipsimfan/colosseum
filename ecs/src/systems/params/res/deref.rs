@@ -8,3 +8,9 @@ impl<'a, Resource: 'static> Deref for Res<'a, Resource> {
         self.resource.downcast_ref().unwrap()
     }
 }
+
+impl<'a, Resource: 'static> AsRef<Resource> for Res<'a, Resource> {
+    fn as_ref(&self) -> &Resource {
+        self.resource.downcast_ref().unwrap()
+    }
+}

@@ -110,7 +110,7 @@ fn do_run<Game: crate::Game, InitialScene: Scene>(
     // Run the WSI event loop
     let mut error = None;
     while thread_manager.is_running() {
-        match wsi.pump() {
+        match wsi.pump(&thread_manager) {
             Ok(true) => {}
             Ok(false) => break,
             Err(e) => {

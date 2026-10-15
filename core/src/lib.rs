@@ -6,12 +6,14 @@
 #![deny(rustdoc::redundant_explicit_links)]
 #![warn(rustdoc::broken_intra_doc_links)]
 
+mod dyn_eq;
 mod error;
 mod game_metadata;
 mod logging;
 mod single_value_channel;
 mod threads;
 
+pub use dyn_eq::*;
 pub use error::*;
 pub use game_metadata::*;
 pub use logging::*;

@@ -1,25 +1,33 @@
 # ToDo
  1. Rewrite ECS
-   1. Add basic update-render loop using only resources (clear-present only frame graph)
-   2. Add runtime conflict detection (at registration) and remove interior mutability
-   3. Implement `Commands` system parameter
-   4. Add archetype management
+   1. Add runtime conflict detection (at registration) and remove interior mutability
+   2. Add state to `SystemParam`
+   3. Add `&mut World` system parameter
+   4. Implement `Commands` system parameter
+   5. Implement basic frame graph compile (clear skybox only)
+   6. Add scene transition
+     1. Add permanent resources
+     2. Implement clearing and compacting
+     3. Add resource for next scene
+     4. Add checking scene transition at start of update
+     5. Add `SceneTransition` phase
+   7. Add archetype management
      1. `add_entity`
      2. `remove_entity`
      3. `add_component`
      4. `try_get`, `get`, `try_get_mut`, `get_mut`
      5. `try_remove_component`, `remove_component`
      6. `add` helper
-   5. Implement `Query` system parameter
+   8. Implement `Query` system parameter
      1. Single component
      2. Multiple components
      3. Optional components
      4. Filters
        1. `With` filter
        2. `Without` filter
-   6. Implement clearing and compacting
-   7. Add permanent resources
-   8. Update engine to new ECS
+   9. Update engine to new ECS
+     - Add delta time
+     - Add ability to close window
  2. Add names to shader modules and swapchain images
  3. Add debug labels to all render passes
  4. Add mesh loading

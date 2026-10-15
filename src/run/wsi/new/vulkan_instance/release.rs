@@ -1,4 +1,4 @@
-use crate::{Result, logging::Logger};
+use crate::{Logger, Result};
 use alexandria::gpu::{GpuSubsystem, VulkanInstanceExtension};
 
 /// Get the Vulkan instance layers and extensions, returning whether the debug messenger should be

@@ -1,20 +1,42 @@
 //! Items used in rendering
 
-use frame_data::*;
-use frame_index::*;
-use graphics_device::*;
+use alexandria::gpu::VulkanFormat;
+use as_bytes::*;
+use fixed_data::*;
+use frame_graph::*;
+use per_frame_data::*;
 use swapchain::*;
 
-mod frame_data;
-mod frame_index;
+mod as_bytes;
+mod fixed_data;
+mod frame_graph;
 mod graphics_device;
 mod init;
+mod per_frame_data;
 mod phases;
+mod public_data;
+mod stop;
 mod swapchain;
 mod transfer;
 
+pub use graphics_device::*;
+pub use public_data::*;
+
+pub use alexandria::gpu::{VulkanShaderModuleCode as ShaderCode, compile_shader};
+
 pub(crate) use init::*;
-pub(crate) use phases::*;
+pub(crate) use phases::execute_render_systems;
+pub(crate) use stop::*;
 pub(crate) use transfer::*;
 
+/// The maximum number of frames that can be processed concurrently
 const MAX_FRAMES_IN_FLIGHT: usize = 3;
+
+/// The format to use for all depth attachments in the render graph
+const DEPTH_FORMAT: VulkanFormat = VulkanFormat::D32Sfloat;
+
+/// The format to use for all SDR attachments in the render graph
+const SDR_FORMAT: VulkanFormat = VulkanFormat::R16G16B16A16Unorm;
+
+/// The format to use for all HDR attachments in the render graph
+const HDR_FORMAT: VulkanFormat = VulkanFormat::R16G16B16A16Sfloat;

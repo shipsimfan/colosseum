@@ -89,6 +89,9 @@ impl Swapchain {
             image_views,
             size,
             device: device.clone(),
+            image_index: 0,
+            valid: true,
+            suboptimal: false,
         })
     }
 }

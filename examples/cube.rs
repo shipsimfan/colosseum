@@ -1,11 +1,12 @@
+#![feature(arbitrary_self_types)]
+
 colosseum::run!(Cube, |world: &mut colosseum::World| {
     world.insert_resource(FpsCounter::new());
+    world.register_system(colosseum::update::Update, FpsCounter::tick);
 
-    world.register_system::<colosseum::update::Update, _, _>(
-        |mut fps_counter: colosseum::ResMut<FpsCounter>| {
-            fps_counter.tick();
-        },
-    );
+    world.insert_resource(colosseum::render::Skybox::SolidColor(
+        colosseum::math::Color3f::RED,
+    ));
 
     Ok(())
 });
@@ -66,7 +67,7 @@ impl FpsCounter {
     }
 
     /// Tick the FPS counter
-    pub fn tick(&mut self) {
+    pub fn tick(mut self: colosseum::ResMut<FpsCounter>) {
         self.frames += 1;
 
         let now = std::time::Instant::now();

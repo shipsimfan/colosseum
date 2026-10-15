@@ -12,7 +12,7 @@ mod get_adapters;
 mod new;
 
 /// The graphics device is responsible for managing the Vulkan device and related resources
-pub(in crate::render) struct GraphicsDevice {
+pub struct GraphicsDevice {
     /// The logger for operations related to the graphics device
     logger: Logger,
 
@@ -21,6 +21,9 @@ pub(in crate::render) struct GraphicsDevice {
 
     /// The queue to submit rendering commands to
     render_queue: VulkanQueue,
+
+    /// The index of the render queue family
+    render_queue_family: u32,
 
     /// The format to use for the swapchain images
     swapchain_format: VulkanFormat,

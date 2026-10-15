@@ -11,7 +11,7 @@ use colosseum_core::{Logger, ThreadManager, info, logger, new_error, warning};
 
 impl GraphicsDevice {
     /// Locate a new graphics device based on the name or UUID of the adapter, or use a default if none is provided
-    pub fn new(
+    pub(in crate::render) fn new(
         adapter: Option<&str>,
         instance: &VulkanInstance,
         surface: &VulkanSurface,
@@ -93,26 +93,15 @@ impl GraphicsDevice {
             }
         };
 
-        /*
-        // Create the render objects
-        let render_objects = RenderObjects::new(adapter.swapchain_format(), &device)?;
-
-        // Create the initial render data
-        let render_data = vec![RenderData::new(0, &device, adapter.memory_properties())?];
-        */
-
         Ok((
             GraphicsDevice {
                 logger: logger.clone(),
                 device,
                 render_queue,
+                render_queue_family: adapter.graphics_queue_family_index(),
                 swapchain_format: adapter.swapchain_format(),
-                /*frame_graph: FrameGraph::new(),
-                render_objects,*/
                 memory_properties: adapter.memory_properties().clone(),
                 gpu_transfer_queue,
-                /*render_data_index: 0,
-                render_data,*/
             },
             transfer_queue,
         ))

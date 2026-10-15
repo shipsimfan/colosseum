@@ -4,9 +4,11 @@ use alexandria::{
 };
 use colosseum_core::Logger;
 
+mod acquire;
 mod drop;
+mod get;
 mod new;
-mod render_frame;
+mod present;
 
 /// The swapchain for the render job, which holds the graphics device and the Vulkan swapchain itself
 pub(in crate::render) struct Swapchain {
@@ -24,6 +26,15 @@ pub(in crate::render) struct Swapchain {
 
     /// The device the swapchain was created with
     device: VulkanDevice,
+
+    /// The image index of the currently acquired swapchain image
+    image_index: usize,
+
+    /// Is the swapchain currently valid?
+    valid: bool,
+
+    /// Is the swapchain currently suboptimal?
+    suboptimal: bool,
 }
 
 impl Swapchain {

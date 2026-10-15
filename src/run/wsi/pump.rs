@@ -1,10 +1,10 @@
 use crate::{InputEvent, Key, Result, UserEvent, debug, run::Wsi};
 use alexandria::{Event, EventKind, math::Vector2u};
-use colosseum_core::new_error;
+use colosseum_core::{ThreadManager, new_error};
 
 impl Wsi {
     /// Pump the event loop, handling events as they come in. This will block until an event is received
-    pub fn pump(&mut self) -> Result<bool> {
+    pub fn pump(&mut self, thread_manager: &ThreadManager<UserEvent>) -> Result<bool> {
         let event = self
             .event_pump
             .wait()
@@ -13,10 +13,11 @@ impl Wsi {
             return Ok(false);
         }
 
-        while let Some(event) = self
-            .event_pump
-            .poll()
-            .map_err(|error| new_error!("unable to poll window event - {}", error))?
+        while thread_manager.is_running()
+            && let Some(event) = self
+                .event_pump
+                .poll()
+                .map_err(|error| new_error!("unable to poll window event - {}", error))?
         {
             if !self.handle_event(event)? {
                 return Ok(false);

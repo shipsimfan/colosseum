@@ -1,7 +1,7 @@
 use crate::{
     Result, UserEvent, Window,
     file_io::FileIo,
-    render::{execute_render_systems, init_render},
+    render::{execute_render_systems, init_render_resources, stop_render},
     update::{Scene, execute_update_systems},
 };
 use alexandria::gpu::{VulkanInstance, VulkanSurface};
@@ -30,7 +30,7 @@ pub(in crate::run) fn run<Game: crate::Game, InitialScene: Scene>(
     world.insert_resource(options);
     world.insert_resource(window);
 
-    init_render::<Game>(&instance, &surface, &thread_manager, &mut world)?;
+    init_render_resources::<Game>(&instance, &surface, &thread_manager, &mut world)?;
 
     initial_scene.start(&mut world)?;
 
@@ -40,6 +40,8 @@ pub(in crate::run) fn run<Game: crate::Game, InitialScene: Scene>(
         execute_update_systems(&mut world)?;
         execute_render_systems(&mut world, &mut surface)?;
     }
+
+    stop_render(&mut world)?;
 
     Ok(())
 
