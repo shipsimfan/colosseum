@@ -1,7 +1,7 @@
 use crate::{ResMut, Resources, SystemParam, UnsafeWorldCell, WorldAccess};
 
 impl<'res, Resource: 'static> SystemParam for ResMut<'res, Resource> {
-    type Item<'new> = ResMut<'new, Resource>;
+    type Item<'world, 'state> = ResMut<'world, Resource>;
     type State = usize;
 
     fn create_state(resources: &mut Resources) -> Self::State {
@@ -12,16 +12,16 @@ impl<'res, Resource: 'static> SystemParam for ResMut<'res, Resource> {
         access.write_resource::<Resource>();
     }
 
-    unsafe fn retrieve<'world>(
+    unsafe fn retrieve<'world, 'state>(
+        state: &'state mut Self::State,
         world: &'world UnsafeWorldCell,
-        state: &Self::State,
-    ) -> Self::Item<'world> {
+    ) -> Self::Item<'world, 'state> {
         unsafe { world.get_mut().get_resource_at_index_mut(*state) }
     }
 }
 
 impl<'res, Resource: 'static> SystemParam for Option<ResMut<'res, Resource>> {
-    type Item<'new> = Option<ResMut<'new, Resource>>;
+    type Item<'world, 'state> = Option<ResMut<'world, Resource>>;
     type State = usize;
 
     fn create_state(resources: &mut Resources) -> Self::State {
@@ -32,10 +32,10 @@ impl<'res, Resource: 'static> SystemParam for Option<ResMut<'res, Resource>> {
         access.write_resource::<Resource>();
     }
 
-    unsafe fn retrieve<'world>(
+    unsafe fn retrieve<'world, 'state>(
+        state: &'state mut Self::State,
         world: &'world UnsafeWorldCell,
-        state: &Self::State,
-    ) -> Self::Item<'world> {
+    ) -> Self::Item<'world, 'state> {
         unsafe { world.get_mut().try_get_resource_at_index_mut(*state) }
     }
 }

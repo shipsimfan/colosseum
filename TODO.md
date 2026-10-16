@@ -1,10 +1,10 @@
 # ToDo
  1. Rewrite ECS
    1. Implement `Commands` system parameter
-     - Insert resource
-     - Remove resource
-     - Register new system
-     - Clear a phase
+     1. Insert resource
+     2. Remove resource
+     3. Register new system
+     4. Clear a phase
    2. Implement basic frame graph compile (clear skybox only)
    3. Add scene transition
      1. Add permanent resources
@@ -26,9 +26,14 @@
      4. Filters
        1. `With` filter
        2. `Without` filter
-   6. Update engine to new ECS
-     - Add delta time
-     - Add ability to close window
+   6. Update `Commands` system parameter for entities
+     1. Add entity
+     2. Remove entity
+     3. Add component
+     4. Remove component
+   6. Add delta time
+   7. Add ability to close window
+   8. Update remaining engine to new ECS
  2. Add names to shader modules and swapchain images
  3. Add debug labels to all render passes
  4. Add mesh loading
