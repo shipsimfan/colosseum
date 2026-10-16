@@ -5,6 +5,7 @@ impl Phase {
     pub fn new() -> Phase {
         Phase {
             systems: Vec::new(),
+            deferred: Vec::new(),
         }
     }
 }

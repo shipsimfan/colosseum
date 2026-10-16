@@ -7,6 +7,11 @@ impl Resources {
         self.replace(resource).is_some()
     }
 
+    /// Insert a new resource by its type ID, returning if there was already a resource of the same type
+    pub fn insert_by_type_id(&mut self, r#type: TypeId, resource: Box<dyn Any>) -> bool {
+        self.replace_by_type_id(r#type, resource).is_some()
+    }
+
     /// Replace an existing resource with a new one, returning the old resource if it existed
     pub fn replace<Resource: 'static>(&mut self, resource: Resource) -> Option<Resource> {
         let r#type = TypeId::of::<Resource>();
@@ -16,6 +21,21 @@ impl Resources {
             Some(slot) => slot
                 .replace(resource)
                 .map(|boxed| *boxed.downcast().unwrap()),
+            None => {
+                self.resources.push(ResourceSlot::new(r#type, resource));
+                None
+            }
+        }
+    }
+
+    /// Replace an existing resource by its type ID, returning the old resource if it existed
+    pub fn replace_by_type_id(
+        &mut self,
+        r#type: TypeId,
+        resource: Box<dyn Any>,
+    ) -> Option<Box<dyn Any>> {
+        match self.get_slot_mut(r#type) {
+            Some(slot) => slot.replace(resource),
             None => {
                 self.resources.push(ResourceSlot::new(r#type, resource));
                 None

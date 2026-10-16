@@ -1,4 +1,4 @@
-use crate::{Resources, UnsafeWorldCell, World, WorldAccess};
+use crate::{UnsafeWorldCell, World, WorldAccess};
 
 /// A parameter that can be used by a system
 pub trait SystemParam {
@@ -12,7 +12,7 @@ pub trait SystemParam {
     const DEFERRED: bool = false;
 
     /// Creates a new state associated with this system parameter
-    fn create_state(resources: &mut Resources) -> Self::State;
+    fn create_state(world: &mut World) -> Self::State;
 
     /// Add and check the required world access for this system parameter
     fn access(access: &mut WorldAccess);

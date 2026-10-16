@@ -1,5 +1,5 @@
 use crate::{
-    FunctionSystem, IntoSystem, Resources, System, SystemParam, SystemReturn, UnsafeWorldCell,
+    FunctionSystem, IntoSystem, System, SystemParam, SystemReturn, UnsafeWorldCell, World,
     WorldAccess,
 };
 use colosseum_core::Result;
@@ -15,9 +15,16 @@ macro_rules! impl_fn_system {
 
         impl<$($params: SystemParam,)* R: SystemReturn, F> System for FunctionSystem<($($params,)*), $state_name<$($params,)*>, F>
         where
-            for<'a, 'b> &'a mut F: FnMut($($params),*) -> R
-                + FnMut($(<$params as SystemParam>::Item<'b>),*) -> R
+            for<'a, 'world, 'state> &'a mut F: FnMut($($params),*) -> R
+                + FnMut($(<$params as SystemParam>::Item<'world, 'state>),*) -> R
         {
+            #[allow(unused_variables)]
+            fn initialize(&mut self, world: &mut World) {
+                self.state = Some($state_name {$(
+                    $params: $params::create_state(world),
+                )*});
+            }
+
             #[allow(non_snake_case)]
             #[allow(unused_variables)]
             fn run(&mut self, world: &UnsafeWorldCell) -> Result<()> {
@@ -28,36 +35,49 @@ macro_rules! impl_fn_system {
                     f($($params),*).into_result()
                 }
 
+                let state = self.state.as_mut().unwrap();
+
                 $(
-                    let $params = unsafe { $params::retrieve(world, &self.state.$params) };
+                    let $params = unsafe { $params::retrieve(&mut state.$params, world) };
                 )*
 
                 call_inner(&mut self.f, $($params),*)
+            }
+
+            fn deferred(&self) -> bool {
+                $($params::DEFERRED ||)* false
+            }
+
+            #[allow(unused_variables)]
+            fn apply(&mut self, world: &mut World) {
+                let state = self.state.as_mut().unwrap();
+
+                $(
+                    if $params::DEFERRED {
+                        $params::apply(&mut state.$params, world);
+                    }
+                )*
             }
         }
 
         impl<$($params: SystemParam,)* R: SystemReturn, F: FnMut($($params),*) -> R> IntoSystem<($($params,)*)> for F
         where
-            for<'a, 'b> &'a mut F: FnMut($($params),*) -> R
-                + FnMut($(<$params as SystemParam>::Item<'b>),*) -> R,
+            for<'a, 'world, 'state> &'a mut F: FnMut($($params),*) -> R
+                + FnMut($(<$params as SystemParam>::Item<'world, 'state>),*) -> R,
         {
             type System = FunctionSystem<($($params,)*), $state_name<$($params,)*>, F>;
 
             #[allow(unused_variables)]
-            fn into_system(self, resources: &mut Resources) -> Self::System {
+            fn into_system(self) -> Self::System {
                 #[allow(unused_mut)]
                 let mut access = WorldAccess::None;
                 $(
                     $params::access(&mut access);
                 )*
 
-                let state = $state_name {$(
-                    $params: $params::create_state(resources),
-                )*};
-
                 FunctionSystem {
                     f: self,
-                    state,
+                    state: None,
                     _marker: PhantomData,
                 }
             }

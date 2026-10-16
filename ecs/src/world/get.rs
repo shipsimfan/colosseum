@@ -33,6 +33,11 @@ impl World {
         })
     }
 
+    /// Get the index of a resource, reserving it if it does not already exist
+    pub fn get_or_reserve_resource_index<Resource: 'static>(&mut self) -> usize {
+        self.resources.get_or_reserve_index::<Resource>()
+    }
+
     /// Get a reference to a resource in the world by its index, if it exists
     pub unsafe fn try_get_resource_at_index<'a, Resource: 'static>(
         &'a self,

@@ -1,4 +1,4 @@
-use crate::{IntoSystem, PhaseName, World};
+use crate::{IntoSystem, PhaseName, System, World};
 
 impl World {
     /// Register a new phase of systems
@@ -16,7 +16,16 @@ impl World {
         phase: Phase,
         system: System,
     ) {
-        self.systems
-            .register_system(phase, system, &mut self.resources)
+        self.register_boxed_system(Box::new(phase), Box::new(system.into_system()));
+    }
+
+    /// Register a boxed system into a phase
+    pub fn register_boxed_system(
+        &mut self,
+        phase: Box<dyn PhaseName>,
+        mut system: Box<dyn System>,
+    ) {
+        system.initialize(self);
+        self.systems.register_system(phase, system)
     }
 }

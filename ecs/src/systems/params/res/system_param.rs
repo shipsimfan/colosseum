@@ -1,11 +1,11 @@
-use crate::{Res, Resources, SystemParam, UnsafeWorldCell, WorldAccess};
+use crate::{Res, SystemParam, UnsafeWorldCell, World, WorldAccess};
 
 impl<'res, Resource: 'static> SystemParam for Res<'res, Resource> {
     type Item<'world, 'state> = Res<'world, Resource>;
     type State = usize;
 
-    fn create_state(resources: &mut Resources) -> Self::State {
-        resources.get_or_reserve_index::<Resource>()
+    fn create_state(world: &mut World) -> Self::State {
+        world.get_or_reserve_resource_index::<Resource>()
     }
 
     fn access(access: &mut WorldAccess) {
@@ -24,8 +24,8 @@ impl<'res, Resource: 'static> SystemParam for Option<Res<'res, Resource>> {
     type Item<'world, 'state> = Option<Res<'world, Resource>>;
     type State = usize;
 
-    fn create_state(resources: &mut Resources) -> Self::State {
-        resources.get_or_reserve_index::<Resource>()
+    fn create_state(world: &mut World) -> Self::State {
+        world.get_or_reserve_resource_index::<Resource>()
     }
 
     fn access(access: &mut WorldAccess) {

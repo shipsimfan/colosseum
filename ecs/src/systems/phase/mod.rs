@@ -13,4 +13,7 @@ pub use name::*;
 pub(in crate::systems) struct Phase {
     /// The systems in the phase
     systems: Vec<Box<dyn System>>,
+
+    /// The systems in the phase which have deferred actions
+    deferred: Vec<usize>,
 }

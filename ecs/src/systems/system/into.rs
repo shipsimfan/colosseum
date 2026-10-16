@@ -1,4 +1,4 @@
-use crate::{Resources, System};
+use crate::System;
 
 /// A trait for types that can be converted into a system
 pub trait IntoSystem<Input> {
@@ -6,5 +6,5 @@ pub trait IntoSystem<Input> {
     type System: System;
 
     /// Convert this type into a system
-    fn into_system(self, resources: &mut Resources) -> Self::System;
+    fn into_system(self) -> Self::System;
 }

@@ -9,7 +9,7 @@ mod reserve;
 mod slot;
 
 /// The set of resources in the ECS system
-pub struct Resources {
+pub(crate) struct Resources {
     /// The currently registered resources in the ECS system
     resources: Vec<ResourceSlot>,
 }

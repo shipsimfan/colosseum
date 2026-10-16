@@ -8,6 +8,10 @@ impl Phase {
             system.run(&world)?;
         }
 
+        for &system in &self.deferred {
+            self.systems[system].apply(unsafe { world.get_mut() });
+        }
+
         Ok(())
     }
 }

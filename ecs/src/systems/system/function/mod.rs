@@ -8,7 +8,7 @@ pub struct FunctionSystem<Input, State, F> {
     f: F,
 
     /// The state associated with this system
-    state: State,
+    state: Option<State>,
 
     /// A marker for the input type of the function
     _marker: PhantomData<fn() -> Input>,

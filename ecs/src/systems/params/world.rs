@@ -1,10 +1,10 @@
-use crate::{Resources, SystemParam, UnsafeWorldCell, World, WorldAccess};
+use crate::{SystemParam, UnsafeWorldCell, World, WorldAccess};
 
 impl SystemParam for &mut World {
     type Item<'world, 'state> = &'world mut World;
     type State = ();
 
-    fn create_state(_: &mut Resources) -> Self::State {
+    fn create_state(_: &mut World) -> Self::State {
         ()
     }
 
