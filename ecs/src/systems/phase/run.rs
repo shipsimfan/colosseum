@@ -1,11 +1,11 @@
-use crate::{Archetypes, Resources, systems::Phase};
+use crate::{UnsafeWorldCell, systems::Phase};
 use colosseum_core::Result;
 
 impl Phase {
     /// Run all systems in the phase
-    pub fn run(&mut self, resources: &mut Resources, archetypes: &mut Archetypes) -> Result<()> {
+    pub fn run(&mut self, world: UnsafeWorldCell) -> Result<()> {
         for system in &mut self.systems {
-            system.run(resources, archetypes)?;
+            system.run(&world)?;
         }
 
         Ok(())

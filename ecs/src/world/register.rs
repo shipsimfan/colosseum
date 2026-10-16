@@ -16,6 +16,7 @@ impl World {
         phase: Phase,
         system: System,
     ) {
-        self.systems.register_system(phase, system)
+        self.systems
+            .register_system(phase, system, &mut self.resources)
     }
 }

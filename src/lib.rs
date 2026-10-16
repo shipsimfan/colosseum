@@ -7,11 +7,6 @@
 #![warn(rustdoc::broken_intra_doc_links)]
 #![allow(incomplete_features)]
 #![feature(arbitrary_self_types)]
-/*
-#![feature(generic_const_items)]
-#![feature(const_trait_impl)]
-#![feature(const_convert)]
-*/
 
 pub mod render;
 pub mod update;
@@ -33,12 +28,6 @@ pub use colosseum_core::{
     SingleValueSender, debug, debug_s, error, error_s, info, info_s, log, log_s, logger, new_error,
     single_value_channel, warning, warning_s,
 };
-pub use colosseum_ecs::*;
+pub use colosseum_ecs as ecs;
 
-pub use alexandria::{MemorySize, Uuid, input::KeyCode as Key, math};
-
-/*
-pub mod render;
-
-pub use alexandria::Id;
-*/
+pub use alexandria::{Id, MemorySize, Uuid, input::KeyCode as Key, math};

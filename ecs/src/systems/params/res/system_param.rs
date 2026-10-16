@@ -1,17 +1,41 @@
-use crate::{Archetypes, Res, Resources, SystemParam};
+use crate::{Res, Resources, SystemParam, UnsafeWorldCell, WorldAccess};
 
-impl<'res, T: 'static> SystemParam for Res<'res, T> {
-    type Item<'new> = Res<'new, T>;
+impl<'res, Resource: 'static> SystemParam for Res<'res, Resource> {
+    type Item<'world> = Res<'world, Resource>;
+    type State = usize;
 
-    fn retrieve<'a>(resources: &'a Resources, _: &'a Archetypes) -> Self::Item<'a> {
-        resources.get::<T>().unwrap()
+    fn create_state(resources: &mut Resources) -> Self::State {
+        resources.get_or_reserve_index::<Resource>()
+    }
+
+    fn access(access: &mut WorldAccess) {
+        access.read_resource::<Resource>();
+    }
+
+    unsafe fn retrieve<'world>(
+        world: &'world UnsafeWorldCell,
+        state: &Self::State,
+    ) -> Self::Item<'world> {
+        unsafe { world.get().get_resource_at_index(*state) }
     }
 }
 
-impl<'res, T: 'static> SystemParam for Option<Res<'res, T>> {
-    type Item<'new> = Option<Res<'new, T>>;
+impl<'res, Resource: 'static> SystemParam for Option<Res<'res, Resource>> {
+    type Item<'world> = Option<Res<'world, Resource>>;
+    type State = usize;
 
-    fn retrieve<'a>(resources: &'a Resources, _: &'a Archetypes) -> Self::Item<'a> {
-        resources.get::<T>()
+    fn create_state(resources: &mut Resources) -> Self::State {
+        resources.get_or_reserve_index::<Resource>()
+    }
+
+    fn access(access: &mut WorldAccess) {
+        access.read_resource::<Resource>();
+    }
+
+    unsafe fn retrieve<'world>(
+        world: &'world UnsafeWorldCell,
+        state: &Self::State,
+    ) -> Self::Item<'world> {
+        unsafe { world.get().try_get_resource_at_index(*state) }
     }
 }

@@ -1,4 +1,4 @@
-use crate::{Archetypes, Resources};
+use crate::UnsafeWorldCell;
 use colosseum_core::Result;
 
 mod function;
@@ -12,5 +12,5 @@ pub use r#return::*;
 /// A single system in the ECS
 pub trait System {
     /// Execute the system
-    fn run(&mut self, resources: &mut Resources, archetypes: &mut Archetypes) -> Result<()>;
+    fn run(&mut self, world: &UnsafeWorldCell) -> Result<()>;
 }

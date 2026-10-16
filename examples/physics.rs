@@ -1,6 +1,6 @@
 use argparse::Command;
 use colosseum::{
-    ColosseumOptions, Game, GameMetadata, GameOptions, World, info_s, run, settings_cache,
+    ColosseumOptions, Game, GameMetadata, GameOptions, ecs::World, info_s, run, settings_cache,
 };
 
 run!(PhysicsPlayground, |_: &mut World| {

@@ -1,6 +1,6 @@
 #![feature(arbitrary_self_types)]
 
-colosseum::run!(Cube, |world: &mut colosseum::World| {
+colosseum::run!(Cube, |world: &mut colosseum::ecs::World| {
     world.insert_resource(FpsCounter::new());
     world.register_system(colosseum::update::Update, FpsCounter::tick);
 
@@ -67,7 +67,7 @@ impl FpsCounter {
     }
 
     /// Tick the FPS counter
-    pub fn tick(mut self: colosseum::ResMut<FpsCounter>) {
+    pub fn tick(mut self: colosseum::ecs::ResMut<FpsCounter>) {
         self.frames += 1;
 
         let now = std::time::Instant::now();

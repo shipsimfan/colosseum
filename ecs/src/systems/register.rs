@@ -1,4 +1,4 @@
-use crate::{IntoSystem, PhaseName, Systems, systems};
+use crate::{IntoSystem, PhaseName, Resources, Systems, systems};
 
 impl Systems {
     /// Register a new phase of systems
@@ -17,8 +17,9 @@ impl Systems {
         &mut self,
         phase: Phase,
         system: System,
+        resources: &mut Resources,
     ) {
-        let system: Box<dyn crate::System> = Box::new(system.into_system());
+        let system: Box<dyn crate::System> = Box::new(system.into_system(resources));
         match self.get_phase_mut(&phase) {
             Some(phase) => phase.add_system(system),
             None => {

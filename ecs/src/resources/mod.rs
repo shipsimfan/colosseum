@@ -4,6 +4,7 @@ mod get;
 mod insert;
 mod new;
 mod remove;
+mod reserve;
 
 mod slot;
 

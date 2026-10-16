@@ -6,7 +6,6 @@ mod clear;
 mod get;
 mod new;
 mod register;
-mod remove;
 mod run;
 
 pub use params::*;

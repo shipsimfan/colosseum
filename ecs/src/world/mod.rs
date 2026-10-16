@@ -1,5 +1,8 @@
 use crate::{Archetypes, Resources, Systems};
 
+mod access;
+mod r#unsafe;
+
 mod clear;
 mod get;
 mod insert;
@@ -7,6 +10,9 @@ mod new;
 mod register;
 mod remove;
 mod run;
+
+pub use access::*;
+pub use r#unsafe::*;
 
 /// A representation of the world in the ECS system
 pub struct World {
