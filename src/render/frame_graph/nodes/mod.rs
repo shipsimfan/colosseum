@@ -1,6 +1,6 @@
 use crate::{
     Result,
-    render::{FrameGraph, GraphicsDevice},
+    render::{FrameGraph, GraphicsDevice, frame_graph::FrameGraphResources},
 };
 use colosseum_ecs::World;
 
@@ -17,6 +17,7 @@ pub(in crate::render) fn create_frame_graph_resources(
     world: &mut World,
     device: &GraphicsDevice,
 ) -> Result<()> {
+    world.insert_resource(FrameGraphResources::new());
     world.insert_resource(FrameGraph::new());
 
     SolidColorSkyNode::create_resources(world, device)

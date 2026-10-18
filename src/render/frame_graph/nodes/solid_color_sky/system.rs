@@ -4,10 +4,9 @@ use crate::render::{
 };
 use alexandria::{
     gpu::{
-        VK_QUEUE_FAMILY_IGNORED, VulkanAccessFlag, VulkanAttachmentLoadOp, VulkanAttachmentStoreOp,
-        VulkanImageAspectFlag, VulkanImageLayout, VulkanImageMemoryBarrier,
-        VulkanPipelineStageFlag, VulkanRenderingAttachmentInfo, VulkanResolveModeFlag,
-        VulkanShaderStageFlag, VulkanViewport,
+        VulkanAttachmentLoadOp, VulkanAttachmentStoreOp, VulkanImageLayout,
+        VulkanRenderingAttachmentInfo, VulkanResolveModeFlag, VulkanShaderStageFlag,
+        VulkanViewport,
     },
     math::{Color4f, Linear, Recti, Vector2, Vector2i},
 };
@@ -23,29 +22,6 @@ impl SolidColorSkyNode {
         mut command_buffer: ResMut<RenderCommandBuffer>,
     ) {
         let cmd_buffer = &mut command_buffer[&frame_index];
-
-        // Insert the pipeline barrier
-        cmd_buffer.cmd_pipeline_barrier2(
-            0,
-            &[],
-            &[],
-            &[VulkanImageMemoryBarrier::new(
-                0,
-                0,
-                VulkanPipelineStageFlag::ColorAttachmentOutput,
-                VulkanAccessFlag::ColorAttachmentWrite,
-                VulkanImageLayout::Undefined,
-                VulkanImageLayout::ColorAttachmentOptimal,
-                VK_QUEUE_FAMILY_IGNORED,
-                VK_QUEUE_FAMILY_IGNORED,
-                swapchain.image(),
-                VulkanImageAspectFlag::Color,
-                0,
-                1,
-                0,
-                1,
-            )],
-        );
 
         // Begin the render pass
         let size = swapchain.size();

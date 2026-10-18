@@ -7,7 +7,7 @@ mod system;
 /// A system wrapping frame graph nodes
 pub(in crate::render::frame_graph) struct FrameGraphNodeSystem<
     Node: FrameGraphNode,
-    System: crate::ecs::System,
+    System: 'static + crate::ecs::System,
 > {
     /// The name of the system
     name: Cow<'static, str>,

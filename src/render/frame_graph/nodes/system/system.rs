@@ -8,7 +8,7 @@ use crate::{
 use colosseum_core::new_error;
 use colosseum_ecs::{UnsafeWorldCell, World};
 
-impl<Node: FrameGraphNode, System: crate::ecs::System> crate::ecs::System
+impl<Node: FrameGraphNode, System: 'static + crate::ecs::System> crate::ecs::System
     for FrameGraphNodeSystem<Node, System>
 {
     fn initialize(&mut self, world: &mut World) {

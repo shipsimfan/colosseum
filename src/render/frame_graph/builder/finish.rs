@@ -1,9 +1,7 @@
 use crate::render::{
-    FrameIndex, RenderCommandBuffer,
-    frame_graph::{FrameGraphBuilder, FrameGraphResources, submission_system},
+    frame_graph::{FrameGraphBuilder, FrameGraphResources, FrameGraphSubmissionSystem},
     phases::FrameGraph,
 };
-use colosseum_ecs::{Res, ResMut};
 
 impl<'a> FrameGraphBuilder<'a> {
     /// Register the submission system
@@ -13,19 +11,9 @@ impl<'a> FrameGraphBuilder<'a> {
         *resources = FrameGraphResources::new();
 
         // Register submission system
-        self.commands.register_system(
+        self.commands.register_system_direct(
             FrameGraph,
-            move |mut command_buffer: ResMut<RenderCommandBuffer>,
-                  resources: Res<FrameGraphResources>,
-                  frame_index: Res<FrameIndex>| {
-                submission_system(
-                    &self.nodes,
-                    &self.pipeline_barriers,
-                    &resources,
-                    &frame_index,
-                    &mut command_buffer,
-                )
-            },
+            FrameGraphSubmissionSystem::new(self.nodes, self.pipeline_barriers),
         );
     }
 }

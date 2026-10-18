@@ -2,7 +2,7 @@ use crate::{
     Result,
     render::{
         SecondaryCommandBuffer,
-        frame_graph::{FrameGraphBuilder, FrameGraphNode, SubmissionNode},
+        frame_graph::{FrameGraphBuilder, FrameGraphNode, FrameGraphNodeSystem, SubmissionNode},
         phases::FrameGraph,
     },
 };
@@ -18,7 +18,10 @@ impl<'a> FrameGraphBuilder<'a> {
 
         // Wrap and register the system
         self.commands
-            .register_system_direct(FrameGraph, node.system());
+            .register_system_direct::<_, FrameGraphNodeSystem<Node, _>>(
+                FrameGraph,
+                FrameGraphNodeSystem::new(name, node.system()),
+            );
 
         // Insert submission node
         self.nodes.push(SubmissionNode::new::<Node>(

@@ -1,14 +1,20 @@
-use crate::render::frame_graph::{FrameGraphNode, SubmissionNode};
+use crate::render::{FrameIndex, frame_graph::SubmissionNode};
 use alexandria::gpu::VulkanCommandBuffer;
+use colosseum_ecs::UnsafeWorldCell;
 
 impl SubmissionNode {
     /// Submit the secondary command buffer associated with this node to the primary command buffer
-    pub fn submit(&self, primary_command_buffer: &mut VulkanCommandBuffer) {
+    pub fn submit(
+        &self,
+        world: &UnsafeWorldCell,
+        primary_command_buffer: &mut VulkanCommandBuffer,
+        frame_index: &FrameIndex,
+    ) {
         (self.submit_command_buffer)(
-            &unsafe { colosseum_ecs::UnsafeWorldCell::new() },
+            world,
             self.command_buffer,
-            &mut primary_command_buffer[&crate::render::FrameIndex::default()],
-            &crate::render::FrameIndex::default(),
+            primary_command_buffer,
+            frame_index,
         );
     }
 }

@@ -5,7 +5,7 @@ use crate::render::{
 use alexandria::gpu::VulkanCommandBuffer;
 #[cfg(debug_assertions)]
 use alexandria::math::{Color3f, Srgb};
-use colosseum_ecs::UnsafeWorldCell;
+use colosseum_ecs::{UnsafeWorldCell, World};
 #[cfg(debug_assertions)]
 use std::borrow::Cow;
 
@@ -17,12 +17,18 @@ impl SubmissionNode {
     ) -> SubmissionNode {
         SubmissionNode {
             submit_command_buffer: submit_command_buffer::<Node>,
+            get_command_buffer_index: get_command_buffer::<Node>,
             command_buffer: 0,
             pipeline_barriers,
             #[cfg(debug_assertions)]
             debug,
         }
     }
+}
+
+/// Get the index of the command buffer for the given node from the world
+fn get_command_buffer<Node: FrameGraphNode>(world: &mut World) -> usize {
+    world.get_or_reserve_resource_index::<SecondaryCommandBuffer<Node>>()
 }
 
 /// Submit the secondary command buffer associated with the given node to the primary command buffer

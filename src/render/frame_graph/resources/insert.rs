@@ -18,7 +18,7 @@ impl FrameGraphResources {
         aspect_mask: A,
     ) {
         debug_assert!(id.is_external());
-        debug_assert!(self.external_resources.len() <= id.index());
+        debug_assert!(id.index() <= self.external_resources.len());
 
         let resource = FrameGraphExternalResource::new(
             image_view.clone(),
@@ -27,7 +27,7 @@ impl FrameGraphResources {
             aspect_mask.into(),
         );
 
-        if self.external_resources.len() < id.index() {
+        if id.index() < self.external_resources.len() {
             self.external_resources[id.index()] = resource;
         } else {
             self.external_resources.push(resource);

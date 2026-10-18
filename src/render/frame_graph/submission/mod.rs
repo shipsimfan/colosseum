@@ -1,28 +1,29 @@
 //! The system which submits the individual secondary command buffers to the primary command buffer
 //! with appropriate pipeline barriers
 
-use crate::render::{FrameIndex, RenderCommandBuffer, frame_graph::FrameGraphResources};
-
 mod node;
 mod pipeline_barrier;
+
+mod new;
+mod system;
 
 pub(in crate::render::frame_graph) use node::*;
 pub(in crate::render::frame_graph) use pipeline_barrier::*;
 
-pub(in crate::render::frame_graph) fn submission_system(
-    nodes: &[SubmissionNode],
-    barriers: &[FrameGraphPipelineBarrier],
-    resources: &FrameGraphResources,
-    frame_index: &FrameIndex,
-    primary_command_buffer: &mut RenderCommandBuffer,
-) {
-    let primary_command_buffer = &mut primary_command_buffer[frame_index];
+/// The system which submits the individual secondary command buffers to the primary command buffer with appropriate pipeline barriers
+pub(in crate::render::frame_graph) struct FrameGraphSubmissionSystem {
+    /// The list of submission nodes to be processed by this system
+    nodes: Vec<SubmissionNode>,
 
-    for node in nodes {
-        // Add pipeline barriers
-        node.add_pipeline_barriers(primary_command_buffer, barriers, &resources);
+    /// The list of pipeline barriers to be applied before submitting the command buffers
+    barriers: Vec<FrameGraphPipelineBarrier>,
 
-        // Submit the secondary command buffer to the primary command buffer
-        node.submit(primary_command_buffer);
-    }
+    /// The index of the primary command buffer
+    primary_command_buffer: usize,
+
+    /// The index of the frame index resource
+    frame_index: usize,
+
+    /// The index of the resources container
+    resources: usize,
 }
