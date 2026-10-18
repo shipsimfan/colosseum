@@ -1,0 +1,41 @@
+use alexandria::{
+    MemorySize, Uuid,
+    gpu::{VulkanAdapter, VulkanAdapterMemoryProperties, VulkanAdapterType, VulkanFormat},
+};
+use std::sync::Arc;
+
+mod deref;
+mod eq;
+mod get;
+mod is_compatible;
+mod ord;
+
+/// Information about a Vulkan adapter that is compatible with the surface and suitable for rendering
+pub(in crate::render::objects::graphics_device) struct VulkanAdapterInfo<'instance> {
+    /// The Vulkan adapter itself
+    adapter: VulkanAdapter<'instance>,
+
+    /// The name of the Vulkan adapter
+    name: String,
+
+    /// The UUID of the Vulkan adapter
+    uuid: Uuid,
+
+    /// The type of the Vulkan adapter
+    r#type: VulkanAdapterType,
+
+    /// The swapchain format to use with this adapter
+    swapchain_format: VulkanFormat,
+
+    /// The index of the graphics queue family to use with this adapter
+    graphics_queue_family_index: u32,
+
+    /// The index of the dedicated transfer queue family to use with this adapter
+    transfer_queue_family_index: Option<u32>,
+
+    /// The amount of device-local VRAM available on this adapter, in bytes
+    device_local_vram: MemorySize,
+
+    /// The memory properties of this adapter
+    memory_properties: Arc<VulkanAdapterMemoryProperties>,
+}

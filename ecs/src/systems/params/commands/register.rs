@@ -11,7 +11,16 @@ impl Commands {
         phase: Phase,
         system: System,
     ) {
+        self.register_system_direct(phase, system.into_system());
+    }
+
+    /// Register a new top-level system to a phase directly
+    pub fn register_system_direct<Phase: PhaseName, System: 'static + crate::System>(
+        &mut self,
+        phase: Phase,
+        system: System,
+    ) {
         self.systems_to_register
-            .push((Box::new(phase), Box::new(system.into_system())));
+            .push((Box::new(phase), Box::new(system)));
     }
 }

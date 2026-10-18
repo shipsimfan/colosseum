@@ -15,7 +15,7 @@ use colosseum_ecs::{Res, ResMut};
 
 impl SolidColorSkyNode {
     /// Clear the sky with a solid color
-    pub fn system(
+    pub(in crate::render::frame_graph::nodes::solid_color_sky) fn system(
         skybox: Res<Skybox>,
         pipeline: Res<Pipeline<SolidColorSkyNode>>,
         swapchain: Res<Swapchain>,

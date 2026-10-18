@@ -1,14 +1,23 @@
-use crate::{Result, render::GraphicsDevice};
+use crate::{
+    Result,
+    render::{FrameGraph, GraphicsDevice},
+};
 use colosseum_ecs::World;
 
+mod node;
 mod solid_color_sky;
+mod system;
 
+pub(in crate::render::frame_graph) use node::*;
 pub(in crate::render::frame_graph) use solid_color_sky::*;
+pub(in crate::render::frame_graph) use system::*;
 
 /// Creates the fixed resources for the frame graph
-pub(in crate::render) fn create_frame_graph_fixed_resources(
+pub(in crate::render) fn create_frame_graph_resources(
     world: &mut World,
     device: &GraphicsDevice,
 ) -> Result<()> {
-    SolidColorSkyNode::create_fixed_resources(world, device)
+    world.insert_resource(FrameGraph::new());
+
+    SolidColorSkyNode::create_resources(world, device)
 }

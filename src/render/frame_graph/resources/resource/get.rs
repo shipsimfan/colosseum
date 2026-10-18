@@ -1,0 +1,30 @@
+use crate::render::frame_graph::FrameGraphResource;
+use alexandria::gpu::{VulkanImage, VulkanImageAspectFlags, VulkanImageView};
+
+impl<'a> FrameGraphResource<'a> {
+    /// Get the image view of the resource
+    pub fn image_view(&self) -> &'a VulkanImageView {
+        match self {
+            FrameGraphResource::External(external) => external.image_view(),
+        }
+    }
+
+    /// Get the image of the resource
+    pub fn image(&self) -> &'a VulkanImage {
+        self.image_view().image()
+    }
+
+    /// Get the number of layers of the resource
+    pub fn layer_count(&self) -> u32 {
+        match self {
+            FrameGraphResource::External(external) => external.layer_count(),
+        }
+    }
+
+    /// Get the aspect mask of the resource
+    pub fn aspect_mask(&self) -> VulkanImageAspectFlags {
+        match self {
+            FrameGraphResource::External(external) => external.aspect_mask(),
+        }
+    }
+}

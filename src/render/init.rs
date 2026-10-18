@@ -2,8 +2,8 @@ use crate::{
     Result, SettingsCache, UserEvent,
     render::{
         FrameGraph, GraphicsDevice, Swapchain, create_fixed_render_data_resources,
-        create_per_frame_render_data, create_render_data_resources,
-        phases::{FrameGraphSetup, PostRender},
+        create_frame_graph_resources, create_per_frame_render_data, create_public_data_resources,
+        phases::{self, FrameGraphSetup, PostRender},
     },
 };
 use alexandria::gpu::{VulkanInstance, VulkanSurface};
@@ -35,7 +35,8 @@ pub(crate) fn init_render_resources<Game: crate::Game>(
 
     // Create and insert the global graphics resources
     create_fixed_render_data_resources(world, &graphics_device)?;
-    create_render_data_resources(world);
+    create_frame_graph_resources(world, &graphics_device)?;
+    create_public_data_resources(world);
 
     world.insert_resource(graphics_device);
     world.insert_resource(transfer_queue);
@@ -51,7 +52,7 @@ pub(crate) fn init_render_resources<Game: crate::Game>(
 pub(crate) fn init_render_systems(world: &mut World) {
     init_pre_render();
     init_frame_graph_setup(world);
-    init_frame_graph(world);
+    world.register_phase(phases::FrameGraph);
     init_post_render(world);
 }
 
@@ -59,10 +60,7 @@ fn init_pre_render() {}
 
 fn init_frame_graph_setup(world: &mut World) {
     world.register_system(FrameGraphSetup, Swapchain::acquire_next_image);
-}
-
-fn init_frame_graph(world: &mut World) {
-    FrameGraph::new().compile(world);
+    FrameGraph::register_prepare(world);
 }
 
 fn init_post_render(world: &mut World) {

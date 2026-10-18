@@ -5,21 +5,19 @@ use as_bytes::*;
 use fixed_data::*;
 use frame_graph::*;
 use per_frame_data::*;
-use swapchain::*;
 
 mod as_bytes;
 mod fixed_data;
 mod frame_graph;
-mod graphics_device;
 mod init;
+mod objects;
 mod per_frame_data;
 mod phases;
 mod public_data;
 mod stop;
-mod swapchain;
 mod transfer;
 
-pub use graphics_device::*;
+pub use objects::*;
 pub use public_data::*;
 
 pub use alexandria::gpu::{VulkanShaderModuleCode as ShaderCode, compile_shader};

@@ -7,11 +7,13 @@ mod acquire_image_semaphore;
 mod draw_fence;
 mod render_command_buffer;
 mod render_complete_semaphore;
+mod secondary_command_buffer;
 
 pub(in crate::render) use acquire_image_semaphore::*;
 pub(in crate::render) use draw_fence::*;
 pub(in crate::render) use render_command_buffer::*;
 pub(in crate::render) use render_complete_semaphore::*;
+pub(in crate::render) use secondary_command_buffer::*;
 
 /// Initialize the per-frame render data resources
 pub(in crate::render) fn create_per_frame_render_data(
