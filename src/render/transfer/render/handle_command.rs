@@ -88,7 +88,7 @@ fn copy_buffers<const N: usize>(
 ) -> Result<()> {
     // Recored the copy commands
     command_buffer
-        .begin()
+        .begin(None)
         .map_err(|error| new_error!("unable to begin transfer command buffer - {}", error))?;
     for (src, dst, src_offset, dst_offset, size) in buffers {
         command_buffer.cmd_copy_buffer(

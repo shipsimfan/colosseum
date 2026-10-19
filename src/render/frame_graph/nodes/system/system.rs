@@ -5,6 +5,7 @@ use crate::{
         frame_graph::{FrameGraphNode, FrameGraphNodeSystem},
     },
 };
+use alexandria::gpu::VulkanCommandBufferInheritanceInfo;
 use colosseum_core::new_error;
 use colosseum_ecs::{UnsafeWorldCell, World};
 
@@ -39,13 +40,17 @@ impl<Node: FrameGraphNode, System: 'static + crate::ecs::System> crate::ecs::Sys
         let command_buffer = &mut command_buffer[&frame_index];
 
         // Begin the command buffer
-        command_buffer.begin().map_err(|error| {
-            new_error!(
-                "unable to begin the secondary command buffer for \"{}\" - {}",
-                self.name,
-                error
-            )
-        })?;
+        command_buffer
+            .begin(Some(VulkanCommandBufferInheritanceInfo::new(
+                None, 0, None, false, 0, 0,
+            )))
+            .map_err(|error| {
+                new_error!(
+                    "unable to begin the secondary command buffer for \"{}\" - {}",
+                    self.name,
+                    error
+                )
+            })?;
 
         // TODO: Start a render pass if needed
 

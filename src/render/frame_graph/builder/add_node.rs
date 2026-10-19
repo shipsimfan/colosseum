@@ -30,6 +30,9 @@ impl<'a> FrameGraphBuilder<'a> {
             (node.name().into(), node.color().into()),
         ));
 
+        // Insert the node as a resource
+        self.commands.insert_resource(node);
+
         self.current_pipeline_barriers = 0;
 
         Ok(())

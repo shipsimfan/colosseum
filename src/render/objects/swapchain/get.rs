@@ -1,10 +1,6 @@
-use std::sync::Arc;
-
 use crate::render::Swapchain;
-use alexandria::{
-    gpu::{VulkanImage, VulkanImageView},
-    math::Vector2u,
-};
+use alexandria::{gpu::VulkanImageView, math::Vector2u};
+use std::sync::Arc;
 
 impl Swapchain {
     /// Is the swapchain currently valid?
@@ -20,11 +16,6 @@ impl Swapchain {
     /// Get a reference to the current swapchain image view
     pub fn image_view(&self) -> &Arc<VulkanImageView> {
         &self.image_views[self.image_index]
-    }
-
-    /// Get a reference to the current swapchain image
-    pub fn image(&self) -> &VulkanImage {
-        self.image_view().image()
     }
 
     /// Get the size of the swapchain images

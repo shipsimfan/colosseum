@@ -10,6 +10,6 @@ impl SolidColorSkyNode {
     pub fn add(output: FrameGraphResourceId, builder: &mut FrameGraphBuilder) -> Result<()> {
         builder.access(output, FrameGraphResourceUsage::ColorAttachment);
 
-        builder.add_node(SolidColorSkyNode)
+        builder.add_node(SolidColorSkyNode { output })
     }
 }

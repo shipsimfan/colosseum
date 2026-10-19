@@ -5,6 +5,7 @@ use crate::{
         frame_graph::{FrameGraphResources, FrameGraphSubmissionSystem},
     },
 };
+use colosseum_core::new_error;
 use colosseum_ecs::{System, UnsafeWorldCell, World};
 
 impl System for FrameGraphSubmissionSystem {
@@ -37,6 +38,12 @@ impl System for FrameGraphSubmissionSystem {
                 .get_resource_at_index_mut::<FrameGraphResources>(self.resources)
         };
 
+        // Begin the command buffer
+        primary_command_buffer
+            .begin(None)
+            .map_err(|error| new_error!("unable to begin render command buffer - {}", error))?;
+
+        // Submit each node
         let mut barriers = self.barriers.as_slice();
         for node in &self.nodes {
             // Add pipeline barriers
@@ -47,6 +54,21 @@ impl System for FrameGraphSubmissionSystem {
 
             barriers = &barriers[node.pipeline_barriers()..];
         }
+
+        // Insert a final pipeline barrier to prepare for present
+        for barrier in barriers {
+            primary_command_buffer.cmd_pipeline_barrier2(
+                0,
+                &[],
+                &[],
+                &[barrier.barrier(&resources)],
+            );
+        }
+
+        // End and submit the command buffer
+        primary_command_buffer
+            .end()
+            .map_err(|error| new_error!("unable to end render command buffer - {}", error))?;
 
         Ok(())
     }

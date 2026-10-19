@@ -1,6 +1,6 @@
 use crate::render::{
-    FrameIndex, Pipeline, RenderCommandBuffer, Skybox, Swapchain, as_bytes,
-    frame_graph::SolidColorSkyNode,
+    FrameIndex, Pipeline, SecondaryCommandBuffer, Skybox, as_bytes,
+    frame_graph::{FrameGraphResources, SolidColorSkyNode},
 };
 use alexandria::{
     gpu::{
@@ -15,16 +15,18 @@ use colosseum_ecs::{Res, ResMut};
 impl SolidColorSkyNode {
     /// Clear the sky with a solid color
     pub(in crate::render::frame_graph::nodes::solid_color_sky) fn system(
+        self: Res<Self>,
         skybox: Res<Skybox>,
         pipeline: Res<Pipeline<SolidColorSkyNode>>,
-        swapchain: Res<Swapchain>,
+        resources: Res<FrameGraphResources>,
         frame_index: Res<FrameIndex>,
-        mut command_buffer: ResMut<RenderCommandBuffer>,
+        mut command_buffer: ResMut<SecondaryCommandBuffer<Self>>,
     ) {
         let cmd_buffer = &mut command_buffer[&frame_index];
+        let output = resources.get(self.output);
 
         // Begin the render pass
-        let size = swapchain.size();
+        let size = output.size();
         cmd_buffer.cmd_begin_rendering(
             0,
             Vector2i::ZERO,
@@ -32,7 +34,7 @@ impl SolidColorSkyNode {
             1,
             0,
             &[VulkanRenderingAttachmentInfo::new(
-                swapchain.image_view(),
+                output.image_view(),
                 VulkanImageLayout::ColorAttachmentOptimal,
                 VulkanResolveModeFlag::None,
                 None,

@@ -1,6 +1,6 @@
 use crate::{
     Result, Window,
-    render::{AcquireImageSemaphore, FrameIndex, RenderCommandBuffer, Swapchain},
+    render::{AcquireImageSemaphore, FrameIndex, Swapchain},
 };
 use colosseum_core::{debug, new_error};
 use colosseum_ecs::{Res, ResMut};
@@ -12,7 +12,6 @@ impl Swapchain {
         window: Res<Window>,
         frame_index: Res<FrameIndex>,
         mut acquire_image_semaphore: ResMut<AcquireImageSemaphore>,
-        mut render_command_buffer: ResMut<RenderCommandBuffer>,
     ) -> Result<()> {
         // Check if the window size has changed and handle swapchain recreation if necessary
         if self.size != window.size() {
@@ -42,9 +41,6 @@ impl Swapchain {
         self.suboptimal = suboptimal;
         self.image_index = image_index;
 
-        // Begin the command buffer
-        render_command_buffer[&frame_index]
-            .begin()
-            .map_err(|error| new_error!("unable to begin render command buffer - {}", error))
+        Ok(())
     }
 }

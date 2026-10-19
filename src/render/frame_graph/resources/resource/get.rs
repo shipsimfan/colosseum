@@ -1,5 +1,8 @@
 use crate::render::frame_graph::FrameGraphResource;
-use alexandria::gpu::{VulkanImage, VulkanImageAspectFlags, VulkanImageView};
+use alexandria::{
+    gpu::{VulkanImage, VulkanImageAspectFlags, VulkanImageView},
+    math::Vector2u,
+};
 
 impl<'a> FrameGraphResource<'a> {
     /// Get the image view of the resource
@@ -12,6 +15,13 @@ impl<'a> FrameGraphResource<'a> {
     /// Get the image of the resource
     pub fn image(&self) -> &'a VulkanImage {
         self.image_view().image()
+    }
+
+    /// Get the size of the resource
+    pub fn size(&self) -> Vector2u {
+        match self {
+            FrameGraphResource::External(external) => external.size(),
+        }
     }
 
     /// Get the number of layers of the resource

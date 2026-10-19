@@ -3,7 +3,6 @@ use crate::{
     WorldAccess,
 };
 use colosseum_core::Result;
-use std::marker::PhantomData;
 
 macro_rules! impl_fn_system {
     ($state_name: ident, $($params: ident),*$(,)?) => {
@@ -75,11 +74,7 @@ macro_rules! impl_fn_system {
                     $params::access(&mut access);
                 )*
 
-                FunctionSystem {
-                    f: self,
-                    state: None,
-                    _marker: PhantomData,
-                }
+                FunctionSystem::new(self)
             }
         }
     };

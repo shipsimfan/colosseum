@@ -1,5 +1,6 @@
 use std::marker::PhantomData;
 
+mod new;
 mod system;
 
 /// A system that wraps a function and its input type

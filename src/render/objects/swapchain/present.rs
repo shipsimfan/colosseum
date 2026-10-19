@@ -6,9 +6,8 @@ use crate::{
     },
 };
 use alexandria::gpu::{
-    VK_QUEUE_FAMILY_IGNORED, VulkanAccessFlag, VulkanCommandBufferSubmitInfo,
-    VulkanImageAspectFlag, VulkanImageLayout, VulkanImageMemoryBarrier, VulkanPipelineStageFlag,
-    VulkanSemaphoreSubmitInfo, VulkanSubmitInfo,
+    VulkanCommandBufferSubmitInfo, VulkanPipelineStageFlag, VulkanSemaphoreSubmitInfo,
+    VulkanSubmitInfo,
 };
 use colosseum_core::new_error;
 use colosseum_ecs::{Res, ResMut};
@@ -26,33 +25,6 @@ impl Swapchain {
     ) -> Result<()> {
         let command_buffer = &mut command_buffer[&frame_index];
 
-        // Insert a final pipeline barrier to prepare for present
-        command_buffer.cmd_pipeline_barrier2(
-            0,
-            &[],
-            &[],
-            &[VulkanImageMemoryBarrier::new(
-                VulkanPipelineStageFlag::ColorAttachmentOutput,
-                VulkanAccessFlag::ColorAttachmentWrite,
-                VulkanPipelineStageFlag::ColorAttachmentOutput,
-                VulkanAccessFlag::ColorAttachmentWrite,
-                VulkanImageLayout::ColorAttachmentOptimal,
-                VulkanImageLayout::PresentSrcKhr,
-                VK_QUEUE_FAMILY_IGNORED,
-                VK_QUEUE_FAMILY_IGNORED,
-                self.image(),
-                VulkanImageAspectFlag::Color,
-                0,
-                1,
-                0,
-                1,
-            )],
-        );
-
-        // End and submit the command buffer
-        command_buffer
-            .end()
-            .map_err(|error| new_error!("unable to end render command buffer - {}", error))?;
         device
             .render_queue()
             .submit(
