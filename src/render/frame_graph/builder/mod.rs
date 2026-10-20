@@ -1,6 +1,8 @@
 use crate::render::{
     GraphicsDevice,
-    frame_graph::{FrameGraphPipelineBarrier, FrameGraphResourceState, SubmissionNode},
+    frame_graph::{
+        FrameGraphPipelineBarrier, FrameGraphResourceId, FrameGraphResourceState, SubmissionNode,
+    },
 };
 use colosseum_ecs::Commands;
 
@@ -25,6 +27,9 @@ pub(in crate::render::frame_graph) struct FrameGraphBuilder<'a> {
 
     /// The required pipeline barriers
     pipeline_barriers: Vec<FrameGraphPipelineBarrier>,
+
+    /// The color attachment for the current node
+    color_attachment: Option<FrameGraphResourceId>,
 
     /// The state of external resources
     external_resources: Vec<FrameGraphResourceState>,

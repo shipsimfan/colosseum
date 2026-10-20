@@ -1,10 +1,10 @@
 use crate::render::FrameIndex;
-use alexandria::{
-    gpu::VulkanCommandBuffer,
-    math::{Color3f, Srgb},
-};
+#[cfg(debug_assertions)]
+use alexandria::math::Color4f;
+use alexandria::{gpu::VulkanCommandBuffer, math::Srgb};
 use colosseum_ecs::{UnsafeWorldCell, World};
-use std::borrow::Cow;
+#[cfg(debug_assertions)]
+use std::ffi::CString;
 
 mod add_pipeline_barriers;
 mod get;
@@ -28,5 +28,5 @@ pub(in crate::render::frame_graph) struct SubmissionNode {
 
     /// The name and color to use for the debug label of this node
     #[cfg(debug_assertions)]
-    debug: (Cow<'static, str>, Color3f<Srgb>),
+    debug: (CString, Color4f<Srgb>),
 }

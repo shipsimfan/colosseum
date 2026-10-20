@@ -16,6 +16,8 @@ impl<'a> FrameGraphBuilder<'a> {
             current_pipeline_barriers: 0,
             pipeline_barriers: Vec::new(),
 
+            color_attachment: None,
+
             external_resources: vec![
                 FrameGraphResourceState::default(), // Swapchain image
             ],

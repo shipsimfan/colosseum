@@ -1,5 +1,8 @@
 use crate::render::frame_graph::FrameGraphNode;
+use render_pass::*;
 use std::{borrow::Cow, marker::PhantomData};
+
+mod render_pass;
 
 mod new;
 mod system;
@@ -14,6 +17,9 @@ pub(in crate::render::frame_graph) struct FrameGraphNodeSystem<
 
     /// The system being wrapped
     system: System,
+
+    /// The information for the render pass for this node, if there is one
+    render_pass: Option<FrameGraphRenderPass>,
 
     /// The index of the frame index resource
     frame_index: usize,

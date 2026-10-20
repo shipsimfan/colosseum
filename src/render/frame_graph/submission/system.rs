@@ -46,6 +46,13 @@ impl System for FrameGraphSubmissionSystem {
         // Submit each node
         let mut barriers = self.barriers.as_slice();
         for node in &self.nodes {
+            // Add debug label
+            #[cfg(debug_assertions)]
+            let mut debug_label =
+                primary_command_buffer.cmd_begin_debug_utils_label(node.name(), node.color());
+            #[cfg(debug_assertions)]
+            let primary_command_buffer = &mut *debug_label;
+
             // Add pipeline barriers
             node.add_pipeline_barriers(primary_command_buffer, barriers, &resources);
 

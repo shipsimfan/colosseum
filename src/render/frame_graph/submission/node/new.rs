@@ -7,13 +7,13 @@ use alexandria::gpu::VulkanCommandBuffer;
 use alexandria::math::{Color3f, Srgb};
 use colosseum_ecs::{UnsafeWorldCell, World};
 #[cfg(debug_assertions)]
-use std::borrow::Cow;
+use std::ffi::CString;
 
 impl SubmissionNode {
     /// Create a new [`SubmissionNode`]
     pub fn new<Node: FrameGraphNode>(
         pipeline_barriers: usize,
-        #[cfg(debug_assertions)] debug: (Cow<'static, str>, Color3f<Srgb>),
+        #[cfg(debug_assertions)] debug: (CString, Color3f<Srgb>),
     ) -> SubmissionNode {
         SubmissionNode {
             submit_command_buffer: submit_command_buffer::<Node>,
@@ -21,7 +21,7 @@ impl SubmissionNode {
             command_buffer: 0,
             pipeline_barriers,
             #[cfg(debug_assertions)]
-            debug,
+            debug: (debug.0, debug.1.with_alpha(1.0)),
         }
     }
 }

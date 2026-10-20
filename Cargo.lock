@@ -4,11 +4,12 @@ version = 4
 
 [[package]]
 name = "alexandria"
-version = "0.18.0"
-source = "git+https://github.com/shipsimfan/alexandria#b66b44ad36c73676d8b1c047cc06743413ae3a4e"
+version = "0.18.2"
+source = "git+https://github.com/shipsimfan/alexandria#83199dba10fe49e5ac21d22a219a0895fa0e5669"
 dependencies = [
  "alexandria-macros",
  "data-format",
+ "data-structures",
  "dioptra",
  "linux",
  "time",
@@ -20,8 +21,8 @@ dependencies = [
 
 [[package]]
 name = "alexandria-macros"
-version = "0.18.0"
-source = "git+https://github.com/shipsimfan/alexandria#b66b44ad36c73676d8b1c047cc06743413ae3a4e"
+version = "0.18.2"
+source = "git+https://github.com/shipsimfan/alexandria#83199dba10fe49e5ac21d22a219a0895fa0e5669"
 dependencies = [
  "proc-macro-util",
 ]
@@ -36,7 +37,7 @@ dependencies = [
 
 [[package]]
 name = "colosseum"
-version = "0.20.11"
+version = "0.20.12"
 dependencies = [
  "alexandria",
  "argparse",
@@ -51,7 +52,7 @@ dependencies = [
 
 [[package]]
 name = "colosseum-build"
-version = "0.20.11"
+version = "0.20.12"
 dependencies = [
  "alexandria",
  "time",
@@ -59,7 +60,7 @@ dependencies = [
 
 [[package]]
 name = "colosseum-core"
-version = "0.20.11"
+version = "0.20.12"
 dependencies = [
  "alexandria",
  "argparse",
@@ -70,7 +71,7 @@ dependencies = [
 
 [[package]]
 name = "colosseum-ecs"
-version = "0.20.11"
+version = "0.20.12"
 dependencies = [
  "alexandria",
  "colosseum-core",
@@ -78,7 +79,7 @@ dependencies = [
 
 [[package]]
 name = "colosseum-macros"
-version = "0.20.11"
+version = "0.20.12"
 dependencies = [
  "proc-macro-util",
 ]
@@ -90,6 +91,11 @@ source = "git+https://github.com/shipsimfan/lib-data-format#38d368e72582aa7a2075
 dependencies = [
  "macros 1.2.0",
 ]
+
+[[package]]
+name = "data-structures"
+version = "1.1.0"
+source = "git+https://github.com/shipsimfan/lib-data-structures#d051e7a2d4556c13652725e602110516949ca342"
 
 [[package]]
 name = "dioptra"

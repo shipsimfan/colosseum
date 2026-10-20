@@ -18,6 +18,10 @@ impl<Node: FrameGraphNode, System: 'static + crate::ecs::System> crate::ecs::Sys
         self.frame_index = world.get_or_reserve_resource_index::<FrameIndex>();
         self.secondary_command_buffer =
             world.get_or_reserve_resource_index::<SecondaryCommandBuffer<Node>>();
+
+        if let Some(render_pass) = &mut self.render_pass {
+            render_pass.initialize(world);
+        }
     }
 
     fn deferred(&self) -> bool {
@@ -30,17 +34,17 @@ impl<Node: FrameGraphNode, System: 'static + crate::ecs::System> crate::ecs::Sys
                 .get_mut()
                 .get_resource_at_index_mut::<FrameIndex>(self.frame_index)
         };
-        let mut command_buffer = unsafe {
+        let mut cmd_buffer = unsafe {
             world
                 .get_mut()
                 .get_resource_at_index_mut::<SecondaryCommandBuffer<Node>>(
                     self.secondary_command_buffer,
                 )
         };
-        let command_buffer = &mut command_buffer[&frame_index];
+        let cmd_buffer = &mut cmd_buffer[&frame_index];
 
         // Begin the command buffer
-        command_buffer
+        cmd_buffer
             .begin(Some(VulkanCommandBufferInheritanceInfo::new(
                 None, 0, None, false, 0, 0,
             )))
@@ -52,14 +56,20 @@ impl<Node: FrameGraphNode, System: 'static + crate::ecs::System> crate::ecs::Sys
                 )
             })?;
 
-        // TODO: Start a render pass if needed
+        // Start a render pass if needed
+        if let Some(render_pass) = &self.render_pass {
+            render_pass.start(cmd_buffer, world);
+        }
 
         self.system.run(world)?;
 
-        // TODO: End the render pass if needed
+        // End the render pass if needed
+        if self.render_pass.is_some() {
+            cmd_buffer.cmd_end_rendering();
+        }
 
         // End command buffer
-        command_buffer.end().map_err(|error| {
+        cmd_buffer.end().map_err(|error| {
             new_error!(
                 "unable to end the secondary command buffer for \"{}\" - {}",
                 self.name,
