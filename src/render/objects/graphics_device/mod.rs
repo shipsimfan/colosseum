@@ -6,6 +6,7 @@ use std::sync::Arc;
 
 mod adapter_info;
 
+mod allocate_memory;
 mod deref;
 mod get;
 mod get_adapters;

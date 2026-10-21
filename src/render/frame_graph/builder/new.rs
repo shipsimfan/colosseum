@@ -21,6 +21,7 @@ impl<'a> FrameGraphBuilder<'a> {
             external_resources: vec![
                 FrameGraphResourceState::default(), // Swapchain image
             ],
+            native_scale_resources: Vec::new(),
         }
     }
 }

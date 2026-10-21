@@ -1,4 +1,7 @@
-use crate::render::frame_graph::{FrameGraphPipelineBarrier, FrameGraphResources, SubmissionNode};
+use crate::render::{
+    FrameIndex,
+    frame_graph::{FrameGraphPipelineBarrier, FrameGraphResources, SubmissionNode},
+};
 use alexandria::gpu::VulkanCommandBuffer;
 
 impl SubmissionNode {
@@ -8,13 +11,14 @@ impl SubmissionNode {
         primary_command_buffer: &mut VulkanCommandBuffer,
         barriers: &[FrameGraphPipelineBarrier],
         resources: &FrameGraphResources,
+        frame_index: &FrameIndex,
     ) {
         for i in 0..self.pipeline_barriers {
             primary_command_buffer.cmd_pipeline_barrier2(
                 0,
                 &[],
                 &[],
-                &[barriers[i].barrier(resources)],
+                &[barriers[i].barrier(resources, frame_index)],
             );
         }
     }

@@ -24,7 +24,7 @@ impl<'a> FrameGraphBuilder<'a> {
 
         // Insert the new resource instance into the world
         resources.clear();
-        *resources = FrameGraphResources::new();
+        *resources = FrameGraphResources::new(self.native_scale_resources);
 
         // Register submission system
         self.commands.register_system_direct(

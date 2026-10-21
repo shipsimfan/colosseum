@@ -13,21 +13,26 @@ impl<'a> FrameGraphBuilder<'a> {
                 }
 
                 self.color_attachment = Some(resource);
+
+                if resource.is_transient_native_scale() {
+                    self.native_scale_resources[resource.index()].set_color();
+                }
             }
             _ => {}
         }
 
         // Transition the resource and a pipeline barrier if necessary
-        if resource.is_external() {
-            if let Some(barrier) =
-                self.external_resources[resource.index()].transition(resource, usage.state())
-            {
-                self.pipeline_barriers.push(barrier);
-                self.current_pipeline_barriers += 1;
-            }
-            return;
-        }
+        let barrier = if resource.is_external() {
+            self.external_resources[resource.index()].transition(resource, usage.state())
+        } else if resource.is_transient_native_scale() {
+            self.native_scale_resources[resource.index()].transition(resource, usage.state())
+        } else {
+            panic!("Access to non-external resources is not yet implemented");
+        };
 
-        panic!("Access to non-external resources is not yet implemented");
+        if let Some(barrier) = barrier {
+            self.pipeline_barriers.push(barrier);
+            self.current_pipeline_barriers += 1;
+        }
     }
 }

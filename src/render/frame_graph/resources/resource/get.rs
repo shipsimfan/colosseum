@@ -9,6 +9,7 @@ impl<'a> FrameGraphResource<'a> {
     pub fn image_view(&self) -> &'a VulkanImageView {
         match self {
             FrameGraphResource::External(external) => external.image_view(),
+            FrameGraphResource::Transient { image_view, .. } => *image_view,
         }
     }
 
@@ -21,6 +22,7 @@ impl<'a> FrameGraphResource<'a> {
     pub fn size(&self) -> Vector2u {
         match self {
             FrameGraphResource::External(external) => external.size(),
+            FrameGraphResource::Transient { size, .. } => *size,
         }
     }
 
@@ -28,6 +30,7 @@ impl<'a> FrameGraphResource<'a> {
     pub fn layer_count(&self) -> u32 {
         match self {
             FrameGraphResource::External(external) => external.layer_count(),
+            FrameGraphResource::Transient { .. } => 1,
         }
     }
 
@@ -35,6 +38,7 @@ impl<'a> FrameGraphResource<'a> {
     pub fn aspect_mask(&self) -> VulkanImageAspectFlags {
         match self {
             FrameGraphResource::External(external) => external.aspect_mask(),
+            FrameGraphResource::Transient { info, .. } => info.aspect_mask(),
         }
     }
 }

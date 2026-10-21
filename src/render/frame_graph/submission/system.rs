@@ -54,7 +54,7 @@ impl System for FrameGraphSubmissionSystem {
             let primary_command_buffer = &mut *debug_label;
 
             // Add pipeline barriers
-            node.add_pipeline_barriers(primary_command_buffer, barriers, &resources);
+            node.add_pipeline_barriers(primary_command_buffer, barriers, &resources, &frame_index);
 
             // Submit the secondary command buffer to the primary command buffer
             node.submit(world, primary_command_buffer, &frame_index);
@@ -68,7 +68,7 @@ impl System for FrameGraphSubmissionSystem {
                 0,
                 &[],
                 &[],
-                &[barrier.barrier(&resources)],
+                &[barrier.barrier(&resources, &frame_index)],
             );
         }
 

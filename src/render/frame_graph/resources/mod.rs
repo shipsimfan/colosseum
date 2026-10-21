@@ -1,3 +1,6 @@
+use buffer::*;
+
+mod buffer;
 mod id;
 mod resource;
 mod state;
@@ -7,6 +10,7 @@ mod clear;
 mod get;
 mod insert;
 mod new;
+mod resize;
 
 pub(in crate::render::frame_graph) use id::*;
 pub(in crate::render::frame_graph) use resource::*;
@@ -17,4 +21,7 @@ pub(in crate::render::frame_graph) use usage::*;
 pub(in crate::render::frame_graph) struct FrameGraphResources {
     /// The external resources used within the frame graph
     external_resources: Vec<FrameGraphExternalResource>,
+
+    /// The transient native scale resources used within the frame graph
+    native_scale: FrameGraphTransientResourceBuffer,
 }

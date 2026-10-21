@@ -1,13 +1,15 @@
 use crate::render::{
     GraphicsDevice,
     frame_graph::{
-        FrameGraphPipelineBarrier, FrameGraphResourceId, FrameGraphResourceState, SubmissionNode,
+        FrameGraphPipelineBarrier, FrameGraphResourceId, FrameGraphResourceState,
+        FrameGraphTransientResourceInfo, SubmissionNode,
     },
 };
 use colosseum_ecs::Commands;
 
 mod access;
 mod add_node;
+mod create_resource;
 mod finish;
 mod new;
 
@@ -33,4 +35,7 @@ pub(in crate::render::frame_graph) struct FrameGraphBuilder<'a> {
 
     /// The state of external resources
     external_resources: Vec<FrameGraphResourceState>,
+
+    /// The transient native scale resources that need to be allocated
+    native_scale_resources: Vec<FrameGraphTransientResourceInfo>,
 }

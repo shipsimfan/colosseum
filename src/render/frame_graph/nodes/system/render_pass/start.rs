@@ -1,4 +1,7 @@
-use crate::render::frame_graph::{FrameGraphResources, nodes::system::FrameGraphRenderPass};
+use crate::render::{
+    FrameIndex,
+    frame_graph::{FrameGraphResources, nodes::system::FrameGraphRenderPass},
+};
 use alexandria::{
     gpu::{
         VulkanAttachmentLoadOp, VulkanAttachmentStoreOp, VulkanCommandBuffer, VulkanImageLayout,
@@ -16,8 +19,13 @@ impl FrameGraphRenderPass {
                 .get()
                 .get_resource_at_index::<FrameGraphResources>(self.resources)
         };
+        let frame_index = unsafe {
+            world
+                .get()
+                .get_resource_at_index::<FrameIndex>(self.frame_index)
+        };
 
-        let color_attachment = resources.get(self.color_attachment);
+        let color_attachment = resources.get(self.color_attachment, &frame_index);
         let size = color_attachment.size();
 
         // Begin the render pass

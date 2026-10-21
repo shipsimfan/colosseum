@@ -1,10 +1,17 @@
-use crate::render::frame_graph::{FrameGraphPipelineBarrier, FrameGraphResources};
+use crate::render::{
+    FrameIndex,
+    frame_graph::{FrameGraphPipelineBarrier, FrameGraphResources},
+};
 use alexandria::gpu::{VK_QUEUE_FAMILY_IGNORED, VulkanImageMemoryBarrier};
 
 impl FrameGraphPipelineBarrier {
     /// Create a [`VulkanImageMemoryBarrier`] for this pipeline barrier
-    pub fn barrier<'a>(&self, resources: &'a FrameGraphResources) -> VulkanImageMemoryBarrier<'a> {
-        let resource = resources.get(self.resource);
+    pub fn barrier<'a>(
+        &self,
+        resources: &'a FrameGraphResources,
+        frame_index: &FrameIndex,
+    ) -> VulkanImageMemoryBarrier<'a> {
+        let resource = resources.get(self.resource, frame_index);
 
         VulkanImageMemoryBarrier::new(
             self.old_state.stage_mask(),

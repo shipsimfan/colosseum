@@ -9,3 +9,9 @@ impl Deref for GraphicsDevice {
         &self.device
     }
 }
+
+impl AsRef<VulkanDevice> for GraphicsDevice {
+    fn as_ref(&self) -> &VulkanDevice {
+        &self.device
+    }
+}

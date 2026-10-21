@@ -1,7 +1,7 @@
 use crate::{
     Result,
     render::{
-        FullscreenQuadShader, GraphicsDevice, Pipeline, Shader, ShaderKind,
+        FullscreenQuadShader, GraphicsDevice, Pipeline, SDR_FORMAT, Shader, ShaderKind,
         frame_graph::SolidColorSkyNode,
     },
 };
@@ -28,7 +28,7 @@ impl SolidColorSkyNode {
             &shader,
             std::mem::size_of::<Color4f<Linear>>(),
             None,
-            &[device.swapchain_format()],
+            &[SDR_FORMAT],
             &[],
             &device,
         )?;

@@ -1,9 +1,10 @@
 use crate::{
     Result,
     render::{
-        FrameGraph, GraphicsDevice, Swapchain,
+        FrameGraph, FrameIndex, GraphicsDevice, SDR_FORMAT, Swapchain,
         frame_graph::{
-            FrameGraphBuilder, FrameGraphResourceId, FrameGraphResources, SolidColorSkyNode,
+            FrameGraphBuilder, FrameGraphResourceId, FrameGraphResourceKind, FrameGraphResources,
+            SolidColorSkyNode,
         },
         phases::FrameGraphSetup,
     },
@@ -23,12 +24,14 @@ impl FrameGraph {
         commands: &mut Commands,
         device: Res<GraphicsDevice>,
         swapchain: Res<Swapchain>,
+        frame_index: Res<FrameIndex>,
     ) -> Result<()> {
         if !self.compiled {
             self.compile(&mut resources, commands, &device)?;
         }
 
-        // TODO: Handle resizing if needed
+        // Handle resizing if needed
+        resources.resize(swapchain.size(), &frame_index, &device)?;
 
         // Update swapchain image in frame graph resources
         resources.insert_external(
@@ -51,7 +54,10 @@ impl FrameGraph {
     ) -> Result<()> {
         let mut builder = FrameGraphBuilder::new(commands, device);
 
-        SolidColorSkyNode::add(FrameGraphResourceId::SWAPCHAIN_IMAGE, &mut builder)?;
+        let test_resource =
+            builder.create_resource("Testing", SDR_FORMAT, FrameGraphResourceKind::Native);
+
+        SolidColorSkyNode::add(test_resource, &mut builder)?;
 
         builder.finish(resources);
 
