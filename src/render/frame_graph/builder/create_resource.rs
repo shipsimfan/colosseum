@@ -1,8 +1,5 @@
-use crate::render::frame_graph::{
-    FrameGraphBuilder, FrameGraphResourceId, FrameGraphResourceKind,
-    FrameGraphTransientResourceInfo,
-};
-use alexandria::gpu::VulkanFormat;
+use crate::render::frame_graph::{FrameGraphBuilder, FrameGraphResourceId, FrameGraphResourceKind};
+use alexandria::gpu::{VulkanAttachmentLoadOp, VulkanFormat};
 
 impl<'a> FrameGraphBuilder<'a> {
     /// Create a new transient resource
@@ -11,15 +8,9 @@ impl<'a> FrameGraphBuilder<'a> {
         name: &'static str,
         format: VulkanFormat,
         kind: FrameGraphResourceKind,
+        initial_load_op: VulkanAttachmentLoadOp,
     ) -> FrameGraphResourceId {
-        match kind {
-            FrameGraphResourceKind::Native => {
-                self.native_scale_resources
-                    .push(FrameGraphTransientResourceInfo::new(name, format));
-                FrameGraphResourceId::new_transient_native_scale(
-                    self.native_scale_resources.len() - 1,
-                )
-            }
-        }
+        self.resources
+            .create_resource(name, format, kind, initial_load_op)
     }
 }

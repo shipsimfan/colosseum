@@ -1,6 +1,6 @@
 use crate::render::{
     GraphicsDevice,
-    frame_graph::{FrameGraphBuilder, FrameGraphResourceState},
+    frame_graph::{FrameGraphBuilder, builder::FrameGraphBuilderResources},
 };
 use colosseum_ecs::Commands;
 
@@ -12,16 +12,11 @@ impl<'a> FrameGraphBuilder<'a> {
             device,
 
             nodes: Vec::new(),
+            pipeline_barriers: Vec::new(),
+            resources: FrameGraphBuilderResources::new(),
 
             current_pipeline_barriers: 0,
-            pipeline_barriers: Vec::new(),
-
             color_attachment: None,
-
-            external_resources: vec![
-                FrameGraphResourceState::default(), // Swapchain image
-            ],
-            native_scale_resources: Vec::new(),
         }
     }
 }

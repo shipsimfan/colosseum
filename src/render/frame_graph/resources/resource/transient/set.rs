@@ -1,16 +1,19 @@
 use crate::render::frame_graph::FrameGraphTransientResourceInfo;
+use alexandria::gpu::VulkanAttachmentLoadOp;
 
 impl FrameGraphTransientResourceInfo {
     /// Set this resource to be a color resource
-    pub fn set_color(&mut self) {
+    pub fn set_color(&mut self) -> VulkanAttachmentLoadOp {
         assert!(!self.is_depth);
         self.is_color = true;
+        self.load_op()
     }
 
     /// Set this resource to be a depth resource
-    pub fn set_depth(&mut self) {
+    pub fn set_depth(&mut self) -> VulkanAttachmentLoadOp {
         assert!(!self.is_color);
         self.is_depth = true;
+        self.load_op()
     }
 
     /// Set this resource to be a transfer destination resource
@@ -26,5 +29,11 @@ impl FrameGraphTransientResourceInfo {
     /// Set this resource to be a sampled image resource
     pub fn set_sampled_image(&mut self) {
         self.is_sampled_image = true;
+    }
+
+    fn load_op(&mut self) -> VulkanAttachmentLoadOp {
+        let load_op = self.load_op;
+        self.load_op = VulkanAttachmentLoadOp::Load;
+        load_op
     }
 }

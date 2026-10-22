@@ -9,7 +9,7 @@ use crate::{
         phases::FrameGraphSetup,
     },
 };
-use alexandria::gpu::VulkanImageAspectFlag;
+use alexandria::gpu::{VulkanAttachmentLoadOp, VulkanImageAspectFlag};
 use colosseum_ecs::{Commands, Res, ResMut, World};
 
 impl FrameGraph {
@@ -54,8 +54,12 @@ impl FrameGraph {
     ) -> Result<()> {
         let mut builder = FrameGraphBuilder::new(commands, device);
 
-        let test_resource =
-            builder.create_resource("Testing", SDR_FORMAT, FrameGraphResourceKind::Native);
+        let test_resource = builder.create_resource(
+            "Testing",
+            SDR_FORMAT,
+            FrameGraphResourceKind::Native,
+            VulkanAttachmentLoadOp::DontCare,
+        );
 
         SolidColorSkyNode::add(test_resource, &mut builder)?;
 

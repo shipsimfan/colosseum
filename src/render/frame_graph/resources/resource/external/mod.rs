@@ -4,8 +4,12 @@ use alexandria::{
 };
 use std::sync::Arc;
 
+mod info;
+
 mod get;
 mod new;
+
+pub(in crate::render::frame_graph) use info::*;
 
 /// An external resource used within the frame graph
 pub(in crate::render::frame_graph) struct FrameGraphExternalResource {

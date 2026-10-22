@@ -4,7 +4,9 @@ use crate::render::frame_graph::{
 
 impl<'a> FrameGraphBuilder<'a> {
     /// Specify a requested access for a resource within the frame graph
-    pub fn access(&mut self, resource: FrameGraphResourceId, usage: FrameGraphResourceUsage) {
+    pub fn access(&mut self, id: FrameGraphResourceId, usage: FrameGraphResourceUsage) {
+        let mut resource = self.resources.get(id);
+
         // Update resources for the render pass for this node
         match usage {
             FrameGraphResourceUsage::ColorAttachment => {
@@ -12,25 +14,14 @@ impl<'a> FrameGraphBuilder<'a> {
                     panic!("multiple color attachments defined for a node");
                 }
 
-                self.color_attachment = Some(resource);
-
-                if resource.is_transient_native_scale() {
-                    self.native_scale_resources[resource.index()].set_color();
-                }
+                let load_op = resource.set_color();
+                self.color_attachment = Some((id, load_op));
             }
             _ => {}
         }
 
         // Transition the resource and a pipeline barrier if necessary
-        let barrier = if resource.is_external() {
-            self.external_resources[resource.index()].transition(resource, usage.state())
-        } else if resource.is_transient_native_scale() {
-            self.native_scale_resources[resource.index()].transition(resource, usage.state())
-        } else {
-            panic!("Access to non-external resources is not yet implemented");
-        };
-
-        if let Some(barrier) = barrier {
+        if let Some(barrier) = resource.transition(id, usage.state()) {
             self.pipeline_barriers.push(barrier);
             self.current_pipeline_barriers += 1;
         }

@@ -4,7 +4,7 @@ use crate::render::{
 };
 use alexandria::{
     gpu::{
-        VulkanAttachmentLoadOp, VulkanAttachmentStoreOp, VulkanCommandBuffer, VulkanImageLayout,
+        VulkanAttachmentStoreOp, VulkanCommandBuffer, VulkanImageLayout,
         VulkanRenderingAttachmentInfo, VulkanResolveModeFlag, VulkanViewport,
     },
     math::{Color4f, Linear, Recti, Vector2, Vector2i},
@@ -41,7 +41,7 @@ impl FrameGraphRenderPass {
                 VulkanResolveModeFlag::None,
                 None,
                 VulkanImageLayout::Undefined,
-                VulkanAttachmentLoadOp::Clear,
+                self.color_attachment_load_op,
                 VulkanAttachmentStoreOp::Store,
                 Color4f::<Linear>::new(0.0, 0.0, 0.0, 1.0),
             )],

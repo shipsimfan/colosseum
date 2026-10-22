@@ -1,5 +1,5 @@
 use crate::render::{MAX_FRAMES_IN_FLIGHT, frame_graph::FrameGraphResourceState};
-use alexandria::gpu::VulkanFormat;
+use alexandria::gpu::{VulkanAttachmentLoadOp, VulkanFormat};
 use std::ffi::CString;
 
 mod create_image;
@@ -25,6 +25,9 @@ pub(in crate::render::frame_graph) struct FrameGraphTransientResourceInfo {
 
     /// The current state of the resource
     state: FrameGraphResourceState,
+
+    /// The load operation for the resource
+    load_op: VulkanAttachmentLoadOp,
 
     /// Is this resource a color resource?
     is_color: bool,
