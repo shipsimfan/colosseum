@@ -12,6 +12,7 @@ impl FrameGraphBuilderResources {
             ],
 
             native_scale_resources: Vec::new(),
+            render_scale_resources: Vec::new(),
         }
     }
 }

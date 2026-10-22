@@ -1,8 +1,12 @@
 use crate::render::FrameGraph;
+use std::marker::PhantomData;
 
-impl FrameGraph {
+impl<Game: crate::Game> FrameGraph<Game> {
     /// Create a new [`FrameGraph`]
-    pub fn new() -> FrameGraph {
-        FrameGraph { compiled: false }
+    pub fn new() -> FrameGraph<Game> {
+        FrameGraph {
+            compiled: false,
+            game: PhantomData,
+        }
     }
 }

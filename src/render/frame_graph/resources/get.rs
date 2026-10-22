@@ -21,6 +21,13 @@ impl FrameGraphResources {
                 image_view,
                 size,
             }
+        } else if id.is_transient_render_scale() {
+            let (info, image_view, size) = self.render_scale.get(id.index(), **frame_index);
+            FrameGraphResource::Transient {
+                info,
+                image_view,
+                size,
+            }
         } else {
             panic!("only external resources are currently supported")
         }

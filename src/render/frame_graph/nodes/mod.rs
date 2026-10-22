@@ -9,21 +9,24 @@ mod system;
 
 mod quantization;
 mod solid_color_sky;
+mod tone_map;
 
 pub(in crate::render::frame_graph) use node::*;
 pub(in crate::render::frame_graph) use system::*;
 
 pub(in crate::render::frame_graph) use quantization::*;
 pub(in crate::render::frame_graph) use solid_color_sky::*;
+pub(in crate::render::frame_graph) use tone_map::*;
 
 /// Creates the fixed resources for the frame graph
-pub(in crate::render) fn create_frame_graph_resources(
+pub(in crate::render) fn create_frame_graph_resources<Game: crate::Game>(
     world: &mut World,
     device: &GraphicsDevice,
 ) -> Result<()> {
     world.insert_resource(FrameGraphResources::empty());
-    world.insert_resource(FrameGraph::new());
+    world.insert_resource(FrameGraph::<Game>::new());
 
+    QuantizationNode::create_resources(world, device)?;
     SolidColorSkyNode::create_resources(world, device)?;
-    QuantizationNode::create_resources(world, device)
+    ToneMapNode::<Game>::create_resources(world, device)
 }

@@ -1,11 +1,11 @@
 use crate::{
-    Result,
+    Result, SettingsCache,
     render::{
-        DescriptorSetLayouts, FrameGraph, FrameIndex, GraphicsDevice, SDR_FORMAT, Samplers,
-        Swapchain,
+        DescriptorSetLayouts, FrameGraph, FrameIndex, GraphicsDevice, HDR_FORMAT, SDR_FORMAT,
+        Samplers, Swapchain,
         frame_graph::{
             FrameGraphBuilder, FrameGraphResourceId, FrameGraphResourceKind, FrameGraphResources,
-            QuantizationNode, SolidColorSkyNode,
+            QuantizationNode, SolidColorSkyNode, ToneMapNode,
         },
         phases::FrameGraphSetup,
     },
@@ -13,9 +13,9 @@ use crate::{
 use alexandria::gpu::{VulkanAttachmentLoadOp, VulkanImageAspectFlag};
 use colosseum_ecs::{Commands, Res, ResMut, World};
 
-impl FrameGraph {
+impl<Game: crate::Game> FrameGraph<Game> {
     pub fn register_prepare(world: &mut World) {
-        world.register_system(FrameGraphSetup, FrameGraph::prepare);
+        world.register_system(FrameGraphSetup, FrameGraph::<Game>::prepare);
     }
 
     /// Prepare the frame graph for execution
@@ -23,6 +23,7 @@ impl FrameGraph {
         mut self: ResMut<Self>,
         mut resources: ResMut<FrameGraphResources>,
         commands: &mut Commands,
+        settings: Res<Game::SettingsCache>,
         device: Res<GraphicsDevice>,
         swapchain: Res<Swapchain>,
         frame_index: Res<FrameIndex>,
@@ -40,7 +41,12 @@ impl FrameGraph {
         }
 
         // Handle resizing if needed
-        resources.resize(swapchain.size(), &frame_index, &device)?;
+        resources.resize(
+            swapchain.size(),
+            settings.display_settings().render_scale(),
+            &frame_index,
+            &device,
+        )?;
 
         // Update swapchain image in frame graph resources
         resources.insert_external(
@@ -65,17 +71,51 @@ impl FrameGraph {
     ) -> Result<()> {
         let mut builder = FrameGraphBuilder::new(commands, device);
 
+        /* Main Render Passes */
         let main_color_output = builder.create_resource(
             "Main Color Output",
-            SDR_FORMAT,
+            HDR_FORMAT,
             FrameGraphResourceKind::Native,
             VulkanAttachmentLoadOp::DontCare,
         );
 
         SolidColorSkyNode::add(main_color_output, &mut builder)?;
 
+        /* Post Processing */
+
+        // Perform tone mapping
+        let tone_map_output = builder.create_resource(
+            "Tone Map Output",
+            SDR_FORMAT,
+            FrameGraphResourceKind::Native,
+            VulkanAttachmentLoadOp::DontCare,
+        );
+        ToneMapNode::<Game>::add(main_color_output, tone_map_output, samplers, &mut builder)?;
+
+        /*
+        // Perform render scaling, if needed
+        let scaled_output = if structure.has_render_scale() {
+            let scale_output = resources.create_native_scale_transient("Scaled Output", SDR_FORMAT);
+            nodes.push(RenderScaleNode::new(tone_map_output, scale_output).into());
+            scale_output
+        } else {
+            tone_map_output
+        };
+
+        // Perform anti-aliasing
+        let aa_output = match structure.anti_aliasing() {
+            AntiAliasingMode::None => scaled_output,
+            AntiAliasingMode::FXAA => {
+                let aa_output = resources.create_native_scale_transient("FXAA Output", SDR_FORMAT);
+                nodes.push(FxaaNode::new(scaled_output, aa_output).into());
+                aa_output
+            }
+        };
+        */
+
+        // Quantization
         QuantizationNode::add(
-            main_color_output,
+            tone_map_output,
             FrameGraphResourceId::SWAPCHAIN_IMAGE,
             samplers,
             &mut builder,

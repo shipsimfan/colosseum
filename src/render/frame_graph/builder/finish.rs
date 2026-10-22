@@ -14,7 +14,8 @@ impl<'a> FrameGraphBuilder<'a> {
         resources: &mut FrameGraphResources,
         descriptor_set_layouts: &DescriptorSetLayouts,
     ) -> Result<()> {
-        let (present_barrier, native_scale_resources) = self.resources.finish();
+        let (present_barrier, native_scale_resources, render_scale_resources) =
+            self.resources.finish();
 
         // Add a final pipeline barrier to prepare the swapchain image for present
         if let Some(barrier) = present_barrier {
@@ -25,6 +26,7 @@ impl<'a> FrameGraphBuilder<'a> {
         resources.clear();
         *resources = FrameGraphResources::new(
             native_scale_resources,
+            render_scale_resources,
             self.descriptors,
             self.descriptor_sets,
             descriptor_set_layouts,

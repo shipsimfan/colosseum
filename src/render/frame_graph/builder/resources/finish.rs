@@ -11,6 +11,7 @@ impl FrameGraphBuilderResources {
     ) -> (
         Option<FrameGraphPipelineBarrier>,
         Vec<FrameGraphTransientResourceInfo>,
+        Vec<FrameGraphTransientResourceInfo>,
     ) {
         let present_barrier = self.external_resources[0].transition(
             FrameGraphResourceId::SWAPCHAIN_IMAGE,
@@ -21,6 +22,10 @@ impl FrameGraphBuilderResources {
             ),
         );
 
-        (present_barrier, self.native_scale_resources)
+        (
+            present_barrier,
+            self.native_scale_resources,
+            self.render_scale_resources,
+        )
     }
 }

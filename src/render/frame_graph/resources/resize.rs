@@ -9,6 +9,7 @@ impl FrameGraphResources {
     pub fn resize(
         &mut self,
         swapchain_size: Vector2u,
+        render_scale: f32,
         frame_index: &FrameIndex,
         device: &GraphicsDevice,
     ) -> Result<()> {
@@ -16,6 +17,14 @@ impl FrameGraphResources {
 
         self.native_scale
             .resize(swapchain_size, frame_index, device, &self.descriptor_sets)?;
+
+        let render_scale_size = (swapchain_size.into_f32() * render_scale).round();
+        self.render_scale.resize(
+            (render_scale_size.x as u32, render_scale_size.y as u32).into(),
+            frame_index,
+            device,
+            &self.descriptor_sets,
+        )?;
 
         Ok(())
     }

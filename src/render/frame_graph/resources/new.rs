@@ -18,6 +18,7 @@ impl FrameGraphResources {
     /// Create a new instance of [`FrameGraphResources`]
     pub fn new(
         native_scale_resources: Vec<FrameGraphTransientResourceInfo>,
+        render_scale_resources: Vec<FrameGraphTransientResourceInfo>,
 
         mut descriptors: Vec<VulkanDescriptorPoolSize>,
         descriptor_sets: Vec<(TypeId, Cow<'static, str>, &'static [DescriptorSetBinding])>,
@@ -70,6 +71,10 @@ impl FrameGraphResources {
                 "Native Scale Memory",
                 native_scale_resources,
             ),
+            render_scale: FrameGraphTransientResourceBuffer::new(
+                "Render Scale Memory",
+                render_scale_resources,
+            ),
 
             descriptor_pool: Some(descriptor_pool),
             descriptor_sets: new_descriptor_sets,
@@ -81,6 +86,7 @@ impl FrameGraphResources {
         FrameGraphResources {
             external_resources: Vec::new(),
             native_scale: FrameGraphTransientResourceBuffer::new("", Vec::new()),
+            render_scale: FrameGraphTransientResourceBuffer::new("", Vec::new()),
 
             descriptor_pool: None,
             descriptor_sets: Vec::new(),

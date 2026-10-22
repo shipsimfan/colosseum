@@ -35,7 +35,7 @@ pub(crate) fn init_render_resources<Game: crate::Game>(
 
     // Create and insert the global graphics resources
     create_fixed_render_data_resources(world, &graphics_device)?;
-    create_frame_graph_resources(world, &graphics_device)?;
+    create_frame_graph_resources::<Game>(world, &graphics_device)?;
     create_public_data_resources(world);
 
     world.insert_resource(graphics_device);
@@ -43,24 +43,24 @@ pub(crate) fn init_render_resources<Game: crate::Game>(
 
     // Initialize the render systems
     // TODO: Move this to scene transition
-    init_render_systems(world);
+    init_render_systems::<Game>(world);
 
     Ok(())
 }
 
 /// Initialize the all the required render systems
-pub(crate) fn init_render_systems(world: &mut World) {
+pub(crate) fn init_render_systems<Game: crate::Game>(world: &mut World) {
     init_pre_render();
-    init_frame_graph_setup(world);
+    init_frame_graph_setup::<Game>(world);
     world.register_phase(phases::FrameGraph);
     init_post_render(world);
 }
 
 fn init_pre_render() {}
 
-fn init_frame_graph_setup(world: &mut World) {
+fn init_frame_graph_setup<Game: crate::Game>(world: &mut World) {
     world.register_system(FrameGraphSetup, Swapchain::acquire_next_image);
-    FrameGraph::register_prepare(world);
+    FrameGraph::<Game>::register_prepare(world);
 }
 
 fn init_post_render(world: &mut World) {

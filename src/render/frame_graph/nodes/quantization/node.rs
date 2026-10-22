@@ -9,7 +9,7 @@ impl FrameGraphNode for QuantizationNode {
     }
 
     fn color(&self) -> impl Into<Color3f<Srgb>> {
-        (0.0, 0.0, 0.0)
+        (0.95, 0.35, 0.65)
     }
 
     fn system(&self) -> impl 'static + System {

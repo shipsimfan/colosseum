@@ -12,4 +12,7 @@ pub(in crate::render::frame_graph::builder) struct FrameGraphBuilderResources {
 
     /// The transient native scale resources that need to be allocated
     native_scale_resources: Vec<FrameGraphTransientResourceInfo>,
+
+    /// The transient render scale resources that need to be allocated
+    render_scale_resources: Vec<FrameGraphTransientResourceInfo>,
 }

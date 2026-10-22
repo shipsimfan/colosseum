@@ -25,6 +25,17 @@ impl FrameGraphBuilderResources {
                     self.native_scale_resources.len() - 1,
                 )
             }
+            FrameGraphResourceKind::Render => {
+                self.render_scale_resources
+                    .push(FrameGraphTransientResourceInfo::new(
+                        name,
+                        format,
+                        initial_load_op,
+                    ));
+                FrameGraphResourceId::new_transient_render_scale(
+                    self.render_scale_resources.len() - 1,
+                )
+            }
         }
     }
 }

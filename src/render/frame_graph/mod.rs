@@ -1,3 +1,5 @@
+use std::marker::PhantomData;
+
 use builder::*;
 use nodes::*;
 use resources::*;
@@ -14,7 +16,10 @@ mod new;
 pub(in crate::render) use nodes::create_frame_graph_resources;
 
 /// A frame graph, which can be built and executed to render a frame
-pub(in crate::render) struct FrameGraph {
+pub(in crate::render) struct FrameGraph<Game: crate::Game> {
     /// Has the frame graph been compiled?
     compiled: bool,
+
+    /// A marker for the game type
+    game: PhantomData<Game>,
 }

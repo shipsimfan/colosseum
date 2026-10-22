@@ -27,6 +27,9 @@ pub(in crate::render::frame_graph) struct FrameGraphResources {
     /// The transient native scale resources used within the frame graph
     native_scale: FrameGraphTransientResourceBuffer,
 
+    /// The transient render scale resources used within the frame graph
+    render_scale: FrameGraphTransientResourceBuffer,
+
     /// The descriptor pool containing all the descriptor sets used within the frame graph
     #[allow(unused)]
     descriptor_pool: Option<VulkanDescriptorPool>,
