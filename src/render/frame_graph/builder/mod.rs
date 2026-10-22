@@ -1,17 +1,19 @@
 use crate::render::{
-    GraphicsDevice,
+    DescriptorSetBinding, GraphicsDevice,
     frame_graph::{FrameGraphPipelineBarrier, FrameGraphResourceId, SubmissionNode},
 };
-use alexandria::gpu::VulkanAttachmentLoadOp;
+use alexandria::gpu::{VulkanAttachmentLoadOp, VulkanDescriptorPoolSize};
 use colosseum_ecs::Commands;
 use resource::*;
 use resources::*;
+use std::{any::TypeId, borrow::Cow};
 
 mod resource;
 mod resources;
 
 mod access;
 mod add_node;
+mod create_descriptor_set;
 mod create_resource;
 mod finish;
 mod new;
@@ -32,6 +34,12 @@ pub(in crate::render::frame_graph) struct FrameGraphBuilder<'a> {
 
     /// The resources used by the frame graph
     resources: FrameGraphBuilderResources,
+
+    /// The count of descriptors used by the frame graph
+    descriptors: Vec<VulkanDescriptorPoolSize>,
+
+    /// The layouts of the descriptor sets used by the frame graph
+    descriptor_sets: Vec<(TypeId, Cow<'static, str>, &'static [DescriptorSetBinding])>,
 
     /** Current Node Trackers **/
 

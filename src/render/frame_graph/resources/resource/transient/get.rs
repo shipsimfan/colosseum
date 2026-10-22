@@ -1,7 +1,9 @@
 use crate::render::frame_graph::FrameGraphTransientResourceInfo;
 use alexandria::gpu::{
     VulkanImageAspectFlag, VulkanImageAspectFlags, VulkanImageUsageFlag, VulkanImageUsageFlags,
+    VulkanSampler,
 };
+use std::sync::Arc;
 
 impl FrameGraphTransientResourceInfo {
     /// Get the Vulkan image usage flags for this resource
@@ -38,5 +40,10 @@ impl FrameGraphTransientResourceInfo {
         }
 
         flags
+    }
+
+    /// Get the descriptor sets for this resource
+    pub fn descriptor_sets(&self) -> &[(usize, u32, Arc<VulkanSampler>)] {
+        &self.descriptor_sets
     }
 }

@@ -1,3 +1,5 @@
+use crate::render::{DescriptorSetBinding, MAX_FRAMES_IN_FLIGHT};
+use alexandria::gpu::{VulkanDescriptorPool, VulkanDescriptorSet};
 use buffer::*;
 
 mod buffer;
@@ -24,4 +26,14 @@ pub(in crate::render::frame_graph) struct FrameGraphResources {
 
     /// The transient native scale resources used within the frame graph
     native_scale: FrameGraphTransientResourceBuffer,
+
+    /// The descriptor pool containing all the descriptor sets used within the frame graph
+    #[allow(unused)]
+    descriptor_pool: Option<VulkanDescriptorPool>,
+
+    /// The collection of all descriptor sets used within the frame graph
+    descriptor_sets: Vec<(
+        [VulkanDescriptorSet; MAX_FRAMES_IN_FLIGHT],
+        &'static [DescriptorSetBinding],
+    )>,
 }

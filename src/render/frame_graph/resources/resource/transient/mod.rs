@@ -1,6 +1,6 @@
 use crate::render::{MAX_FRAMES_IN_FLIGHT, frame_graph::FrameGraphResourceState};
-use alexandria::gpu::{VulkanAttachmentLoadOp, VulkanFormat};
-use std::ffi::CString;
+use alexandria::gpu::{VulkanAttachmentLoadOp, VulkanFormat, VulkanSampler};
+use std::{ffi::CString, sync::Arc};
 
 mod create_image;
 mod create_image_view;
@@ -43,4 +43,7 @@ pub(in crate::render::frame_graph) struct FrameGraphTransientResourceInfo {
 
     /// Is this resource a sampled image resource?
     is_sampled_image: bool,
+
+    /// The descriptor sets and the binding in the set that references this resource
+    descriptor_sets: Vec<(usize, u32, Arc<VulkanSampler>)>,
 }

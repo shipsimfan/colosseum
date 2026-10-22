@@ -1,7 +1,7 @@
 use crate::render::frame_graph::{FrameGraphResourceState, FrameGraphResourceUsage};
 use alexandria::gpu::{VulkanAccessFlag, VulkanImageLayout, VulkanPipelineStageFlag};
 
-impl FrameGraphResourceUsage {
+impl<'a> FrameGraphResourceUsage<'a> {
     /// Get the state the resource should be in for this usage and set the usage flags for a resource
     pub fn state(&self) -> FrameGraphResourceState {
         match self {
@@ -26,7 +26,7 @@ impl FrameGraphResourceUsage {
                 VulkanAccessFlag::TransferRead,
                 VulkanImageLayout::TransferSrcOptimal,
             ),
-            FrameGraphResourceUsage::SampledImage => FrameGraphResourceState::new(
+            FrameGraphResourceUsage::SampledImage { .. } => FrameGraphResourceState::new(
                 VulkanPipelineStageFlag::FragmentShader,
                 VulkanAccessFlag::ShaderRead,
                 VulkanImageLayout::ShaderReadOnlyOptimal,

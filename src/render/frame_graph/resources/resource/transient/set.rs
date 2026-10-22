@@ -1,5 +1,6 @@
 use crate::render::frame_graph::FrameGraphTransientResourceInfo;
-use alexandria::gpu::VulkanAttachmentLoadOp;
+use alexandria::gpu::{VulkanAttachmentLoadOp, VulkanSampler};
+use std::sync::Arc;
 
 impl FrameGraphTransientResourceInfo {
     /// Set this resource to be a color resource
@@ -27,8 +28,16 @@ impl FrameGraphTransientResourceInfo {
     }
 
     /// Set this resource to be a sampled image resource
-    pub fn set_sampled_image(&mut self) {
+    pub fn set_sampled_image(
+        &mut self,
+        descriptor_set: usize,
+        binding: u32,
+        sampler: &Arc<VulkanSampler>,
+    ) {
         self.is_sampled_image = true;
+
+        self.descriptor_sets
+            .push((descriptor_set, binding, sampler.clone()));
     }
 
     fn load_op(&mut self) -> VulkanAttachmentLoadOp {

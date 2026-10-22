@@ -17,7 +17,14 @@ impl<'a> FrameGraphBuilder<'a> {
                 let load_op = resource.set_color();
                 self.color_attachment = Some((id, load_op));
             }
-            _ => {}
+            FrameGraphResourceUsage::SampledImage {
+                descriptor_set,
+                binding,
+                sampler,
+            } => {
+                resource.set_sampled_image(descriptor_set, binding, sampler);
+            }
+            _ => todo!(),
         }
 
         // Transition the resource and a pipeline barrier if necessary

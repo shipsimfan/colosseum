@@ -15,7 +15,7 @@ impl FrameGraphResources {
         let frame_index = **frame_index;
 
         self.native_scale
-            .resize(swapchain_size, frame_index, device)?;
+            .resize(swapchain_size, frame_index, device, &self.descriptor_sets)?;
 
         Ok(())
     }

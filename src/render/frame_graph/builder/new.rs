@@ -14,8 +14,11 @@ impl<'a> FrameGraphBuilder<'a> {
             nodes: Vec::new(),
             pipeline_barriers: Vec::new(),
             resources: FrameGraphBuilderResources::new(),
+            descriptors: Vec::new(),
+            descriptor_sets: Vec::new(),
 
             current_pipeline_barriers: 0,
+
             color_attachment: None,
         }
     }

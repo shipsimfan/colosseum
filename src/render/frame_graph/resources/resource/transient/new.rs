@@ -31,6 +31,8 @@ impl FrameGraphTransientResourceInfo {
             is_transfer_dst: false,
             is_transfer_src: false,
             is_sampled_image: false,
+
+            descriptor_sets: Vec::new(),
         }
     }
 }

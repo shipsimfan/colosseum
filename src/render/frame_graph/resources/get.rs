@@ -1,3 +1,5 @@
+use alexandria::gpu::VulkanDescriptorSet;
+
 use crate::render::{
     FrameIndex,
     frame_graph::{FrameGraphResource, FrameGraphResourceId, FrameGraphResources},
@@ -22,5 +24,10 @@ impl FrameGraphResources {
         } else {
             panic!("only external resources are currently supported")
         }
+    }
+
+    /// Get a descriptor set based on its id
+    pub fn descriptor_set(&self, id: usize, frame_index: &FrameIndex) -> &VulkanDescriptorSet {
+        &self.descriptor_sets[id].0[**frame_index]
     }
 }

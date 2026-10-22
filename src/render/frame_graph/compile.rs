@@ -1,10 +1,11 @@
 use crate::{
     Result,
     render::{
-        FrameGraph, FrameIndex, GraphicsDevice, SDR_FORMAT, Swapchain,
+        DescriptorSetLayouts, FrameGraph, FrameIndex, GraphicsDevice, SDR_FORMAT, Samplers,
+        Swapchain,
         frame_graph::{
             FrameGraphBuilder, FrameGraphResourceId, FrameGraphResourceKind, FrameGraphResources,
-            SolidColorSkyNode,
+            QuantizationNode, SolidColorSkyNode,
         },
         phases::FrameGraphSetup,
     },
@@ -25,9 +26,17 @@ impl FrameGraph {
         device: Res<GraphicsDevice>,
         swapchain: Res<Swapchain>,
         frame_index: Res<FrameIndex>,
+        descriptor_set_layouts: Res<DescriptorSetLayouts>,
+        samplers: Res<Samplers>,
     ) -> Result<()> {
         if !self.compiled {
-            self.compile(&mut resources, commands, &device)?;
+            self.compile(
+                &mut resources,
+                commands,
+                &device,
+                &descriptor_set_layouts,
+                &samplers,
+            )?;
         }
 
         // Handle resizing if needed
@@ -51,19 +60,28 @@ impl FrameGraph {
         resources: &mut FrameGraphResources,
         commands: &mut Commands,
         device: &GraphicsDevice,
+        descriptor_set_layouts: &DescriptorSetLayouts,
+        samplers: &Samplers,
     ) -> Result<()> {
         let mut builder = FrameGraphBuilder::new(commands, device);
 
-        let test_resource = builder.create_resource(
-            "Testing",
+        let main_color_output = builder.create_resource(
+            "Main Color Output",
             SDR_FORMAT,
             FrameGraphResourceKind::Native,
             VulkanAttachmentLoadOp::DontCare,
         );
 
-        SolidColorSkyNode::add(test_resource, &mut builder)?;
+        SolidColorSkyNode::add(main_color_output, &mut builder)?;
 
-        builder.finish(resources);
+        QuantizationNode::add(
+            main_color_output,
+            FrameGraphResourceId::SWAPCHAIN_IMAGE,
+            samplers,
+            &mut builder,
+        )?;
+
+        builder.finish(resources, descriptor_set_layouts)?;
 
         self.compiled = true;
         Ok(())

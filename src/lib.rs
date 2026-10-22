@@ -7,6 +7,8 @@
 #![warn(rustdoc::broken_intra_doc_links)]
 #![allow(incomplete_features)]
 #![feature(arbitrary_self_types)]
+#![feature(const_convert)]
+#![feature(const_trait_impl)]
 
 pub mod render;
 pub mod update;

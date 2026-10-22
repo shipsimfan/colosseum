@@ -11,7 +11,7 @@ use std::{ffi::CString, str::FromStr};
 
 impl<'a> FrameGraphBuilder<'a> {
     /// Add a new node to the frame graph
-    pub fn add_node<Node: FrameGraphNode>(&mut self, node: Node) -> Result<()> {
+    pub fn add_node<Node: FrameGraphNode>(&mut self, node: Node, resource: bool) -> Result<()> {
         let name = node.name().into();
         #[cfg(debug_assertions)]
         let c_name = CString::from_str(&name).unwrap();
@@ -33,6 +33,10 @@ impl<'a> FrameGraphBuilder<'a> {
             #[cfg(debug_assertions)]
             (c_name, node.color().into()),
         ));
+
+        if resource {
+            self.commands.insert_resource(node);
+        }
 
         self.current_pipeline_barriers = 0;
 
