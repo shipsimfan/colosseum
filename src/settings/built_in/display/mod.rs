@@ -1,3 +1,4 @@
+use crate::render::AntiAliasing;
 use alexandria::math::{Vector2i, Vector2u};
 use data_format::{Deserialize, Serialize};
 
@@ -33,11 +34,11 @@ pub struct DisplaySettings {
     /// The gamma to use for rendering
     #[default(2.2)]
     gamma: f32,
-    /*
-    /// The anti-aliasing mode to use for rendering
-    #[default(AntiAliasingMode::None)]
-    anti_aliasing: AntiAliasingMode,
 
+    /// The anti-aliasing mode to use for rendering
+    #[default(AntiAliasing::default())]
+    anti_aliasing: AntiAliasing,
+    /*
     /// The quality for shadows to use
     #[default(ShadowQuality::Medium)]
     shadow_quality: ShadowQuality,

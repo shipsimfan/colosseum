@@ -1,81 +1,40 @@
 use crate::{
-    Result, SettingsCache,
+    Result,
     render::{
-        DescriptorSetLayouts, FrameGraph, FrameIndex, GraphicsDevice, HDR_FORMAT, SDR_FORMAT,
-        Samplers, Swapchain,
+        AntiAliasing, DescriptorSetLayouts, FrameGraph, GraphicsDevice, HDR_FORMAT, Samplers,
         frame_graph::{
             FrameGraphBuilder, FrameGraphResourceId, FrameGraphResourceKind, FrameGraphResources,
-            QuantizationNode, SolidColorSkyNode, ToneMapNode,
+            FrameGraphStructure, FxaaNode, QuantizationNode, RenderScaleNode, SolidColorSkyNode,
+            ToneMapNode,
         },
-        phases::FrameGraphSetup,
     },
 };
-use alexandria::gpu::{VulkanAttachmentLoadOp, VulkanImageAspectFlag};
-use colosseum_ecs::{Commands, Res, ResMut, World};
+use alexandria::gpu::VulkanAttachmentLoadOp;
+use colosseum_ecs::Commands;
 
 impl<Game: crate::Game> FrameGraph<Game> {
-    pub fn register_prepare(world: &mut World) {
-        world.register_system(FrameGraphSetup, FrameGraph::<Game>::prepare);
-    }
-
-    /// Prepare the frame graph for execution
-    fn prepare(
-        mut self: ResMut<Self>,
-        mut resources: ResMut<FrameGraphResources>,
-        commands: &mut Commands,
-        settings: Res<Game::SettingsCache>,
-        device: Res<GraphicsDevice>,
-        swapchain: Res<Swapchain>,
-        frame_index: Res<FrameIndex>,
-        descriptor_set_layouts: Res<DescriptorSetLayouts>,
-        samplers: Res<Samplers>,
-    ) -> Result<()> {
-        if !self.compiled {
-            self.compile(
-                &mut resources,
-                commands,
-                &device,
-                &descriptor_set_layouts,
-                &samplers,
-            )?;
-        }
-
-        // Handle resizing if needed
-        resources.resize(
-            swapchain.size(),
-            settings.display_settings().render_scale(),
-            &frame_index,
-            &device,
-        )?;
-
-        // Update swapchain image in frame graph resources
-        resources.insert_external(
-            FrameGraphResourceId::SWAPCHAIN_IMAGE,
-            swapchain.image_view(),
-            swapchain.size(),
-            1,
-            VulkanImageAspectFlag::Color,
-        );
-
-        Ok(())
-    }
-
     /// Compile the frame graph, preparing it for execution
-    fn compile(
+    pub(in crate::render::frame_graph) fn compile(
         &mut self,
         resources: &mut FrameGraphResources,
         commands: &mut Commands,
         device: &GraphicsDevice,
         descriptor_set_layouts: &DescriptorSetLayouts,
         samplers: &Samplers,
+        settings: &Game::SettingsCache,
     ) -> Result<()> {
+        let structure = FrameGraphStructure::new::<Game>(settings);
+        if self.structure.as_ref() == Some(&structure) {
+            return Ok(()); // No need to recompile if the structure hasn't changed
+        }
+
         let mut builder = FrameGraphBuilder::new(commands, device);
 
         /* Main Render Passes */
         let main_color_output = builder.create_resource(
             "Main Color Output",
             HDR_FORMAT,
-            FrameGraphResourceKind::Native,
+            FrameGraphResourceKind::Render,
             VulkanAttachmentLoadOp::DontCare,
         );
 
@@ -84,46 +43,32 @@ impl<Game: crate::Game> FrameGraph<Game> {
         /* Post Processing */
 
         // Perform tone mapping
-        let tone_map_output = builder.create_resource(
-            "Tone Map Output",
-            SDR_FORMAT,
-            FrameGraphResourceKind::Native,
-            VulkanAttachmentLoadOp::DontCare,
-        );
-        ToneMapNode::<Game>::add(main_color_output, tone_map_output, samplers, &mut builder)?;
+        let tone_map_output = ToneMapNode::<Game>::add(main_color_output, samplers, &mut builder)?;
 
-        /*
         // Perform render scaling, if needed
-        let scaled_output = if structure.has_render_scale() {
-            let scale_output = resources.create_native_scale_transient("Scaled Output", SDR_FORMAT);
-            nodes.push(RenderScaleNode::new(tone_map_output, scale_output).into());
-            scale_output
+        let scaled_output = if structure.render_scale() {
+            RenderScaleNode::add(tone_map_output, &mut builder)?
         } else {
             tone_map_output
         };
 
         // Perform anti-aliasing
         let aa_output = match structure.anti_aliasing() {
-            AntiAliasingMode::None => scaled_output,
-            AntiAliasingMode::FXAA => {
-                let aa_output = resources.create_native_scale_transient("FXAA Output", SDR_FORMAT);
-                nodes.push(FxaaNode::new(scaled_output, aa_output).into());
-                aa_output
-            }
+            AntiAliasing::None => scaled_output,
+            AntiAliasing::FXAA => FxaaNode::add(scaled_output, samplers, &mut builder)?,
         };
-        */
 
         // Quantization
         QuantizationNode::add(
-            tone_map_output,
+            aa_output,
             FrameGraphResourceId::SWAPCHAIN_IMAGE,
             samplers,
             &mut builder,
         )?;
 
+        // Finish the frame graph compilation
         builder.finish(resources, descriptor_set_layouts)?;
-
-        self.compiled = true;
+        self.structure = Some(structure);
         Ok(())
     }
 }

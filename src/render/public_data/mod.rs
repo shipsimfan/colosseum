@@ -2,10 +2,12 @@
 
 use colosseum_ecs::World;
 
+mod anti_aliasing;
 mod color_correction;
 mod shader;
 mod skybox;
 
+pub use anti_aliasing::*;
 pub use color_correction::*;
 pub use shader::*;
 pub use skybox::*;

@@ -9,6 +9,7 @@ impl<'a> ToTokens for SettingsCacheOutputTrait<'a> {
             load_fn,
             modify_fields,
             save_fn,
+            force_save_fn,
         } = self;
 
         let modifiable_name2 = modifiable_name.clone();
@@ -26,6 +27,7 @@ impl<'a> ToTokens for SettingsCacheOutputTrait<'a> {
                 }
 
                 #save_fn
+                #force_save_fn
 
                 fn is_saving(&mut self) -> bool {
                     let mut i = 0;

@@ -5,7 +5,7 @@ impl<Game: crate::Game> FrameGraph<Game> {
     /// Create a new [`FrameGraph`]
     pub fn new() -> FrameGraph<Game> {
         FrameGraph {
-            compiled: false,
+            structure: None,
             game: PhantomData,
         }
     }

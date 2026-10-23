@@ -1,4 +1,4 @@
-use crate::DisplaySettings;
+use crate::{DisplaySettings, render::AntiAliasing};
 use alexandria::math::{Vector2i, Vector2u};
 
 impl DisplaySettings {
@@ -32,12 +32,12 @@ impl DisplaySettings {
         self.gamma = gamma;
     }
 
-    /*
     /// Set the anti-aliasing mode to use for rendering
-    pub fn set_anti_aliasing(&mut self, anti_aliasing: AntiAliasingMode) {
+    pub fn set_anti_aliasing(&mut self, anti_aliasing: AntiAliasing) {
         self.anti_aliasing = anti_aliasing;
     }
 
+    /*
     /// Set the shadow quality to use for rendering
     pub fn set_shadow_quality(&mut self, shadow_quality: ShadowQuality) {
         self.shadow_quality = shadow_quality;

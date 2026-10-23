@@ -1,6 +1,6 @@
 use crate::settings_cache::{
-    SettingsCacheInput, SettingsCacheOutputLoadFn, SettingsCacheOutputSaveFn,
-    SettingsCacheOutputTrait, SettingsCacheOutputTraitModifyField,
+    SettingsCacheInput, SettingsCacheOutputForceSaveFn, SettingsCacheOutputLoadFn,
+    SettingsCacheOutputSaveFn, SettingsCacheOutputTrait, SettingsCacheOutputTraitModifyField,
 };
 
 impl<'a> SettingsCacheOutputTrait<'a> {
@@ -16,6 +16,7 @@ impl<'a> SettingsCacheOutputTrait<'a> {
                 .map(SettingsCacheOutputTraitModifyField::from_input)
                 .collect(),
             save_fn: SettingsCacheOutputSaveFn::from_input(input),
+            force_save_fn: SettingsCacheOutputForceSaveFn::from_input(input),
         }
     }
 }

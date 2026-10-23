@@ -16,8 +16,11 @@ pub trait SettingsCache: 'static + Sized + Send {
     /// Create a modifiable version of this settings cache
     fn begin_modify(&self) -> Self::Modifiable;
 
-    /// Save this settings cache to `path`
+    /// Save any changed settings in `new_settings`
     fn save(&mut self, new_settings: &Self::Modifiable);
+
+    /// Save all settings in `new_settings` regardless of whether they have changed
+    fn force_save(&mut self, new_settings: &Self::Modifiable);
 
     /// Are the settings currently being saved?
     fn is_saving(&mut self) -> bool;

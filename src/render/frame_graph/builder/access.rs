@@ -24,6 +24,12 @@ impl<'a> FrameGraphBuilder<'a> {
             } => {
                 resource.set_sampled_image(descriptor_set, binding, sampler);
             }
+            FrameGraphResourceUsage::TransferDst => {
+                resource.set_transfer_dst();
+            }
+            FrameGraphResourceUsage::TransferSrc => {
+                resource.set_transfer_src();
+            }
             _ => todo!(),
         }
 

@@ -75,7 +75,7 @@ fn do_run<Game: crate::Game, InitialScene: Scene>(
         &file_io,
     )?;
     let new_settings = settings.begin_modify();
-    settings.save(&new_settings);
+    settings.force_save(&new_settings);
 
     // Create the core WSI components
     let (mut wsi, vulkan_instance, surface, inputs) = Wsi::new(

@@ -27,4 +27,24 @@ impl<'a> FrameGraphBuilderResource<'a> {
             }
         }
     }
+
+    /// Set that the frame graph resource is being used as a transfer destination
+    pub fn set_transfer_dst(&mut self) {
+        match self {
+            FrameGraphBuilderResource::External(_) => {
+                panic!("unable to set external resources as transfer destination")
+            }
+            FrameGraphBuilderResource::Transient(transient) => transient.set_transfer_dst(),
+        }
+    }
+
+    /// Set that the frame graph resource is being used as a transfer source
+    pub fn set_transfer_src(&mut self) {
+        match self {
+            FrameGraphBuilderResource::External(_) => {
+                panic!("unable to set external resources as transfer source")
+            }
+            FrameGraphBuilderResource::Transient(transient) => transient.set_transfer_src(),
+        }
+    }
 }
