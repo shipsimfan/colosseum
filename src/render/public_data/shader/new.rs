@@ -9,7 +9,7 @@ use std::sync::Arc;
 
 impl Shader {
     /// Create a new [`Shader`] from [`ShaderCode`]
-    pub fn new<const N: usize>(
+    pub(in crate::render) fn new<const N: usize>(
         code: &ShaderCode<N>,
         kind: ShaderKind,
         graphics_device: &GraphicsDevice,

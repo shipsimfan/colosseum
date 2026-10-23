@@ -1,6 +1,5 @@
-use crate::render::RenderGpuTransferQueue;
 use adapter_info::*;
-use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice, VulkanFormat, VulkanQueue};
+use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanDevice, VulkanFormat};
 use colosseum_core::Logger;
 use std::sync::Arc;
 
@@ -13,15 +12,12 @@ mod get_adapters;
 mod new;
 
 /// The graphics device is responsible for managing the Vulkan device and related resources
-pub struct GraphicsDevice {
+pub(crate) struct GraphicsDevice {
     /// The logger for operations related to the graphics device
     logger: Logger,
 
     /// The Vulkan device
     device: VulkanDevice,
-
-    /// The queue to submit rendering commands to
-    render_queue: VulkanQueue,
 
     /// The index of the render queue family
     render_queue_family: u32,
@@ -31,7 +27,4 @@ pub struct GraphicsDevice {
 
     /// The memory properties of the device
     memory_properties: Arc<VulkanAdapterMemoryProperties>,
-
-    /// The render GPU transfer queue if there is no dedicated transfer queue
-    gpu_transfer_queue: Option<RenderGpuTransferQueue>,
 }

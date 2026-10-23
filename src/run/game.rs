@@ -29,8 +29,10 @@ pub(in crate::run) fn run<Game: crate::Game, InitialScene: Scene>(
     world.insert_resource(settings);
     world.insert_resource(options);
     world.insert_resource(window);
+    world.insert_resource(file_io);
 
-    init_render_resources::<Game>(&instance, &surface, &thread_manager, &mut world)?;
+    let graphics_device =
+        init_render_resources::<Game>(&instance, &surface, &thread_manager, &mut world)?;
 
     initial_scene.start(&mut world)?;
 
@@ -38,10 +40,10 @@ pub(in crate::run) fn run<Game: crate::Game, InitialScene: Scene>(
         logger.frame();
 
         execute_update_systems(&mut world)?;
-        execute_render_systems(&mut world, &mut surface)?;
+        execute_render_systems(&mut world, &mut surface, &graphics_device)?;
     }
 
-    stop_render(&mut world)?;
+    stop_render(&graphics_device)?;
 
     Ok(())
 

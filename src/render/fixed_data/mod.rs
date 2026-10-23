@@ -5,12 +5,14 @@ mod descriptor_set_layouts;
 mod frame_index;
 mod fullscreen_quad_shader;
 mod post_process_descriptor_layout;
+mod render_queue;
 mod samplers;
 
 pub(in crate::render) use descriptor_set_layouts::*;
 pub(in crate::render) use frame_index::*;
 pub(in crate::render) use fullscreen_quad_shader::*;
 pub(in crate::render) use post_process_descriptor_layout::*;
+pub(in crate::render) use render_queue::*;
 pub(in crate::render) use samplers::*;
 
 /// Create the fixed render data resources

@@ -20,7 +20,7 @@ impl Swapchain {
     pub fn new(
         surface: &mut VulkanSurface,
         size: Vector2u,
-        device: &mut GraphicsDevice,
+        device: &Arc<GraphicsDevice>,
     ) -> Result<Swapchain> {
         let capabilities = device
             .surface_capabilities(surface)

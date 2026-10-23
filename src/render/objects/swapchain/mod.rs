@@ -1,9 +1,11 @@
 use alexandria::{
-    gpu::{VulkanColorSpace, VulkanDevice, VulkanImageView, VulkanSwapchain},
+    gpu::{VulkanColorSpace, VulkanImageView, VulkanSwapchain},
     math::Vector2u,
 };
 use colosseum_core::Logger;
 use std::sync::Arc;
+
+use crate::render::GraphicsDevice;
 
 mod acquire;
 mod drop;
@@ -26,7 +28,7 @@ pub(in crate::render) struct Swapchain {
     size: Vector2u,
 
     /// The device the swapchain was created with
-    device: VulkanDevice,
+    device: Arc<GraphicsDevice>,
 
     /// The image index of the currently acquired swapchain image
     image_index: usize,

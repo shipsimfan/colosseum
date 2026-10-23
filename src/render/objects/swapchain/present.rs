@@ -1,8 +1,8 @@
 use crate::{
     Result,
     render::{
-        AcquireImageSemaphore, DrawFence, FrameIndex, GraphicsDevice, RenderCommandBuffer,
-        RenderCompleteSemaphore, Swapchain,
+        AcquireImageSemaphore, DrawFence, FrameIndex, RenderCommandBuffer, RenderCompleteSemaphore,
+        RenderQueue, Swapchain,
     },
 };
 use alexandria::gpu::{
@@ -16,17 +16,16 @@ impl Swapchain {
     /// Present the currently acquired swapchain image
     pub fn present(
         self: ResMut<Self>,
-        mut device: ResMut<GraphicsDevice>,
         frame_index: Res<FrameIndex>,
         mut command_buffer: ResMut<RenderCommandBuffer>,
         acquire_image_semaphore: Res<AcquireImageSemaphore>,
         render_complete_semaphore: Res<RenderCompleteSemaphore>,
+        mut render_queue: ResMut<RenderQueue>,
         mut draw_fence: ResMut<DrawFence>,
     ) -> Result<()> {
         let command_buffer = &mut command_buffer[&frame_index];
 
-        device
-            .render_queue()
+        render_queue
             .submit(
                 &[VulkanSubmitInfo::new(
                     0,
@@ -54,8 +53,7 @@ impl Swapchain {
             })?;
 
         // Submit the present
-        device
-            .render_queue()
+        render_queue
             .present(
                 Some(&render_complete_semaphore[&frame_index]),
                 &self.swapchain,

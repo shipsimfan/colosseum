@@ -1,7 +1,7 @@
 use crate::{
     Result, SettingsCache,
     render::{
-        DescriptorSetLayouts, FrameGraph, FrameIndex, GraphicsDevice, Samplers, Swapchain,
+        DescriptorSetLayouts, FrameGraph, FrameIndex, Samplers, Swapchain,
         frame_graph::{FrameGraphResourceId, FrameGraphResources},
         phases::FrameGraphSetup,
     },
@@ -20,7 +20,6 @@ impl<Game: crate::Game> FrameGraph<Game> {
         mut resources: ResMut<FrameGraphResources>,
         commands: &mut Commands,
         settings: Res<Game::SettingsCache>,
-        device: Res<GraphicsDevice>,
         swapchain: Res<Swapchain>,
         frame_index: Res<FrameIndex>,
         descriptor_set_layouts: Res<DescriptorSetLayouts>,
@@ -30,7 +29,6 @@ impl<Game: crate::Game> FrameGraph<Game> {
         self.compile(
             &mut resources,
             commands,
-            &device,
             &descriptor_set_layouts,
             &samplers,
             &settings,
@@ -41,7 +39,7 @@ impl<Game: crate::Game> FrameGraph<Game> {
             swapchain.size(),
             settings.display_settings().render_scale(),
             &frame_index,
-            &device,
+            &self.device,
         )?;
 
         // Update swapchain image in frame graph resources

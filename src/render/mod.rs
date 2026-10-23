@@ -4,6 +4,7 @@ use alexandria::gpu::VulkanFormat;
 use as_bytes::*;
 use fixed_data::*;
 use frame_graph::*;
+use objects::*;
 use per_frame_data::*;
 
 mod as_bytes;
@@ -17,7 +18,6 @@ mod public_data;
 mod stop;
 mod transfer;
 
-pub use objects::*;
 pub use public_data::*;
 
 pub use alexandria::gpu::{VulkanShaderModuleCode as ShaderCode, compile_shader};

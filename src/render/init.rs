@@ -1,9 +1,12 @@
+use std::sync::Arc;
+
 use crate::{
     Result, SettingsCache, UserEvent,
     render::{
-        FrameGraph, GraphicsDevice, Swapchain, create_fixed_render_data_resources,
-        create_frame_graph_resources, create_per_frame_render_data, create_public_data_resources,
-        phases::{self, FrameGraphSetup, PostRender},
+        FrameGraph, GraphicsDevice, RenderGpuTransferQueue, Swapchain,
+        create_fixed_render_data_resources, create_frame_graph_resources,
+        create_per_frame_render_data, create_public_data_resources,
+        phases::{self, FrameGraphSetup, PostRender, PreRender},
     },
 };
 use alexandria::gpu::{VulkanInstance, VulkanSurface};
@@ -16,47 +19,54 @@ pub(crate) fn init_render_resources<Game: crate::Game>(
     surface: &VulkanSurface,
     thread_manager: &ThreadManager<UserEvent>,
     world: &mut World,
-) -> Result<()> {
+) -> Result<Arc<GraphicsDevice>> {
     // Insert the settings
     let settings = world.get_resource::<Game::SettingsCache>();
 
     // Create the graphics device
-    let (graphics_device, transfer_queue) = GraphicsDevice::new(
-        settings.display_settings().adapter().as_deref(),
-        &instance,
-        surface,
-        &thread_manager,
-    )?;
+    let (device, render_queue, gpu_transfer_queue, render_gpu_transfer_queue) =
+        GraphicsDevice::new(
+            settings.display_settings().adapter().as_deref(),
+            &instance,
+            surface,
+            &thread_manager,
+        )?;
 
     drop(settings);
 
+    world.insert_resource(render_queue);
+    if let Some(render_gpu_transfer_queue) = render_gpu_transfer_queue {
+        world.insert_resource(render_gpu_transfer_queue);
+    }
+
     // Create the per-frame data resources
-    create_per_frame_render_data(world, &graphics_device)?;
+    create_per_frame_render_data(world, &device)?;
 
     // Create and insert the global graphics resources
-    create_fixed_render_data_resources(world, &graphics_device)?;
-    create_frame_graph_resources::<Game>(world, &graphics_device)?;
-    create_public_data_resources(world);
-
-    world.insert_resource(graphics_device);
-    world.insert_resource(transfer_queue);
+    create_fixed_render_data_resources(world, &device)?;
+    create_frame_graph_resources::<Game>(world, &device)?;
+    create_public_data_resources(world, &device, gpu_transfer_queue);
 
     // Initialize the render systems
     // TODO: Move this to scene transition
     init_render_systems::<Game>(world);
 
-    Ok(())
+    Ok(device)
 }
 
 /// Initialize the all the required render systems
 pub(crate) fn init_render_systems<Game: crate::Game>(world: &mut World) {
-    init_pre_render();
+    init_pre_render(world);
     init_frame_graph_setup::<Game>(world);
     world.register_phase(phases::FrameGraph);
     init_post_render(world);
 }
 
-fn init_pre_render() {}
+fn init_pre_render(world: &mut World) {
+    if world.try_get_resource::<RenderGpuTransferQueue>().is_some() {
+        world.register_system(PreRender, RenderGpuTransferQueue::system);
+    }
+}
 
 fn init_frame_graph_setup<Game: crate::Game>(world: &mut World) {
     world.register_system(FrameGraphSetup, Swapchain::acquire_next_image);

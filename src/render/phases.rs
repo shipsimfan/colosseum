@@ -4,7 +4,7 @@ use crate::{
 };
 use alexandria::{gpu::VulkanSurface, math::Vector2u};
 use colosseum_ecs::{PhaseName, World};
-use std::time::Duration;
+use std::{sync::Arc, time::Duration};
 
 /// Copies the render-related data into device-visible buffers
 #[derive(PartialEq, Eq)]
@@ -32,7 +32,11 @@ pub(in crate::render) struct PostRender;
 impl PhaseName for PostRender {}
 
 /// Execute all render-related phases
-pub(crate) fn execute_render_systems(world: &mut World, surface: &mut VulkanSurface) -> Result<()> {
+pub(crate) fn execute_render_systems(
+    world: &mut World,
+    surface: &mut VulkanSurface,
+    device: &Arc<GraphicsDevice>,
+) -> Result<()> {
     if world.try_get_resource::<Swapchain>().is_some() {
         let swapchain_ok = render_frame(world)?;
         world.get_resource_mut::<FrameIndex>().increment();
@@ -50,11 +54,7 @@ pub(crate) fn execute_render_systems(world: &mut World, surface: &mut VulkanSurf
     if window_size != Vector2u::ZERO {
         drop(window);
 
-        let mut graphics_device = world.get_resource_mut::<GraphicsDevice>();
-        let swapchain = Swapchain::new(surface, window_size, &mut graphics_device)?;
-        drop(graphics_device);
-
-        world.insert_resource(swapchain);
+        world.insert_resource(Swapchain::new(surface, window_size, device)?);
     }
 
     // Sleep for a short duration to limit background FPS

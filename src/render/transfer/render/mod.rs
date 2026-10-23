@@ -7,6 +7,7 @@ use std::sync::mpsc::Receiver;
 
 mod handle_command;
 mod new;
+mod system;
 
 /// The transfer queue as used on the render or transfer thread
 pub(in crate::render) struct RenderGpuTransferQueue {

@@ -1,7 +1,7 @@
 use crate::{
     Result,
     render::{
-        AntiAliasing, DescriptorSetLayouts, FrameGraph, GraphicsDevice, HDR_FORMAT, Samplers,
+        AntiAliasing, DescriptorSetLayouts, FrameGraph, HDR_FORMAT, Samplers,
         frame_graph::{
             FrameGraphBuilder, FrameGraphResourceId, FrameGraphResourceKind, FrameGraphResources,
             FrameGraphStructure, FxaaNode, QuantizationNode, RenderScaleNode, SolidColorSkyNode,
@@ -18,7 +18,6 @@ impl<Game: crate::Game> FrameGraph<Game> {
         &mut self,
         resources: &mut FrameGraphResources,
         commands: &mut Commands,
-        device: &GraphicsDevice,
         descriptor_set_layouts: &DescriptorSetLayouts,
         samplers: &Samplers,
         settings: &Game::SettingsCache,
@@ -28,7 +27,7 @@ impl<Game: crate::Game> FrameGraph<Game> {
             return Ok(()); // No need to recompile if the structure hasn't changed
         }
 
-        let mut builder = FrameGraphBuilder::new(commands, device);
+        let mut builder = FrameGraphBuilder::new(commands, &self.device);
 
         /* Main Render Passes */
         let main_color_output = builder.create_resource(

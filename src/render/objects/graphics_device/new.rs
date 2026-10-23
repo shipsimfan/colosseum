@@ -1,6 +1,9 @@
 use crate::{
     Result, UserEvent,
-    render::{GpuTransferQueue, GraphicsDevice, objects::graphics_device::VulkanAdapterInfo},
+    render::{
+        GpuTransferQueue, GraphicsDevice, RenderGpuTransferQueue, RenderQueue,
+        objects::graphics_device::VulkanAdapterInfo,
+    },
 };
 use alexandria::gpu::{
     VulkanDeviceExtendedDynamicStateFeatures, VulkanDeviceExtension, VulkanDeviceFeatures,
@@ -8,6 +11,7 @@ use alexandria::gpu::{
     VulkanInstance, VulkanQueueCreateInfo, VulkanSurface,
 };
 use colosseum_core::{Logger, ThreadManager, info, logger, new_error, warning};
+use std::sync::Arc;
 
 impl GraphicsDevice {
     /// Locate a new graphics device based on the name or UUID of the adapter, or use a default if none is provided
@@ -16,7 +20,12 @@ impl GraphicsDevice {
         instance: &VulkanInstance,
         surface: &VulkanSurface,
         thread_manager: &ThreadManager<UserEvent>,
-    ) -> Result<(GraphicsDevice, GpuTransferQueue)> {
+    ) -> Result<(
+        Arc<GraphicsDevice>,
+        RenderQueue,
+        GpuTransferQueue,
+        Option<RenderGpuTransferQueue>,
+    )> {
         let logger = logger!("vulkan");
 
         // Select the adapter
@@ -94,16 +103,16 @@ impl GraphicsDevice {
         };
 
         Ok((
-            GraphicsDevice {
+            Arc::new(GraphicsDevice {
                 logger: logger.clone(),
                 device,
-                render_queue,
                 render_queue_family: adapter.graphics_queue_family_index(),
                 swapchain_format: adapter.swapchain_format(),
                 memory_properties: adapter.memory_properties().clone(),
-                gpu_transfer_queue,
-            },
+            }),
+            RenderQueue::new(render_queue),
             transfer_queue,
+            gpu_transfer_queue,
         ))
     }
 }
