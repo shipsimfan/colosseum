@@ -10,6 +10,9 @@ pub(in crate::resources) struct ResourceSlot {
     /// The type of the contained resource
     r#type: TypeId,
 
+    /// Is this slot permanent?
+    permanent: bool,
+
     /// The actual resource stored in this slot
     resource: Option<Box<dyn Any>>,
 }

@@ -19,6 +19,12 @@ pub struct PostUpdate;
 
 impl PhaseName for PostUpdate {}
 
+/// Runs when the scene is about to be transitioned away from
+#[derive(PartialEq, Eq)]
+pub struct SceneTransition;
+
+impl PhaseName for SceneTransition {}
+
 /// Execute all the update-related phases
 pub(crate) fn execute_update_systems(world: &mut World) -> Result<()> {
     world.run(PreUpdate)?;

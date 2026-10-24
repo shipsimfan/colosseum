@@ -16,4 +16,9 @@ impl ResourceSlot {
     pub fn get_mut<'a>(&'a mut self) -> Option<&'a mut Box<dyn Any>> {
         self.resource.as_mut()
     }
+
+    /// Is this resource slot permanent?
+    pub fn permanent(&self) -> bool {
+        self.permanent
+    }
 }

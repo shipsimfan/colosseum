@@ -10,9 +10,10 @@ use colosseum_ecs::{System, UnsafeWorldCell, World};
 
 impl System for FrameGraphSubmissionSystem {
     fn initialize(&mut self, world: &mut World) {
-        self.primary_command_buffer = world.get_or_reserve_resource_index::<RenderCommandBuffer>();
-        self.frame_index = world.get_or_reserve_resource_index::<FrameIndex>();
-        self.resources = world.get_or_reserve_resource_index::<FrameGraphResources>();
+        self.primary_command_buffer =
+            world.get_or_reserve_permanent_resource_index::<RenderCommandBuffer>();
+        self.frame_index = world.get_or_reserve_permanent_resource_index::<FrameIndex>();
+        self.resources = world.get_or_reserve_permanent_resource_index::<FrameGraphResources>();
 
         for node in &mut self.nodes {
             node.initialize(world);

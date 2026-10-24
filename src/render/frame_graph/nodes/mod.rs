@@ -28,8 +28,8 @@ pub(in crate::render) fn create_frame_graph_resources<Game: crate::Game>(
     world: &mut World,
     device: &Arc<GraphicsDevice>,
 ) -> Result<()> {
-    world.insert_resource(FrameGraphResources::empty());
-    world.insert_resource(FrameGraph::<Game>::new(device));
+    world.insert_permanent_resource(FrameGraphResources::empty());
+    world.insert_permanent_resource(FrameGraph::<Game>::new(device));
 
     FxaaNode::create_resources(world, device)?;
     QuantizationNode::create_resources(world, device)?;

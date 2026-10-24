@@ -15,7 +15,7 @@ impl<Node: FrameGraphNode, System: 'static + crate::ecs::System> crate::ecs::Sys
     fn initialize(&mut self, world: &mut World) {
         self.system.initialize(world);
 
-        self.frame_index = world.get_or_reserve_resource_index::<FrameIndex>();
+        self.frame_index = world.get_or_reserve_permanent_resource_index::<FrameIndex>();
         self.secondary_command_buffer =
             world.get_or_reserve_resource_index::<SecondaryCommandBuffer<Node>>();
 

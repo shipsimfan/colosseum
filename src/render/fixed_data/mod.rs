@@ -20,13 +20,13 @@ pub(in crate::render) fn create_fixed_render_data_resources(
     world: &mut World,
     device: &GraphicsDevice,
 ) -> Result<()> {
-    world.insert_resource(FrameIndex::new());
-    world.insert_resource(FullscreenQuadShader::new(device)?);
-    world.insert_resource(Samplers::new(device)?);
+    world.insert_permanent_resource(FrameIndex::new());
+    world.insert_permanent_resource(FullscreenQuadShader::new(device)?);
+    world.insert_permanent_resource(Samplers::new(device)?);
 
     let mut descriptor_set_layouts = DescriptorSetLayouts::new();
     PostProcess::new(&mut descriptor_set_layouts, device)?;
-    world.insert_resource(descriptor_set_layouts);
+    world.insert_permanent_resource(descriptor_set_layouts);
 
     Ok(())
 }

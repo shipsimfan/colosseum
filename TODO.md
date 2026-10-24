@@ -1,31 +1,25 @@
 # ToDo
  1. Rewrite ECS
-   1. Add scene transition
-     1. Add permanent resources
-     2. Implement clearing and compacting
-     3. Add resource for next scene
-     4. Add checking scene transition at start of update
-     5. Add `SceneTransition` phase
-   2. Add archetype management
+   1. Add archetype management
      1. `add_entity`
      2. `remove_entity`
      3. `add_component`
      4. `try_get`, `get`, `try_get_mut`, `get_mut`
      5. `try_remove_component`, `remove_component`
      6. `add` helper
-   3. Implement `Query` system parameter
+   2. Implement `Query` system parameter
      1. Single component
      2. Multiple components
      3. Optional components
      4. Filters
        1. `With` filter
        2. `Without` filter
-   4. Update `Commands` system parameter for entities
+   3. Update `Commands` system parameter for entities
      1. Add entity
      2. Remove entity
      3. Add component
      4. Remove component
-   5. Update remaining engine to new ECS
+   4. Update remaining engine to new ECS
      1. Add unlit rendering
      2. Add procedural skybox
      3. Add lit rendering

@@ -4,6 +4,7 @@ use crate::{
         FrameGraph, FrameIndex, GraphicsDevice, RenderGpuTransferQueue, Swapchain,
         create_fixed_render_data_resources, create_frame_graph_resources,
         create_per_frame_render_data, create_public_data_resources,
+        create_public_data_scene_resources,
         phases::{self, FrameGraphSetup, PostRender, PreRender},
     },
 };
@@ -18,7 +19,7 @@ pub(crate) fn init_render_resources<Game: crate::Game>(
     surface: &VulkanSurface,
     thread_manager: &ThreadManager<UserEvent>,
     world: &mut World,
-) -> Result<(Arc<GraphicsDevice>, usize, usize)> {
+) -> Result<(Arc<GraphicsDevice>, usize, usize, usize)> {
     // Insert the settings
     let settings = world.get_resource::<Game::SettingsCache>();
 
@@ -49,24 +50,29 @@ pub(crate) fn init_render_resources<Game: crate::Game>(
     )?;
 
     // Insert render resources
-    world.insert_resource(render_queue);
+    world.insert_permanent_resource(render_queue);
     if let Some(render_gpu_transfer_queue) = render_gpu_transfer_queue {
-        world.insert_resource(render_gpu_transfer_queue);
+        world.insert_permanent_resource(render_gpu_transfer_queue);
     }
 
-    // Initialize the render systems
-    // TODO: Move this to scene transition
-    init_render_systems::<Game>(world);
-
     // Get indices for resources
-    let swapchain_index = world.get_or_reserve_resource_index::<Swapchain>();
-    let frame_index_index = world.get_or_reserve_resource_index::<FrameIndex>();
+    let swapchain_index = world.get_or_reserve_permanent_resource_index::<Swapchain>();
+    let frame_index_index = world.get_or_reserve_permanent_resource_index::<FrameIndex>();
+    let frame_graph_index = world.get_or_reserve_permanent_resource_index::<FrameGraph<Game>>();
 
-    Ok((device, swapchain_index, frame_index_index))
+    Ok((
+        device,
+        swapchain_index,
+        frame_index_index,
+        frame_graph_index,
+    ))
 }
 
 /// Initialize the all the required render systems
-fn init_render_systems<Game: crate::Game>(world: &mut World) {
+pub(crate) fn init_render_systems<Game: crate::Game>(world: &mut World, frame_graph_index: usize) {
+    create_public_data_scene_resources(world);
+    unsafe { world.get_resource_at_index_mut::<FrameGraph<Game>>(frame_graph_index) }.reset();
+
     init_pre_render(world);
     init_frame_graph_setup::<Game>(world);
     world.register_phase(phases::FrameGraph);

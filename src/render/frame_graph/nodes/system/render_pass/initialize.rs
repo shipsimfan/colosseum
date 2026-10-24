@@ -7,7 +7,7 @@ use colosseum_ecs::World;
 impl FrameGraphRenderPass {
     /// Initialize the render pass with the given world context
     pub fn initialize(&mut self, world: &mut World) {
-        self.resources = world.get_or_reserve_resource_index::<FrameGraphResources>();
-        self.frame_index = world.get_or_reserve_resource_index::<FrameIndex>();
+        self.resources = world.get_or_reserve_permanent_resource_index::<FrameGraphResources>();
+        self.frame_index = world.get_or_reserve_permanent_resource_index::<FrameIndex>();
     }
 }

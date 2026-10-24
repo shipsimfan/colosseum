@@ -81,7 +81,7 @@ pub(crate) fn execute_render_systems<Game: crate::Game>(
     if window_size != Vector2u::ZERO {
         drop(window);
 
-        world.insert_resource(Swapchain::new(surface, window_size, device)?);
+        world.insert_permanent_resource(Swapchain::new(surface, window_size, device)?);
     }
 
     // Sleep for a short duration to limit background FPS

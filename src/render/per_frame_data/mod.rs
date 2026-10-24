@@ -20,10 +20,10 @@ pub(in crate::render) fn create_per_frame_render_data(
     world: &mut World,
     graphics_device: &GraphicsDevice,
 ) -> Result<()> {
-    world.insert_resource(DrawFence::new(&graphics_device)?);
-    world.insert_resource(AcquireImageSemaphore::new(&graphics_device)?);
-    world.insert_resource(RenderCompleteSemaphore::new(&graphics_device)?);
-    world.insert_resource(RenderCommandBuffer::new(&graphics_device)?);
+    world.insert_permanent_resource(DrawFence::new(&graphics_device)?);
+    world.insert_permanent_resource(AcquireImageSemaphore::new(&graphics_device)?);
+    world.insert_permanent_resource(RenderCompleteSemaphore::new(&graphics_device)?);
+    world.insert_permanent_resource(RenderCommandBuffer::new(&graphics_device)?);
 
     Ok(())
 }

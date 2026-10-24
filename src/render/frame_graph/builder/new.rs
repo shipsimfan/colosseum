@@ -1,12 +1,15 @@
 use crate::render::{
     GraphicsDevice,
     frame_graph::{FrameGraphBuilder, builder::FrameGraphBuilderResources},
+    phases::FrameGraph,
 };
 use colosseum_ecs::Commands;
 
 impl<'a> FrameGraphBuilder<'a> {
     /// Create a new [`FrameGraphBuilder`]
     pub fn new(commands: &'a mut Commands, device: &'a GraphicsDevice) -> FrameGraphBuilder<'a> {
+        commands.clear_phase(FrameGraph);
+
         FrameGraphBuilder {
             commands,
             device,

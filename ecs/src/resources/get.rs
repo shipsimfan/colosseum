@@ -54,11 +54,11 @@ impl Resources {
     }
 
     /// Get the index of a resource, reserving it if it does not already exist
-    pub fn get_or_reserve_index<Resource: 'static>(&mut self) -> usize {
+    pub fn get_or_reserve_index<Resource: 'static>(&mut self, permanent: bool) -> usize {
         if let Some(index) = self.get_index::<Resource>() {
             index
         } else {
-            self.reserve::<Resource>();
+            self.reserve::<Resource>(permanent);
             self.get_index::<Resource>().unwrap()
         }
     }

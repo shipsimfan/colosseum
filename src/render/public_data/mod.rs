@@ -34,11 +34,14 @@ pub(in crate::render) fn create_public_data_resources(
     let file_io = world.get_resource::<FileIo>().clone();
 
     let mut assets = Assets::new(device, gpu_transfer_queue, file_io);
-    world.insert_resource(Primitives::new(&mut assets, render_gpu_transfer_queue)?);
-    world.insert_resource(assets);
-
-    world.insert_resource(ColorCorrection::new());
-    world.insert_resource(Skybox::default());
+    world.insert_permanent_resource(Primitives::new(&mut assets, render_gpu_transfer_queue)?);
+    world.insert_permanent_resource(assets);
 
     Ok(())
+}
+
+/// Create the public facing scene-specific resources
+pub(in crate::render) fn create_public_data_scene_resources(world: &mut World) {
+    world.insert_resource(ColorCorrection::new());
+    world.insert_resource(Skybox::default());
 }

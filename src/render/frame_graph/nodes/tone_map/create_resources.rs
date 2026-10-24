@@ -36,7 +36,7 @@ impl<Game: crate::Game> ToneMapNode<Game> {
 
         drop(fullscreen_quad);
 
-        world.insert_resource(pipeline);
+        world.insert_permanent_resource(pipeline);
 
         Ok(())
     }
