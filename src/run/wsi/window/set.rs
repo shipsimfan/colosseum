@@ -15,4 +15,9 @@ impl Window {
             .push(UserEvent::UnsetFullscreen)
             .map_err(|error| new_error!("unable to unset window from fullscreen - {}", error))
     }
+
+    /// Close the window
+    pub fn close(&mut self) {
+        self.closing = true;
+    }
 }

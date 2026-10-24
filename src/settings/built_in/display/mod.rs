@@ -43,4 +43,11 @@ pub struct DisplaySettings {
     #[default(ShadowQuality::Medium)]
     shadow_quality: ShadowQuality,
     */
+    /// The frame rate to run the game at when minimized
+    #[default(30.0)]
+    minimized_frame_rate: f32,
+
+    /// The maximum frame rate to run the game at
+    #[default(None)]
+    maximum_frame_rate: Option<f32>,
 }

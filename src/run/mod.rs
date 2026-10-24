@@ -10,8 +10,9 @@ mod r#macro;
 mod user_event;
 mod wsi;
 
+pub use wsi::*;
+
 pub(crate) use user_event::*;
-pub(crate) use wsi::*;
 
 /// Begins the game engine with the provided options, quiting the application based on the result
 /// of running

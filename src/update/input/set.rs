@@ -1,8 +1,8 @@
-use crate::{Key, update::Inputs};
+use crate::{Key, update::Input};
 
-impl Inputs {
+impl Input {
     /// Add a key to the set of currently pressed keys
-    pub(in crate::update) fn set_key_down(&mut self, key: Key) {
+    pub(in crate::update::input) fn set_key_down(&mut self, key: Key) {
         if !self.key(key) {
             self.keys_down[key as usize] = true;
         }
@@ -11,7 +11,7 @@ impl Inputs {
     }
 
     /// Remove a key from the set of currently pressed keys
-    pub(in crate::update) fn set_key_up(&mut self, key: Key) {
+    pub(in crate::update::input) fn set_key_up(&mut self, key: Key) {
         if self.key(key) {
             self.keys_up[key as usize] = true;
         }

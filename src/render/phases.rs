@@ -1,10 +1,13 @@
 use crate::{
-    Result, Window,
+    Result, SettingsCache, Window,
     render::{DrawFence, FrameIndex, GraphicsDevice, Swapchain},
 };
 use alexandria::{gpu::VulkanSurface, math::Vector2u};
 use colosseum_ecs::{PhaseName, World};
-use std::{sync::Arc, time::Duration};
+use std::{
+    sync::Arc,
+    time::{Duration, Instant},
+};
 
 /// Copies the render-related data into device-visible buffers
 #[derive(PartialEq, Eq)]
@@ -32,23 +35,47 @@ pub(in crate::render) struct PostRender;
 impl PhaseName for PostRender {}
 
 /// Execute all render-related phases
-pub(crate) fn execute_render_systems(
+pub(crate) fn execute_render_systems<Game: crate::Game>(
     world: &mut World,
     surface: &mut VulkanSurface,
+    last_render_time: &mut Instant,
+
+    window_index: usize,
+    settings_index: usize,
+    swapchain_index: usize,
+    frame_index_index: usize,
     device: &Arc<GraphicsDevice>,
 ) -> Result<()> {
-    if world.try_get_resource::<Swapchain>().is_some() {
+    let settings = unsafe { world.get_resource_at_index::<Game::SettingsCache>(settings_index) };
+    let display_settings = settings.display_settings();
+    let max_frame_rate = display_settings.maximum_frame_rate();
+    let min_frame_rate = display_settings.minimized_frame_rate();
+
+    if unsafe { world.try_get_resource_at_index::<Swapchain>(swapchain_index) }.is_some() {
         let swapchain_ok = render_frame(world)?;
-        world.get_resource_mut::<FrameIndex>().increment();
+
+        unsafe { world.get_resource_at_index_mut::<FrameIndex>(frame_index_index) }.increment();
+
         if swapchain_ok {
+            if let Some(max_frame_rate) = max_frame_rate {
+                // Limit frame rate based on max_frame_rate
+                let frame_duration = Duration::from_secs_f32(1.0 / max_frame_rate);
+                let elapsed = last_render_time.elapsed();
+                if elapsed < frame_duration {
+                    std::thread::sleep(frame_duration - elapsed);
+                }
+            }
+            *last_render_time = Instant::now();
+
             return Ok(());
         }
 
+        // Swapchain needs to be recreated
         world.remove_resource::<Swapchain>();
     }
 
     // Check if we can create a swapchain
-    let window = world.get_resource::<Window>();
+    let window = unsafe { world.get_resource_at_index::<Window>(window_index) };
 
     let window_size = window.size();
     if window_size != Vector2u::ZERO {
@@ -58,7 +85,13 @@ pub(crate) fn execute_render_systems(
     }
 
     // Sleep for a short duration to limit background FPS
-    std::thread::sleep(Duration::from_millis(32)); // TODO: Change this to setting ("background FPS limit")
+    let frame_duration = Duration::from_secs_f32(1.0 / min_frame_rate);
+    let elapsed = last_render_time.elapsed();
+    if elapsed < frame_duration {
+        std::thread::sleep(frame_duration - elapsed);
+    }
+    *last_render_time = Instant::now();
+
     Ok(())
 }
 

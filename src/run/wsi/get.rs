@@ -1,9 +1,6 @@
-use crate::{
-    InputEvent, UserEvent, Window,
-    run::{Wsi, wsi::SharedWindow},
-};
+use crate::{InputEvent, UserEvent, Window, run::Wsi};
 use alexandria::EventQueue;
-use std::sync::{Arc, mpsc::Receiver};
+use std::sync::mpsc::Receiver;
 
 impl Wsi {
     /// Get a reference to the event queue the WSI thread consumes
@@ -18,10 +15,5 @@ impl Wsi {
             inputs,
             self.context.event_queue().clone(),
         )
-    }
-
-    /// Signal the restored notify to kill any threads waiting for the window to be restored
-    pub fn shared_window(&self) -> &Arc<SharedWindow> {
-        &self.shared_window
     }
 }

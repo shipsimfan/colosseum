@@ -13,6 +13,7 @@ impl Window {
             shared,
             inputs,
             event_queue,
+            closing: false,
         }
     }
 }

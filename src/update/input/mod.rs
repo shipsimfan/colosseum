@@ -4,12 +4,13 @@ mod get;
 mod new;
 mod reset;
 mod set;
+mod system;
 
 /// The maximum number of keys that can be tracked for input
 const MAX_KEYS: usize = Key::NpEnter as usize + 1;
 
 /// The state of the inputs for the game
-pub struct Inputs {
+pub struct Input {
     /// The set of keyboard keys that are currently pressed
     keys: [bool; MAX_KEYS],
 

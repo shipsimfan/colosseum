@@ -14,6 +14,8 @@ impl Default for DisplaySettings {
             /*
             shadow_quality: ShadowQuality::Medium,
             */
+            minimized_frame_rate: 30.0,
+            maximum_frame_rate: None,
         }
     }
 }

@@ -2,12 +2,12 @@ use crate::{
     Result, UserEvent, Window,
     file_io::FileIo,
     render::{execute_render_systems, init_render_resources, stop_render},
-    update::{Scene, execute_update_systems},
+    update::{Scene, execute_update_systems, init_update_resources},
 };
 use alexandria::gpu::{VulkanInstance, VulkanSurface};
 use colosseum_core::{GlobalSharedState, ThreadManager, logger};
 use colosseum_ecs::World;
-use std::sync::Arc;
+use std::{sync::Arc, time::Instant};
 
 /// Run the main game thread
 pub(in crate::run) fn run<Game: crate::Game, InitialScene: Scene>(
@@ -25,69 +25,56 @@ pub(in crate::run) fn run<Game: crate::Game, InitialScene: Scene>(
 ) -> Result<()> {
     let logger = logger!("game");
 
+    // Create world and insert basic resources
     let mut world = World::new();
     world.insert_resource(settings);
     world.insert_resource(options);
     world.insert_resource(window);
     world.insert_resource(file_io);
 
-    let graphics_device =
+    // Create the graphics device and initialize render resources
+    let (graphics_device, swapchain_index, frame_index_index) =
         init_render_resources::<Game>(&instance, &surface, &thread_manager, &mut world)?;
 
+    // Initialize update resources
+    init_update_resources::<Game>(&mut world);
+
+    // Get the index of the resources we use in the main loop
+    let settings_index = world.get_or_reserve_resource_index::<Game::SettingsCache>();
+    let window_index = world.get_or_reserve_resource_index::<Window>();
+
+    // Begin the initial scene
+    let mut last_render_time = Instant::now();
     initial_scene.start(&mut world)?;
 
+    // Main game loop
     while shared_state.is_running() {
+        // Check if the window should close
+        let window = unsafe { world.get_resource_at_index::<Window>(window_index) };
+        if window.should_close() {
+            break;
+        }
+        drop(window);
+
+        // Increment the frame counter of the logger
         logger.frame();
 
+        // Execute the frame
         execute_update_systems(&mut world)?;
-        execute_render_systems(&mut world, &mut surface, &graphics_device)?;
+        execute_render_systems::<Game>(
+            &mut world,
+            &mut surface,
+            &mut last_render_time,
+            window_index,
+            settings_index,
+            swapchain_index,
+            frame_index_index,
+            &graphics_device,
+        )?;
     }
 
+    // Wait for idle on the graphics device before stopping render
     stop_render(&graphics_device)?;
 
     Ok(())
-
-    /*
-    // Initialize the render and update jobs
-    let mut update_job = UpdateJob::<Game>::new(
-        options,
-        &logger,
-        &mut settings,
-        file_io,
-        transfer_queue,
-        &mut render_job,
-    )?;
-
-    // Run the main loop, breaking if either the update job or the thread manager indicates that
-    // the game should exit
-    let mut last_time = Instant::now();
-    while shared_state.is_running() {
-        // Get the window size for this frame atomically
-        window_size = window.size();
-        if window_size == Vector2u::ZERO {
-            debug!(logger, "Window size is zero, waiting for restore");
-            window.wait_for_restore()?;
-            last_time = Instant::now(); // Reset the timer to avoid a large delta time after restoring the window
-            continue;
-        }
-
-        // Reset per-frame data
-        let render_data = render_job.render_data();
-        log_controller.frame();
-
-        // Prepare the timing data for this frame
-        let current_time = Instant::now();
-        let delta_time = current_time - last_time;
-        last_time = current_time;
-
-        // Update and render the frame
-        if !update_job.run(window_size, delta_time, render_data, &window)? {
-            info!(logger, "Update job requested exit");
-            break;
-        }
-        render_job = render_job.run(window_size, &window)?;
-    }
-
-    Ok(())
-    */
 }

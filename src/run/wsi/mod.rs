@@ -13,7 +13,7 @@ mod get;
 mod new;
 mod pump;
 
-pub(crate) use window::*;
+pub use window::*;
 
 /// The components needed to run the WSI thread
 pub(in crate::run) struct Wsi {

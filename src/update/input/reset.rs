@@ -1,8 +1,8 @@
-use crate::update::{Inputs, input::MAX_KEYS};
+use crate::update::{Input, input::MAX_KEYS};
 
-impl Inputs {
+impl Input {
     /// Reset the set of inputs for the next frame
-    pub(in crate::update) fn reset(&mut self) {
+    pub(in crate::update::input) fn reset(&mut self) {
         self.keys_down = [false; MAX_KEYS];
         self.keys_up = [false; MAX_KEYS];
     }

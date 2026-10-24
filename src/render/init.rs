@@ -1,7 +1,7 @@
 use crate::{
     Result, SettingsCache, UserEvent,
     render::{
-        FrameGraph, GraphicsDevice, RenderGpuTransferQueue, Swapchain,
+        FrameGraph, FrameIndex, GraphicsDevice, RenderGpuTransferQueue, Swapchain,
         create_fixed_render_data_resources, create_frame_graph_resources,
         create_per_frame_render_data, create_public_data_resources,
         phases::{self, FrameGraphSetup, PostRender, PreRender},
@@ -18,7 +18,7 @@ pub(crate) fn init_render_resources<Game: crate::Game>(
     surface: &VulkanSurface,
     thread_manager: &ThreadManager<UserEvent>,
     world: &mut World,
-) -> Result<Arc<GraphicsDevice>> {
+) -> Result<(Arc<GraphicsDevice>, usize, usize)> {
     // Insert the settings
     let settings = world.get_resource::<Game::SettingsCache>();
 
@@ -58,11 +58,15 @@ pub(crate) fn init_render_resources<Game: crate::Game>(
     // TODO: Move this to scene transition
     init_render_systems::<Game>(world);
 
-    Ok(device)
+    // Get indices for resources
+    let swapchain_index = world.get_or_reserve_resource_index::<Swapchain>();
+    let frame_index_index = world.get_or_reserve_resource_index::<FrameIndex>();
+
+    Ok((device, swapchain_index, frame_index_index))
 }
 
 /// Initialize the all the required render systems
-pub(crate) fn init_render_systems<Game: crate::Game>(world: &mut World) {
+fn init_render_systems<Game: crate::Game>(world: &mut World) {
     init_pre_render(world);
     init_frame_graph_setup::<Game>(world);
     world.register_phase(phases::FrameGraph);

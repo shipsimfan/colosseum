@@ -23,7 +23,12 @@ impl Window {
     }
 
     /// Get the next input event
-    pub fn next_input(&self) -> Option<InputEvent> {
+    pub(crate) fn next_input(&self) -> Option<InputEvent> {
         self.inputs.try_recv().ok()
+    }
+
+    /// Should the window be closed?
+    pub(crate) fn should_close(&self) -> bool {
+        self.closing
     }
 }

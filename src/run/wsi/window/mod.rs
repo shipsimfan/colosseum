@@ -9,12 +9,12 @@ mod get;
 mod new;
 mod set;
 
-pub(crate) use input_event::InputEvent;
+pub(crate) use input_event::*;
 
-pub(in crate::run::wsi) use shared::SharedWindow;
+pub(in crate::run::wsi) use shared::*;
 
 /// Access to the WSI from the game thread
-pub(crate) struct Window {
+pub struct Window {
     /// The shared state of the window
     shared: Arc<SharedWindow>,
 
@@ -23,4 +23,7 @@ pub(crate) struct Window {
 
     /// A queue to submit events to the WSI thread
     event_queue: EventQueue<UserEvent>,
+
+    /// Should the window be closed?
+    closing: bool,
 }

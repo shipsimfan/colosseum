@@ -1,6 +1,6 @@
-use crate::{Key, update::Inputs};
+use crate::{Key, update::Input};
 
-impl Inputs {
+impl Input {
     /// Get if a key is currently pressed
     pub fn key(&self, key: Key) -> bool {
         self.keys[key as usize]
