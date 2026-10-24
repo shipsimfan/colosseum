@@ -1,27 +1,19 @@
-use crate::render::GpuTransferQueue;
+use crate::{
+    Result,
+    render::{GpuTransferQueue, LoadingMesh, Mesh, transfer::GpuTransferCommand},
+};
+use colosseum_core::{new_error, single_value_channel};
 
 impl GpuTransferQueue {
-    /*
     /// Transfer a mesh to the GPU
-    pub(in crate::render) fn transfer_mesh(
-        &mut self,
-        mesh: Mesh,
-        render_mesh: RenderMesh,
-        allocation: GpuAllocatedMemory,
-    ) -> Result<MeshTransfer> {
-        let (sender, receiver) = single_value_channel::create(true)?;
-        let transfer = MeshTransfer::new(receiver);
+    pub(in crate::render) fn transfer_mesh(&self, mesh: Mesh) -> Result<LoadingMesh> {
+        let (sender, receiver) = single_value_channel(true)?;
+        let transfer = LoadingMesh::new(receiver);
 
         self.queue
-            .send(GpuTransferCommand::Mesh {
-                mesh,
-                render_mesh,
-                allocation,
-                sender,
-            })
-            .map_err(|_| Error::new("transfer queue closed"))?;
+            .send(GpuTransferCommand::Mesh { mesh, sender })
+            .map_err(|_| new_error!("unable to load mesh - GPU transfer queue closed"))?;
 
         Ok(transfer)
     }
-    */
 }

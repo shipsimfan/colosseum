@@ -1,5 +1,5 @@
 use crate::render::GraphicsDevice;
-use alexandria::gpu::VulkanFormat;
+use alexandria::gpu::{VulkanAdapterMemoryProperties, VulkanFormat};
 use colosseum_core::Logger;
 
 impl GraphicsDevice {
@@ -16,5 +16,10 @@ impl GraphicsDevice {
     /// Get the format for swapchain images that this graphics device supports
     pub(in crate::render) fn swapchain_format(&self) -> VulkanFormat {
         self.swapchain_format
+    }
+
+    /// Get the memory properties for this graphics device
+    pub(in crate::render) fn memory_properties(&self) -> &VulkanAdapterMemoryProperties {
+        &self.memory_properties
     }
 }

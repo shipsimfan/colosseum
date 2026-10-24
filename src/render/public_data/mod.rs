@@ -1,21 +1,26 @@
 //! The renderable definitions accessible to games
 
 use crate::{
-    FileIo,
-    render::{GpuTransferQueue, GraphicsDevice},
+    FileIo, Result,
+    render::{GpuTransferQueue, GraphicsDevice, RenderGpuTransferQueue},
 };
+use alexandria::gpu::VulkanQueue;
 use colosseum_ecs::World;
 use std::sync::Arc;
 
 mod anti_aliasing;
-mod asset_loader;
+mod assets;
 mod color_correction;
+mod mesh;
+mod primitives;
 mod shader;
 mod skybox;
 
 pub use anti_aliasing::*;
-pub use asset_loader::*;
+pub use assets::*;
 pub use color_correction::*;
+pub use mesh::*;
+pub use primitives::*;
 pub use shader::*;
 pub use skybox::*;
 
@@ -24,10 +29,16 @@ pub(in crate::render) fn create_public_data_resources(
     world: &mut World,
     device: &Arc<GraphicsDevice>,
     gpu_transfer_queue: GpuTransferQueue,
-) {
+    render_gpu_transfer_queue: Option<(&mut RenderGpuTransferQueue, &mut VulkanQueue)>,
+) -> Result<()> {
     let file_io = world.get_resource::<FileIo>().clone();
 
-    world.insert_resource(AssetLoader::new(device, gpu_transfer_queue, file_io));
+    let mut assets = Assets::new(device, gpu_transfer_queue, file_io);
+    world.insert_resource(Primitives::new(&mut assets, render_gpu_transfer_queue)?);
+    world.insert_resource(assets);
+
     world.insert_resource(ColorCorrection::new());
     world.insert_resource(Skybox::default());
+
+    Ok(())
 }

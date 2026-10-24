@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use crate::{
     Result, SettingsCache, UserEvent,
     render::{
@@ -12,6 +10,7 @@ use crate::{
 use alexandria::gpu::{VulkanInstance, VulkanSurface};
 use colosseum_core::ThreadManager;
 use colosseum_ecs::World;
+use std::sync::Arc;
 
 /// Initialize all the resources required for rendering
 pub(crate) fn init_render_resources<Game: crate::Game>(
@@ -24,7 +23,7 @@ pub(crate) fn init_render_resources<Game: crate::Game>(
     let settings = world.get_resource::<Game::SettingsCache>();
 
     // Create the graphics device
-    let (device, render_queue, gpu_transfer_queue, render_gpu_transfer_queue) =
+    let (device, mut render_queue, gpu_transfer_queue, mut render_gpu_transfer_queue) =
         GraphicsDevice::new(
             settings.display_settings().adapter().as_deref(),
             &instance,
@@ -34,18 +33,26 @@ pub(crate) fn init_render_resources<Game: crate::Game>(
 
     drop(settings);
 
-    world.insert_resource(render_queue);
-    if let Some(render_gpu_transfer_queue) = render_gpu_transfer_queue {
-        world.insert_resource(render_gpu_transfer_queue);
-    }
-
     // Create the per-frame data resources
     create_per_frame_render_data(world, &device)?;
 
     // Create and insert the global graphics resources
     create_fixed_render_data_resources(world, &device)?;
     create_frame_graph_resources::<Game>(world, &device)?;
-    create_public_data_resources(world, &device, gpu_transfer_queue);
+    create_public_data_resources(
+        world,
+        &device,
+        gpu_transfer_queue,
+        render_gpu_transfer_queue
+            .as_mut()
+            .map(|transfer_queue| (transfer_queue, &mut *render_queue)),
+    )?;
+
+    // Insert render resources
+    world.insert_resource(render_queue);
+    if let Some(render_gpu_transfer_queue) = render_gpu_transfer_queue {
+        world.insert_resource(render_gpu_transfer_queue);
+    }
 
     // Initialize the render systems
     // TODO: Move this to scene transition

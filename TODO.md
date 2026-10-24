@@ -1,37 +1,35 @@
 # ToDo
  1. Rewrite ECS
-   1. Add mesh transferring
-   2. Add mesh primitives
-   3. Add procedural skybox
-   4. Add delta time
-   5. Add ability to close window
-   6. Add window state saving to settings
-   7. Add scene transition
+   1. Add procedural skybox
+   2. Add delta time
+   3. Add ability to close window
+   4. Add window state saving to settings
+   5. Add scene transition
      1. Add permanent resources
      2. Implement clearing and compacting
      3. Add resource for next scene
      4. Add checking scene transition at start of update
      5. Add `SceneTransition` phase
-   8. Add archetype management
+   6. Add archetype management
      1. `add_entity`
      2. `remove_entity`
      3. `add_component`
      4. `try_get`, `get`, `try_get_mut`, `get_mut`
      5. `try_remove_component`, `remove_component`
      6. `add` helper
-   9. Implement `Query` system parameter
+   7. Implement `Query` system parameter
      1. Single component
      2. Multiple components
      3. Optional components
      4. Filters
        1. `With` filter
        2. `Without` filter
-   10. Update `Commands` system parameter for entities
+   8. Update `Commands` system parameter for entities
      1. Add entity
      2. Remove entity
      3. Add component
      4. Remove component
-   11. Update remaining engine to new ECS
+   9. Update remaining engine to new ECS
      1. Add unlit rendering
      2. Add lit rendering
      3. Add shadow mapping

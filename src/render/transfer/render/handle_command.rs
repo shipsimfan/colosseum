@@ -1,4 +1,7 @@
-use crate::{Result, render::RenderGpuTransferQueue};
+use crate::{
+    Result,
+    render::{Mesh, RenderGpuTransferQueue, Vertex, transfer::GpuTransferCommand},
+};
 use alexandria::gpu::{
     VulkanBuffer, VulkanBufferCopy, VulkanCommandBuffer, VulkanCommandBufferSubmitInfo,
     VulkanFence, VulkanQueue, VulkanResult, VulkanSubmitInfo,
@@ -20,29 +23,20 @@ impl RenderGpuTransferQueue {
             }
         };
 
-        /*
         match command {
-            GpuTransferCommand::Mesh {
-                mesh,
-                render_mesh,
-                allocation,
-                sender,
-            } => {
-                self.transfer_mesh(&mesh, &render_mesh, queue)?;
-                sender.send((mesh, render_mesh, allocation))?;
+            GpuTransferCommand::Mesh { mesh, sender } => {
+                self.transfer_mesh(&mesh, queue)?;
+                sender.send(mesh)?;
             }
         }
-        */
 
         Ok(true)
     }
 
-    /*
     /// Transfer a mesh to the GPU
     pub(in crate::render::transfer::render) fn transfer_mesh(
         &mut self,
         mesh: &Mesh,
-        render_mesh: &RenderMesh,
         queue: &mut VulkanQueue,
     ) -> Result<()> {
         let command_buffer = &mut self.command_pool[self.command_buffer_id];
@@ -62,14 +56,14 @@ impl RenderGpuTransferQueue {
             [
                 (
                     staging_buffer,
-                    render_mesh.vertex_buffer(),
+                    mesh.vertex_buffer(),
                     0,
                     0,
                     vertices_size as _,
                 ),
                 (
                     staging_buffer,
-                    render_mesh.index_buffer(),
+                    mesh.index_buffer(),
                     vertices_size as _,
                     0,
                     indices_size as _,
@@ -77,7 +71,6 @@ impl RenderGpuTransferQueue {
             ],
         )
     }
-    */
 }
 
 fn copy_buffers<const N: usize>(
