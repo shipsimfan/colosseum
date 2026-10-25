@@ -1,7 +1,8 @@
 use crate::render::{
-    FrameIndex, Pipeline, SecondaryCommandBuffer, Skybox, as_bytes, frame_graph::SolidColorSkyNode,
+    FrameIndex, Pipeline, SecondaryCommandBuffer, Skybox, frame_graph::SolidColorSkyNode,
 };
 use alexandria::gpu::VulkanShaderStageFlag;
+use colosseum_core::as_bytes;
 use colosseum_ecs::{Res, ResMut};
 
 impl SolidColorSkyNode {
@@ -25,7 +26,7 @@ impl SolidColorSkyNode {
             pipeline.layout(),
             VulkanShaderStageFlag::Fragment,
             0,
-            unsafe { as_bytes(&clear_color) },
+            as_bytes(&clear_color),
         );
 
         // Perform the draw

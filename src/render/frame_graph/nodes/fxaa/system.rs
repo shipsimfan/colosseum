@@ -1,8 +1,9 @@
 use crate::render::{
-    FrameIndex, Pipeline, SecondaryCommandBuffer, as_bytes,
+    FrameIndex, Pipeline, SecondaryCommandBuffer,
     frame_graph::{FrameGraphResources, FxaaNode},
 };
 use alexandria::gpu::{VulkanPipelineBindPoint, VulkanShaderStageFlag};
+use colosseum_core::as_bytes;
 use colosseum_ecs::{Res, ResMut};
 
 impl FxaaNode {
@@ -33,7 +34,7 @@ impl FxaaNode {
             pipeline.layout(),
             VulkanShaderStageFlag::Fragment,
             0,
-            unsafe { as_bytes(&texel_size) },
+            as_bytes(&texel_size),
         );
 
         // Perform the draw

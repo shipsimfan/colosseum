@@ -1,9 +1,12 @@
 use crate::{Archetypes, Resources, Systems};
 
 mod access;
+mod component_list;
 mod r#unsafe;
 
+mod add;
 mod clear;
+mod create;
 mod get;
 mod insert;
 mod new;
@@ -12,6 +15,7 @@ mod remove;
 mod run;
 
 pub use access::*;
+pub use component_list::*;
 pub use r#unsafe::*;
 
 /// A representation of the world in the ECS system

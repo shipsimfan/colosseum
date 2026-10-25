@@ -1,11 +1,12 @@
 use crate::{
     SettingsCache,
     render::{
-        ColorCorrection, FrameIndex, Pipeline, SecondaryCommandBuffer, as_bytes,
+        ColorCorrection, FrameIndex, Pipeline, SecondaryCommandBuffer,
         frame_graph::{FrameGraphResources, ToneMapNode, nodes::tone_map::PushConstants},
     },
 };
 use alexandria::gpu::{VulkanPipelineBindPoint, VulkanShaderStageFlag};
+use colosseum_core::as_bytes;
 use colosseum_ecs::{Res, ResMut};
 
 impl<Game: crate::Game> ToneMapNode<Game> {
@@ -43,7 +44,7 @@ impl<Game: crate::Game> ToneMapNode<Game> {
             pipeline.layout(),
             VulkanShaderStageFlag::Fragment,
             0,
-            unsafe { as_bytes(&push_constants) },
+            as_bytes(&push_constants),
         );
 
         // Perform the draw

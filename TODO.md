@@ -1,25 +1,20 @@
 # ToDo
  1. Rewrite ECS
-   1. Add archetype management
-     1. `add_entity`
-     2. `remove_entity`
-     3. `add_component`
-     4. `try_get`, `get`, `try_get_mut`, `get_mut`
-     5. `try_remove_component`, `remove_component`
-     6. `add` helper
-   2. Implement `Query` system parameter
-     1. Single component
-     2. Multiple components
-     3. Optional components
-     4. Filters
-       1. `With` filter
-       2. `Without` filter
-   3. Update `Commands` system parameter for entities
+   1. Update `Commands` system parameter for entities
      1. Add entity
      2. Remove entity
      3. Add component
      4. Remove component
-   4. Update remaining engine to new ECS
+   2. Implement `Query` system parameter
+     1. Register existing archetypes with new systems
+     2. Register new archetypes with existing systems
+     3. Single component
+     4. Multiple components
+     5. Optional components
+     6. Filters
+       1. `With` filter
+       2. `Without` filter
+   3. Update remaining engine to new ECS
      1. Add unlit rendering
      2. Add procedural skybox
      3. Add lit rendering

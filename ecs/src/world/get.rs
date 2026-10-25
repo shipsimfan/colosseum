@@ -1,6 +1,39 @@
-use crate::{Res, ResMut, World};
+use crate::{Entity, Res, ResMut, World};
+use alexandria::Id;
 
 impl World {
+    /// Get the number of entities in the ECS system
+    pub fn num_entities(&self) -> usize {
+        self.archetypes.num_entities()
+    }
+
+    /// Get an iterator over the entities in the ECS system
+    pub fn entities(&self) -> impl Iterator<Item = Id<Entity>> {
+        self.archetypes.entities()
+    }
+
+    /// Get a reference to a component of type `T` for the entity with the given `entity_id`
+    pub fn get<T: 'static>(&self, entity_id: Id<Entity>) -> &T {
+        self.try_get(entity_id)
+            .expect("entity does not have the requested component")
+    }
+
+    /// Try to get a reference to a component of type `T` for the entity with the given `entity_id`
+    pub fn try_get<T: 'static>(&self, entity_id: Id<Entity>) -> Option<&T> {
+        self.archetypes.get::<T>(entity_id)
+    }
+
+    /// Get a mutable reference to a component of type `T` for the entity with the given `entity_id`
+    pub fn get_mut<T: 'static>(&mut self, entity_id: Id<Entity>) -> &mut T {
+        self.try_get_mut(entity_id)
+            .expect("entity does not have the requested component")
+    }
+
+    /// Try to get a mutable reference to a component of type `T` for the entity with the given `entity_id`
+    pub fn try_get_mut<T: 'static>(&mut self, entity_id: Id<Entity>) -> Option<&mut T> {
+        self.archetypes.get_mut::<T>(entity_id)
+    }
+
     /// Get a reference to a resource in the world, if it exists
     pub fn try_get_resource<'a, Resource: 'static>(&'a self) -> Option<Res<'a, Resource>> {
         self.resources.get::<Resource>()

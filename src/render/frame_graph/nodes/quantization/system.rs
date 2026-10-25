@@ -1,11 +1,12 @@
 use crate::render::{
-    FrameIndex, Pipeline, SecondaryCommandBuffer, as_bytes,
+    FrameIndex, Pipeline, SecondaryCommandBuffer,
     frame_graph::{FrameGraphResources, QuantizationNode, nodes::quantization::PushConstants},
 };
 use alexandria::{
     gpu::{VulkanPipelineBindPoint, VulkanShaderStageFlag},
     math::Vector2f,
 };
+use colosseum_core::as_bytes;
 use colosseum_ecs::{Res, ResMut};
 
 impl QuantizationNode {
@@ -41,7 +42,7 @@ impl QuantizationNode {
             pipeline.layout(),
             VulkanShaderStageFlag::Fragment,
             0,
-            unsafe { as_bytes(&push_constants) },
+            as_bytes(&push_constants),
         );
 
         // Perform the draw

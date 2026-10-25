@@ -1,13 +1,11 @@
 //! Items used in rendering
 
 use alexandria::gpu::VulkanFormat;
-use as_bytes::*;
 use fixed_data::*;
 use frame_graph::*;
 use objects::*;
 use per_frame_data::*;
 
-mod as_bytes;
 mod fixed_data;
 mod frame_graph;
 mod init;
