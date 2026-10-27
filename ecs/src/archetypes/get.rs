@@ -15,16 +15,16 @@ impl Archetypes {
     }
 
     /// Try to get a reference to a component of type `T` for the entity with the given `entity_id`
-    pub fn get<T: 'static>(&self, entity_id: Id<Entity>) -> Option<&T> {
+    pub fn get<Component: 'static>(&self, entity_id: Id<Entity>) -> Option<&Component> {
         let (archetype_index, entity_index) = *self.entities.get(unsafe { entity_id.cast() })?;
 
-        self.archetypes[archetype_index].get::<T>(entity_index)
+        self.archetypes[archetype_index].get::<Component>(entity_index)
     }
 
     /// Try to get a mutable reference to a component of type `T` for the entity with the given `entity_id`
-    pub fn get_mut<T: 'static>(&mut self, entity_id: Id<Entity>) -> Option<&mut T> {
+    pub fn get_mut<Component: 'static>(&mut self, entity_id: Id<Entity>) -> Option<&mut Component> {
         let (archetype_index, entity_index) = *self.entities.get(unsafe { entity_id.cast() })?;
 
-        self.archetypes[archetype_index].get_mut::<T>(entity_index)
+        self.archetypes[archetype_index].get_mut::<Component>(entity_index)
     }
 }

@@ -13,8 +13,8 @@ unsafe fn alloc_initial(layout: Layout, element_size: usize) -> *mut u8 {
 
 impl Components {
     /// Create a new set of component data for a given component type
-    pub fn new<T: 'static + Send + Sync + Sized>() -> Components {
-        let layout = Layout::new::<T>();
+    pub fn new<Component: 'static + Send + Sync + Sized>() -> Components {
+        let layout = Layout::new::<Component>();
         let element_size = layout.size().next_multiple_of(layout.align());
 
         let ptr = unsafe { alloc_initial(layout, element_size) };
@@ -23,11 +23,11 @@ impl Components {
             ptr,
             capacity: DEFAULT_CAPACITY,
             length: 0,
-            type_id: TypeId::of::<T>(),
+            type_id: TypeId::of::<Component>(),
             element_size,
             layout,
-            type_name: std::any::type_name::<T>(),
-            drop_fn: |ptr| unsafe { std::ptr::drop_in_place(ptr as *mut T) },
+            type_name: std::any::type_name::<Component>(),
+            drop_fn: |ptr| unsafe { std::ptr::drop_in_place(ptr as *mut Component) },
         }
     }
 

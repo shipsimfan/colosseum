@@ -13,6 +13,7 @@ mod new;
 mod register;
 mod remove;
 mod run;
+mod spawn;
 
 pub use access::*;
 pub use component_list::*;

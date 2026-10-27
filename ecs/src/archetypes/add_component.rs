@@ -5,12 +5,12 @@ use std::any::TypeId;
 
 impl Archetypes {
     /// Add a component to an entity
-    pub fn add_component<T: 'static + Send + Sync + Sized>(
+    pub fn add_component<Component: 'static + Send + Sync + Sized>(
         &mut self,
         entity: Id<Entity>,
-        component: T,
+        component: Component,
     ) -> Option<(usize, &[TypeId])> {
-        let type_id = TypeId::of::<T>();
+        let type_id = TypeId::of::<Component>();
 
         // Get the current archetype and entity index for the given entity
         let (archetype_index, entity_index) = *self
@@ -22,7 +22,7 @@ impl Archetypes {
         let (new_archetype_index, archetype_created) = self.archetypes[archetype_index]
             .next_archetype(type_id)
             .map(|index| (index, false))
-            .unwrap_or_else(|| (self.push::<T>(archetype_index), true));
+            .unwrap_or_else(|| (self.push::<Component>(archetype_index), true));
 
         // Insert the component into the new archetype
         let [source_archetype, target_archetype] = self

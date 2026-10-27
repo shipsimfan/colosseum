@@ -7,7 +7,7 @@ use crate::{
 };
 use alexandria::gpu::VulkanCommandBufferInheritanceInfo;
 use colosseum_core::new_error;
-use colosseum_ecs::{UnsafeWorldCell, World};
+use colosseum_ecs::{IntoSystem, UnsafeWorldCell, World};
 
 impl<Node: FrameGraphNode, System: 'static + crate::ecs::System> crate::ecs::System
     for FrameGraphNodeSystem<Node, System>
@@ -82,5 +82,15 @@ impl<Node: FrameGraphNode, System: 'static + crate::ecs::System> crate::ecs::Sys
 
     fn apply(&mut self, world: &mut World) {
         self.system.apply(world);
+    }
+}
+
+impl<Node: FrameGraphNode, System: 'static + crate::ecs::System> IntoSystem<UnsafeWorldCell>
+    for FrameGraphNodeSystem<Node, System>
+{
+    type System = Self;
+
+    fn into_system(self) -> Self::System {
+        self
     }
 }

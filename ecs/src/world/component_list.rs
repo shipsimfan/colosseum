@@ -2,7 +2,7 @@ use crate::{Entity, World};
 use alexandria::Id;
 
 /// A set of components that can be added to an entity in the ECS system
-pub trait ComponentList {
+pub trait ComponentList: 'static {
     /// Add the components in this list to `entity`
     fn add_to_entity(self, entity: Id<Entity>, world: &mut World);
 }

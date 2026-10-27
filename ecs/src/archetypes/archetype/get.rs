@@ -22,8 +22,8 @@ impl Archetype {
     }
 
     /// Get a component of type `T` for the entity at the given `entity_index`
-    pub fn get<T: 'static>(&self, entity_index: usize) -> Option<&T> {
-        let type_id = TypeId::of::<T>();
+    pub fn get<Component: 'static>(&self, entity_index: usize) -> Option<&Component> {
+        let type_id = TypeId::of::<Component>();
 
         for components in &self.components {
             if components.type_id() == type_id {
@@ -35,8 +35,8 @@ impl Archetype {
     }
 
     /// Get a mutable component of type `T` for the entity at the given `entity_index`
-    pub fn get_mut<T: 'static>(&mut self, entity_index: usize) -> Option<&mut T> {
-        let type_id = TypeId::of::<T>();
+    pub fn get_mut<Component: 'static>(&mut self, entity_index: usize) -> Option<&mut Component> {
+        let type_id = TypeId::of::<Component>();
 
         debug_assert_ne!(
             type_id,

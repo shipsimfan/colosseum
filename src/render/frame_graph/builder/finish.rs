@@ -34,7 +34,7 @@ impl<'a> FrameGraphBuilder<'a> {
         )?;
 
         // Register submission system
-        self.commands.register_system_direct(
+        self.commands.register_system(
             FrameGraph,
             FrameGraphSubmissionSystem::new(self.nodes, self.pipeline_barriers),
         );

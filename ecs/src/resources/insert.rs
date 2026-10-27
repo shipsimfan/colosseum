@@ -7,17 +7,6 @@ impl Resources {
         self.replace(resource, permanent).is_some()
     }
 
-    /// Insert a new resource by its type ID, returning if there was already a resource of the same type
-    pub fn insert_by_type_id(
-        &mut self,
-        r#type: TypeId,
-        resource: Box<dyn Any>,
-        permanent: bool,
-    ) -> bool {
-        self.replace_by_type_id(r#type, resource, permanent)
-            .is_some()
-    }
-
     /// Replace an existing resource with a new one, returning the old resource if it existed
     pub fn replace<Resource: 'static>(
         &mut self,
@@ -31,23 +20,6 @@ impl Resources {
             Some(slot) => slot
                 .replace(resource)
                 .map(|boxed| *boxed.downcast().unwrap()),
-            None => {
-                self.resources
-                    .push(ResourceSlot::new(r#type, permanent, resource));
-                None
-            }
-        }
-    }
-
-    /// Replace an existing resource by its type ID, returning the old resource if it existed
-    pub fn replace_by_type_id(
-        &mut self,
-        r#type: TypeId,
-        resource: Box<dyn Any>,
-        permanent: bool,
-    ) -> Option<Box<dyn Any>> {
-        match self.get_slot_mut(r#type) {
-            Some(slot) => slot.replace(resource),
             None => {
                 self.resources
                     .push(ResourceSlot::new(r#type, permanent, resource));

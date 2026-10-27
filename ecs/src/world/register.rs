@@ -16,15 +16,7 @@ impl World {
         phase: Phase,
         system: System,
     ) {
-        self.register_boxed_system(Box::new(phase), Box::new(system.into_system()));
-    }
-
-    /// Register a boxed system into a phase
-    pub fn register_boxed_system(
-        &mut self,
-        phase: Box<dyn PhaseName>,
-        mut system: Box<dyn System>,
-    ) {
+        let mut system = system.into_system();
         system.initialize(self);
         self.systems.register_system(phase, system)
     }

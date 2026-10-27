@@ -7,11 +7,13 @@
 #![warn(rustdoc::broken_intra_doc_links)]
 
 mod archetypes;
+mod commands;
 mod resources;
 mod systems;
 mod world;
 
 pub use archetypes::*;
+pub use commands::*;
 pub use systems::*;
 pub use world::*;
 

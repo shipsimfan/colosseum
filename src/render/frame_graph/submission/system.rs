@@ -6,7 +6,7 @@ use crate::{
     },
 };
 use colosseum_core::new_error;
-use colosseum_ecs::{System, UnsafeWorldCell, World};
+use colosseum_ecs::{IntoSystem, System, UnsafeWorldCell, World};
 
 impl System for FrameGraphSubmissionSystem {
     fn initialize(&mut self, world: &mut World) {
@@ -79,5 +79,13 @@ impl System for FrameGraphSubmissionSystem {
             .map_err(|error| new_error!("unable to end render command buffer - {}", error))?;
 
         Ok(())
+    }
+}
+
+impl IntoSystem<()> for FrameGraphSubmissionSystem {
+    type System = Self;
+
+    fn into_system(self) -> Self::System {
+        self
     }
 }

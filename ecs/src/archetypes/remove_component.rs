@@ -4,8 +4,8 @@ use std::any::TypeId;
 
 impl Archetypes {
     /// Remove a component from an entity
-    pub fn remove_component<T: 'static>(&mut self, entity: Id<Entity>) {
-        let type_id = TypeId::of::<T>();
+    pub fn remove_component<Component: 'static>(&mut self, entity: Id<Entity>) {
+        let type_id = TypeId::of::<Component>();
 
         // Get the current archetype and entity index for the given entity
         let (archetype_index, entity_index) = *self

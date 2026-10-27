@@ -6,12 +6,13 @@ use std::any::TypeId;
 
 impl Archetypes {
     /// Push a new archetype to the set of archetypes
-    pub(in crate::archetypes) fn push<T: 'static + Send + Sync + Sized>(
+    pub(in crate::archetypes) fn push<Component: 'static + Send + Sync + Sized>(
         &mut self,
         archetype_index: usize,
     ) -> usize {
         // Create the new archetype
-        let mut new_archetype = self.archetypes[archetype_index].extend(Components::new::<T>());
+        let mut new_archetype =
+            self.archetypes[archetype_index].extend(Components::new::<Component>());
         let new_archetype_index = self.archetypes.len();
 
         // Check for archetypes that are one away from the new archetype and update their next_archetype mapping

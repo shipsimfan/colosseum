@@ -1,11 +1,6 @@
 # ToDo
  1. Rewrite ECS
-   1. Update `Commands` system parameter for entities
-     1. Add entity
-     2. Remove entity
-     3. Add component
-     4. Remove component
-   2. Implement `Query` system parameter
+   1. Implement `Query` system parameter
      1. Register existing archetypes with new systems
      2. Register new archetypes with existing systems
      3. Single component
@@ -14,7 +9,7 @@
      6. Filters
        1. `With` filter
        2. `Without` filter
-   3. Update remaining engine to new ECS
+   2. Update remaining engine to new ECS
      1. Add unlit rendering
      2. Add procedural skybox
      3. Add lit rendering

@@ -21,11 +21,10 @@ impl<'a> FrameGraphBuilder<'a> {
             .insert_resource(SecondaryCommandBuffer::<Node>::new(&name, self.device)?);
 
         // Wrap and register the system
-        self.commands
-            .register_system_direct::<_, FrameGraphNodeSystem<Node, _>>(
-                FrameGraph,
-                FrameGraphNodeSystem::new(name, node.system(), self.color_attachment.take()),
-            );
+        self.commands.register_system(
+            FrameGraph,
+            FrameGraphNodeSystem::<Node, _>::new(name, node.system(), self.color_attachment.take()),
+        );
 
         // Insert submission node
         self.nodes.push(SubmissionNode::new::<Node>(
