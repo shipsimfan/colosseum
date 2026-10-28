@@ -6,6 +6,7 @@ mod clear;
 mod get;
 mod new;
 mod register;
+mod register_archetype;
 mod run;
 
 pub use params::*;

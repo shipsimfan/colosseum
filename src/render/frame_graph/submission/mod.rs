@@ -1,6 +1,8 @@
 //! The system which submits the individual secondary command buffers to the primary command buffer
 //! with appropriate pipeline barriers
 
+use colosseum_ecs::WorldAccess;
+
 mod node;
 mod pipeline_barrier;
 
@@ -26,4 +28,7 @@ pub(in crate::render::frame_graph) struct FrameGraphSubmissionSystem {
 
     /// The index of the resources container
     resources: usize,
+
+    /// The access used by this system
+    access: WorldAccess,
 }

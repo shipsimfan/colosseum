@@ -6,6 +6,8 @@ impl SharedWorldAccess {
         SharedWorldAccess {
             read_resources: Vec::new(),
             write_resources: Vec::new(),
+            read_components: Vec::new(),
+            write_components: Vec::new(),
         }
     }
 }

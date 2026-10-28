@@ -1,4 +1,4 @@
-use crate::{UnsafeWorldCell, World, WorldAccess};
+use crate::{SystemParamState, UnsafeWorldCell, World, WorldAccess};
 
 /// A parameter that can be used by a system
 pub trait SystemParam {
@@ -6,7 +6,7 @@ pub trait SystemParam {
     type Item<'world, 'state>;
 
     /// The state associated with this system parameter
-    type State;
+    type State: SystemParamState;
 
     /// Indicates whether the system parameter is deferred
     const DEFERRED: bool = false;

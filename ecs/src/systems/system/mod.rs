@@ -1,5 +1,6 @@
-use crate::{UnsafeWorldCell, World};
+use crate::{UnsafeWorldCell, World, WorldAccess};
 use colosseum_core::Result;
+use std::any::TypeId;
 
 mod function;
 mod into;
@@ -21,6 +22,12 @@ pub trait System {
     fn deferred(&self) -> bool {
         false
     }
+
+    /// Get the access information for the system
+    fn access(&self) -> &WorldAccess;
+
+    /// Register a new archetype with the system
+    fn register_archetype(&mut self, archetype: usize, components: &[TypeId]);
 
     /// Apply any deferred actions for the system
     #[allow(unused_variables)]

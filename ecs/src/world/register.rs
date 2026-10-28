@@ -18,6 +18,7 @@ impl World {
     ) {
         let mut system = system.into_system();
         system.initialize(self);
-        self.systems.register_system(phase, system)
+        self.systems
+            .register_system(phase, system, &self.archetypes)
     }
 }

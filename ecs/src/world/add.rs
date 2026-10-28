@@ -11,7 +11,8 @@ impl World {
         if let Some((new_archetype_index, new_archetype_types)) =
             self.archetypes.add_component(entity, component)
         {
-            // TODO: Register the new archetype with systems
+            self.systems
+                .register_archetype(new_archetype_index, &new_archetype_types);
         }
     }
 

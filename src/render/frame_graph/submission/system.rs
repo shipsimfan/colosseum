@@ -6,7 +6,8 @@ use crate::{
     },
 };
 use colosseum_core::new_error;
-use colosseum_ecs::{IntoSystem, System, UnsafeWorldCell, World};
+use colosseum_ecs::{IntoSystem, System, UnsafeWorldCell, World, WorldAccess};
+use std::any::TypeId;
 
 impl System for FrameGraphSubmissionSystem {
     fn initialize(&mut self, world: &mut World) {
@@ -19,6 +20,12 @@ impl System for FrameGraphSubmissionSystem {
             node.initialize(world);
         }
     }
+
+    fn access(&self) -> &WorldAccess {
+        &self.access
+    }
+
+    fn register_archetype(&mut self, _: usize, _: &[TypeId]) {}
 
     fn run(&mut self, world: &UnsafeWorldCell) -> Result<()> {
         let frame_index = unsafe {

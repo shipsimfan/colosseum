@@ -7,7 +7,8 @@ use crate::{
 };
 use alexandria::gpu::VulkanCommandBufferInheritanceInfo;
 use colosseum_core::new_error;
-use colosseum_ecs::{IntoSystem, UnsafeWorldCell, World};
+use colosseum_ecs::{IntoSystem, UnsafeWorldCell, World, WorldAccess};
+use std::any::TypeId;
 
 impl<Node: FrameGraphNode, System: 'static + crate::ecs::System> crate::ecs::System
     for FrameGraphNodeSystem<Node, System>
@@ -28,11 +29,19 @@ impl<Node: FrameGraphNode, System: 'static + crate::ecs::System> crate::ecs::Sys
         self.system.deferred()
     }
 
+    fn access(&self) -> &WorldAccess {
+        &self.access
+    }
+
+    fn register_archetype(&mut self, archetype: usize, components: &[TypeId]) {
+        self.system.register_archetype(archetype, components);
+    }
+
     fn run(&mut self, world: &UnsafeWorldCell) -> Result<()> {
         let frame_index = unsafe {
             world
                 .get_mut()
-                .get_resource_at_index_mut::<FrameIndex>(self.frame_index)
+                .get_resource_at_index::<FrameIndex>(self.frame_index)
         };
         let mut cmd_buffer = unsafe {
             world

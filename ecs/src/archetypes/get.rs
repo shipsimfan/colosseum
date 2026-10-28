@@ -1,5 +1,6 @@
 use crate::{Archetypes, Entity};
 use alexandria::Id;
+use std::any::TypeId;
 
 impl Archetypes {
     /// Get the number of entities in the ECS system
@@ -26,5 +27,13 @@ impl Archetypes {
         let (archetype_index, entity_index) = *self.entities.get(unsafe { entity_id.cast() })?;
 
         self.archetypes[archetype_index].get_mut::<Component>(entity_index)
+    }
+
+    /// Get an iterator over the archetypes in the ECS system
+    pub fn archetypes(&self) -> impl Iterator<Item = (usize, &[TypeId])> {
+        self.archetypes
+            .iter()
+            .enumerate()
+            .map(|(index, archetype)| (index, archetype.component_ids()))
     }
 }

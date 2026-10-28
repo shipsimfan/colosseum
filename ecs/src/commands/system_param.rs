@@ -1,4 +1,4 @@
-use crate::{Commands, SystemParam, UnsafeWorldCell, World, WorldAccess};
+use crate::{Commands, SystemParam, SystemParamState, UnsafeWorldCell, World, WorldAccess};
 
 impl SystemParam for &mut Commands {
     type Item<'world, 'state> = &'state mut Commands;
@@ -27,3 +27,5 @@ impl SystemParam for &mut Commands {
         }
     }
 }
+
+impl SystemParamState for Commands {}

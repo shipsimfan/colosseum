@@ -3,11 +3,11 @@ use std::any::TypeId;
 
 impl SharedWorldAccess {
     /// Marks a resource as being written by the system
-    pub fn write_resource<Resource: 'static>(&mut self) {
-        let r#type = TypeId::of::<Resource>();
+    pub(in crate::world::access) fn write_resource<Resource: 'static>(&mut self) {
+        let resource = TypeId::of::<Resource>();
 
         // Make sure the resource is not already being written
-        if self.write_resources.contains(&r#type) {
+        if self.write_resources.contains(&resource) {
             panic!(
                 "Resource \"{}\" cannot be written twice by the same system",
                 std::any::type_name::<Resource>(),
@@ -15,7 +15,7 @@ impl SharedWorldAccess {
         }
 
         // Make sure the resource is not already being read
-        if self.read_resources.contains(&r#type) {
+        if self.read_resources.contains(&resource) {
             panic!(
                 "Resource \"{}\" cannot be written while it is being read by the same system",
                 std::any::type_name::<Resource>(),
@@ -23,6 +23,6 @@ impl SharedWorldAccess {
         }
 
         // Add the resource to the write list
-        self.write_resources.push(r#type);
+        self.write_resources.push(resource);
     }
 }

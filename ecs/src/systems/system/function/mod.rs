@@ -1,3 +1,4 @@
+use crate::WorldAccess;
 use std::marker::PhantomData;
 
 mod new;
@@ -10,6 +11,9 @@ pub struct FunctionSystem<Input, State, F> {
 
     /// The state associated with this system
     state: Option<State>,
+
+    /// The access information for this system
+    access: WorldAccess,
 
     /// A marker for the input type of the function
     _marker: PhantomData<fn() -> Input>,

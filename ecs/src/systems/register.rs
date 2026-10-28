@@ -1,4 +1,4 @@
-use crate::{PhaseName, Systems, systems};
+use crate::{Archetypes, PhaseName, Systems, systems};
 
 impl Systems {
     /// Register a new phase of systems
@@ -13,12 +13,13 @@ impl Systems {
         &mut self,
         phase: Phase,
         system: System,
+        archetypes: &Archetypes,
     ) {
         match self.get_phase_mut(&phase) {
-            Some(phase) => phase.add_system(system),
+            Some(phase) => phase.add_system(system, archetypes),
             None => {
                 let mut new_phase = systems::Phase::new();
-                new_phase.add_system(system);
+                new_phase.add_system(system, archetypes);
                 self.phases.push((Box::new(phase), new_phase));
             }
         }

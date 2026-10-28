@@ -1,8 +1,9 @@
 use crate::{
-    FunctionSystem, IntoSystem, System, SystemParam, SystemReturn, UnsafeWorldCell, World,
-    WorldAccess,
+    FunctionSystem, IntoSystem, System, SystemParam, SystemParamState, SystemReturn,
+    UnsafeWorldCell, World, WorldAccess,
 };
 use colosseum_core::Result;
+use std::any::TypeId;
 
 macro_rules! impl_fn_system {
     ($state_name: ident, $($params: ident),*$(,)?) => {
@@ -47,6 +48,19 @@ macro_rules! impl_fn_system {
                 $($params::DEFERRED ||)* false
             }
 
+            fn access(&self) -> &WorldAccess {
+                &self.access
+            }
+
+            #[allow(unused_variables)]
+            fn register_archetype(&mut self, archetype: usize, components: &[TypeId]) {
+                let state = self.state.as_mut().unwrap();
+
+                $(
+                    state.$params.register_archetype(archetype, components);
+                )*
+            }
+
             #[allow(unused_variables)]
             fn apply(&mut self, world: &mut World) {
                 let state = self.state.as_mut().unwrap();
@@ -74,7 +88,7 @@ macro_rules! impl_fn_system {
                     $params::access(&mut access);
                 )*
 
-                FunctionSystem::new(self)
+                FunctionSystem::new(self, access)
             }
         }
     };

@@ -6,6 +6,7 @@ impl Phase {
         Phase {
             systems: Vec::new(),
             deferred: Vec::new(),
+            archetypes_needed: Vec::new(),
         }
     }
 }

@@ -1,4 +1,4 @@
-use crate::{Entity, Res, ResMut, World};
+use crate::{Archetypes, Entity, Res, ResMut, World};
 use alexandria::Id;
 
 impl World {
@@ -118,5 +118,10 @@ impl World {
                 index
             )
         })
+    }
+
+    /// Get a mutable reference to the archetypes of a world
+    pub(crate) fn archetypes_mut(&mut self) -> &mut Archetypes {
+        &mut self.archetypes
     }
 }

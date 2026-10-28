@@ -1,4 +1,5 @@
 use crate::render::frame_graph::FrameGraphNode;
+use colosseum_ecs::WorldAccess;
 use render_pass::*;
 use std::{borrow::Cow, marker::PhantomData};
 
@@ -17,6 +18,9 @@ pub(in crate::render::frame_graph) struct FrameGraphNodeSystem<
 
     /// The system being wrapped
     system: System,
+
+    /// The access this system uses
+    access: WorldAccess,
 
     /// The information for the render pass for this node, if there is one
     render_pass: Option<FrameGraphRenderPass>,

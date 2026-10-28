@@ -1,5 +1,9 @@
-use crate::render::frame_graph::{
-    FrameGraphNode, FrameGraphNodeSystem, FrameGraphResourceId, nodes::system::FrameGraphRenderPass,
+use crate::render::{
+    FrameIndex, SecondaryCommandBuffer,
+    frame_graph::{
+        FrameGraphNode, FrameGraphNodeSystem, FrameGraphResourceId,
+        nodes::system::FrameGraphRenderPass,
+    },
 };
 use alexandria::gpu::VulkanAttachmentLoadOp;
 use std::{borrow::Cow, marker::PhantomData};
@@ -13,9 +17,16 @@ impl<Node: FrameGraphNode, System: 'static + crate::ecs::System>
         system: System,
         color_attachment: Option<(FrameGraphResourceId, VulkanAttachmentLoadOp)>,
     ) -> FrameGraphNodeSystem<Node, System> {
+        let mut access = system.access().clone();
+        access.read_resource::<FrameIndex>();
+        if !access.resource::<SecondaryCommandBuffer<Node>>() {
+            access.write_resource::<SecondaryCommandBuffer<Node>>();
+        }
+
         FrameGraphNodeSystem {
             name,
             system,
+            access,
 
             frame_index: 0,
             secondary_command_buffer: 0,
