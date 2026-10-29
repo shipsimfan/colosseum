@@ -7,125 +7,37 @@ pub trait ComponentList: 'static {
     fn add_to_entity(self, entity: Id<Entity>, world: &mut World);
 }
 
-impl<T1: 'static + Send + Sync + Sized> ComponentList for (T1,) {
-    fn add_to_entity(self, entity: Id<Entity>, world: &mut World) {
-        world.add_component(entity, self.0);
-    }
+macro_rules! impl_component_list {
+    ( $($params: ident),+$(,)?) => {
+        impl<$($params: 'static + Send + Sync + Sized,)+> ComponentList for ($($params,)+) {
+            #[allow(non_snake_case)]
+            fn add_to_entity(self, entity: Id<Entity>, world: &mut World) {
+                let ($($params,)+) = self;
+                $(
+                    world.add_component(entity, $params);
+                )+
+            }
+        }
+    };
 }
 
-impl<T1: 'static + Send + Sync + Sized, T2: 'static + Send + Sync + Sized> ComponentList
-    for (T1, T2)
-{
-    fn add_to_entity(self, entity: Id<Entity>, world: &mut World) {
-        world.add_component(entity, self.0);
-        world.add_component(entity, self.1);
-    }
-}
-
-impl<
-    T1: 'static + Send + Sync + Sized,
-    T2: 'static + Send + Sync + Sized,
-    T3: 'static + Send + Sync + Sized,
-> ComponentList for (T1, T2, T3)
-{
-    fn add_to_entity(self, entity: Id<Entity>, world: &mut World) {
-        world.add_component(entity, self.0);
-        world.add_component(entity, self.1);
-        world.add_component(entity, self.2);
-    }
-}
-
-impl<
-    T1: 'static + Send + Sync + Sized,
-    T2: 'static + Send + Sync + Sized,
-    T3: 'static + Send + Sync + Sized,
-    T4: 'static + Send + Sync + Sized,
-> ComponentList for (T1, T2, T3, T4)
-{
-    fn add_to_entity(self, entity: Id<Entity>, world: &mut World) {
-        world.add_component(entity, self.0);
-        world.add_component(entity, self.1);
-        world.add_component(entity, self.2);
-        world.add_component(entity, self.3);
-    }
-}
-
-impl<
-    T1: 'static + Send + Sync + Sized,
-    T2: 'static + Send + Sync + Sized,
-    T3: 'static + Send + Sync + Sized,
-    T4: 'static + Send + Sync + Sized,
-    T5: 'static + Send + Sync + Sized,
-> ComponentList for (T1, T2, T3, T4, T5)
-{
-    fn add_to_entity(self, entity: Id<Entity>, world: &mut World) {
-        world.add_component(entity, self.0);
-        world.add_component(entity, self.1);
-        world.add_component(entity, self.2);
-        world.add_component(entity, self.3);
-        world.add_component(entity, self.4);
-    }
-}
-
-impl<
-    T1: 'static + Send + Sync + Sized,
-    T2: 'static + Send + Sync + Sized,
-    T3: 'static + Send + Sync + Sized,
-    T4: 'static + Send + Sync + Sized,
-    T5: 'static + Send + Sync + Sized,
-    T6: 'static + Send + Sync + Sized,
-> ComponentList for (T1, T2, T3, T4, T5, T6)
-{
-    fn add_to_entity(self, entity: Id<Entity>, world: &mut World) {
-        world.add_component(entity, self.0);
-        world.add_component(entity, self.1);
-        world.add_component(entity, self.2);
-        world.add_component(entity, self.3);
-        world.add_component(entity, self.4);
-        world.add_component(entity, self.5);
-    }
-}
-
-impl<
-    T1: 'static + Send + Sync + Sized,
-    T2: 'static + Send + Sync + Sized,
-    T3: 'static + Send + Sync + Sized,
-    T4: 'static + Send + Sync + Sized,
-    T5: 'static + Send + Sync + Sized,
-    T6: 'static + Send + Sync + Sized,
-    T7: 'static + Send + Sync + Sized,
-> ComponentList for (T1, T2, T3, T4, T5, T6, T7)
-{
-    fn add_to_entity(self, entity: Id<Entity>, world: &mut World) {
-        world.add_component(entity, self.0);
-        world.add_component(entity, self.1);
-        world.add_component(entity, self.2);
-        world.add_component(entity, self.3);
-        world.add_component(entity, self.4);
-        world.add_component(entity, self.5);
-        world.add_component(entity, self.6);
-    }
-}
-
-impl<
-    T1: 'static + Send + Sync + Sized,
-    T2: 'static + Send + Sync + Sized,
-    T3: 'static + Send + Sync + Sized,
-    T4: 'static + Send + Sync + Sized,
-    T5: 'static + Send + Sync + Sized,
-    T6: 'static + Send + Sync + Sized,
-    T7: 'static + Send + Sync + Sized,
-    T8: 'static + Send + Sync + Sized,
-> ComponentList for (T1, T2, T3, T4, T5, T6, T7, T8)
-{
-    fn add_to_entity(self, entity: Id<Entity>, world: &mut World) {
-        world.add_component(entity, self.0);
-        world.add_component(entity, self.1);
-        world.add_component(entity, self.2);
-        world.add_component(entity, self.3);
-        world.add_component(entity, self.4);
-        world.add_component(entity, self.5);
-        world.add_component(entity, self.6);
-        world.add_component(entity, self.7);
-    }
-}
+impl_component_list!(T1);
+impl_component_list!(T1, T2);
+impl_component_list!(T1, T2, T3);
+impl_component_list!(T1, T2, T3, T4);
+impl_component_list!(T1, T2, T3, T4, T5);
+impl_component_list!(T1, T2, T3, T4, T5, T6);
+impl_component_list!(T1, T2, T3, T4, T5, T6, T7);
+impl_component_list!(T1, T2, T3, T4, T5, T6, T7, T8);
+impl_component_list!(T1, T2, T3, T4, T5, T6, T7, T8, T9);
+impl_component_list!(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10);
+impl_component_list!(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11);
+impl_component_list!(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12);
+impl_component_list!(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13);
+impl_component_list!(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14);
+impl_component_list!(
+    T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15
+);
+impl_component_list!(
+    T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16
+);

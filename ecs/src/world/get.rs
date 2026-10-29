@@ -120,6 +120,11 @@ impl World {
         })
     }
 
+    /// Get a reference to the archetypes of a world
+    pub(crate) fn archetypes(&self) -> &Archetypes {
+        &self.archetypes
+    }
+
     /// Get a mutable reference to the archetypes of a world
     pub(crate) fn archetypes_mut(&mut self) -> &mut Archetypes {
         &mut self.archetypes

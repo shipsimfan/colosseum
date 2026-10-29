@@ -1,11 +1,12 @@
-use crate::QueryState;
+use crate::{QueryData, QueryFilter, QueryState};
+use std::marker::PhantomData;
 
-impl QueryState {
+impl<Data: QueryData, Filter: QueryFilter> QueryState<Data, Filter> {
     /// Create a new [`QueryState`]
-    pub(in crate::systems::params::query) fn new() -> QueryState {
+    pub(in crate::systems::params::query) fn new() -> QueryState<Data, Filter> {
         QueryState {
             archetypes: Vec::new(),
-            components: Vec::new(),
+            _filter: PhantomData,
         }
     }
 }

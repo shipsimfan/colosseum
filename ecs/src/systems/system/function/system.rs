@@ -6,27 +6,19 @@ use colosseum_core::Result;
 use std::any::TypeId;
 
 macro_rules! impl_fn_system {
-    ($state_name: ident, $($params: ident),*$(,)?) => {
-        /// The state for the function system containing the states of all system parameters
-        #[allow(non_snake_case)]
-        pub struct $state_name<$($params: SystemParam,)*> {$(
-            $params: $params::State,
-        )*}
-
-        impl<$($params: SystemParam,)* R: SystemReturn, F> System for FunctionSystem<($($params,)*), $state_name<$($params,)*>, F>
+    ($($params: ident),*$(,)?) => {
+        impl<$($params: SystemParam,)* R: SystemReturn, F> System for
+            FunctionSystem<($($params,)*), ($($params::State,)*), F>
         where
             for<'a, 'world, 'state> &'a mut F: FnMut($($params),*) -> R
                 + FnMut($(<$params as SystemParam>::Item<'world, 'state>),*) -> R
         {
             #[allow(unused_variables)]
             fn initialize(&mut self, world: &mut World) {
-                self.state = Some($state_name {$(
-                    $params: $params::create_state(world),
-                )*});
+                self.state = Some(($($params::create_state(world),)*));
             }
 
-            #[allow(non_snake_case)]
-            #[allow(unused_variables)]
+            #[allow(unused_variables, non_snake_case)]
             fn run(&mut self, world: &UnsafeWorldCell) -> Result<()> {
                 fn call_inner<$($params,)* R: SystemReturn>(
                     mut f: impl FnMut($($params),*) -> R,
@@ -35,10 +27,10 @@ macro_rules! impl_fn_system {
                     f($($params),*).into_result()
                 }
 
-                let state = self.state.as_mut().unwrap();
+                let ($($params,)*) = self.state.as_mut().unwrap();
 
                 $(
-                    let $params = unsafe { $params::retrieve(&mut state.$params, world) };
+                    let $params = unsafe { $params::retrieve($params, world) };
                 )*
 
                 call_inner(&mut self.f, $($params),*)
@@ -52,22 +44,22 @@ macro_rules! impl_fn_system {
                 &self.access
             }
 
-            #[allow(unused_variables)]
+            #[allow(unused_variables, non_snake_case)]
             fn register_archetype(&mut self, archetype: usize, components: &[TypeId]) {
-                let state = self.state.as_mut().unwrap();
+                let ($($params,)*) = self.state.as_mut().unwrap();
 
                 $(
-                    state.$params.register_archetype(archetype, components);
+                    $params.register_archetype(archetype, components);
                 )*
             }
 
-            #[allow(unused_variables)]
+            #[allow(unused_variables, non_snake_case)]
             fn apply(&mut self, world: &mut World) {
-                let state = self.state.as_mut().unwrap();
+                let ($($params,)*) = self.state.as_mut().unwrap();
 
                 $(
                     if $params::DEFERRED {
-                        $params::apply(&mut state.$params, world);
+                        $params.apply(world);
                     }
                 )*
             }
@@ -78,7 +70,7 @@ macro_rules! impl_fn_system {
             for<'a, 'world, 'state> &'a mut F: FnMut($($params),*) -> R
                 + FnMut($(<$params as SystemParam>::Item<'world, 'state>),*) -> R,
         {
-            type System = FunctionSystem<($($params,)*), $state_name<$($params,)*>, F>;
+            type System = FunctionSystem<($($params,)*), ($($params::State,)*), F>;
 
             #[allow(unused_variables)]
             fn into_system(self) -> Self::System {
@@ -94,125 +86,24 @@ macro_rules! impl_fn_system {
     };
 }
 
-impl_fn_system!(FunctionSystemState0,);
-impl_fn_system!(FunctionSystemState1, T1);
-impl_fn_system!(FunctionSystemState2, T1, T2);
-impl_fn_system!(FunctionSystemState3, T1, T2, T3);
-impl_fn_system!(FunctionSystemState4, T1, T2, T3, T4);
-impl_fn_system!(FunctionSystemState5, T1, T2, T3, T4, T5);
-impl_fn_system!(FunctionSystemState6, T1, T2, T3, T4, T5, T6);
-impl_fn_system!(FunctionSystemState7, T1, T2, T3, T4, T5, T6, T7);
-impl_fn_system!(FunctionSystemState8, T1, T2, T3, T4, T5, T6, T7, T8);
-impl_fn_system!(FunctionSystemState9, T1, T2, T3, T4, T5, T6, T7, T8, T9);
+impl_fn_system!();
+impl_fn_system!(T1);
+impl_fn_system!(T1, T2);
+impl_fn_system!(T1, T2, T3);
+impl_fn_system!(T1, T2, T3, T4);
+impl_fn_system!(T1, T2, T3, T4, T5);
+impl_fn_system!(T1, T2, T3, T4, T5, T6);
+impl_fn_system!(T1, T2, T3, T4, T5, T6, T7);
+impl_fn_system!(T1, T2, T3, T4, T5, T6, T7, T8);
+impl_fn_system!(T1, T2, T3, T4, T5, T6, T7, T8, T9);
+impl_fn_system!(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10);
+impl_fn_system!(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11);
+impl_fn_system!(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12);
+impl_fn_system!(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13);
+impl_fn_system!(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14);
 impl_fn_system!(
-    FunctionSystemState10,
-    T1,
-    T2,
-    T3,
-    T4,
-    T5,
-    T6,
-    T7,
-    T8,
-    T9,
-    T10
+    T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15
 );
 impl_fn_system!(
-    FunctionSystemState11,
-    T1,
-    T2,
-    T3,
-    T4,
-    T5,
-    T6,
-    T7,
-    T8,
-    T9,
-    T10,
-    T11
-);
-impl_fn_system!(
-    FunctionSystemState12,
-    T1,
-    T2,
-    T3,
-    T4,
-    T5,
-    T6,
-    T7,
-    T8,
-    T9,
-    T10,
-    T11,
-    T12
-);
-impl_fn_system!(
-    FunctionSystemState13,
-    T1,
-    T2,
-    T3,
-    T4,
-    T5,
-    T6,
-    T7,
-    T8,
-    T9,
-    T10,
-    T11,
-    T12,
-    T13
-);
-impl_fn_system!(
-    FunctionSystemState14,
-    T1,
-    T2,
-    T3,
-    T4,
-    T5,
-    T6,
-    T7,
-    T8,
-    T9,
-    T10,
-    T11,
-    T12,
-    T13,
-    T14
-);
-impl_fn_system!(
-    FunctionSystemState15,
-    T1,
-    T2,
-    T3,
-    T4,
-    T5,
-    T6,
-    T7,
-    T8,
-    T9,
-    T10,
-    T11,
-    T12,
-    T13,
-    T14,
-    T15
-);
-impl_fn_system!(
-    FunctionSystemState16,
-    T1,
-    T2,
-    T3,
-    T4,
-    T5,
-    T6,
-    T7,
-    T8,
-    T9,
-    T10,
-    T11,
-    T12,
-    T13,
-    T14,
-    T15,
-    T16
+    T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16
 );

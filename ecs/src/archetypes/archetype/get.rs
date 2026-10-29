@@ -1,7 +1,4 @@
-use crate::{
-    Entity,
-    archetypes::{Archetype, Components},
-};
+use crate::{Entity, archetypes::Archetype};
 use alexandria::Id;
 use std::any::TypeId;
 
@@ -11,14 +8,14 @@ impl Archetype {
         self.components[0].len()
     }
 
-    /// Get the component IDs of this archetype
-    pub fn component_ids(&self) -> &[TypeId] {
-        &self.component_ids
+    /// Get the component IDs of this archetype sorted
+    pub fn sorted_component_ids(&self) -> &[TypeId] {
+        &self.sorted_component_ids
     }
 
-    /// Get the components of this archetype
-    pub fn components(&self) -> &[Components] {
-        &self.components
+    /// Get the component IDs of this archetype aligned with the components array
+    pub fn component_ids(&self) -> &[TypeId] {
+        &self.component_ids
     }
 
     /// Get a component of type `T` for the entity at the given `entity_index`
@@ -52,6 +49,21 @@ impl Archetype {
 
         None
     }
+
+    /// Get a reference to a specific component at a specific index
+    pub fn get_at<Component: 'static>(&self, index: usize, component: usize) -> &Component {
+        self.components[component].get(index)
+    }
+
+    /// Get a mutable reference to a specific component at a specific index
+    pub fn get_at_mut<Component: 'static>(
+        &mut self,
+        index: usize,
+        component: usize,
+    ) -> &mut Component {
+        self.components[component].get_mut(index)
+    }
+
     /// Get the set of component data for the entity at the given `entity_index`
     pub fn get_entity_data<'a>(
         &'a self,
@@ -62,23 +74,12 @@ impl Archetype {
             .map(move |components| (components.get_bytes(entity_index), components.type_id()))
     }
 
-    /// Get a mutable reference to a set of [`Components`]
-    pub fn get_disjoint_components_mut<const N: usize>(
-        &mut self,
-        indices: [usize; N],
-    ) -> [&mut Components; N] {
-        self.components.get_disjoint_mut(indices).unwrap()
-    }
-
     /// Get the index of the archetype that extends this archetype with the given `type_id`
     pub fn next_archetype(&self, type_id: TypeId) -> Option<usize> {
-        #[cfg(debug_assertions)]
-        for component_id in &self.component_ids {
-            debug_assert_ne!(
-                *component_id, type_id,
-                "cannot get next archetype for a component that already exists in this archetype"
-            );
-        }
+        debug_assert!(
+            !self.component_ids.contains(&type_id),
+            "cannot get next archetype for a component that already exists in this archetype"
+        );
 
         for (id, index) in &self.next_archetypes {
             if id == &type_id {

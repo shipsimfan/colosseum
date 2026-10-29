@@ -1,20 +1,10 @@
 # ToDo
- 1. Rewrite ECS
-   1. Implement `Query` system parameter
-     1. Single immutable component
-     2. Single mutable component
-     3. Multiple components
-     4. Optional components
-     5. Filters
-       1. `With` filter
-       2. `Without` filter
-       3. `And` filter
-       4. `Or` filter
-   2. Update remaining engine to new ECS
-     1. Add unlit rendering
-     2. Add procedural skybox
-     3. Add lit rendering
-     4. Add shadow mapping
+ 1. Update remaining engine to new ECS
+   1. Add camera resource
+   2. Add procedural skybox
+   3. Add unlit rendering
+   4. Add lit rendering
+   5. Add shadow mapping
  2. Add mesh loading
  3. Add raycasting
  4. Add texture loading

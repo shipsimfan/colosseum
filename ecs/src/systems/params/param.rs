@@ -22,8 +22,60 @@ pub trait SystemParam {
         state: &'state mut Self::State,
         world: &'world UnsafeWorldCell,
     ) -> Self::Item<'world, 'state>;
-
-    /// Applies the system parameter to the given world
-    #[allow(unused_variables)]
-    fn apply(state: &mut Self::State, world: &mut World) {}
 }
+
+macro_rules! impl_tuple_system_param {
+    ($($params: ident),*$(,)?) => {
+        impl<$($params: SystemParam),*> SystemParam for ($($params,)*) {
+            type Item<'world, 'state> = ($($params::Item<'world, 'state>,)*);
+            type State = ($($params::State,)*);
+
+            const DEFERRED: bool = $($params::DEFERRED || )* false;
+
+            #[allow(unused_variables)]
+            fn create_state(world: &mut World) -> Self::State {
+                ($($params::create_state(world),)*)
+            }
+
+            #[allow(unused_variables)]
+            fn access(access: &mut WorldAccess) {
+                $(
+                    $params::access(access);
+                )*
+            }
+
+            #[allow(unused_variables, non_snake_case)]
+            unsafe fn retrieve<'world, 'state>(
+                state: &'state mut Self::State,
+                world: &'world UnsafeWorldCell,
+            ) -> Self::Item<'world, 'state> {
+                let ($($params,)*) = state;
+                ($(
+                    unsafe { $params::retrieve($params, world) },
+                )*)
+            }
+        }
+    };
+}
+
+impl_tuple_system_param!();
+impl_tuple_system_param!(T1);
+impl_tuple_system_param!(T1, T2);
+impl_tuple_system_param!(T1, T2, T3);
+impl_tuple_system_param!(T1, T2, T3, T4);
+impl_tuple_system_param!(T1, T2, T3, T4, T5);
+impl_tuple_system_param!(T1, T2, T3, T4, T5, T6);
+impl_tuple_system_param!(T1, T2, T3, T4, T5, T6, T7);
+impl_tuple_system_param!(T1, T2, T3, T4, T5, T6, T7, T8);
+impl_tuple_system_param!(T1, T2, T3, T4, T5, T6, T7, T8, T9);
+impl_tuple_system_param!(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10);
+impl_tuple_system_param!(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11);
+impl_tuple_system_param!(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12);
+impl_tuple_system_param!(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13);
+impl_tuple_system_param!(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14);
+impl_tuple_system_param!(
+    T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15
+);
+impl_tuple_system_param!(
+    T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16
+);

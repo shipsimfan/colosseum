@@ -29,11 +29,36 @@ impl Archetypes {
         self.archetypes[archetype_index].get_mut::<Component>(entity_index)
     }
 
+    /// Get a reference to a specific component at a specific index
+    pub fn get_at<Component: 'static>(
+        &self,
+        archetype: usize,
+        index: usize,
+        component: usize,
+    ) -> &Component {
+        self.archetypes[archetype].get_at(index, component)
+    }
+
+    /// Get a mutable reference to a specific component at a specific index
+    pub fn get_at_mut<Component: 'static>(
+        &mut self,
+        archetype: usize,
+        index: usize,
+        component: usize,
+    ) -> &mut Component {
+        self.archetypes[archetype].get_at_mut(index, component)
+    }
+
     /// Get an iterator over the archetypes in the ECS system
     pub fn archetypes(&self) -> impl Iterator<Item = (usize, &[TypeId])> {
         self.archetypes
             .iter()
             .enumerate()
             .map(|(index, archetype)| (index, archetype.component_ids()))
+    }
+
+    /// Get the number of entities in a specific archetype
+    pub fn archetype_len(&self, archetype: usize) -> usize {
+        self.archetypes[archetype].len()
     }
 }

@@ -20,12 +20,12 @@ impl SystemParam for &mut Commands {
     ) -> Self::Item<'world, 'state> {
         state
     }
+}
 
-    fn apply(state: &mut Self::State, world: &mut World) {
-        for command in state.commands.drain(..) {
+impl SystemParamState for Commands {
+    fn apply(&mut self, world: &mut World) {
+        for command in self.commands.drain(..) {
             command.apply(world);
         }
     }
 }
-
-impl SystemParamState for Commands {}

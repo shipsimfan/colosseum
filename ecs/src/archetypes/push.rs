@@ -34,8 +34,8 @@ impl Archetypes {
 
 /// Check if archetype `a` only needs one additional component to become archetype `b`
 fn only_one_addition(a: &Archetype, b: &Archetype) -> Option<TypeId> {
-    let a = a.component_ids();
-    let b = b.component_ids();
+    let a = a.sorted_component_ids();
+    let b = b.sorted_component_ids();
 
     if a.len() + 1 != b.len() {
         return None;

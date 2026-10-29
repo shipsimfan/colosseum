@@ -1,8 +1,14 @@
-use crate::{QueryState, SystemParamState};
+use crate::{QueryData, QueryFilter, QueryState, SystemParamState};
 use std::any::TypeId;
 
-impl SystemParamState for QueryState {
+impl<Data: QueryData, Filter: QueryFilter> SystemParamState for QueryState<Data, Filter> {
     fn register_archetype(&mut self, archetype: usize, components: &[TypeId]) {
-        todo!("check if the components match the components and filters")
+        if !Filter::filter(components) {
+            return;
+        }
+
+        if let Some(state) = Data::create_state(components) {
+            self.archetypes.push((archetype, state));
+        }
     }
 }
