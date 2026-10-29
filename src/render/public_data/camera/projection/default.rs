@@ -1,0 +1,11 @@
+use crate::render::CameraProjection;
+
+impl Default for CameraProjection {
+    fn default() -> Self {
+        CameraProjection::InfinitePerspective {
+            fov_y: 70.0,
+            near: 0.1,
+            shadow_distance: 100.0,
+        }
+    }
+}
