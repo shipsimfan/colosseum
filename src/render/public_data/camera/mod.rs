@@ -22,5 +22,4 @@ pub struct Camera {
 
     /// The projection used by the camera
     pub projection: CameraProjection,
-    // TODO: Add GPU data buffer for camera data
 }

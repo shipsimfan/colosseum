@@ -3,7 +3,6 @@
 use alexandria::gpu::VulkanFormat;
 use fixed_data::*;
 use frame_graph::*;
-use objects::*;
 use per_frame_data::*;
 
 mod fixed_data;
@@ -21,6 +20,7 @@ pub use public_data::*;
 pub use alexandria::gpu::{VulkanShaderModuleCode as ShaderCode, compile_shader};
 
 pub(crate) use init::*;
+pub(crate) use objects::*;
 pub(crate) use phases::execute_render_systems;
 pub(crate) use stop::*;
 pub(crate) use transfer::*;

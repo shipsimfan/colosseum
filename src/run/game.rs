@@ -3,8 +3,7 @@ use crate::{
     file_io::FileIo,
     render::{execute_render_systems, init_render_resources, init_render_systems, stop_render},
     update::{
-        NextScene, Scene, SceneTransition, execute_update_systems, init_update_resources,
-        init_update_systems,
+        Scene, SceneTransition, execute_update_systems, init_update_resources, init_update_systems,
     },
 };
 use alexandria::gpu::{VulkanInstance, VulkanSurface};
@@ -36,16 +35,11 @@ pub(in crate::run) fn run<Game: crate::Game, InitialScene: Scene>(
     world.insert_permanent_resource(file_io);
 
     // Create the graphics device and initialize render resources
-    let (graphics_device, swapchain_index, frame_index_index, frame_graph_index) =
+    let (graphics_device, indices) =
         init_render_resources::<Game>(&instance, &surface, &thread_manager, &mut world)?;
 
     // Initialize update resources
     init_update_resources::<Game, InitialScene>(&mut world, initial_scene);
-
-    // Get the index of the resources we use in the main loop
-    let settings_index = world.get_or_reserve_permanent_resource_index::<Game::SettingsCache>();
-    let window_index = world.get_or_reserve_permanent_resource_index::<Window>();
-    let next_scene_index = world.get_or_reserve_permanent_resource_index::<NextScene>();
 
     // Begin the initial scene
     let mut last_render_time = Instant::now();
@@ -53,23 +47,19 @@ pub(in crate::run) fn run<Game: crate::Game, InitialScene: Scene>(
     // Main game loop
     while shared_state.is_running() {
         // Check if the window should close
-        let window = unsafe { world.get_resource_at_index::<Window>(window_index) };
-        if window.should_close() {
+        if indices.window(&world).should_close() {
             break;
         }
-        drop(window);
 
         // Increment the frame counter of the logger
         logger.frame();
 
         // Transition to the next scene if it exists
-        let mut next_scene =
-            unsafe { world.get_resource_at_index_mut::<NextScene>(next_scene_index) };
-        if let Some(next_scene) = next_scene.take() {
+        if let Some(next_scene) = indices.next_scene_mut(&mut world).take() {
             world.run(SceneTransition)?;
             unsafe { world.clear() };
 
-            init_render_systems::<Game>(&mut world, frame_graph_index);
+            init_render_systems(&mut world, &indices);
             init_update_systems::<Game>(&mut world);
 
             next_scene.start(&mut world)?;
@@ -77,15 +67,12 @@ pub(in crate::run) fn run<Game: crate::Game, InitialScene: Scene>(
 
         // Execute the frame
         execute_update_systems(&mut world)?;
-        execute_render_systems::<Game>(
+        execute_render_systems(
             &mut world,
             &mut surface,
             &mut last_render_time,
-            window_index,
-            settings_index,
-            swapchain_index,
-            frame_index_index,
             &graphics_device,
+            &indices,
         )?;
     }
 

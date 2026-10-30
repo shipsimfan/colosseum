@@ -7,7 +7,7 @@ use alexandria::{
 mod index;
 mod new;
 
-/// A wrapper around a Vulkan command pool used for allocating command buffers for each frame in flight
+/// The render command buffer used for each frame in flight
 pub(in crate::render) struct RenderCommandBuffer {
     /// The underlying Vulkan command pool
     command_pool: VulkanCommandPool,

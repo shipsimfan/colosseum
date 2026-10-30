@@ -1,47 +1,19 @@
 use crate::{
     Result,
-    render::{GraphicsDevice, objects::gpu_data_buffer::DeviceDataBuffer},
+    render::{GraphicsDevice, per_frame_data::data_buffers::FrameDeviceDataBuffer},
 };
 use alexandria::gpu::{
-    VulkanBuffer, VulkanBufferUsageFlag, VulkanBufferUsageFlags, VulkanDeviceMemory,
-    VulkanMemoryPropertyFlag, VulkanSharingMode,
+    VulkanBuffer, VulkanBufferUsageFlags, VulkanDeviceMemory, VulkanMemoryPropertyFlag,
+    VulkanSharingMode,
 };
 use colosseum_core::new_error;
+use std::alloc::Layout;
 #[cfg(debug_assertions)]
-use std::str::FromStr;
-use std::{alloc::Layout, ffi::CString, marker::PhantomData};
+use std::{ffi::CString, str::FromStr};
 
-impl<T> DeviceDataBuffer<T> {
-    /// Create a new [`DeviceDataBuffer`]
-    pub fn new(
-        name: &str,
-        index: usize,
-        capacity: usize,
-        usage: VulkanBufferUsageFlags,
-        device: &GraphicsDevice,
-    ) -> Result<DeviceDataBuffer<T>> {
-        let buffer_name = format!("Device {} {}", name, index);
-        let memory_name = format!("Device {} Memory {}", name, index);
-
-        let (buffer, memory) = DeviceDataBuffer::<T>::allocate_memory(
-            &buffer_name,
-            &memory_name,
-            capacity,
-            usage,
-            device,
-        )?;
-
-        Ok(DeviceDataBuffer {
-            buffer_name,
-            memory_name,
-            buffer,
-            memory,
-            _marker: PhantomData,
-        })
-    }
-
+impl<T> FrameDeviceDataBuffer<T> {
     /// Allocate a Vulkan buffer and its associated host-visible memory
-    fn allocate_memory(
+    pub(in crate::render::per_frame_data::data_buffers::device::frame) fn allocate_memory(
         buffer_name: &str,
         memory_name: &str,
         capacity: usize,
@@ -52,13 +24,7 @@ impl<T> DeviceDataBuffer<T> {
 
         // Create the buffer
         let mut buffer = device
-            .create_buffer(
-                0,
-                size,
-                usage | VulkanBufferUsageFlag::TransferDst,
-                VulkanSharingMode::Exclusive,
-                &[],
-            )
+            .create_buffer(0, size, usage, VulkanSharingMode::Exclusive, &[])
             .map_err(|error| new_error!("unable to create \"{}\" - {}", buffer_name, error))?;
         #[cfg(debug_assertions)]
         device

@@ -1,6 +1,6 @@
 use crate::{
-    Result, SettingsCache, Window,
-    render::{DrawFence, FrameIndex, GraphicsDevice, Swapchain},
+    Result, SettingsCache,
+    render::{GraphicsDevice, RenderIndices, Swapchain},
 };
 use alexandria::{gpu::VulkanSurface, math::Vector2u};
 use colosseum_ecs::{PhaseName, World};
@@ -40,21 +40,18 @@ pub(crate) fn execute_render_systems<Game: crate::Game>(
     surface: &mut VulkanSurface,
     last_render_time: &mut Instant,
 
-    window_index: usize,
-    settings_index: usize,
-    swapchain_index: usize,
-    frame_index_index: usize,
     device: &Arc<GraphicsDevice>,
+    indices: &RenderIndices<Game>,
 ) -> Result<()> {
-    let settings = unsafe { world.get_resource_at_index::<Game::SettingsCache>(settings_index) };
+    let settings = indices.settings(world);
     let display_settings = settings.display_settings();
     let max_frame_rate = display_settings.maximum_frame_rate();
     let min_frame_rate = display_settings.minimized_frame_rate();
 
-    if unsafe { world.try_get_resource_at_index::<Swapchain>(swapchain_index) }.is_some() {
-        let swapchain_ok = render_frame(world)?;
+    if indices.try_swapchain(world).is_some() {
+        let swapchain_ok = render_frame(world, indices)?;
 
-        unsafe { world.get_resource_at_index_mut::<FrameIndex>(frame_index_index) }.increment();
+        indices.frame_index_mut(world).increment();
 
         if swapchain_ok {
             if let Some(max_frame_rate) = max_frame_rate {
@@ -75,12 +72,8 @@ pub(crate) fn execute_render_systems<Game: crate::Game>(
     }
 
     // Check if we can create a swapchain
-    let window = unsafe { world.get_resource_at_index::<Window>(window_index) };
-
-    let window_size = window.size();
+    let window_size = indices.window(world).size();
     if window_size != Vector2u::ZERO {
-        drop(window);
-
         world.insert_permanent_resource(Swapchain::new(surface, window_size, device)?);
     }
 
@@ -96,20 +89,27 @@ pub(crate) fn execute_render_systems<Game: crate::Game>(
 }
 
 /// Runs the needed render phases and returns if the swapchain is still valid
-fn render_frame(world: &mut World) -> Result<bool> {
-    let frame_index = world.get_resource::<FrameIndex>().clone();
+fn render_frame<Game: crate::Game>(
+    world: &mut World,
+    indices: &RenderIndices<Game>,
+) -> Result<bool> {
+    let frame_index = indices.frame_index(world).clone();
 
-    // TODO: Wait for copy fence
+    // Wait for copy fence before copying data to host visible buffers
+    indices.copy_fence_mut(world).wait(&frame_index)?;
     world.run(PreRender)?;
 
-    world.get_resource_mut::<DrawFence>().wait(&frame_index)?;
+    // Wait for draw fence before setting up frame graph
+    indices.draw_fence_mut(world).wait(&frame_index)?;
     world.run(FrameGraphSetup)?;
-    if !world.get_resource::<Swapchain>().is_valid() {
+
+    if !indices.swapchain(world).is_valid() {
         return Ok(false);
     }
 
+    // Run the main frame graph
     world.run(FrameGraph)?;
     world.run(PostRender)?;
 
-    Ok(!world.get_resource::<Swapchain>().is_suboptimal())
+    Ok(!indices.swapchain(world).is_suboptimal())
 }

@@ -1,7 +1,7 @@
-use crate::render::LocalDataBuffer;
+use crate::render::FrameHostDataBuffer;
 use std::ops::{Index, IndexMut};
 
-impl<T> Index<usize> for LocalDataBuffer<T> {
+impl<T> Index<usize> for FrameHostDataBuffer<T> {
     type Output = T;
 
     fn index(&self, index: usize) -> &Self::Output {
@@ -16,7 +16,7 @@ impl<T> Index<usize> for LocalDataBuffer<T> {
     }
 }
 
-impl<T> IndexMut<usize> for LocalDataBuffer<T> {
+impl<T> IndexMut<usize> for FrameHostDataBuffer<T> {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         assert!(
             index < self.count,

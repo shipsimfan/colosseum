@@ -1,41 +1,19 @@
 use crate::{
     Result,
-    render::{GraphicsDevice, objects::gpu_data_buffer::HostDataBuffer},
+    render::{FrameHostDataBuffer, GraphicsDevice},
 };
 use alexandria::gpu::{
     VulkanBuffer, VulkanBufferUsageFlag, VulkanMappedMemory, VulkanMemoryPropertyFlag,
     VulkanSharingMode,
 };
 use colosseum_core::new_error;
+use std::alloc::Layout;
 #[cfg(debug_assertions)]
-use std::str::FromStr;
-use std::{alloc::Layout, ffi::CString};
+use std::{ffi::CString, str::FromStr};
 
-impl<T> HostDataBuffer<T> {
-    /// Create a new [`HostDataBuffer`]
-    pub fn new(
-        name: &str,
-        index: usize,
-        capacity: usize,
-        device: &GraphicsDevice,
-    ) -> Result<HostDataBuffer<T>> {
-        let buffer_name = format!("Host {} {}", name, index);
-        let memory_name = format!("Host {} Memory {}", name, index);
-
-        let (buffer, memory, stride) =
-            HostDataBuffer::allocate_memory(&buffer_name, &memory_name, capacity, device)?;
-
-        Ok(HostDataBuffer {
-            buffer_name,
-            memory_name,
-            buffer,
-            memory,
-            stride,
-        })
-    }
-
+impl<T> FrameHostDataBuffer<T> {
     /// Allocate a Vulkan buffer and its associated host-visible memory
-    fn allocate_memory(
+    pub(in crate::render::per_frame_data::data_buffers::host::frame) fn allocate_memory(
         buffer_name: &str,
         memory_name: &str,
         capacity: usize,

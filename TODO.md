@@ -1,10 +1,11 @@
 # ToDo
  1. Update remaining engine to new ECS
-   1. Add camera resource
-   2. Add procedural skybox
-   3. Add unlit rendering
-   4. Add lit rendering
-   5. Add shadow mapping
+   1. Add procedural skybox
+     1. Add buffer descriptor tracking and binding
+     2. Add the actual node
+   2. Add unlit rendering
+   3. Add lit rendering
+   4. Add shadow mapping
  2. Add mesh loading
  3. Add raycasting
  4. Add texture loading

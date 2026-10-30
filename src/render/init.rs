@@ -1,7 +1,7 @@
 use crate::{
     Result, SettingsCache, UserEvent,
     render::{
-        FrameGraph, FrameIndex, GraphicsDevice, RenderGpuTransferQueue, Swapchain,
+        Camera, FrameGraph, GraphicsDevice, RenderGpuTransferQueue, RenderIndices, Swapchain,
         create_fixed_render_data_resources, create_frame_graph_resources,
         create_per_frame_render_data, create_public_data_resources,
         create_public_data_scene_resources,
@@ -19,7 +19,7 @@ pub(crate) fn init_render_resources<Game: crate::Game>(
     surface: &VulkanSurface,
     thread_manager: &ThreadManager<UserEvent>,
     world: &mut World,
-) -> Result<(Arc<GraphicsDevice>, usize, usize, usize)> {
+) -> Result<(Arc<GraphicsDevice>, RenderIndices<Game>)> {
     // Insert the settings
     let settings = world.get_resource::<Game::SettingsCache>();
 
@@ -55,26 +55,19 @@ pub(crate) fn init_render_resources<Game: crate::Game>(
         world.insert_permanent_resource(render_gpu_transfer_queue);
     }
 
-    // Get indices for resources
-    let swapchain_index = world.get_or_reserve_permanent_resource_index::<Swapchain>();
-    let frame_index_index = world.get_or_reserve_permanent_resource_index::<FrameIndex>();
-    let frame_graph_index = world.get_or_reserve_permanent_resource_index::<FrameGraph<Game>>();
-
-    Ok((
-        device,
-        swapchain_index,
-        frame_index_index,
-        frame_graph_index,
-    ))
+    Ok((device, RenderIndices::new(world)))
 }
 
 /// Initialize the all the required render systems
-pub(crate) fn init_render_systems<Game: crate::Game>(world: &mut World, frame_graph_index: usize) {
+pub(crate) fn init_render_systems<Game: crate::Game>(
+    world: &mut World,
+    indices: &RenderIndices<Game>,
+) {
     create_public_data_scene_resources(world);
-    unsafe { world.get_resource_at_index_mut::<FrameGraph<Game>>(frame_graph_index) }.reset();
+    indices.frame_graph_mut(world).reset();
 
     init_pre_render(world);
-    init_frame_graph_setup::<Game>(world);
+    init_frame_graph_setup::<Game>(world, indices);
     world.register_phase(phases::FrameGraph);
     init_post_render(world);
 }
@@ -83,9 +76,12 @@ fn init_pre_render(world: &mut World) {
     if world.try_get_resource::<RenderGpuTransferQueue>().is_some() {
         world.register_system(PreRender, RenderGpuTransferQueue::system);
     }
+
+    world.register_system(PreRender, Camera::system);
 }
 
-fn init_frame_graph_setup<Game: crate::Game>(world: &mut World) {
+fn init_frame_graph_setup<Game: crate::Game>(world: &mut World, indices: &RenderIndices<Game>) {
+    world.register_system(FrameGraphSetup, indices.gpu_data_buffers(world).system());
     world.register_system(FrameGraphSetup, Swapchain::acquire_next_image);
     FrameGraph::<Game>::register_prepare(world);
 }

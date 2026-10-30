@@ -39,8 +39,6 @@ pub(in crate::render) fn create_public_data_resources(
     world.insert_permanent_resource(Primitives::new(&mut assets, render_gpu_transfer_queue)?);
     world.insert_permanent_resource(assets);
 
-    world.insert_permanent_resource(Camera::create_buffer(device)?);
-
     Ok(())
 }
 

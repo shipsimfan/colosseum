@@ -1,8 +1,8 @@
 use crate::{
     Result,
     render::{
-        AcquireImageSemaphore, DrawFence, FrameIndex, RenderCommandBuffer, RenderCompleteSemaphore,
-        RenderQueue, Swapchain,
+        AcquireImageSemaphore, CopyCompleteSemaphore, DrawFence, FrameIndex, RenderCommandBuffer,
+        RenderCompleteSemaphore, RenderQueue, Swapchain,
     },
 };
 use alexandria::gpu::{
@@ -19,6 +19,7 @@ impl Swapchain {
         frame_index: Res<FrameIndex>,
         mut command_buffer: ResMut<RenderCommandBuffer>,
         acquire_image_semaphore: Res<AcquireImageSemaphore>,
+        copy_complete_semaphore: Res<CopyCompleteSemaphore>,
         render_complete_semaphore: Res<RenderCompleteSemaphore>,
         mut render_queue: ResMut<RenderQueue>,
         mut draw_fence: ResMut<DrawFence>,
@@ -29,12 +30,20 @@ impl Swapchain {
             .submit(
                 &[VulkanSubmitInfo::new(
                     0,
-                    &[VulkanSemaphoreSubmitInfo::new(
-                        &acquire_image_semaphore[&frame_index],
-                        0,
-                        VulkanPipelineStageFlag::ColorAttachmentOutput,
-                        0,
-                    )],
+                    &[
+                        VulkanSemaphoreSubmitInfo::new(
+                            &acquire_image_semaphore[&frame_index],
+                            0,
+                            VulkanPipelineStageFlag::ColorAttachmentOutput,
+                            0,
+                        ),
+                        VulkanSemaphoreSubmitInfo::new(
+                            &copy_complete_semaphore[&frame_index],
+                            0,
+                            VulkanPipelineStageFlag::VertexShader,
+                            0,
+                        ),
+                    ],
                     &[VulkanCommandBufferSubmitInfo::new(command_buffer, 0)],
                     &[VulkanSemaphoreSubmitInfo::new(
                         &render_complete_semaphore[&frame_index],

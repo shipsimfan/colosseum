@@ -1,15 +1,24 @@
-use alexandria::gpu::{VulkanBuffer, VulkanDeviceMemory};
+use alexandria::gpu::{VulkanBuffer, VulkanBufferUsageFlags, VulkanDeviceMemory};
 use std::marker::PhantomData;
 
+mod allocate_memory;
+mod get;
 mod new;
+mod resize;
 
-/// A raw Vulkan buffer that holds a set number of elements in device-local memory
-pub(in crate::render::objects::gpu_data_buffer) struct DeviceDataBuffer<T> {
+/// The per-frame data for the device-local data buffer
+pub(in crate::render::per_frame_data::data_buffers) struct FrameDeviceDataBuffer<T> {
     /// The name of the data buffer
     buffer_name: String,
 
     /// The name of the memory associated with the buffer
     memory_name: String,
+
+    /// The capacity of the buffer
+    capacity: usize,
+
+    /// The usage flags for the buffer
+    usage: VulkanBufferUsageFlags,
 
     /// The GPU buffer containing the object data
     buffer: VulkanBuffer,

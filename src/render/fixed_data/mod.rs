@@ -1,7 +1,4 @@
-use crate::{
-    Result,
-    render::{GpuDataBuffer, GraphicsDevice},
-};
+use crate::{Result, render::GraphicsDevice};
 use colosseum_ecs::World;
 
 mod descriptor_set_layouts;
