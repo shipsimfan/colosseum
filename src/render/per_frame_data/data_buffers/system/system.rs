@@ -38,10 +38,10 @@ impl System for CopySystem {
                 .get_mut()
                 .get_resource_at_index_mut(self.copy_fence_index)
         };
-        let copy_complete_semaphore = unsafe {
+        let mut copy_complete_semaphore = unsafe {
             world
                 .get_mut()
-                .get_resource_at_index(self.copy_complete_semaphore_index)
+                .get_resource_at_index_mut(self.copy_complete_semaphore_index)
         };
         let mut render_queue = unsafe {
             world
@@ -62,7 +62,7 @@ impl System for CopySystem {
         CopySystem::run(
             &frame_index,
             &mut copy_command_buffer,
-            &copy_complete_semaphore,
+            &mut copy_complete_semaphore,
             &mut copy_fence,
             &mut render_queue,
             &mut gpu_data_buffers,

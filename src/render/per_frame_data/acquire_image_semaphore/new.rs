@@ -2,7 +2,7 @@ use crate::{
     Result,
     render::{AcquireImageSemaphore, GraphicsDevice},
 };
-use alexandria::gpu::VulkanSemaphore;
+use alexandria::gpu::{VulkanSemaphore, VulkanSemaphoreType};
 use colosseum_core::new_error;
 #[cfg(debug_assertions)]
 use std::ffi::CString;
@@ -22,13 +22,15 @@ impl AcquireImageSemaphore {
 
 fn create_semaphore(index: usize, device: &GraphicsDevice) -> Result<VulkanSemaphore> {
     #[cfg_attr(not(debug_assertions), allow(unused_mut))]
-    let mut acquire_image_semaphore = device.create_semaphore().map_err(|error| {
-        new_error!(
-            "unable to create acquire image semaphore {} - {}",
-            index,
-            error
-        )
-    })?;
+    let mut acquire_image_semaphore = device
+        .create_semaphore(VulkanSemaphoreType::Binary)
+        .map_err(|error| {
+            new_error!(
+                "unable to create acquire image semaphore {} - {}",
+                index,
+                error
+            )
+        })?;
 
     #[cfg(debug_assertions)]
     device

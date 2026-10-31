@@ -2,7 +2,7 @@
  1. Update remaining engine to new ECS
    1. Add procedural skybox
      1. Add buffer descriptor tracking and binding
-     2. Add the actual node
+     2. Add the actual node 
    2. Add unlit rendering
    3. Add lit rendering
    4. Add shadow mapping

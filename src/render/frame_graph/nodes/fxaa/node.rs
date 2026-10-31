@@ -9,7 +9,7 @@ impl FrameGraphNode for FxaaNode {
     }
 
     fn color(&self) -> impl Into<Color3f<Srgb>> {
-        (1.0, 0.45, 0.30)
+        (1.0, 0.55, 0.80)
     }
 
     fn system(&self) -> impl 'static + System {

@@ -26,6 +26,8 @@ impl Swapchain {
     ) -> Result<()> {
         let command_buffer = &mut command_buffer[&frame_index];
 
+        let (copy_complete_semaphore, copy_timeline_value) = &copy_complete_semaphore[&frame_index];
+
         render_queue
             .submit(
                 &[VulkanSubmitInfo::new(
@@ -36,12 +38,14 @@ impl Swapchain {
                             0,
                             VulkanPipelineStageFlag::ColorAttachmentOutput,
                             0,
+                            None,
                         ),
                         VulkanSemaphoreSubmitInfo::new(
-                            &copy_complete_semaphore[&frame_index],
-                            0,
+                            copy_complete_semaphore,
+                            *copy_timeline_value,
                             VulkanPipelineStageFlag::VertexShader,
                             0,
+                            None,
                         ),
                     ],
                     &[VulkanCommandBufferSubmitInfo::new(command_buffer, 0)],
@@ -50,6 +54,7 @@ impl Swapchain {
                         0,
                         VulkanPipelineStageFlag::ColorAttachmentOutput,
                         0,
+                        None,
                     )],
                 )],
                 Some(&mut draw_fence.get_mut(&frame_index)),

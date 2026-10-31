@@ -7,5 +7,5 @@ mod new;
 /// A wrapper around a Vulkan semaphore used for synchronizing copy completion
 pub(in crate::render) struct CopyCompleteSemaphore {
     /// The underlying Vulkan semaphore handles
-    semaphores: [VulkanSemaphore; MAX_FRAMES_IN_FLIGHT],
+    semaphores: [(VulkanSemaphore, u64); MAX_FRAMES_IN_FLIGHT],
 }

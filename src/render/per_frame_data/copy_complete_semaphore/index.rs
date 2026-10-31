@@ -3,7 +3,7 @@ use alexandria::gpu::VulkanSemaphore;
 use std::ops::{Index, IndexMut};
 
 impl Index<&FrameIndex> for CopyCompleteSemaphore {
-    type Output = VulkanSemaphore;
+    type Output = (VulkanSemaphore, u64);
 
     fn index(&self, index: &FrameIndex) -> &Self::Output {
         &self.semaphores[**index]

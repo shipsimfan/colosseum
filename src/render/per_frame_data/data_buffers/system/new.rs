@@ -9,7 +9,7 @@ impl CopySystem {
     pub fn new(data_buffers: &GpuDataBuffers) -> CopySystem {
         let mut access = WorldAccess::None;
         access.write_resource::<CopyCommandBuffer>();
-        access.read_resource::<CopyCompleteSemaphore>();
+        access.write_resource::<CopyCompleteSemaphore>();
         access.write_resource::<CopyFence>();
         access.write_resource::<RenderQueue>();
         access.write_resource::<GpuDataBuffers>();

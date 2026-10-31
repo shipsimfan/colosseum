@@ -2,7 +2,7 @@ use crate::{
     Result,
     render::{CopyCompleteSemaphore, GraphicsDevice},
 };
-use alexandria::gpu::VulkanSemaphore;
+use alexandria::gpu::{VulkanSemaphore, VulkanSemaphoreType};
 use colosseum_core::new_error;
 #[cfg(debug_assertions)]
 use std::ffi::CString;
@@ -20,15 +20,17 @@ impl CopyCompleteSemaphore {
     }
 }
 
-fn create_semaphore(index: usize, device: &GraphicsDevice) -> Result<VulkanSemaphore> {
+fn create_semaphore(index: usize, device: &GraphicsDevice) -> Result<(VulkanSemaphore, u64)> {
     #[cfg_attr(not(debug_assertions), allow(unused_mut))]
-    let mut copy_complete_semaphore = device.create_semaphore().map_err(|error| {
-        new_error!(
-            "unable to create copy complete semaphore {} - {}",
-            index,
-            error
-        )
-    })?;
+    let mut copy_complete_semaphore = device
+        .create_semaphore(VulkanSemaphoreType::Timeline(0))
+        .map_err(|error| {
+            new_error!(
+                "unable to create copy complete semaphore {} - {}",
+                index,
+                error
+            )
+        })?;
 
     #[cfg(debug_assertions)]
     device
@@ -44,5 +46,5 @@ fn create_semaphore(index: usize, device: &GraphicsDevice) -> Result<VulkanSemap
             )
         })?;
 
-    Ok(copy_complete_semaphore)
+    Ok((copy_complete_semaphore, 0))
 }

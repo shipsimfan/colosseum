@@ -35,8 +35,9 @@ impl GraphicsDevice {
         let mut vulkan_10_features = VulkanDeviceFeatures::default().enable_image_cube_array();
         let mut vulkan_11_features =
             VulkanDeviceVulkan11Features::default().enable_shader_draw_parameters();
-        let mut vulkan_12_features =
-            VulkanDeviceVulkan12Features::default().enable_shader_output_layer();
+        let mut vulkan_12_features = VulkanDeviceVulkan12Features::default()
+            .enable_shader_output_layer()
+            .enable_timeline_semaphore();
         let mut vulkan_13_features = VulkanDeviceVulkan13Features::default()
             .enable_synchronization2()
             .enable_dynamic_rendering();
