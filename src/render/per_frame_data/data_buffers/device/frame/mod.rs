@@ -17,6 +17,9 @@ pub(in crate::render::per_frame_data::data_buffers) struct FrameDeviceDataBuffer
     /// The capacity of the buffer
     capacity: usize,
 
+    /// The size in bytes of the buffer
+    size: u64,
+
     /// The usage flags for the buffer
     usage: VulkanBufferUsageFlags,
 
@@ -25,6 +28,9 @@ pub(in crate::render::per_frame_data::data_buffers) struct FrameDeviceDataBuffer
 
     /// The mapped memory for writing object data
     memory: VulkanDeviceMemory,
+
+    /// The epoch of the frame device data buffer
+    epoch: u64,
 
     /// A marker for the contained type
     _marker: PhantomData<T>,

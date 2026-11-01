@@ -1,7 +1,7 @@
 use crate::{
     Result,
     render::{
-        DescriptorSetLayouts, FullscreenQuadShader, GraphicsDevice, Pipeline, PostProcess,
+        DescriptorSetLayouts, FullscreenQuadShader, GraphicsDevice, Pipeline, PostProcessDsl,
         SDR_FORMAT, Shader, ShaderKind,
         frame_graph::{ToneMapNode, nodes::tone_map::PushConstants},
     },
@@ -21,7 +21,7 @@ impl<Game: crate::Game> ToneMapNode<Game> {
 
         let fullscreen_quad = world.get_resource::<FullscreenQuadShader>();
         let descriptor_set_layouts = world.get_resource::<DescriptorSetLayouts>();
-        let descriptor_set_layout = descriptor_set_layouts.get::<PostProcess>();
+        let descriptor_set_layout = descriptor_set_layouts.get::<PostProcessDsl>();
 
         let pipeline = Pipeline::<ToneMapNode<Game>>::new_post_process(
             "Tone Map Pipeline",
@@ -33,8 +33,6 @@ impl<Game: crate::Game> ToneMapNode<Game> {
             &[descriptor_set_layout],
             &device,
         )?;
-
-        drop(fullscreen_quad);
 
         world.insert_permanent_resource(pipeline);
 

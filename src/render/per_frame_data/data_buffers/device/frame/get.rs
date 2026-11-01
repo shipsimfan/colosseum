@@ -11,4 +11,9 @@ impl<T> FrameDeviceDataBuffer<T> {
     pub fn buffer(&self) -> &VulkanBuffer {
         &self.buffer
     }
+
+    /// Get the epoch, Vulkan buffer, and capacity of the frame device data buffer
+    pub fn epoch_and_buffer(&self) -> (u64, &VulkanBuffer, u64) {
+        (self.epoch, &self.buffer, self.size)
+    }
 }

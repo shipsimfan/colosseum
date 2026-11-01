@@ -33,8 +33,6 @@ impl SolidColorSkyNode {
             &device,
         )?;
 
-        drop(fullscreen_quad);
-
         world.insert_permanent_resource(pipeline);
 
         Ok(())

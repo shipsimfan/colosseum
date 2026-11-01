@@ -7,6 +7,7 @@ mod system;
 
 mod create;
 mod device;
+mod get;
 mod host;
 mod register_system;
 

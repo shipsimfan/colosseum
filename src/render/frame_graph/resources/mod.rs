@@ -1,8 +1,10 @@
 use crate::render::{DescriptorSetBinding, MAX_FRAMES_IN_FLIGHT};
 use alexandria::gpu::{VulkanDescriptorPool, VulkanDescriptorSet};
 use buffer::*;
+use data_binding::*;
 
 mod buffer;
+mod data_binding;
 mod id;
 mod resource;
 mod state;
@@ -39,4 +41,7 @@ pub(in crate::render::frame_graph) struct FrameGraphResources {
         [VulkanDescriptorSet; MAX_FRAMES_IN_FLIGHT],
         &'static [DescriptorSetBinding],
     )>,
+
+    /// The bindings of the data buffers to descriptor sets
+    data_bindings: Vec<FrameGraphDataBinding>,
 }

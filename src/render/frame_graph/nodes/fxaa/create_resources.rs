@@ -1,7 +1,7 @@
 use crate::{
     Result,
     render::{
-        DescriptorSetLayouts, FullscreenQuadShader, GraphicsDevice, Pipeline, PostProcess,
+        DescriptorSetLayouts, FullscreenQuadShader, GraphicsDevice, Pipeline, PostProcessDsl,
         SDR_FORMAT, Shader, ShaderKind, frame_graph::FxaaNode,
     },
 };
@@ -20,7 +20,7 @@ impl FxaaNode {
 
         let fullscreen_quad = world.get_resource::<FullscreenQuadShader>();
         let descriptor_set_layouts = world.get_resource::<DescriptorSetLayouts>();
-        let descriptor_set_layout = descriptor_set_layouts.get::<PostProcess>();
+        let descriptor_set_layout = descriptor_set_layouts.get::<PostProcessDsl>();
 
         let pipeline = Pipeline::<FxaaNode>::new_post_process(
             "FXAA Pipeline",
@@ -32,8 +32,6 @@ impl FxaaNode {
             &[descriptor_set_layout],
             &device,
         )?;
-
-        drop(fullscreen_quad);
 
         world.insert_permanent_resource(pipeline);
 

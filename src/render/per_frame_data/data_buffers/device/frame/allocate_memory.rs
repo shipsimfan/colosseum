@@ -19,7 +19,7 @@ impl<T> FrameDeviceDataBuffer<T> {
         capacity: usize,
         usage: VulkanBufferUsageFlags,
         device: &GraphicsDevice,
-    ) -> Result<(VulkanBuffer, VulkanDeviceMemory)> {
+    ) -> Result<(VulkanBuffer, VulkanDeviceMemory, u64)> {
         let size = Layout::new::<T>().repeat(capacity).unwrap().0.size() as u64;
 
         // Create the buffer
@@ -49,6 +49,6 @@ impl<T> FrameDeviceDataBuffer<T> {
             new_error!("unable to bind memory for \"{}\" - {}", buffer_name, error)
         })?;
 
-        Ok((buffer, memory))
+        Ok((buffer, memory, size))
     }
 }

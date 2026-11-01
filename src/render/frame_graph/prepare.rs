@@ -1,7 +1,7 @@
 use crate::{
     Result, SettingsCache,
     render::{
-        DescriptorSetLayouts, FrameGraph, FrameIndex, Samplers, Swapchain,
+        DescriptorSetLayouts, FrameGraph, FrameIndex, GpuDataBuffers, Samplers, Skybox, Swapchain,
         frame_graph::{FrameGraphResourceId, FrameGraphResources},
         phases::FrameGraphSetup,
     },
@@ -19,19 +19,25 @@ impl<Game: crate::Game> FrameGraph<Game> {
         mut self: ResMut<Self>,
         mut resources: ResMut<FrameGraphResources>,
         commands: &mut Commands,
-        settings: Res<Game::SettingsCache>,
+
         swapchain: Res<Swapchain>,
         frame_index: Res<FrameIndex>,
         descriptor_set_layouts: Res<DescriptorSetLayouts>,
+        data_buffers: Res<GpuDataBuffers>,
         samplers: Res<Samplers>,
+
+        settings: Res<Game::SettingsCache>,
+        skybox: Res<Skybox>,
     ) -> Result<()> {
         // Compile if needed
         self.compile(
             &mut resources,
             commands,
             &descriptor_set_layouts,
+            &data_buffers,
             &samplers,
             &settings,
+            &skybox,
         )?;
 
         // Handle resizing if needed
@@ -39,6 +45,7 @@ impl<Game: crate::Game> FrameGraph<Game> {
             swapchain.size(),
             settings.display_settings().render_scale(),
             &frame_index,
+            &data_buffers,
             &self.device,
         )?;
 

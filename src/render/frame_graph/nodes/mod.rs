@@ -9,6 +9,7 @@ mod node;
 mod system;
 
 mod fxaa;
+mod procedural_sky;
 mod quantization;
 mod render_scale;
 mod solid_color_sky;
@@ -18,6 +19,7 @@ pub(in crate::render::frame_graph) use node::*;
 pub(in crate::render::frame_graph) use system::*;
 
 pub(in crate::render::frame_graph) use fxaa::*;
+pub(in crate::render::frame_graph) use procedural_sky::*;
 pub(in crate::render::frame_graph) use quantization::*;
 pub(in crate::render::frame_graph) use render_scale::*;
 pub(in crate::render::frame_graph) use solid_color_sky::*;
@@ -32,6 +34,7 @@ pub(in crate::render) fn create_frame_graph_resources<Game: crate::Game>(
     world.insert_permanent_resource(FrameGraph::<Game>::new(device));
 
     FxaaNode::create_resources(world, device)?;
+    ProceduralSkyNode::create_resources(world, device)?;
     QuantizationNode::create_resources(world, device)?;
     SolidColorSkyNode::create_resources(world, device)?;
     ToneMapNode::<Game>::create_resources(world, device)

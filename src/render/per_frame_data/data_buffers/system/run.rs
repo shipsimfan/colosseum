@@ -35,13 +35,17 @@ impl CopySystem {
 
         for data_buffer in &mut gpu_data_buffers.buffers {
             data_buffer.copy(
+                #[cfg(debug_assertions)]
                 &mut debug_label,
+                #[cfg(not(debug_assertions))]
+                cmd_buffer,
                 frame_index,
                 &gpu_data_buffers.device,
                 world,
             )?;
         }
 
+        #[cfg(debug_assertions)]
         drop(debug_label);
 
         cmd_buffer

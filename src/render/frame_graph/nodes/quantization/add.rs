@@ -1,7 +1,7 @@
 use crate::{
     Result,
     render::{
-        PostProcess, Samplers,
+        PostProcessDsl, Samplers,
         frame_graph::{
             FrameGraphBuilder, FrameGraphResourceId, FrameGraphResourceUsage, QuantizationNode,
         },
@@ -17,7 +17,7 @@ impl QuantizationNode {
         builder: &mut FrameGraphBuilder,
     ) -> Result<()> {
         let descriptor_set =
-            builder.create_descriptor_set::<PostProcess, _>("Quantization Descriptor Set");
+            builder.create_descriptor_set::<PostProcessDsl, _>("Quantization Descriptor Set");
 
         builder.access(
             input,

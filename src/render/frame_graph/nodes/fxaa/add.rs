@@ -1,7 +1,7 @@
 use crate::{
     Result,
     render::{
-        PostProcess, SDR_FORMAT, Samplers,
+        PostProcessDsl, SDR_FORMAT, Samplers,
         frame_graph::{
             FrameGraphBuilder, FrameGraphResourceId, FrameGraphResourceKind,
             FrameGraphResourceUsage, FxaaNode,
@@ -18,7 +18,8 @@ impl FxaaNode {
         builder: &mut FrameGraphBuilder,
     ) -> Result<FrameGraphResourceId> {
         // Create descriptor set
-        let descriptor_set = builder.create_descriptor_set::<PostProcess, _>("FXAA Descriptor Set");
+        let descriptor_set =
+            builder.create_descriptor_set::<PostProcessDsl, _>("FXAA Descriptor Set");
 
         // Create output resource
         let output = builder.create_resource(

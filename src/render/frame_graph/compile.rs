@@ -1,11 +1,12 @@
 use crate::{
     Result,
     render::{
-        AntiAliasing, DescriptorSetLayouts, FrameGraph, HDR_FORMAT, Samplers,
+        AntiAliasing, DescriptorSetLayouts, FrameGraph, GpuDataBuffers, HDR_FORMAT, Samplers,
+        Skybox,
         frame_graph::{
             FrameGraphBuilder, FrameGraphResourceId, FrameGraphResourceKind, FrameGraphResources,
-            FrameGraphStructure, FxaaNode, QuantizationNode, RenderScaleNode, SolidColorSkyNode,
-            ToneMapNode,
+            FrameGraphStructure, FxaaNode, ProceduralSkyNode, QuantizationNode, RenderScaleNode,
+            SkyboxType, SolidColorSkyNode, ToneMapNode,
         },
     },
 };
@@ -19,15 +20,17 @@ impl<Game: crate::Game> FrameGraph<Game> {
         resources: &mut FrameGraphResources,
         commands: &mut Commands,
         descriptor_set_layouts: &DescriptorSetLayouts,
+        data_buffers: &GpuDataBuffers,
         samplers: &Samplers,
         settings: &Game::SettingsCache,
+        skybox: &Skybox,
     ) -> Result<()> {
-        let structure = FrameGraphStructure::new::<Game>(settings);
+        let structure = FrameGraphStructure::new::<Game>(settings, skybox);
         if self.structure.as_ref() == Some(&structure) {
             return Ok(()); // No need to recompile if the structure hasn't changed
         }
 
-        let mut builder = FrameGraphBuilder::new(commands, &self.device);
+        let mut builder = FrameGraphBuilder::new(commands, &self.device, data_buffers);
 
         /* Main Render Passes */
         let main_color_output = builder.create_resource(
@@ -37,7 +40,10 @@ impl<Game: crate::Game> FrameGraph<Game> {
             VulkanAttachmentLoadOp::DontCare,
         );
 
-        SolidColorSkyNode::add(main_color_output, &mut builder)?;
+        match structure.skybox() {
+            SkyboxType::SolidColor => SolidColorSkyNode::add(main_color_output, &mut builder)?,
+            SkyboxType::Procedural => ProceduralSkyNode::add(main_color_output, &mut builder)?,
+        }
 
         /* Post Processing */
 

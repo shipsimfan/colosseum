@@ -30,6 +30,7 @@ impl<'a> FrameGraphBuilder<'a> {
             self.descriptors,
             self.descriptor_sets,
             descriptor_set_layouts,
+            self.data_bindings,
             self.device,
         )?;
 

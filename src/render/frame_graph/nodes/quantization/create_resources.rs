@@ -1,8 +1,8 @@
 use crate::{
     Result,
     render::{
-        DescriptorSetLayouts, FullscreenQuadShader, GraphicsDevice, Pipeline, PostProcess, Shader,
-        ShaderKind,
+        DescriptorSetLayouts, FullscreenQuadShader, GraphicsDevice, Pipeline, PostProcessDsl,
+        Shader, ShaderKind,
         frame_graph::{QuantizationNode, nodes::quantization::PushConstants},
     },
 };
@@ -21,7 +21,7 @@ impl QuantizationNode {
 
         let fullscreen_quad = world.get_resource::<FullscreenQuadShader>();
         let descriptor_set_layouts = world.get_resource::<DescriptorSetLayouts>();
-        let descriptor_set_layout = descriptor_set_layouts.get::<PostProcess>();
+        let descriptor_set_layout = descriptor_set_layouts.get::<PostProcessDsl>();
 
         let pipeline = Pipeline::<QuantizationNode>::new_post_process(
             "Quantization Pipeline",
@@ -33,8 +33,6 @@ impl QuantizationNode {
             &[descriptor_set_layout],
             &device,
         )?;
-
-        drop(fullscreen_quad);
 
         world.insert_permanent_resource(pipeline);
 

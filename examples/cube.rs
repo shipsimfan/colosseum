@@ -4,9 +4,19 @@ colosseum::run!(Cube, |world: &mut colosseum::ecs::World| {
     world.insert_resource(FpsCounter::new());
     world.register_system(colosseum::update::Update, FpsCounter::tick);
 
-    world.insert_resource(colosseum::render::Skybox::SolidColor(
-        colosseum::math::Color3f::RED,
+    world.insert_resource(colosseum::render::Skybox::Procedural(
+        colosseum::render::ProceduralSkybox::new(
+            (0.5, 0.7, 0.9),
+            (0.0, 0.0, -1.0),
+            0.003,
+            5.0,
+            (1.0, 1.0, 1.0),
+            1.0,
+            (0.37, 0.29, 0.20),
+        ),
     ));
+
+    world.register_system(colosseum::update::Update, input_handling);
 
     Ok(())
 });
@@ -77,6 +87,93 @@ impl FpsCounter {
             self.last_time = now;
         }
     }
+}
+
+fn input_handling(
+    input: colosseum::ecs::Res<colosseum::update::Input>,
+    settings: colosseum::ecs::Res<CubeSettings>,
+    window: colosseum::ecs::Res<colosseum::Window>,
+    delta_time: colosseum::ecs::Res<colosseum::update::DeltaTime>,
+    mut camera: colosseum::ecs::ResMut<colosseum::render::Camera>,
+) -> colosseum::Result<()> {
+    // Toggle fullscreen mode when the user presses F11
+    if input.key_down(colosseum::Key::F11) {
+        if settings.display().fullscreen() {
+            window.unset_fullscreen()?;
+        } else {
+            window.set_fullscreen()?;
+        }
+    }
+
+    // Move the camera based on user input
+    let rotating = input.key(colosseum::Key::LeftShift) | input.key(colosseum::Key::RightShift);
+    //let changing_cube = input.key(colosseum::Key::LeftControl) | input.key(colosseum::Key::RightControl);
+
+    let mut change = colosseum::math::Vector3f::ZERO;
+    let mut changed = false;
+    let speed = delta_time.as_secs_f32();
+    if rotating {
+        if input.key(colosseum::Key::W) {
+            change.x += speed;
+            changed = true;
+        }
+        if input.key(colosseum::Key::S) {
+            change.x -= speed;
+            changed = true;
+        }
+        if input.key(colosseum::Key::A) {
+            change.y -= speed;
+            changed = true;
+        }
+        if input.key(colosseum::Key::D) {
+            change.y += speed;
+            changed = true;
+        }
+        if input.key(colosseum::Key::Q) {
+            change.z += speed;
+            changed = true;
+        }
+        if input.key(colosseum::Key::E) {
+            change.z -= speed;
+            changed = true;
+        }
+    } else {
+        if input.key(colosseum::Key::W) {
+            change.z += speed;
+            changed = true;
+        }
+        if input.key(colosseum::Key::S) {
+            change.z -= speed;
+            changed = true;
+        }
+        if input.key(colosseum::Key::A) {
+            change.x -= speed;
+            changed = true;
+        }
+        if input.key(colosseum::Key::D) {
+            change.x += speed;
+            changed = true;
+        }
+        if input.key(colosseum::Key::Q) {
+            change.y += speed;
+            changed = true;
+        }
+        if input.key(colosseum::Key::E) {
+            change.y -= speed;
+            changed = true;
+        }
+    }
+
+    if changed {
+        if rotating {
+            camera.rotation *= colosseum::math::Quaternionf::from_euler_angles(change);
+        } else {
+            change = camera.rotation.rotate(change);
+            camera.position += change;
+        }
+    }
+
+    Ok(())
 }
 
 /*
@@ -205,7 +302,7 @@ impl colosseum::update::Scene for CubeMainScene {
         context: &mut colosseum::update::UpdateContext<Cube>,
     ) -> colosseum::Result<()> {
         // Toggle fullscreen mode when the user presses F11
-        if context.inputs().key_down(colosseum::Key::F11) {
+        if input.key_down(colosseum::Key::F11) {
             if context.settings().display().fullscreen() {
                 context.unset_fullscreen()?;
             } else {
@@ -214,61 +311,61 @@ impl colosseum::update::Scene for CubeMainScene {
         }
 
         // Move the camera based on user input
-        let rotating = context.inputs().key(colosseum::Key::LeftShift)
-            | context.inputs().key(colosseum::Key::RightShift);
-        let changing_cube = context.inputs().key(colosseum::Key::LeftControl)
-            | context.inputs().key(colosseum::Key::RightControl);
+        let rotating = input.key(colosseum::Key::LeftShift)
+            | input.key(colosseum::Key::RightShift);
+        let changing_cube = input.key(colosseum::Key::LeftControl)
+            | input.key(colosseum::Key::RightControl);
 
         let mut change = colosseum::math::Vector3f::ZERO;
         let mut changed = false;
         let speed = context.delta_time().as_secs_f32();
         if rotating {
-            if context.inputs().key(colosseum::Key::W) {
+            if input.key(colosseum::Key::W) {
                 change.x += speed;
                 changed = true;
             }
-            if context.inputs().key(colosseum::Key::S) {
+            if input.key(colosseum::Key::S) {
                 change.x -= speed;
                 changed = true;
             }
-            if context.inputs().key(colosseum::Key::A) {
+            if input.key(colosseum::Key::A) {
                 change.y -= speed;
                 changed = true;
             }
-            if context.inputs().key(colosseum::Key::D) {
+            if input.key(colosseum::Key::D) {
                 change.y += speed;
                 changed = true;
             }
-            if context.inputs().key(colosseum::Key::Q) {
+            if input.key(colosseum::Key::Q) {
                 change.z += speed;
                 changed = true;
             }
-            if context.inputs().key(colosseum::Key::E) {
+            if input.key(colosseum::Key::E) {
                 change.z -= speed;
                 changed = true;
             }
         } else {
-            if context.inputs().key(colosseum::Key::W) {
+            if input.key(colosseum::Key::W) {
                 change.z += speed;
                 changed = true;
             }
-            if context.inputs().key(colosseum::Key::S) {
+            if input.key(colosseum::Key::S) {
                 change.z -= speed;
                 changed = true;
             }
-            if context.inputs().key(colosseum::Key::A) {
+            if input.key(colosseum::Key::A) {
                 change.x -= speed;
                 changed = true;
             }
-            if context.inputs().key(colosseum::Key::D) {
+            if input.key(colosseum::Key::D) {
                 change.x += speed;
                 changed = true;
             }
-            if context.inputs().key(colosseum::Key::Q) {
+            if input.key(colosseum::Key::Q) {
                 change.y += speed;
                 changed = true;
             }
-            if context.inputs().key(colosseum::Key::E) {
+            if input.key(colosseum::Key::E) {
                 change.y -= speed;
                 changed = true;
             }
@@ -295,7 +392,7 @@ impl colosseum::update::Scene for CubeMainScene {
         }
 
         // Render the cube
-        if context.inputs().key_down(colosseum::Key::V) {
+        if input.key_down(colosseum::Key::V) {
             self.render_state = !self.render_state;
             if self.render_state {
                 context.ecs_mut().add_component(
@@ -310,10 +407,10 @@ impl colosseum::update::Scene for CubeMainScene {
         }
 
         // Update the spot light angle based on user input
-        if context.inputs().key(colosseum::Key::OpenBracket) {
+        if input.key(colosseum::Key::OpenBracket) {
             self.spot_light_angle -= speed;
         }
-        if context.inputs().key(colosseum::Key::CloseBracket) {
+        if input.key(colosseum::Key::CloseBracket) {
             self.spot_light_angle += speed;
         }
 

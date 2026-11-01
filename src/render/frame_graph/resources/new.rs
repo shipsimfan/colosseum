@@ -4,7 +4,7 @@ use crate::{
         DescriptorSetBinding, DescriptorSetLayouts, GraphicsDevice, MAX_FRAMES_IN_FLIGHT,
         frame_graph::{
             FrameGraphResources, FrameGraphTransientResourceInfo,
-            resources::FrameGraphTransientResourceBuffer,
+            resources::{FrameGraphDataBinding, FrameGraphTransientResourceBuffer},
         },
     },
 };
@@ -23,6 +23,7 @@ impl FrameGraphResources {
         mut descriptors: Vec<VulkanDescriptorPoolSize>,
         descriptor_sets: Vec<(TypeId, Cow<'static, str>, &'static [DescriptorSetBinding])>,
         descriptor_set_layouts: &DescriptorSetLayouts,
+        data_bindings: Vec<(TypeId, Vec<(usize, u32)>)>,
 
         device: &GraphicsDevice,
     ) -> Result<FrameGraphResources> {
@@ -65,6 +66,12 @@ impl FrameGraphResources {
             ));
         }
 
+        // Create data bindings
+        let data_bindings = data_bindings
+            .into_iter()
+            .map(|(_, bindings)| FrameGraphDataBinding::new(bindings))
+            .collect();
+
         Ok(FrameGraphResources {
             external_resources: Vec::new(),
             native_scale: FrameGraphTransientResourceBuffer::new(
@@ -78,6 +85,7 @@ impl FrameGraphResources {
 
             descriptor_pool: Some(descriptor_pool),
             descriptor_sets: new_descriptor_sets,
+            data_bindings,
         })
     }
 
@@ -90,6 +98,7 @@ impl FrameGraphResources {
 
             descriptor_pool: None,
             descriptor_sets: Vec::new(),
+            data_bindings: Vec::new(),
         }
     }
 }

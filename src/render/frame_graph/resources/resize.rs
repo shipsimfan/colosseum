@@ -1,6 +1,6 @@
 use crate::{
     Result,
-    render::{FrameIndex, GraphicsDevice, frame_graph::FrameGraphResources},
+    render::{FrameIndex, GpuDataBuffers, GraphicsDevice, frame_graph::FrameGraphResources},
 };
 use alexandria::math::Vector2u;
 
@@ -11,8 +11,24 @@ impl FrameGraphResources {
         swapchain_size: Vector2u,
         render_scale: f32,
         frame_index: &FrameIndex,
+        data_buffers: &GpuDataBuffers,
         device: &GraphicsDevice,
     ) -> Result<()> {
+        for (binding, (epoch, buffer, capacity)) in self
+            .data_bindings
+            .iter_mut()
+            .zip(data_buffers.buffers(frame_index))
+        {
+            binding.update(
+                epoch,
+                buffer,
+                capacity,
+                &self.descriptor_sets,
+                frame_index,
+                device,
+            );
+        }
+
         let frame_index = **frame_index;
 
         self.native_scale

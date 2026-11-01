@@ -4,8 +4,9 @@ use crate::{
         FrameIndex, GraphicsDevice, HostDataBuffer, per_frame_data::data_buffers::DeviceDataBuffer,
     },
 };
-use alexandria::gpu::{VulkanBufferCopy, VulkanCommandBuffer};
+use alexandria::gpu::{VulkanBuffer, VulkanBufferCopy, VulkanCommandBuffer};
 use colosseum_ecs::{World, WorldAccess};
+use std::any::TypeId;
 
 /// A trait to erase the specific types of the device data buffers
 pub trait TypelessDeviceDataBuffer {
@@ -20,6 +21,12 @@ pub trait TypelessDeviceDataBuffer {
         device: &GraphicsDevice,
         world: &mut World,
     ) -> Result<()>;
+
+    /// Get the type id of the contained data
+    fn r#type(&self) -> TypeId;
+
+    /// Get the epoch, Vulkan buffer, and capacity in bytes of the device data buffer
+    fn epoch_and_buffer(&self, frame_index: &FrameIndex) -> (u64, &VulkanBuffer, u64);
 }
 
 impl<T: 'static> TypelessDeviceDataBuffer for DeviceDataBuffer<T> {
@@ -55,5 +62,13 @@ impl<T: 'static> TypelessDeviceDataBuffer for DeviceDataBuffer<T> {
         }
 
         Ok(())
+    }
+
+    fn r#type(&self) -> TypeId {
+        TypeId::of::<T>()
+    }
+
+    fn epoch_and_buffer(&self, frame_index: &FrameIndex) -> (u64, &VulkanBuffer, u64) {
+        self.frame[**frame_index].epoch_and_buffer()
     }
 }

@@ -1,7 +1,7 @@
-use crate::render::{DescriptorSetBinding, DescriptorSetLayoutInfo, PostProcess};
+use crate::render::{DescriptorSetBinding, DescriptorSetLayoutInfo, PostProcessDsl};
 use alexandria::gpu::{VulkanDescriptorType, VulkanShaderStageFlag};
 
-impl DescriptorSetLayoutInfo for PostProcess {
+impl DescriptorSetLayoutInfo for PostProcessDsl {
     const BINDINGS: &[DescriptorSetBinding] = &[DescriptorSetBinding::new(
         VulkanDescriptorType::CombinedImageSampler,
         1,

@@ -21,6 +21,7 @@ impl SolidColorSkyNode {
         // Bind the push constants for the clear color
         let clear_color = match skybox.as_ref() {
             Skybox::SolidColor(color) => color.with_alpha(1.0),
+            _ => unreachable!(),
         };
         cmd_buffer.cmd_push_constants(
             pipeline.layout(),

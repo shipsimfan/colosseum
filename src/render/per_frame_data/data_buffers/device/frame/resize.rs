@@ -10,7 +10,7 @@ impl<T> FrameDeviceDataBuffer<T> {
             return Ok(());
         }
 
-        let (buffer, memory) = FrameDeviceDataBuffer::<T>::allocate_memory(
+        let (buffer, memory, size) = FrameDeviceDataBuffer::<T>::allocate_memory(
             &self.buffer_name,
             &self.memory_name,
             new_capacity,
@@ -21,6 +21,8 @@ impl<T> FrameDeviceDataBuffer<T> {
         self.buffer = buffer;
         self.memory = memory;
         self.capacity = new_capacity;
+        self.size = size;
+        self.epoch += 1;
 
         Ok(())
     }

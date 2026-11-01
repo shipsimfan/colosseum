@@ -8,6 +8,7 @@
 #![allow(incomplete_features)]
 #![feature(arbitrary_self_types)]
 #![feature(const_convert)]
+#![feature(const_ops)]
 #![feature(const_trait_impl)]
 
 pub mod render;

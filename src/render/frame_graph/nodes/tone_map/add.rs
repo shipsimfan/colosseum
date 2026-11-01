@@ -1,7 +1,7 @@
 use crate::{
     Result,
     render::{
-        PostProcess, SDR_FORMAT, Samplers,
+        PostProcessDsl, SDR_FORMAT, Samplers,
         frame_graph::{
             FrameGraphBuilder, FrameGraphResourceId, FrameGraphResourceKind,
             FrameGraphResourceUsage, ToneMapNode,
@@ -20,7 +20,7 @@ impl<Game: crate::Game> ToneMapNode<Game> {
     ) -> Result<FrameGraphResourceId> {
         // Create descriptor set
         let descriptor_set =
-            builder.create_descriptor_set::<PostProcess, _>("Tone Map Descriptor Set");
+            builder.create_descriptor_set::<PostProcessDsl, _>("Tone Map Descriptor Set");
 
         // Create output
         let output = builder.create_resource(

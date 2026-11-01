@@ -17,7 +17,7 @@ impl<T> FrameDeviceDataBuffer<T> {
         let buffer_name = format!("Device {} {}", name, index);
         let memory_name = format!("Device {} Memory {}", name, index);
 
-        let (buffer, memory) = FrameDeviceDataBuffer::<T>::allocate_memory(
+        let (buffer, memory, size) = FrameDeviceDataBuffer::<T>::allocate_memory(
             &buffer_name,
             &memory_name,
             capacity,
@@ -32,6 +32,8 @@ impl<T> FrameDeviceDataBuffer<T> {
             usage,
             buffer,
             memory,
+            epoch: 1,
+            size,
             _marker: PhantomData,
         })
     }

@@ -15,6 +15,7 @@ mod access;
 mod add_node;
 mod create_descriptor_set;
 mod create_resource;
+mod data_access;
 mod finish;
 mod new;
 
@@ -40,6 +41,9 @@ pub(in crate::render::frame_graph) struct FrameGraphBuilder<'a> {
 
     /// The layouts of the descriptor sets used by the frame graph
     descriptor_sets: Vec<(TypeId, Cow<'static, str>, &'static [DescriptorSetBinding])>,
+
+    /// The descriptors which point to data buffers
+    data_bindings: Vec<(TypeId, Vec<(usize, u32)>)>,
 
     /** Current Node Trackers **/
 
