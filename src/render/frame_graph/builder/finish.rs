@@ -1,3 +1,5 @@
+use colosseum_core::new_error;
+
 use crate::{
     Result,
     render::{
@@ -21,6 +23,10 @@ impl<'a> FrameGraphBuilder<'a> {
         if let Some(barrier) = present_barrier {
             self.pipeline_barriers.push(barrier);
         }
+
+        self.device.wait_idle().map_err(|error| {
+            new_error!("unable to wait idle on a frame graph recompile - {}", error)
+        })?;
 
         // Insert the new resource instance into the world
         resources.clear();

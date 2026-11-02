@@ -1,25 +1,59 @@
 #![feature(arbitrary_self_types)]
+#![feature(const_trait_impl)]
 
-colosseum::run!(Cube, |world: &mut colosseum::ecs::World| {
-    world.insert_resource(FpsCounter::new());
-    world.register_system(colosseum::update::Update, FpsCounter::tick);
+const CUBE_VERTICES: &[colosseum::render::Vertex] = &[
+    // Front (+Z)
+    colosseum::render::Vertex::new((-1.0, 1.0, 1.0), (0.0, 0.0, 0.0), (0.0, 0.0, 1.0)),
+    colosseum::render::Vertex::new((1.0, 1.0, 1.0), (0.0, 0.0, 1.0), (0.0, 0.0, 1.0)),
+    colosseum::render::Vertex::new((-1.0, -1.0, 1.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0)),
+    colosseum::render::Vertex::new((1.0, -1.0, 1.0), (0.0, 1.0, 1.0), (0.0, 0.0, 1.0)),
+    // Back (-Z)
+    colosseum::render::Vertex::new((-1.0, 1.0, -1.0), (1.0, 0.0, 0.0), (0.0, 0.0, -1.0)),
+    colosseum::render::Vertex::new((1.0, 1.0, -1.0), (1.0, 0.0, 1.0), (0.0, 0.0, -1.0)),
+    colosseum::render::Vertex::new((-1.0, -1.0, -1.0), (1.0, 1.0, 0.0), (0.0, 0.0, -1.0)),
+    colosseum::render::Vertex::new((1.0, -1.0, -1.0), (1.0, 1.0, 1.0), (0.0, 0.0, -1.0)),
+    // Top (+Y)
+    colosseum::render::Vertex::new((-1.0, 1.0, 1.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0)),
+    colosseum::render::Vertex::new((-1.0, 1.0, -1.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, 1.0, 1.0), (0.0, 0.0, 1.0), (0.0, 1.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, 1.0, -1.0), (1.0, 0.0, 1.0), (0.0, 1.0, 0.0)),
+    // Bottom (-Y)
+    colosseum::render::Vertex::new((-1.0, -1.0, 1.0), (0.0, 1.0, 0.0), (0.0, -1.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, -1.0, 1.0), (0.0, 1.0, 1.0), (0.0, -1.0, 0.0)),
+    colosseum::render::Vertex::new((-1.0, -1.0, -1.0), (1.0, 1.0, 0.0), (0.0, -1.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, -1.0, -1.0), (1.0, 1.0, 1.0), (0.0, -1.0, 0.0)),
+    // Left (-X)
+    colosseum::render::Vertex::new((-1.0, 1.0, 1.0), (0.0, 0.0, 0.0), (-1.0, 0.0, 0.0)),
+    colosseum::render::Vertex::new((-1.0, -1.0, 1.0), (0.0, 1.0, 0.0), (-1.0, 0.0, 0.0)),
+    colosseum::render::Vertex::new((-1.0, 1.0, -1.0), (1.0, 0.0, 0.0), (-1.0, 0.0, 0.0)),
+    colosseum::render::Vertex::new((-1.0, -1.0, -1.0), (1.0, 1.0, 0.0), (-1.0, 0.0, 0.0)),
+    // Right (+X)
+    colosseum::render::Vertex::new((1.0, 1.0, 1.0), (0.0, 0.0, 1.0), (1.0, 0.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, 1.0, -1.0), (1.0, 0.0, 1.0), (1.0, 0.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, -1.0, 1.0), (0.0, 1.0, 1.0), (1.0, 0.0, 0.0)),
+    colosseum::render::Vertex::new((1.0, -1.0, -1.0), (1.0, 1.0, 1.0), (1.0, 0.0, 0.0)),
+];
+const CUBE_INDICES: &[u32] = &[
+    0, 1, 2, 1, 3, 2, // Front
+    4, 6, 5, 5, 6, 7, // Back
+    8, 9, 10, 10, 9, 11, // Top
+    12, 13, 14, 13, 15, 14, // Bottom
+    16, 17, 18, 17, 19, 18, // Left
+    20, 21, 22, 22, 21, 23, // Right
+];
 
-    world.insert_resource(colosseum::render::Skybox::Procedural(
-        colosseum::render::ProceduralSkybox::new(
-            (0.5, 0.7, 0.9),
-            (0.0, 0.0, -1.0),
-            0.003,
-            5.0,
-            (1.0, 1.0, 1.0),
-            1.0,
-            (0.37, 0.29, 0.20),
-        ),
-    ));
+colosseum::run!(
+    Cube,
+    |world: &mut colosseum::ecs::World| -> colosseum::Result<()> {
+        let mut assets = world.get_resource_mut::<colosseum::render::Assets>();
+        let mesh_loading = MeshLoading::new(&mut assets)?;
+        world.insert_resource(mesh_loading);
 
-    world.register_system(colosseum::update::Update, input_handling);
+        world.register_system(colosseum::update::Update, MeshLoading::system);
 
-    Ok(())
-});
+        Ok(())
+    }
+);
 
 /// The cube example
 struct Cube;
@@ -53,6 +87,62 @@ impl colosseum::GameOptions<Cube> for CubeOptions {
 /// The settings cache for the cube example
 #[colosseum::settings_cache]
 struct CubeSettings {}
+
+/// The resource for handling mesh loading
+struct MeshLoading {
+    /// The mesh transfer handle for the cube mesh
+    transfer: Option<colosseum::render::LoadingMesh>,
+}
+
+impl MeshLoading {
+    fn new(assets: &mut colosseum::render::Assets) -> colosseum::Result<MeshLoading> {
+        let transfer = assets.create_mesh("Cube", CUBE_VERTICES.to_vec(), CUBE_INDICES.to_vec())?;
+
+        Ok(MeshLoading {
+            transfer: Some(transfer),
+        })
+    }
+
+    fn system(
+        mut self: colosseum::ecs::ResMut<MeshLoading>,
+        mut next_scene: colosseum::ecs::ResMut<colosseum::update::NextScene>,
+        mut assets: colosseum::ecs::ResMut<colosseum::render::Assets>,
+    ) {
+        match &mut self.transfer {
+            Some(transfer) => {
+                if !transfer.is_complete() {
+                    return;
+                }
+            }
+            None => return,
+        };
+
+        let mesh = assets.complete_mesh(self.transfer.take().unwrap());
+        next_scene.set(init_main_scene);
+    }
+}
+
+/// Initialize the main scene
+fn init_main_scene(world: &mut colosseum::ecs::World) -> colosseum::Result<()> {
+    world.insert_resource(FpsCounter::new());
+    world.register_system(colosseum::update::Update, FpsCounter::tick);
+
+    world.insert_resource(colosseum::render::Skybox::Procedural(
+        colosseum::render::ProceduralSkybox::new(
+            (0.5, 0.7, 0.9),
+            (0.0, 0.0, -1.0),
+            0.003,
+            5.0,
+            (1.0, 1.0, 1.0),
+            1.0,
+            (0.37, 0.29, 0.20),
+        ),
+    ));
+
+    world.register_system(colosseum::update::Update, input_handling);
+
+    Ok(())
+}
 
 /// A resource for counting frames per second (FPS)
 struct FpsCounter {
@@ -177,49 +267,7 @@ fn input_handling(
 }
 
 /*
-#![feature(const_trait_impl)]
 
-
-const CUBE_VERTICES: &[colosseum::render::Vertex] = &[
-    // Front (+Z)
-    colosseum::render::Vertex::new((-1.0, 1.0, 1.0), (0.0, 0.0, 0.0), (0.0, 0.0, 1.0)),
-    colosseum::render::Vertex::new((1.0, 1.0, 1.0), (0.0, 0.0, 1.0), (0.0, 0.0, 1.0)),
-    colosseum::render::Vertex::new((-1.0, -1.0, 1.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0)),
-    colosseum::render::Vertex::new((1.0, -1.0, 1.0), (0.0, 1.0, 1.0), (0.0, 0.0, 1.0)),
-    // Back (-Z)
-    colosseum::render::Vertex::new((-1.0, 1.0, -1.0), (1.0, 0.0, 0.0), (0.0, 0.0, -1.0)),
-    colosseum::render::Vertex::new((1.0, 1.0, -1.0), (1.0, 0.0, 1.0), (0.0, 0.0, -1.0)),
-    colosseum::render::Vertex::new((-1.0, -1.0, -1.0), (1.0, 1.0, 0.0), (0.0, 0.0, -1.0)),
-    colosseum::render::Vertex::new((1.0, -1.0, -1.0), (1.0, 1.0, 1.0), (0.0, 0.0, -1.0)),
-    // Top (+Y)
-    colosseum::render::Vertex::new((-1.0, 1.0, 1.0), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0)),
-    colosseum::render::Vertex::new((-1.0, 1.0, -1.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0)),
-    colosseum::render::Vertex::new((1.0, 1.0, 1.0), (0.0, 0.0, 1.0), (0.0, 1.0, 0.0)),
-    colosseum::render::Vertex::new((1.0, 1.0, -1.0), (1.0, 0.0, 1.0), (0.0, 1.0, 0.0)),
-    // Bottom (-Y)
-    colosseum::render::Vertex::new((-1.0, -1.0, 1.0), (0.0, 1.0, 0.0), (0.0, -1.0, 0.0)),
-    colosseum::render::Vertex::new((1.0, -1.0, 1.0), (0.0, 1.0, 1.0), (0.0, -1.0, 0.0)),
-    colosseum::render::Vertex::new((-1.0, -1.0, -1.0), (1.0, 1.0, 0.0), (0.0, -1.0, 0.0)),
-    colosseum::render::Vertex::new((1.0, -1.0, -1.0), (1.0, 1.0, 1.0), (0.0, -1.0, 0.0)),
-    // Left (-X)
-    colosseum::render::Vertex::new((-1.0, 1.0, 1.0), (0.0, 0.0, 0.0), (-1.0, 0.0, 0.0)),
-    colosseum::render::Vertex::new((-1.0, -1.0, 1.0), (0.0, 1.0, 0.0), (-1.0, 0.0, 0.0)),
-    colosseum::render::Vertex::new((-1.0, 1.0, -1.0), (1.0, 0.0, 0.0), (-1.0, 0.0, 0.0)),
-    colosseum::render::Vertex::new((-1.0, -1.0, -1.0), (1.0, 1.0, 0.0), (-1.0, 0.0, 0.0)),
-    // Right (+X)
-    colosseum::render::Vertex::new((1.0, 1.0, 1.0), (0.0, 0.0, 1.0), (1.0, 0.0, 0.0)),
-    colosseum::render::Vertex::new((1.0, 1.0, -1.0), (1.0, 0.0, 1.0), (1.0, 0.0, 0.0)),
-    colosseum::render::Vertex::new((1.0, -1.0, 1.0), (0.0, 1.0, 1.0), (1.0, 0.0, 0.0)),
-    colosseum::render::Vertex::new((1.0, -1.0, -1.0), (1.0, 1.0, 1.0), (1.0, 0.0, 0.0)),
-];
-const CUBE_INDICES: &[u32] = &[
-    0, 1, 2, 1, 3, 2, // Front
-    4, 6, 5, 5, 6, 7, // Back
-    8, 9, 10, 10, 9, 11, // Top
-    12, 13, 14, 13, 15, 14, // Bottom
-    16, 17, 18, 17, 19, 18, // Left
-    20, 21, 22, 22, 21, 23, // Right
-];
 
 const INITIAL_CUBE_POSITION: colosseum::math::Vector3f =
     colosseum::math::Vector3f::new(0.0, 0.0, 3.0);

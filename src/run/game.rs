@@ -7,7 +7,7 @@ use crate::{
     },
 };
 use alexandria::gpu::{VulkanInstance, VulkanSurface};
-use colosseum_core::{GlobalSharedState, ThreadManager, logger};
+use colosseum_core::{GlobalSharedState, ThreadManager, logger, new_error};
 use colosseum_ecs::World;
 use std::{sync::Arc, time::Instant};
 
@@ -57,6 +57,9 @@ pub(in crate::run) fn run<Game: crate::Game, InitialScene: Scene>(
         // Transition to the next scene if it exists
         if let Some(next_scene) = indices.next_scene_mut(&mut world).take() {
             world.run(SceneTransition)?;
+            graphics_device.wait_idle().map_err(|error| {
+                new_error!("unable to wait idle on a scene transition - {}", error)
+            })?;
             unsafe { world.clear() };
 
             init_render_systems(&mut world, &indices);
