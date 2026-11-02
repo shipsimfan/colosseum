@@ -7,4 +7,9 @@ impl<Components: QueryData, Filter: QueryFilter> QueryState<Components, Filter> 
             .get(index)
             .map(|(index, state)| (*index, state))
     }
+
+    /// Get an iterator over the archetype indices
+    pub fn archetypes(&self) -> impl Iterator<Item = usize> {
+        self.archetypes.iter().map(|(index, _)| *index)
+    }
 }

@@ -1,7 +1,7 @@
 use crate::{
     Result,
     render::{
-        FullscreenQuadShader, GraphicsDevice, HDR_FORMAT, Pipeline, Shader, ShaderKind,
+        FullscreenQuadShader, GraphicsDevice, HDR_FORMAT, Pipeline, Shader,
         frame_graph::SolidColorSkyNode,
     },
 };
@@ -19,7 +19,7 @@ compile_shader! {
 impl SolidColorSkyNode {
     /// Create the resources required by the [`SolidColorSkyNode`]
     pub fn create_resources(world: &mut World, device: &GraphicsDevice) -> Result<()> {
-        let shader = Shader::new(&FRAGMENT_SHADER, ShaderKind::Other, device)?;
+        let shader = Shader::new(&FRAGMENT_SHADER, device)?;
 
         let fullscreen_quad = world.get_resource::<FullscreenQuadShader>();
         let pipeline = Pipeline::<SolidColorSkyNode>::new_post_process(

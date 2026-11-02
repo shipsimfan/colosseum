@@ -5,6 +5,7 @@ mod get;
 mod index;
 mod new;
 mod push;
+mod reserve;
 mod reset;
 
 /// The per-frame data for the host-visible data buffer

@@ -1,6 +1,6 @@
 use crate::{
     Result,
-    render::{FullscreenQuadShader, GraphicsDevice, Shader, ShaderKind},
+    render::{FullscreenQuadShader, GraphicsDevice, Shader},
 };
 use alexandria::gpu::compile_shader;
 
@@ -13,7 +13,7 @@ compile_shader! {
 impl FullscreenQuadShader {
     /// Creates a new instance of the fullscreen quad shader
     pub fn new(device: &GraphicsDevice) -> Result<FullscreenQuadShader> {
-        let shader = Shader::new(&FULLSCREEN_QUAD_SHADER, ShaderKind::Other, device)?;
+        let shader = Shader::new(&FULLSCREEN_QUAD_SHADER, device)?;
         Ok(FullscreenQuadShader { shader })
     }
 }

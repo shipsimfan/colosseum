@@ -2,7 +2,7 @@ use crate::{
     Result,
     render::{
         DescriptorSetLayouts, FullscreenQuadShader, GraphicsDevice, Pipeline, PostProcessDsl,
-        SDR_FORMAT, Shader, ShaderKind, frame_graph::FxaaNode,
+        SDR_FORMAT, Shader, frame_graph::FxaaNode,
     },
 };
 use alexandria::{gpu::compile_shader, math::Vector2f};
@@ -16,7 +16,7 @@ compile_shader! {
 impl FxaaNode {
     /// Create the resources required by the [`FxaaNode`]
     pub fn create_resources(world: &mut World, device: &GraphicsDevice) -> Result<()> {
-        let shader = Shader::new(&FRAGMENT_SHADER, ShaderKind::Other, device)?;
+        let shader = Shader::new(&FRAGMENT_SHADER, device)?;
 
         let fullscreen_quad = world.get_resource::<FullscreenQuadShader>();
         let descriptor_set_layouts = world.get_resource::<DescriptorSetLayouts>();

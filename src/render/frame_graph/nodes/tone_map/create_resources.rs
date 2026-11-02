@@ -2,7 +2,7 @@ use crate::{
     Result,
     render::{
         DescriptorSetLayouts, FullscreenQuadShader, GraphicsDevice, Pipeline, PostProcessDsl,
-        SDR_FORMAT, Shader, ShaderKind,
+        SDR_FORMAT, Shader,
         frame_graph::{ToneMapNode, nodes::tone_map::PushConstants},
     },
 };
@@ -17,7 +17,7 @@ compile_shader! {
 impl<Game: crate::Game> ToneMapNode<Game> {
     /// Create the resources required by the [`ToneMapNode`]
     pub fn create_resources(world: &mut World, device: &GraphicsDevice) -> Result<()> {
-        let shader = Shader::new(&FRAGMENT_SHADER, ShaderKind::Other, device)?;
+        let shader = Shader::new(&FRAGMENT_SHADER, device)?;
 
         let fullscreen_quad = world.get_resource::<FullscreenQuadShader>();
         let descriptor_set_layouts = world.get_resource::<DescriptorSetLayouts>();

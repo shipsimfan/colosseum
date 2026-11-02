@@ -1,8 +1,7 @@
 use crate::{
     Result,
     render::{
-        CameraDsl, DescriptorSetLayouts, GraphicsDevice, HDR_FORMAT, Pipeline, Shader, ShaderKind,
-        Vertex,
+        CameraDsl, DescriptorSetLayouts, GraphicsDevice, HDR_FORMAT, Pipeline, Shader, Vertex,
         frame_graph::{ProceduralSkyNode, nodes::procedural_sky::PushConstants},
     },
 };
@@ -30,7 +29,7 @@ compile_shader! {
 impl ProceduralSkyNode {
     /// Create the resources required by the [`ProceduralSkyNode`]
     pub fn create_resources(world: &mut World, device: &GraphicsDevice) -> Result<()> {
-        let shader = Shader::new(&SHADER, ShaderKind::Other, device)?;
+        let shader = Shader::new(&SHADER, device)?;
 
         let descriptor_set_layouts = world.get_resource::<DescriptorSetLayouts>();
         let descriptor_set_layout = descriptor_set_layouts.get::<CameraDsl>();
@@ -61,7 +60,6 @@ impl ProceduralSkyNode {
                     None,
                 ),
             ],
-            vec![shader.clone()],
             &VulkanPipelineVertexInputStateCreateInfo::new(
                 &Vertex::POSITION_ONLY_ATTRIBUTE_DESCRIPTORS,
                 &Vertex::BINDING_DESCRIPTORS,

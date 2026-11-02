@@ -1,8 +1,8 @@
 use crate::{
     Result, SettingsCache, UserEvent,
     render::{
-        Camera, FrameGraph, GraphicsDevice, RenderGpuTransferQueue, RenderIndices, Swapchain,
-        create_fixed_render_data_resources, create_frame_graph_resources,
+        Camera, FrameGraph, GraphicsDevice, RenderGpuTransferQueue, RenderIndices, Renderer,
+        Swapchain, create_fixed_render_data_resources, create_frame_graph_resources,
         create_per_frame_render_data, create_public_data_resources,
         create_public_data_scene_resources,
         phases::{self, FrameGraphSetup, PostRender, PreRender},
@@ -33,6 +33,8 @@ pub(crate) fn init_render_resources<Game: crate::Game>(
         )?;
 
     drop(settings);
+
+    world.insert_permanent_resource(device.clone());
 
     // Create the per-frame data resources
     create_per_frame_render_data(world, &device)?;
@@ -78,6 +80,7 @@ fn init_pre_render(world: &mut World) {
     }
 
     world.register_system(PreRender, Camera::system);
+    world.register_system(PreRender, Renderer::system);
 }
 
 fn init_frame_graph_setup<Game: crate::Game>(world: &mut World, indices: &RenderIndices<Game>) {

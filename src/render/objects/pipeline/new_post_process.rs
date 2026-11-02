@@ -16,14 +16,14 @@ use alexandria::{
     },
     math::{Color4f, Linear},
 };
-use std::{ffi::CStr, sync::Arc};
+use std::ffi::CStr;
 
 impl<Kind> Pipeline<Kind> {
     /// Create a new [`Pipeline`] for a post-processing effect
     pub fn new_post_process(
         name: &'static str,
-        fullscreen_quad: &Arc<Shader>,
-        fragment_shader: &Arc<Shader>,
+        fullscreen_quad: &Shader,
+        fragment_shader: &Shader,
         push_constant_size: usize,
         depth_stencil_state: Option<&VulkanPipelineDepthStencilStateCreateInfo>,
         output_formats: &[VulkanFormat],
@@ -120,7 +120,6 @@ impl<Kind> Pipeline<Kind> {
                 DEPTH_FORMAT
             },
             &shader_stages,
-            vec![fullscreen_quad.clone(), fragment_shader.clone()],
             &vertex_input_state,
             &input_assembly_state,
             &viewport_state,
@@ -136,7 +135,7 @@ impl<Kind> Pipeline<Kind> {
 
 /// Create a single shader stage for the graphics pipeline
 fn create_shader_stage<'a>(
-    shader: &'a Arc<Shader>,
+    shader: &'a Shader,
     stage: VulkanShaderStageFlag,
     name: &'a CStr,
 ) -> VulkanPipelineShaderStageCreateInfo<'a> {

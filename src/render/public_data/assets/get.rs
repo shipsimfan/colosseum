@@ -8,7 +8,7 @@ impl Assets {
     }
 
     /// Get a reference to a mesh by its ID
-    pub fn get_mesh(&self, id: Id<Mesh>) -> &Mesh {
+    pub fn mesh(&self, id: Id<Mesh>) -> &Mesh {
         &self.meshes[id]
     }
 }

@@ -12,18 +12,20 @@ mod anti_aliasing;
 mod assets;
 mod camera;
 mod color_correction;
+mod materials;
 mod mesh;
 mod primitives;
-mod shader;
+mod renderer;
 mod skybox;
 
 pub use anti_aliasing::*;
 pub use assets::*;
 pub use camera::*;
 pub use color_correction::*;
+pub use materials::*;
 pub use mesh::*;
 pub use primitives::*;
-pub use shader::*;
+pub use renderer::*;
 pub use skybox::*;
 
 /// Create the public facing resources
@@ -38,6 +40,8 @@ pub(in crate::render) fn create_public_data_resources(
     let mut assets = Assets::new(device, gpu_transfer_queue, file_io);
     world.insert_permanent_resource(Primitives::new(&mut assets, render_gpu_transfer_queue)?);
     world.insert_permanent_resource(assets);
+
+    world.insert_permanent_resource(Materials::new(device));
 
     Ok(())
 }

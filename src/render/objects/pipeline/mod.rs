@@ -1,6 +1,5 @@
-use crate::render::Shader;
 use alexandria::gpu::{VulkanPipeline, VulkanPipelineLayout};
-use std::{marker::PhantomData, sync::Arc};
+use std::marker::PhantomData;
 
 mod bind;
 mod get;
@@ -14,10 +13,6 @@ pub(in crate::render) struct Pipeline<Kind> {
 
     /// The pipeline layout used to create the pipeline
     layout: VulkanPipelineLayout,
-
-    /// The shaders being used by this pipeline
-    #[allow(unused)]
-    shaders: Vec<Arc<Shader>>,
 
     /// A marker to differentiate different pipelines in the resource pool
     _kind: PhantomData<fn() -> Kind>,

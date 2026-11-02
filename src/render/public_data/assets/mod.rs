@@ -9,7 +9,6 @@ mod allocator;
 
 mod complete_mesh;
 mod create_mesh;
-mod create_shader;
 mod get;
 mod new;
 mod remove_mesh;

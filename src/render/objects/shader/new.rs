@@ -1,32 +1,25 @@
 use crate::{
     Result,
-    render::{GraphicsDevice, Shader, ShaderCode, ShaderKind},
+    render::{GraphicsDevice, Shader, ShaderCode},
 };
 use colosseum_core::new_error;
 #[cfg(debug_assertions)]
 use std::ffi::CString;
-use std::sync::Arc;
 
 impl Shader {
     /// Create a new [`Shader`] from [`ShaderCode`]
-    pub(in crate::render) fn new<const N: usize>(
-        code: &ShaderCode<N>,
-        kind: ShaderKind,
-        graphics_device: &GraphicsDevice,
-    ) -> Result<Arc<Shader>> {
+    pub fn new<const N: usize>(code: &ShaderCode<N>, device: &GraphicsDevice) -> Result<Shader> {
         #[cfg_attr(not(debug_assertions), allow(unused_mut))]
-        let mut module = graphics_device
-            .create_shader_module(code)
-            .map_err(|error| {
-                new_error!(
-                    "unable to create \"{}\" shader module - {}",
-                    code.file_name(),
-                    error
-                )
-            })?;
+        let mut module = device.create_shader_module(code).map_err(|error| {
+            new_error!(
+                "unable to create \"{}\" shader module - {}",
+                code.file_name(),
+                error
+            )
+        })?;
 
         #[cfg(debug_assertions)]
-        graphics_device
+        device
             .set_object_name(
                 &mut module,
                 &CString::new(format!("\"{}\" Shader Module", code.file_name())).unwrap(),
@@ -39,6 +32,6 @@ impl Shader {
                 )
             })?;
 
-        Ok(Arc::new(Shader { module, kind }))
+        Ok(Shader { module })
     }
 }
