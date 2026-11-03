@@ -1,9 +1,8 @@
 use crate::{
     Result,
-    render::{DescriptorSetLayoutInfo, DescriptorSetLayouts, GraphicsDevice},
+    render::{DescriptorSetLayout, DescriptorSetLayoutInfo, DescriptorSetLayouts, GraphicsDevice},
 };
 use colosseum_core::new_error;
-use std::any::TypeId;
 #[cfg(debug_assertions)]
 use std::ffi::CString;
 
@@ -11,7 +10,7 @@ impl DescriptorSetLayouts {
     /// Create a new descriptor set layout
     pub fn create<T: DescriptorSetLayoutInfo>(
         &mut self,
-        name: &str,
+        name: &'static str,
         device: &GraphicsDevice,
     ) -> Result<()> {
         let mut bindings = Vec::with_capacity(T::BINDINGS.len());
@@ -26,7 +25,10 @@ impl DescriptorSetLayouts {
 
         #[cfg(debug_assertions)]
         device
-            .set_object_name(&mut handle, &CString::new(name).unwrap())
+            .set_object_name(
+                &mut handle,
+                &CString::new(format!("{} Descriptor Set Layout", name)).unwrap(),
+            )
             .map_err(|error| {
                 new_error!(
                     "unable to set descriptor set layout name for \"{}\" - {}",
@@ -35,7 +37,8 @@ impl DescriptorSetLayouts {
                 )
             })?;
 
-        self.layouts.push((TypeId::of::<T>(), handle));
+        self.layouts
+            .push(DescriptorSetLayout::new::<T>(name, handle));
         Ok(())
     }
 }

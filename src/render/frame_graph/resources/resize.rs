@@ -14,19 +14,8 @@ impl FrameGraphResources {
         data_buffers: &GpuDataBuffers,
         device: &GraphicsDevice,
     ) -> Result<()> {
-        for (binding, (epoch, buffer, capacity)) in self
-            .data_bindings
-            .iter_mut()
-            .zip(data_buffers.buffers(frame_index))
-        {
-            binding.update(
-                epoch,
-                buffer,
-                capacity,
-                &self.descriptor_sets,
-                frame_index,
-                device,
-            );
+        for binding in &mut self.data_bindings {
+            binding.update(data_buffers, &self.descriptor_sets, frame_index, device);
         }
 
         let frame_index = **frame_index;

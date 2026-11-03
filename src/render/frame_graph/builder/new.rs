@@ -1,5 +1,5 @@
 use crate::render::{
-    GpuDataBuffers, GraphicsDevice,
+    DescriptorSetLayouts, GpuDataBuffers, GraphicsDevice,
     frame_graph::{FrameGraphBuilder, builder::FrameGraphBuilderResources},
     phases::FrameGraph,
 };
@@ -10,30 +10,48 @@ impl<'a> FrameGraphBuilder<'a> {
     pub fn new(
         commands: &'a mut Commands,
         device: &'a GraphicsDevice,
-        data_buffers: &GpuDataBuffers,
+        data_buffers: &'a GpuDataBuffers,
+        descriptor_set_layouts: &DescriptorSetLayouts,
     ) -> FrameGraphBuilder<'a> {
+        // Clear the frame graph phase
         commands.clear_phase(FrameGraph);
 
-        let mut data_bindings = Vec::with_capacity(data_buffers.len());
-        for r#type in data_buffers.types() {
-            data_bindings.push((r#type, Vec::new()));
-        }
-
-        FrameGraphBuilder {
+        // Initialize the frame graph builder with the provided resources
+        let mut builder = FrameGraphBuilder {
             commands,
             device,
+            data_buffers,
 
             nodes: Vec::new(),
             pipeline_barriers: Vec::new(),
             resources: FrameGraphBuilderResources::new(),
             descriptors: Vec::new(),
             descriptor_sets: Vec::new(),
-            data_bindings,
+            data_bindings: Vec::new(),
 
             current_pipeline_barriers: 0,
 
             color_attachment: None,
             depth_attachment: None,
+        };
+
+        // Setup the descriptor sets which reference data buffers
+        for layout in descriptor_set_layouts {
+            if layout.data_bindings().is_empty() {
+                continue;
+            }
+
+            let descriptor_set = builder.create_descriptor_set_direct(
+                format!("{} Descriptor Set", layout.name()),
+                layout.r#type(),
+                layout.bindings(),
+            );
+
+            for &(r#type, name, binding) in layout.data_bindings() {
+                builder.data_access(r#type, name, descriptor_set, binding);
+            }
         }
+
+        builder
     }
 }

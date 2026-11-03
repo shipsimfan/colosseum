@@ -26,7 +26,7 @@ impl Materials {
         descriptor_set_layouts: &DescriptorSetLayouts,
         device: &Arc<GraphicsDevice>,
     ) -> Result<Materials> {
-        let unlit_pipeline_layout = device
+        let mut unlit_pipeline_layout = device
             .create_pipeline_layout(
                 0,
                 &[
@@ -40,6 +40,13 @@ impl Materials {
                 )],
             )
             .map_err(|error| new_error!("unable to create default unlit shader - {}", error))?;
+
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut unlit_pipeline_layout, c"Unlit Pipeline Layout")
+            .map_err(|error| {
+                new_error!("unable to set name for unlit pipeline layout - {}", error)
+            })?;
 
         let default_unlit_shader = UnlitShader::new(&UNLIT_SHADER, &unlit_pipeline_layout, device)?;
 

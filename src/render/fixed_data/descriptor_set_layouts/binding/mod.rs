@@ -1,4 +1,5 @@
 use alexandria::gpu::{VulkanDescriptorType, VulkanShaderStageFlags};
+use std::any::TypeId;
 
 mod get;
 mod new;
@@ -14,4 +15,7 @@ pub struct DescriptorSetBinding {
 
     /// The shader stages that can access this binding
     stage_flags: VulkanShaderStageFlags,
+
+    /// The type of the associated data buffer, if there is one
+    data_buffer: Option<(TypeId, &'static str)>,
 }

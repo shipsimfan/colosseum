@@ -33,8 +33,8 @@ impl<Game: crate::Game> FrameGraph<Game> {
         self.compile(
             &mut resources,
             commands,
-            &descriptor_set_layouts,
             &data_buffers,
+            &descriptor_set_layouts,
             &samplers,
             &settings,
             &skybox,

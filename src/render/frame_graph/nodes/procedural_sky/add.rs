@@ -1,7 +1,7 @@
 use crate::{
     Result,
     render::{
-        CameraDsl, GpuCamera,
+        CameraDsl,
         frame_graph::{
             FrameGraphBuilder, FrameGraphResourceId, FrameGraphResourceUsage, ProceduralSkyNode,
         },
@@ -12,9 +12,7 @@ impl ProceduralSkyNode {
     /// Add a new [`ProceduralSkyNode`] to the frame graph
     pub fn add(output: FrameGraphResourceId, builder: &mut FrameGraphBuilder) -> Result<()> {
         // Create descriptor set
-        let descriptor_set =
-            builder.create_descriptor_set::<CameraDsl, _>("Procedural Sky Descriptor Set");
-        builder.data_access::<GpuCamera>(descriptor_set, 0);
+        let descriptor_set = builder.get_descriptor_set::<CameraDsl>();
 
         // Access the output as a color attachment
         builder.access(output, FrameGraphResourceUsage::ColorAttachment);

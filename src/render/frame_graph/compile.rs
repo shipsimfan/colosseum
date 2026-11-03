@@ -19,8 +19,8 @@ impl<Game: crate::Game> FrameGraph<Game> {
         &mut self,
         resources: &mut FrameGraphResources,
         commands: &mut Commands,
-        descriptor_set_layouts: &DescriptorSetLayouts,
         data_buffers: &GpuDataBuffers,
+        descriptor_set_layouts: &DescriptorSetLayouts,
         samplers: &Samplers,
         settings: &Game::SettingsCache,
         skybox: &Skybox,
@@ -30,7 +30,8 @@ impl<Game: crate::Game> FrameGraph<Game> {
             return Ok(()); // No need to recompile if the structure hasn't changed
         }
 
-        let mut builder = FrameGraphBuilder::new(commands, &self.device, data_buffers);
+        let mut builder =
+            FrameGraphBuilder::new(commands, &self.device, data_buffers, descriptor_set_layouts);
 
         /* Main Render Passes */
         let main_color_output = builder.create_resource(

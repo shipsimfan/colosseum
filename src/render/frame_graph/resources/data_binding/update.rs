@@ -1,18 +1,14 @@
 use crate::render::{
-    DescriptorSetBinding, FrameIndex, GraphicsDevice, MAX_FRAMES_IN_FLIGHT,
+    DescriptorSetBinding, FrameIndex, GpuDataBuffers, GraphicsDevice, MAX_FRAMES_IN_FLIGHT,
     frame_graph::resources::FrameGraphDataBinding,
 };
-use alexandria::gpu::{
-    VulkanBuffer, VulkanDescriptorBufferInfo, VulkanDescriptorSet, VulkanWriteDescriptorSet,
-};
+use alexandria::gpu::{VulkanDescriptorBufferInfo, VulkanDescriptorSet, VulkanWriteDescriptorSet};
 
 impl FrameGraphDataBinding {
     /// Update the data binding with the new buffer and frame index
     pub fn update(
         &mut self,
-        epoch: u64,
-        buffer: &VulkanBuffer,
-        capacity: u64,
+        data_buffers: &GpuDataBuffers,
         descriptor_sets: &[(
             [VulkanDescriptorSet; MAX_FRAMES_IN_FLIGHT],
             &'static [DescriptorSetBinding],
@@ -20,6 +16,8 @@ impl FrameGraphDataBinding {
         frame_index: &FrameIndex,
         device: &GraphicsDevice,
     ) {
+        let (epoch, buffer, capacity) = data_buffers.get(self.index, frame_index);
+
         // Check if the epoch for the current frame index matches the provided epoch
         if epoch == self.epoch[**frame_index] {
             return;

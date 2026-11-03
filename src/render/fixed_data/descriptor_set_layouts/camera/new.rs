@@ -9,6 +9,6 @@ impl CameraDsl {
         descriptor_set_layouts: &mut DescriptorSetLayouts,
         device: &GraphicsDevice,
     ) -> Result<()> {
-        descriptor_set_layouts.create::<CameraDsl>("Camera Descriptor Set Layout", device)
+        descriptor_set_layouts.create::<CameraDsl>("Camera", device)
     }
 }

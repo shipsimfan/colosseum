@@ -23,7 +23,7 @@ impl FrameGraphResources {
         mut descriptors: Vec<VulkanDescriptorPoolSize>,
         descriptor_sets: Vec<(TypeId, Cow<'static, str>, &'static [DescriptorSetBinding])>,
         descriptor_set_layouts: &DescriptorSetLayouts,
-        data_bindings: Vec<(TypeId, Vec<(usize, u32)>)>,
+        data_bindings: Vec<(TypeId, usize, Vec<(usize, u32)>)>,
 
         device: &GraphicsDevice,
     ) -> Result<FrameGraphResources> {
@@ -69,7 +69,7 @@ impl FrameGraphResources {
         // Create data bindings
         let data_bindings = data_bindings
             .into_iter()
-            .map(|(_, bindings)| FrameGraphDataBinding::new(bindings))
+            .map(|(_, index, bindings)| FrameGraphDataBinding::new(index, bindings))
             .collect();
 
         Ok(FrameGraphResources {

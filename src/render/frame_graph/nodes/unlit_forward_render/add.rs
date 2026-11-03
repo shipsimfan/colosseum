@@ -1,7 +1,7 @@
 use crate::{
     Result,
     render::{
-        CameraDsl, GpuCamera, GpuRenderable, RenderableDsl,
+        CameraDsl, RenderableDsl,
         frame_graph::{
             FrameGraphBuilder, FrameGraphResourceId, FrameGraphResourceUsage,
             UnlitForwardRenderNode,
@@ -17,14 +17,8 @@ impl UnlitForwardRenderNode {
         builder: &mut FrameGraphBuilder,
     ) -> Result<()> {
         // Create descriptor set
-        let camera_descriptor_set = builder
-            .create_descriptor_set::<CameraDsl, _>("Unlit Forward Render Camera Descriptor Set");
-        let renderable_descriptor_set = builder.create_descriptor_set::<RenderableDsl, _>(
-            "Unlit Forward Render Renderable Descriptor Set",
-        );
-
-        builder.data_access::<GpuCamera>(camera_descriptor_set, 0);
-        builder.data_access::<GpuRenderable>(renderable_descriptor_set, 0);
+        let camera_descriptor_set = builder.get_descriptor_set::<CameraDsl>();
+        let renderable_descriptor_set = builder.get_descriptor_set::<RenderableDsl>();
 
         // Access the output as a color attachment and the depth buffer as a depth attachment
         builder.access(output, FrameGraphResourceUsage::ColorAttachment);

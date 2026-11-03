@@ -1,13 +1,7 @@
 # ToDo
  1. Update remaining engine to new ECS
-   1. Change descriptor sets in the `FrameGraphBuilder`
-     1. Add `singleton` flag to descriptor set layouts
-     2. Pre-make all descriptor sets in the builder for each singleton descriptor set layout
-       - Use type-specific function to allow declaring data access
-     3. `debug_assert!` to prevent creating singleton descriptor sets in `create_descriptor_set`
-     4. Add `get_descriptor_set` method to retrieve pre-made singleton descriptor sets (store type-id to index list)
-   2. Switch to reverse-z depth
-   3. Add lit rendering
+   1. Switch to reverse-z depth
+   2. Add lit rendering
      1. Add lit materials
      2. Add lit renderables
      3. Add light data buffers (keep empty)
@@ -16,8 +10,8 @@
        3. Spot
      4. Add shadow map buffers (keep empty)
      5. Add lit forward rendering node
-   4. Add skybox system to update procedural sky settings based on directional light
-   5. Add shadow mapping
+   3. Add skybox system to update procedural sky settings based on directional light
+   4. Add shadow mapping
  2. Add mesh loading
  3. Add raycasting
  4. Add texture loading

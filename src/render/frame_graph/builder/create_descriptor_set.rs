@@ -10,12 +10,27 @@ impl<'a> FrameGraphBuilder<'a> {
         &mut self,
         name: S,
     ) -> usize {
+        #[cfg(debug_assertions)]
         for binding in Layout::BINDINGS {
+            debug_assert!(binding.data_buffer().is_none());
+        }
+
+        self.create_descriptor_set_direct(name, TypeId::of::<Layout>(), Layout::BINDINGS)
+    }
+
+    pub(in crate::render::frame_graph::builder) fn create_descriptor_set_direct<
+        S: Into<Cow<'static, str>>,
+    >(
+        &mut self,
+        name: S,
+        r#type: TypeId,
+        bindings: &'static [DescriptorSetBinding],
+    ) -> usize {
+        for binding in bindings {
             self.add_descriptors(binding);
         }
 
-        self.descriptor_sets
-            .push((TypeId::of::<Layout>(), name.into(), Layout::BINDINGS));
+        self.descriptor_sets.push((r#type, name.into(), bindings));
         self.descriptor_sets.len() - 1
     }
 

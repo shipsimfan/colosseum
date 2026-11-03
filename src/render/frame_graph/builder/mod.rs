@@ -1,5 +1,5 @@
 use crate::render::{
-    DescriptorSetBinding, GraphicsDevice,
+    DescriptorSetBinding, GpuDataBuffers, GraphicsDevice,
     frame_graph::{FrameGraphPipelineBarrier, FrameGraphResourceId, SubmissionNode},
 };
 use alexandria::gpu::{VulkanAttachmentLoadOp, VulkanDescriptorPoolSize};
@@ -17,6 +17,7 @@ mod create_descriptor_set;
 mod create_resource;
 mod data_access;
 mod finish;
+mod get_descriptor_set;
 mod new;
 
 /// Builder for constructing a frame graph
@@ -26,6 +27,9 @@ pub(in crate::render::frame_graph) struct FrameGraphBuilder<'a> {
 
     /// The graphics device to create objects with
     device: &'a GraphicsDevice,
+
+    /// The data buffers available to the frame graph
+    data_buffers: &'a GpuDataBuffers,
 
     /// The nodes that will be used by the submission system
     nodes: Vec<SubmissionNode>,
@@ -43,7 +47,7 @@ pub(in crate::render::frame_graph) struct FrameGraphBuilder<'a> {
     descriptor_sets: Vec<(TypeId, Cow<'static, str>, &'static [DescriptorSetBinding])>,
 
     /// The descriptors which point to data buffers
-    data_bindings: Vec<(TypeId, Vec<(usize, u32)>)>,
+    data_bindings: Vec<(TypeId, usize, Vec<(usize, u32)>)>,
 
     /** Current Node Trackers **/
 
