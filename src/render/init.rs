@@ -34,8 +34,6 @@ pub(crate) fn init_render_resources<Game: crate::Game>(
 
     drop(settings);
 
-    world.insert_permanent_resource(device.clone());
-
     // Create the per-frame data resources
     create_per_frame_render_data(world, &device)?;
 

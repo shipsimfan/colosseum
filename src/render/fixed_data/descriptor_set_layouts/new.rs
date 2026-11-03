@@ -1,6 +1,6 @@
 use crate::{
     Result,
-    render::{CameraDsl, DescriptorSetLayouts, GraphicsDevice, PostProcessDsl},
+    render::{CameraDsl, DescriptorSetLayouts, GraphicsDevice, PostProcessDsl, RenderableDsl},
 };
 
 impl DescriptorSetLayouts {
@@ -12,6 +12,7 @@ impl DescriptorSetLayouts {
 
         PostProcessDsl::new(&mut layouts, device)?;
         CameraDsl::new(&mut layouts, device)?;
+        RenderableDsl::new(&mut layouts, device)?;
 
         Ok(layouts)
     }

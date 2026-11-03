@@ -23,7 +23,12 @@ impl<'a> FrameGraphBuilder<'a> {
         // Wrap and register the system
         self.commands.register_system(
             FrameGraph,
-            FrameGraphNodeSystem::<Node, _>::new(name, node.system(), self.color_attachment.take()),
+            FrameGraphNodeSystem::<Node, _>::new(
+                name,
+                node.system(),
+                self.color_attachment.take(),
+                self.depth_attachment.take(),
+            ),
         );
 
         // Insert submission node

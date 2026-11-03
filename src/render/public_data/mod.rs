@@ -2,7 +2,7 @@
 
 use crate::{
     FileIo, Result,
-    render::{GpuTransferQueue, GraphicsDevice, RenderGpuTransferQueue},
+    render::{DescriptorSetLayouts, GpuTransferQueue, GraphicsDevice, RenderGpuTransferQueue},
 };
 use alexandria::gpu::VulkanQueue;
 use colosseum_ecs::World;
@@ -41,7 +41,8 @@ pub(in crate::render) fn create_public_data_resources(
     world.insert_permanent_resource(Primitives::new(&mut assets, render_gpu_transfer_queue)?);
     world.insert_permanent_resource(assets);
 
-    world.insert_permanent_resource(Materials::new(device));
+    let materials = Materials::new(&world.get_resource::<DescriptorSetLayouts>(), device)?;
+    world.insert_permanent_resource(materials);
 
     Ok(())
 }

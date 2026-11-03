@@ -52,4 +52,7 @@ pub(in crate::render::frame_graph) struct FrameGraphBuilder<'a> {
 
     /// The color attachment for the current node
     color_attachment: Option<(FrameGraphResourceId, VulkanAttachmentLoadOp)>,
+
+    /// The depth attachment for the current node
+    depth_attachment: Option<(FrameGraphResourceId, VulkanAttachmentLoadOp)>,
 }

@@ -1,11 +1,8 @@
-use crate::{
-    Result,
-    render::{FrameHostDataBuffer, GraphicsDevice},
-};
+use crate::{Result, render::FrameHostDataBuffer};
 
 impl<T> FrameHostDataBuffer<T> {
     /// Reserve enough capacity in the data buffer for `num` additional elements
-    pub fn reserve(&mut self, num: usize, device: &GraphicsDevice) -> Result<()> {
+    pub fn reserve(&mut self, num: usize) -> Result<()> {
         let desired_capacity = self.count + num;
         if self.capacity >= desired_capacity {
             return Ok(());
@@ -20,7 +17,7 @@ impl<T> FrameHostDataBuffer<T> {
             &self.buffer_name,
             &self.memory_name,
             new_capacity,
-            device,
+            &self.device,
         )?;
 
         self.buffer = buffer;

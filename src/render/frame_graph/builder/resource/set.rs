@@ -11,20 +11,13 @@ impl<'a> FrameGraphBuilderResource<'a> {
         }
     }
 
-    /// Set that the frame graph resource is being used as a sampled image
-    pub fn set_sampled_image(
-        &mut self,
-        descriptor_set: usize,
-        binding: u32,
-        sampler: &Arc<VulkanSampler>,
-    ) {
+    /// Set that the frame graph resource is being used as a depth attachment
+    pub fn set_depth(&mut self) -> VulkanAttachmentLoadOp {
         match self {
             FrameGraphBuilderResource::External(_) => {
-                panic!("unable to sample external resources")
+                panic!("unable to set external resources as depth attachment")
             }
-            FrameGraphBuilderResource::Transient(transient) => {
-                transient.set_sampled_image(descriptor_set, binding, sampler)
-            }
+            FrameGraphBuilderResource::Transient(transient) => transient.set_depth(),
         }
     }
 
@@ -45,6 +38,23 @@ impl<'a> FrameGraphBuilderResource<'a> {
                 panic!("unable to set external resources as transfer source")
             }
             FrameGraphBuilderResource::Transient(transient) => transient.set_transfer_src(),
+        }
+    }
+
+    /// Set that the frame graph resource is being used as a sampled image
+    pub fn set_sampled_image(
+        &mut self,
+        descriptor_set: usize,
+        binding: u32,
+        sampler: &Arc<VulkanSampler>,
+    ) {
+        match self {
+            FrameGraphBuilderResource::External(_) => {
+                panic!("unable to sample external resources")
+            }
+            FrameGraphBuilderResource::Transient(transient) => {
+                transient.set_sampled_image(descriptor_set, binding, sampler)
+            }
         }
     }
 }

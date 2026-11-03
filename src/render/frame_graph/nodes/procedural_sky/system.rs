@@ -55,9 +55,6 @@ impl ProceduralSkyNode {
         };
 
         // Bind the mesh
-        let mesh = assets.mesh(primitives.cube());
-        mesh.bind(cmd_buffer);
-
-        cmd_buffer.cmd_draw_indexed(mesh.indices().len() as _, 1, 0, 0, 0);
+        assets.mesh(primitives.cube()).draw(cmd_buffer);
     }
 }

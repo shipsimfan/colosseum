@@ -5,14 +5,17 @@ impl FrameGraphRenderPass {
     /// Create a new [`FrameGraphRenderPass`]
     pub fn new(
         color_attachment: Option<(FrameGraphResourceId, VulkanAttachmentLoadOp)>,
+        depth_attachment: Option<(FrameGraphResourceId, VulkanAttachmentLoadOp)>,
     ) -> Option<FrameGraphRenderPass> {
-        let (color_attachment, color_attachment_load_op) = color_attachment?;
+        if color_attachment.is_none() && depth_attachment.is_none() {
+            return None;
+        }
 
         Some(FrameGraphRenderPass {
             resources: 0,
             frame_index: 0,
             color_attachment,
-            color_attachment_load_op,
+            depth_attachment,
         })
     }
 }

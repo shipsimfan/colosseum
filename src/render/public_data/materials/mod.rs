@@ -1,5 +1,5 @@
 use crate::render::GraphicsDevice;
-use alexandria::{Id, SlotMap};
+use alexandria::{Id, SlotMap, gpu::VulkanPipelineLayout};
 use std::sync::Arc;
 
 mod id;
@@ -19,6 +19,12 @@ pub struct Materials {
 
     /// The ID of the default unlit material
     default_unlit_material: Id<UnlitMaterial>,
+
+    /// The default unlit shader for unlit materials
+    default_unlit_shader: Arc<UnlitShader>,
+
+    /// The pipeline layout for unlit materials
+    unlit_pipeline_layout: VulkanPipelineLayout,
 
     /// The device for creating pipelines
     device: Arc<GraphicsDevice>,

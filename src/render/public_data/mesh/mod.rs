@@ -4,7 +4,7 @@ use alexandria::gpu::VulkanBuffer;
 mod loading;
 mod vertex;
 
-mod bind;
+mod draw;
 mod get;
 mod new;
 

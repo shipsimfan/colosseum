@@ -1,12 +1,12 @@
 use crate::{
     Result,
     render::{
-        AntiAliasing, DescriptorSetLayouts, FrameGraph, GpuDataBuffers, HDR_FORMAT, Samplers,
-        Skybox,
+        AntiAliasing, DEPTH_FORMAT, DescriptorSetLayouts, FrameGraph, GpuDataBuffers, HDR_FORMAT,
+        Samplers, Skybox,
         frame_graph::{
             FrameGraphBuilder, FrameGraphResourceId, FrameGraphResourceKind, FrameGraphResources,
             FrameGraphStructure, FxaaNode, ProceduralSkyNode, QuantizationNode, RenderScaleNode,
-            SkyboxType, SolidColorSkyNode, ToneMapNode,
+            SkyboxType, SolidColorSkyNode, ToneMapNode, UnlitForwardRenderNode,
         },
     },
 };
@@ -39,11 +39,18 @@ impl<Game: crate::Game> FrameGraph<Game> {
             FrameGraphResourceKind::Render,
             VulkanAttachmentLoadOp::DontCare,
         );
+        let depth_buffer = builder.create_resource(
+            "Main Depth Buffer",
+            DEPTH_FORMAT,
+            FrameGraphResourceKind::Render,
+            VulkanAttachmentLoadOp::Clear,
+        );
 
         match structure.skybox() {
             SkyboxType::SolidColor => SolidColorSkyNode::add(main_color_output, &mut builder)?,
             SkyboxType::Procedural => ProceduralSkyNode::add(main_color_output, &mut builder)?,
         }
+        UnlitForwardRenderNode::add(main_color_output, depth_buffer, &mut builder)?;
 
         /* Post Processing */
 

@@ -13,9 +13,12 @@ impl Materials {
     pub fn create_unlit_material<C: Into<Color4f<Srgb>>>(
         &mut self,
         color: C,
-        shader: Arc<UnlitShader>,
+        shader: Option<Arc<UnlitShader>>,
     ) -> Id<UnlitMaterial> {
-        self.insert_unlit_material(UnlitMaterial::new(color, shader))
+        self.insert_unlit_material(UnlitMaterial::new(
+            color,
+            shader.unwrap_or_else(|| self.default_unlit_shader.clone()),
+        ))
     }
 
     /// Insert a new unlit material
@@ -28,6 +31,6 @@ impl Materials {
         &mut self,
         code: &ShaderCode<N>,
     ) -> Result<Arc<UnlitShader>> {
-        UnlitShader::new(code, &self.device)
+        UnlitShader::new(code, &self.unlit_pipeline_layout, &self.device)
     }
 }

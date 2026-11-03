@@ -42,6 +42,9 @@ const CUBE_INDICES: &[u32] = &[
     20, 21, 22, 22, 21, 23, // Right
 ];
 
+const INITIAL_CUBE_POSITION: colosseum::math::Vector3f =
+    colosseum::math::Vector3f::new(0.0, 0.0, 3.0);
+
 colosseum::run!(
     Cube,
     |world: &mut colosseum::ecs::World| -> colosseum::Result<()> {
@@ -118,12 +121,15 @@ impl MeshLoading {
         };
 
         let mesh = assets.complete_mesh(self.transfer.take().unwrap());
-        next_scene.set(init_main_scene);
+        next_scene.set(move |world: &mut colosseum::ecs::World| init_main_scene(world, mesh));
     }
 }
 
 /// Initialize the main scene
-fn init_main_scene(world: &mut colosseum::ecs::World) -> colosseum::Result<()> {
+fn init_main_scene(
+    world: &mut colosseum::ecs::World,
+    mesh: colosseum::Id<colosseum::render::Mesh>,
+) -> colosseum::Result<()> {
     world.insert_resource(FpsCounter::new());
     world.register_system(colosseum::update::Update, FpsCounter::tick);
 
@@ -140,6 +146,15 @@ fn init_main_scene(world: &mut colosseum::ecs::World) -> colosseum::Result<()> {
     ));
 
     world.register_system(colosseum::update::Update, input_handling);
+
+    let material = world
+        .get_resource::<colosseum::render::Materials>()
+        .default_unlit_material();
+
+    world.spawn((
+        colosseum::render::Renderer::new(material, mesh),
+        colosseum::update::Transform::new_at(INITIAL_CUBE_POSITION),
+    ));
 
     Ok(())
 }
@@ -267,10 +282,6 @@ fn input_handling(
 }
 
 /*
-
-
-const INITIAL_CUBE_POSITION: colosseum::math::Vector3f =
-    colosseum::math::Vector3f::new(0.0, 0.0, 3.0);
 
 const SPOT_LIGHT_RADIUS: f32 = 4.0;
 

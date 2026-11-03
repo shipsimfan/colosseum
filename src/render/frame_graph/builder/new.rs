@@ -33,6 +33,7 @@ impl<'a> FrameGraphBuilder<'a> {
             current_pipeline_barriers: 0,
 
             color_attachment: None,
+            depth_attachment: None,
         }
     }
 }

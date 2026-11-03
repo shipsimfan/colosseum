@@ -2,6 +2,7 @@ use crate::{
     Result,
     render::{FrameHostDataBuffer, GraphicsDevice},
 };
+use std::sync::Arc;
 
 impl<T> FrameHostDataBuffer<T> {
     /// Create a new [`FrameHostDataBuffer`]
@@ -9,7 +10,7 @@ impl<T> FrameHostDataBuffer<T> {
         name: &str,
         index: usize,
         capacity: usize,
-        device: &GraphicsDevice,
+        device: &Arc<GraphicsDevice>,
     ) -> Result<FrameHostDataBuffer<T>> {
         let buffer_name = format!("Host {} {}", name, index);
         let memory_name = format!("Host {} Memory {}", name, index);
@@ -25,6 +26,7 @@ impl<T> FrameHostDataBuffer<T> {
             buffer,
             memory,
             stride,
+            device: device.clone(),
         })
     }
 }

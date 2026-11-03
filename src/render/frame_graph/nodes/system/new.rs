@@ -16,6 +16,7 @@ impl<Node: FrameGraphNode, System: 'static + crate::ecs::System>
         name: Cow<'static, str>,
         system: System,
         color_attachment: Option<(FrameGraphResourceId, VulkanAttachmentLoadOp)>,
+        depth_attachment: Option<(FrameGraphResourceId, VulkanAttachmentLoadOp)>,
     ) -> FrameGraphNodeSystem<Node, System> {
         let mut access = system.access().clone();
         access.read_resource::<FrameIndex>();
@@ -31,7 +32,7 @@ impl<Node: FrameGraphNode, System: 'static + crate::ecs::System>
             frame_index: 0,
             secondary_command_buffer: 0,
 
-            render_pass: FrameGraphRenderPass::new(color_attachment),
+            render_pass: FrameGraphRenderPass::new(color_attachment, depth_attachment),
 
             _node: PhantomData,
         }

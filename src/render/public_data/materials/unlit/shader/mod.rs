@@ -1,12 +1,15 @@
-use crate::render::{Pipeline, Shader};
+use crate::render::Shader;
+use alexandria::gpu::VulkanPipeline;
 
+mod bind;
 mod new;
 
 /// A shader for unlit materials
 pub struct UnlitShader {
-    /// The underlying shader object
-    shader: Shader,
-
     /// The pipeline for the shader
-    pipeline: Pipeline<UnlitShader>,
+    pipeline: VulkanPipeline,
+
+    /// The underlying shader object
+    #[allow(unused)]
+    shader: Shader,
 }

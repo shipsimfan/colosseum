@@ -40,6 +40,7 @@ impl FrameGraphTransientResourceInfo {
             .push((descriptor_set, binding, sampler.clone()));
     }
 
+    /// Get the current load operation and set it to `Load`
     fn load_op(&mut self) -> VulkanAttachmentLoadOp {
         let load_op = self.load_op;
         self.load_op = VulkanAttachmentLoadOp::Load;

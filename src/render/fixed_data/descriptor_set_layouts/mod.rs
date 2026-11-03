@@ -6,6 +6,7 @@ mod info;
 
 mod camera;
 mod post_process;
+mod renderable;
 
 mod create;
 mod get;
@@ -16,6 +17,7 @@ pub(in crate::render) use info::*;
 
 pub(in crate::render) use camera::*;
 pub(in crate::render) use post_process::*;
+pub(in crate::render) use renderable::*;
 
 /// A wrapper around a Vulkan descriptor set layout
 pub(in crate::render) struct DescriptorSetLayouts {

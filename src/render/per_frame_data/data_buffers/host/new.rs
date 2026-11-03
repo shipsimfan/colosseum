@@ -2,13 +2,14 @@ use crate::{
     Result,
     render::{FrameHostDataBuffer, GraphicsDevice, HostDataBuffer, MAX_FRAMES_IN_FLIGHT},
 };
+use std::sync::Arc;
 
 impl<T> HostDataBuffer<T> {
     /// Create a new [`HostDataBuffer`]
     pub(in crate::render::per_frame_data::data_buffers) fn new(
         name: &str,
         capacity: usize,
-        device: &GraphicsDevice,
+        device: &Arc<GraphicsDevice>,
     ) -> Result<HostDataBuffer<T>> {
         Ok(HostDataBuffer {
             frame: [
@@ -25,7 +26,7 @@ impl<T: Clone> HostDataBuffer<T> {
     pub(in crate::render::per_frame_data::data_buffers) fn with_data(
         name: &str,
         initial_data: &[T],
-        device: &GraphicsDevice,
+        device: &Arc<GraphicsDevice>,
     ) -> Result<HostDataBuffer<T>> {
         let mut host_data_buffer = HostDataBuffer::new(name, initial_data.len(), device)?;
 

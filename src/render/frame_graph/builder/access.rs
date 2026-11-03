@@ -17,18 +17,26 @@ impl<'a> FrameGraphBuilder<'a> {
                 let load_op = resource.set_color();
                 self.color_attachment = Some((id, load_op));
             }
-            FrameGraphResourceUsage::SampledImage {
-                descriptor_set,
-                binding,
-                sampler,
-            } => {
-                resource.set_sampled_image(descriptor_set, binding, sampler);
+            FrameGraphResourceUsage::DepthAttachment => {
+                if self.depth_attachment.is_some() {
+                    panic!("multiple depth attachments defined for a node");
+                }
+
+                let load_op = resource.set_depth();
+                self.depth_attachment = Some((id, load_op));
             }
             FrameGraphResourceUsage::TransferDst => {
                 resource.set_transfer_dst();
             }
             FrameGraphResourceUsage::TransferSrc => {
                 resource.set_transfer_src();
+            }
+            FrameGraphResourceUsage::SampledImage {
+                descriptor_set,
+                binding,
+                sampler,
+            } => {
+                resource.set_sampled_image(descriptor_set, binding, sampler);
             }
             _ => todo!(),
         }

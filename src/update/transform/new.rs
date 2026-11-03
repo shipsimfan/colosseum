@@ -14,4 +14,9 @@ impl Transform {
             scale: scale.into(),
         }
     }
+
+    /// Create a new [`Transform`] at a specific position with default rotation and scale
+    pub fn new_at<V: Into<Vector3f>>(position: V) -> Self {
+        Transform::new(position, Quaternionf::IDENTITY, Vector3f::ONE)
+    }
 }

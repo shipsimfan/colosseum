@@ -7,7 +7,7 @@ pub trait Scene: 'static + Send {
     fn start(self: Box<Self>, world: &mut World) -> Result<()>;
 }
 
-impl<R: SystemReturn, F: 'static + Send + FnOnce(&mut World) -> R> Scene for F {
+impl<R: SystemReturn, F: 'static + Send + for<'a> FnOnce(&'a mut World) -> R> Scene for F {
     fn start(self: Box<Self>, world: &mut World) -> Result<()> {
         (self)(world).into_result()
     }

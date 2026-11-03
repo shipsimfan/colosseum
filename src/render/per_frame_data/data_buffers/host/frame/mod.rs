@@ -1,4 +1,6 @@
+use crate::render::GraphicsDevice;
 use alexandria::gpu::{VulkanBuffer, VulkanMappedMemory};
+use std::sync::Arc;
 
 mod allocate_memory;
 mod get;
@@ -30,4 +32,7 @@ pub(in crate::render) struct FrameHostDataBuffer<T> {
 
     /// The size between individual elements in the buffer
     stride: usize,
+
+    /// The device that owns this host data buffer
+    device: Arc<GraphicsDevice>,
 }
