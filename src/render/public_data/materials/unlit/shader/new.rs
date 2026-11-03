@@ -90,7 +90,7 @@ impl UnlitShader {
             0,
             true,
             true,
-            VulkanCompareOp::Less,
+            VulkanCompareOp::Greater,
             false,
             false,
             VulkanStencilOp::Keep,

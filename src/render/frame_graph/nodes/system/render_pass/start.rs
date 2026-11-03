@@ -63,7 +63,7 @@ impl FrameGraphRenderPass {
                     VulkanImageLayout::Undefined,
                     load_op,
                     VulkanAttachmentStoreOp::Store,
-                    Color4f::<Linear>::new(1.0, 1.0, 1.0, 1.0),
+                    Color4f::<Linear>::new(0.0, 0.0, 0.0, 0.0),
                 ))
             }
             None => None,

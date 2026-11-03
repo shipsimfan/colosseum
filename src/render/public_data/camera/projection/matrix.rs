@@ -7,14 +7,23 @@ impl CameraProjection {
     pub(in crate::render::public_data::camera) fn matrix(&self, aspect: f32) -> Matrix4x4f {
         match self {
             &CameraProjection::Perspective { fov_y, near, far } => {
-                Matrix4x4f::new_perspective(aspect, fov_y * PI / 180.0, near, far)
+                let mut m = Matrix4x4f::new_perspective(aspect, fov_y * PI / 180.0, near, far);
+                m[2][2] = -m[2][2];
+                m[2][3] = -m[2][3];
+                m
             }
             &CameraProjection::InfinitePerspective { fov_y, near, .. } => {
-                Matrix4x4f::new_infinite_perspective(aspect, fov_y * PI / 180.0, near)
+                let mut m = Matrix4x4f::new_infinite_perspective(aspect, fov_y * PI / 180.0, near);
+                m[2][2] = 0.0;
+                m[2][3] = -m[2][3];
+                m
             }
             &CameraProjection::Orthographic { size, near, far } => {
                 let x_size = size * aspect;
-                Matrix4x4f::new_orthographic(-x_size, x_size, size, -size, near, far)
+                let mut m = Matrix4x4f::new_orthographic(-x_size, x_size, size, -size, near, far);
+                m[2][2] = -m[2][2];
+                m[2][3] = -m[2][3];
+                m
             }
         }
     }

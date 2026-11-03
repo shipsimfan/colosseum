@@ -1,7 +1,6 @@
 # ToDo
  1. Update remaining engine to new ECS
-   1. Switch to reverse-z depth
-   2. Add lit rendering
+   1. Add lit rendering
      1. Add lit materials
      2. Add lit renderables
      3. Add light data buffers (keep empty)
@@ -10,8 +9,8 @@
        3. Spot
      4. Add shadow map buffers (keep empty)
      5. Add lit forward rendering node
-   3. Add skybox system to update procedural sky settings based on directional light
-   4. Add shadow mapping
+   2. Add skybox system to update procedural sky settings based on directional light
+   3. Add shadow mapping
  2. Add mesh loading
  3. Add raycasting
  4. Add texture loading
