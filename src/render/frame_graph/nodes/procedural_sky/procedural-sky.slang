@@ -46,7 +46,7 @@ float4 frag_main(VertexOutput vertex) : SV_Target {
 
     // Sky gradient
     float vertical_t = saturate(y);
-    float3 sky_gradient = lerp(pc.sky_color, pc.sky_color * 0.5, vertical_t);
+    float3 sky_gradient = lerp(pc.sky_color, pc.sky_color * 0.4, vertical_t);
 
     // Sun angle cosine
     float cos_sun_angle = max(dot(view_direction, -pc.sun_direction), 0.0);
@@ -62,7 +62,7 @@ float4 frag_main(VertexOutput vertex) : SV_Target {
 
     // Mie scattering
     float mie_phase = pow(cos_sun_angle, pc.sun_sharpness);
-    float3 mie = pc.sun_color * mie_phase * pc.atmosphere_thickness * 0.5 * sun_attenuation;
+    float3 mie = pc.sun_color * mie_phase * pc.atmosphere_thickness * 0.1 * sun_attenuation;
 
     // Sun disk
     float sun_disk = smoothstep(1.0 - pc.sun_size, 1.0 - pc.sun_size * (1.0 / pc.sun_sharpness), cos_sun_angle);
