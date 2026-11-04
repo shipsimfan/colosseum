@@ -1,4 +1,4 @@
-use crate::render::AntiAliasing;
+use crate::render::{AntiAliasing, ShadowQuality};
 use alexandria::math::{Vector2i, Vector2u};
 use data_format::{Deserialize, Serialize};
 
@@ -38,11 +38,11 @@ pub struct DisplaySettings {
     /// The anti-aliasing mode to use for rendering
     #[default(AntiAliasing::default())]
     anti_aliasing: AntiAliasing,
-    /*
+
     /// The quality for shadows to use
-    #[default(ShadowQuality::Medium)]
+    #[default(ShadowQuality::default())]
     shadow_quality: ShadowQuality,
-    */
+
     /// The frame rate to run the game at when minimized
     #[default(30.0)]
     minimized_frame_rate: f32,

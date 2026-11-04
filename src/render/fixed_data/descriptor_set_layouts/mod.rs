@@ -3,6 +3,7 @@ mod info;
 mod layout;
 
 mod camera;
+mod lights;
 mod post_process;
 mod renderable;
 
@@ -16,6 +17,7 @@ pub(in crate::render) use info::*;
 pub(in crate::render) use layout::*;
 
 pub(in crate::render) use camera::*;
+pub(in crate::render) use lights::*;
 pub(in crate::render) use post_process::*;
 pub(in crate::render) use renderable::*;
 

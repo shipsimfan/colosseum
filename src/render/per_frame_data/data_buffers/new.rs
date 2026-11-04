@@ -1,6 +1,9 @@
 use crate::{
     Result,
-    render::{Camera, GpuDataBuffers, GraphicsDevice, Renderer},
+    render::{
+        Camera, DirectionalLight, GpuDataBuffers, GraphicsDevice, LightMetadata, PointLight,
+        Renderer, SpotLight,
+    },
 };
 use colosseum_ecs::World;
 use std::sync::Arc;
@@ -20,6 +23,10 @@ impl GpuDataBuffers {
         // Create the fixed data buffers
         Camera::create_buffer(&mut data_buffers, world)?;
         Renderer::create_buffer(&mut data_buffers, world)?;
+        LightMetadata::create_buffer(&mut data_buffers, world)?;
+        DirectionalLight::create_buffer(&mut data_buffers, world)?;
+        PointLight::create_buffer(&mut data_buffers, world)?;
+        SpotLight::create_buffer(&mut data_buffers, world)?;
 
         // Insert the created data buffers into the world
         world.insert_permanent_resource(data_buffers);

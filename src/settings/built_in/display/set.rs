@@ -1,4 +1,7 @@
-use crate::{DisplaySettings, render::AntiAliasing};
+use crate::{
+    DisplaySettings,
+    render::{AntiAliasing, ShadowQuality},
+};
 use alexandria::math::{Vector2i, Vector2u};
 
 impl DisplaySettings {
@@ -37,12 +40,10 @@ impl DisplaySettings {
         self.anti_aliasing = anti_aliasing;
     }
 
-    /*
     /// Set the shadow quality to use for rendering
     pub fn set_shadow_quality(&mut self, shadow_quality: ShadowQuality) {
         self.shadow_quality = shadow_quality;
     }
-    */
 
     /// Set the frame rate to run the game at when minimized
     pub fn set_minimized_frame_rate(&mut self, minimized_frame_rate: f32) {

@@ -1,8 +1,9 @@
 use crate::{
     Result, SettingsCache, UserEvent,
     render::{
-        Camera, FrameGraph, GraphicsDevice, RenderGpuTransferQueue, RenderIndices, Renderer,
-        Swapchain, create_fixed_render_data_resources, create_frame_graph_resources,
+        Camera, DirectionalLight, FrameGraph, GraphicsDevice, LightMetadata, PointLight,
+        RenderGpuTransferQueue, RenderIndices, Renderer, SpotLight, Swapchain,
+        create_fixed_render_data_resources, create_frame_graph_resources,
         create_per_frame_render_data, create_public_data_resources,
         create_public_data_scene_resources,
         phases::{self, FrameGraphSetup, PostRender, PreRender},
@@ -66,19 +67,23 @@ pub(crate) fn init_render_systems<Game: crate::Game>(
     create_public_data_scene_resources(world);
     indices.frame_graph_mut(world).reset();
 
-    init_pre_render(world);
+    init_pre_render::<Game>(world);
     init_frame_graph_setup::<Game>(world, indices);
     world.register_phase(phases::FrameGraph);
     init_post_render(world);
 }
 
-fn init_pre_render(world: &mut World) {
+fn init_pre_render<Game: crate::Game>(world: &mut World) {
     if world.try_get_resource::<RenderGpuTransferQueue>().is_some() {
         world.register_system(PreRender, RenderGpuTransferQueue::system);
     }
 
     world.register_system(PreRender, Camera::system);
     world.register_system(PreRender, Renderer::system);
+    world.register_system(PreRender, LightMetadata::system);
+    world.register_system(PreRender, DirectionalLight::system::<Game>);
+    world.register_system(PreRender, PointLight::system);
+    world.register_system(PreRender, SpotLight::system);
 }
 
 fn init_frame_graph_setup<Game: crate::Game>(world: &mut World, indices: &RenderIndices<Game>) {

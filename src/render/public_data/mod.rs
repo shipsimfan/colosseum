@@ -12,6 +12,7 @@ mod anti_aliasing;
 mod assets;
 mod camera;
 mod color_correction;
+mod lights;
 mod materials;
 mod mesh;
 mod primitives;
@@ -22,6 +23,7 @@ pub use anti_aliasing::*;
 pub use assets::*;
 pub use camera::*;
 pub use color_correction::*;
+pub use lights::*;
 pub use materials::*;
 pub use mesh::*;
 pub use primitives::*;
@@ -52,4 +54,5 @@ pub(in crate::render) fn create_public_data_scene_resources(world: &mut World) {
     world.insert_resource(ColorCorrection::new());
     world.insert_resource(Skybox::default());
     world.insert_resource(Camera::default());
+    world.insert_resource(AmbientLight::default());
 }
