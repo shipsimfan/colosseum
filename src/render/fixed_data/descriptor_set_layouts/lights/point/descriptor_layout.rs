@@ -7,7 +7,7 @@ use alexandria::gpu::{VulkanDescriptorType, VulkanShaderStageFlag};
 impl DescriptorSetLayoutInfo for PointLightDsl {
     const BINDINGS: &[DescriptorSetBinding] = &[
         DescriptorSetBinding::new_for::<GpuPointLightMatrix, _>(
-            VulkanDescriptorType::UniformBuffer,
+            VulkanDescriptorType::StorageBuffer,
             1,
             VulkanShaderStageFlag::Vertex,
         ),
@@ -17,7 +17,7 @@ impl DescriptorSetLayoutInfo for PointLightDsl {
             VulkanShaderStageFlag::Vertex,
         ),
         DescriptorSetBinding::new_for::<GpuPointLight, _>(
-            VulkanDescriptorType::UniformBuffer,
+            VulkanDescriptorType::StorageBuffer,
             1,
             VulkanShaderStageFlag::Fragment,
         ),

@@ -15,4 +15,7 @@ pub(in crate::render::frame_graph::builder) struct FrameGraphBuilderResources {
 
     /// The transient render scale resources that need to be allocated
     render_scale_resources: Vec<FrameGraphTransientResourceInfo>,
+
+    /// The transient shadow map resources that need to be allocated
+    shadow_map_resources: Vec<FrameGraphTransientResourceInfo>,
 }

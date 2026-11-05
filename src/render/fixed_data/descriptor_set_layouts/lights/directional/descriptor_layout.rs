@@ -7,7 +7,7 @@ use alexandria::gpu::{VulkanDescriptorType, VulkanShaderStageFlag};
 impl DescriptorSetLayoutInfo for DirectionalLightDsl {
     const BINDINGS: &[DescriptorSetBinding] = &[
         DescriptorSetBinding::new_for::<GpuDirectionalLightMatrix, _>(
-            VulkanDescriptorType::UniformBuffer,
+            VulkanDescriptorType::StorageBuffer,
             1,
             VulkanShaderStageFlag::Vertex,
         ),

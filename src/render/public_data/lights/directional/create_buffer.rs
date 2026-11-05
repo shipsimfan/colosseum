@@ -12,12 +12,12 @@ impl DirectionalLight {
         data_buffers: &mut GpuDataBuffers,
         world: &mut World,
     ) -> Result<()> {
-        data_buffers.create_uniform::<GpuDirectionalLight>(
+        data_buffers.create_storage::<GpuDirectionalLight>(
             "Directional Light Buffer",
             INITIAL_CAPACITY,
             world,
         )?;
-        data_buffers.create_uniform::<GpuDirectionalLightMatrix>(
+        data_buffers.create_storage::<GpuDirectionalLightMatrix>(
             "Directional Light Matrix Buffer",
             INITIAL_CAPACITY,
             world,

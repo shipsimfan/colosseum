@@ -1,4 +1,4 @@
-use crate::render::UnlitMaterial;
+use crate::render::{LitForwardMaterial, UnlitMaterial};
 use alexandria::Id;
 
 mod from;
@@ -8,4 +8,7 @@ mod from;
 pub enum MaterialId {
     /// The ID for an unlit material
     Unlit(Id<UnlitMaterial>),
+
+    /// The ID for a lit forward material
+    LitForward(Id<LitForwardMaterial>),
 }

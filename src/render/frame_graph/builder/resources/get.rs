@@ -11,8 +11,10 @@ impl FrameGraphBuilderResources {
             FrameGraphBuilderResource::Transient(&mut self.native_scale_resources[id.index()])
         } else if id.is_transient_render_scale() {
             FrameGraphBuilderResource::Transient(&mut self.render_scale_resources[id.index()])
+        } else if id.is_shadow_map() {
+            FrameGraphBuilderResource::Transient(&mut self.shadow_map_resources[id.index()])
         } else {
-            panic!("unsupported resource type for color attachment");
+            unreachable!("unknown resource ID type")
         }
     }
 }

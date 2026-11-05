@@ -1,7 +1,8 @@
 use crate::{
     Result,
     render::{
-        FrameIndex, GpuRenderable, HostDataBuffer, MaterialId, Renderables, Renderer, UnlitMaterial,
+        FrameIndex, GpuRenderable, HostDataBuffer, LitForwardMaterial, MaterialId, Renderables,
+        Renderer, UnlitMaterial,
     },
     update::Transform,
 };
@@ -14,10 +15,12 @@ impl Renderer {
         frame_index: Res<FrameIndex>,
         mut renderable_buffer: ResMut<HostDataBuffer<GpuRenderable>>,
         mut unlit_renderables: ResMut<Renderables<UnlitMaterial>>,
+        mut lit_forward_renderables: ResMut<Renderables<LitForwardMaterial>>,
     ) -> Result<()> {
         let renderable_buffer = &mut renderable_buffer[&frame_index];
 
         unlit_renderables.reset();
+        lit_forward_renderables.reset();
 
         renderable_buffer.reset();
         renderable_buffer.reserve(query.len())?;
@@ -28,6 +31,13 @@ impl Renderer {
             match renderer.material {
                 MaterialId::Unlit(material) => {
                     unlit_renderables.push(material, renderer.mesh, renderable_buffer.count() - 1);
+                }
+                MaterialId::LitForward(material) => {
+                    lit_forward_renderables.push(
+                        material,
+                        renderer.mesh,
+                        renderable_buffer.count() - 1,
+                    );
                 }
             }
         }

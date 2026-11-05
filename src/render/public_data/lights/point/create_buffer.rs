@@ -12,12 +12,12 @@ impl PointLight {
         data_buffers: &mut GpuDataBuffers,
         world: &mut World,
     ) -> Result<()> {
-        data_buffers.create_uniform::<GpuPointLight>(
+        data_buffers.create_storage::<GpuPointLight>(
             "Point Light Buffer",
             INITIAL_CAPACITY,
             world,
         )?;
-        data_buffers.create_uniform::<GpuPointLightMatrix>(
+        data_buffers.create_storage::<GpuPointLightMatrix>(
             "Point Light Matrix Buffer",
             INITIAL_CAPACITY,
             world,

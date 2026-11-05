@@ -4,7 +4,7 @@ use colosseum_core::as_bytes;
 
 impl UnlitMaterial {
     /// Bind the unlit material for rendering
-    pub fn bind(
+    pub(in crate::render) fn bind(
         &self,
         cmd_buffer: &mut VulkanCommandBuffer,
         pipeline_layout: &VulkanPipelineLayout,
@@ -13,7 +13,7 @@ impl UnlitMaterial {
         self.shader.bind(cmd_buffer);
 
         let push_constants = UnlitMaterialPushConstants {
-            color: self.color,
+            color: self.color.with_alpha(1.0),
             object_index: object_index as _,
         };
         cmd_buffer.cmd_push_constants(

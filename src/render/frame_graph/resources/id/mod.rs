@@ -36,4 +36,15 @@ impl FrameGraphResourceId {
 
     /// The ID for the swapchain image, which is always an external resource with ID 0
     pub const SWAPCHAIN_IMAGE: FrameGraphResourceId = FrameGraphResourceId::new_external(0);
+
+    /// The ID for the directional light shadow map set
+    pub const DIRECTIONAL_LIGHT_SHADOW_MAP: FrameGraphResourceId =
+        FrameGraphResourceId::new_shadow_map(0);
+
+    /// The ID for the point light shadow map set
+    pub const POINT_LIGHT_SHADOW_MAP: FrameGraphResourceId =
+        FrameGraphResourceId::new_shadow_map(1);
+
+    /// The ID for the spot light shadow map set
+    pub const SPOT_LIGHT_SHADOW_MAP: FrameGraphResourceId = FrameGraphResourceId::new_shadow_map(2);
 }

@@ -1,6 +1,6 @@
 use crate::{
     Result,
-    render::{GraphicsDevice, UnlitMaterial},
+    render::{GraphicsDevice, LitForwardMaterial, UnlitMaterial},
 };
 use colosseum_ecs::World;
 
@@ -27,7 +27,9 @@ pub(in crate::render) fn create_fixed_render_data_resources(
     world.insert_permanent_resource(FullscreenQuadShader::new(device)?);
     world.insert_permanent_resource(Samplers::new(device)?);
     world.insert_permanent_resource(DescriptorSetLayouts::new(device)?);
+
     world.insert_permanent_resource(Renderables::<UnlitMaterial>::new());
+    world.insert_permanent_resource(Renderables::<LitForwardMaterial>::new());
 
     Ok(())
 }

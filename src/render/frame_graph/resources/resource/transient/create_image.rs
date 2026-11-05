@@ -16,6 +16,7 @@ impl FrameGraphTransientResourceInfo {
     pub fn create_image(
         &self,
         size: Vector2u,
+        array_layers: u32,
         frame_index: usize,
         device: &GraphicsDevice,
     ) -> Result<VulkanImage> {
@@ -26,9 +27,9 @@ impl FrameGraphTransientResourceInfo {
                 0,
                 VulkanImageType::_2d,
                 self.format,
-                size.extend(1),
+                size.extend(array_layers),
                 1,
-                1,
+                array_layers,
                 VulkanSampleCountFlag::_1,
                 VulkanImageTiling::Optimal,
                 self.usage(),

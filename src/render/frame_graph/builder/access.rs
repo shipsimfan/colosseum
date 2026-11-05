@@ -38,7 +38,6 @@ impl<'a> FrameGraphBuilder<'a> {
             } => {
                 resource.set_sampled_image(descriptor_set, binding, sampler);
             }
-            _ => todo!(),
         }
 
         // Transition the resource and a pipeline barrier if necessary

@@ -10,8 +10,7 @@ impl<'a> FrameGraphResourceUsage<'a> {
                 VulkanAccessFlag::ColorAttachmentWrite,
                 VulkanImageLayout::ColorAttachmentOptimal,
             ),
-            FrameGraphResourceUsage::DepthAttachment
-            | FrameGraphResourceUsage::ShadowMapDepthAttachment => FrameGraphResourceState::new(
+            FrameGraphResourceUsage::DepthAttachment => FrameGraphResourceState::new(
                 VulkanPipelineStageFlag::EarlyFragmentTests,
                 VulkanAccessFlag::DepthStencilAttachmentWrite,
                 VulkanImageLayout::DepthStencilAttachmentOptimal,

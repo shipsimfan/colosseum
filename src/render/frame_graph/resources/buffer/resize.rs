@@ -42,7 +42,7 @@ impl FrameGraphTransientResourceBuffer {
         let mut images = Vec::with_capacity(self.info.len());
         let mut memory_requirements = VulkanMemoryRequirements::default();
         for info in &self.info {
-            let image = info.create_image(new_size, frame_index, device)?;
+            let image = info.create_image(new_size, 1, frame_index, device)?;
             let image_memory_requirements = image.get_memory_requirements();
 
             memory_requirements = memory_requirements.extend(&image_memory_requirements);
@@ -51,6 +51,7 @@ impl FrameGraphTransientResourceBuffer {
         }
 
         if *memory_requirements.size() == 0 {
+            *size = new_size;
             return Ok(());
         }
 

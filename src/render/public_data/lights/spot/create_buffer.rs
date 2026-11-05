@@ -15,12 +15,12 @@ impl SpotLight {
         data_buffers: &mut GpuDataBuffers,
         world: &mut World,
     ) -> Result<()> {
-        data_buffers.create_uniform::<GpuSpotLight>(
+        data_buffers.create_storage::<GpuSpotLight>(
             "Spot Light Buffer",
             INITIAL_CAPACITY,
             world,
         )?;
-        data_buffers.create_uniform::<GpuSpotLightMatrix>(
+        data_buffers.create_storage::<GpuSpotLightMatrix>(
             "Spot Light Matrix Buffer",
             INITIAL_CAPACITY,
             world,

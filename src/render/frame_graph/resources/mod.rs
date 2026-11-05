@@ -2,11 +2,13 @@ use crate::render::{DescriptorSetBinding, MAX_FRAMES_IN_FLIGHT};
 use alexandria::gpu::{VulkanDescriptorPool, VulkanDescriptorSet};
 use buffer::*;
 use data_binding::*;
+use shadow_map_buffer::*;
 
 mod buffer;
 mod data_binding;
 mod id;
 mod resource;
+mod shadow_map_buffer;
 mod state;
 mod usage;
 
@@ -31,6 +33,9 @@ pub(in crate::render::frame_graph) struct FrameGraphResources {
 
     /// The transient render scale resources used within the frame graph
     render_scale: FrameGraphTransientResourceBuffer,
+
+    /// The shadow map buffer
+    shadow_map: FrameGraphTransientResourceBuffer,
 
     /// The descriptor pool containing all the descriptor sets used within the frame graph
     #[allow(unused)]

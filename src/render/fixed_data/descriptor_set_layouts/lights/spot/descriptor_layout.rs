@@ -6,7 +6,7 @@ use alexandria::gpu::{VulkanDescriptorType, VulkanShaderStageFlag};
 impl DescriptorSetLayoutInfo for SpotLightDsl {
     const BINDINGS: &[DescriptorSetBinding] = &[
         DescriptorSetBinding::new_for::<GpuSpotLightMatrix, _>(
-            VulkanDescriptorType::UniformBuffer,
+            VulkanDescriptorType::StorageBuffer,
             1,
             VulkanShaderStageFlag::Vertex,
         ),

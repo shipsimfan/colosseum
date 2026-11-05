@@ -1,14 +1,15 @@
 # ToDo
  1. Update remaining engine to new ECS
    1. Add lit rendering
-     1. Implement all light descriptor set layout
-     2. Add lit shaders
-     3. Add lit materials
-     4. Add lit renderables
-     5. Add shadow map buffers (keep empty)
-     6. Add shadow mapping
-     7. Add lit forward rendering node
+     1. Add shadow map buffers
+     2. Add shadow mapping
+     3. Add lit forward rendering node
    2. Add skybox system to update procedural sky settings based on directional light
+   3. Add `Single` system parameter
+   4. Finish cube example
+     1. Toggle cube visibility
+     2. Move cube
+     3. Move spot light
  2. Add mesh loading
  3. Add raycasting
  4. Add texture loading

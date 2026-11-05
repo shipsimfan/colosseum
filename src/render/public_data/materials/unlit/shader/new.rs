@@ -23,7 +23,7 @@ use std::ffi::CString;
 use std::{ffi::CStr, sync::Arc};
 
 impl UnlitShader {
-    pub(in crate::render::public_data::materials) fn new<const N: usize>(
+    pub(in crate::render::public_data::materials::unlit) fn new<const N: usize>(
         code: &ShaderCode<N>,
         pipeline_layout: &VulkanPipelineLayout,
         device: &GraphicsDevice,
