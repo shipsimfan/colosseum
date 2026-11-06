@@ -3,7 +3,7 @@ mod new;
 
 /// An ID identifying a resource in the frame graph
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub(in crate::render::frame_graph) struct FrameGraphResourceId {
+pub(in crate::render) struct FrameGraphResourceId {
     /// The ID of the resource
     ///
     /// The top bit of the ID is used to indicate if this is a transient or external resource. If
@@ -35,7 +35,8 @@ impl FrameGraphResourceId {
     const EXTERNAL: usize = 0b11 << FrameGraphResourceId::TYPE_SHIFT;
 
     /// The ID for the swapchain image, which is always an external resource with ID 0
-    pub const SWAPCHAIN_IMAGE: FrameGraphResourceId = FrameGraphResourceId::new_external(0);
+    pub(in crate::render::frame_graph) const SWAPCHAIN_IMAGE: FrameGraphResourceId =
+        FrameGraphResourceId::new_external(0);
 
     /// The ID for the directional light shadow map set
     pub const DIRECTIONAL_LIGHT_SHADOW_MAP: FrameGraphResourceId =

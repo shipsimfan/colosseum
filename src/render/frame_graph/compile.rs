@@ -1,12 +1,13 @@
 use crate::{
     Result,
     render::{
-        AntiAliasing, DEPTH_FORMAT, DescriptorSetLayouts, FrameGraph, GpuDataBuffers, HDR_FORMAT,
-        Samplers, Skybox,
+        AntiAliasing, DEPTH_FORMAT, DescriptorSetLayouts, DirectionalLight, FrameGraph,
+        GpuDataBuffers, HDR_FORMAT, PointLight, Samplers, Skybox, SpotLight,
         frame_graph::{
             FrameGraphBuilder, FrameGraphResourceId, FrameGraphResourceKind, FrameGraphResources,
-            FrameGraphStructure, FxaaNode, ProceduralSkyNode, QuantizationNode, RenderScaleNode,
-            SkyboxType, SolidColorSkyNode, ToneMapNode, UnlitForwardRenderNode,
+            FrameGraphStructure, FxaaNode, LitForwardRenderNode, ProceduralSkyNode,
+            QuantizationNode, RenderScaleNode, ShadowMapNode, SkyboxType, SolidColorSkyNode,
+            ToneMapNode, UnlitForwardRenderNode,
         },
     },
 };
@@ -33,6 +34,11 @@ impl<Game: crate::Game> FrameGraph<Game> {
         let mut builder =
             FrameGraphBuilder::new(commands, &self.device, data_buffers, descriptor_set_layouts);
 
+        /* Shadow Map Passes */
+        ShadowMapNode::<DirectionalLight>::add(&mut builder)?;
+        ShadowMapNode::<PointLight>::add(&mut builder)?;
+        ShadowMapNode::<SpotLight>::add(&mut builder)?;
+
         /* Main Render Passes */
         let main_color_output = builder.create_resource(
             "Main Color Output",
@@ -52,6 +58,7 @@ impl<Game: crate::Game> FrameGraph<Game> {
             SkyboxType::Procedural => ProceduralSkyNode::add(main_color_output, &mut builder)?,
         }
         UnlitForwardRenderNode::add(main_color_output, depth_buffer, &mut builder)?;
+        LitForwardRenderNode::add(main_color_output, depth_buffer, samplers, &mut builder)?;
 
         /* Post Processing */
 

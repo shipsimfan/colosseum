@@ -8,6 +8,7 @@ impl<'a> FrameGraphBuilderResource<'a> {
         match self {
             FrameGraphBuilderResource::External(external) => external.set_color(),
             FrameGraphBuilderResource::Transient(transient) => transient.set_color(),
+            FrameGraphBuilderResource::ShadowMap(shadow_map) => shadow_map.set_color(),
         }
     }
 
@@ -18,6 +19,7 @@ impl<'a> FrameGraphBuilderResource<'a> {
                 panic!("unable to set external resources as depth attachment")
             }
             FrameGraphBuilderResource::Transient(transient) => transient.set_depth(),
+            FrameGraphBuilderResource::ShadowMap(shadow_map) => shadow_map.set_depth(),
         }
     }
 
@@ -28,6 +30,7 @@ impl<'a> FrameGraphBuilderResource<'a> {
                 panic!("unable to set external resources as transfer destination")
             }
             FrameGraphBuilderResource::Transient(transient) => transient.set_transfer_dst(),
+            FrameGraphBuilderResource::ShadowMap(shadow_map) => shadow_map.set_transfer_dst(),
         }
     }
 
@@ -38,6 +41,7 @@ impl<'a> FrameGraphBuilderResource<'a> {
                 panic!("unable to set external resources as transfer source")
             }
             FrameGraphBuilderResource::Transient(transient) => transient.set_transfer_src(),
+            FrameGraphBuilderResource::ShadowMap(shadow_map) => shadow_map.set_transfer_src(),
         }
     }
 
@@ -54,6 +58,9 @@ impl<'a> FrameGraphBuilderResource<'a> {
             }
             FrameGraphBuilderResource::Transient(transient) => {
                 transient.set_sampled_image(descriptor_set, binding, sampler)
+            }
+            FrameGraphBuilderResource::ShadowMap(shadow_map) => {
+                shadow_map.set_sampled_image(descriptor_set, binding, sampler)
             }
         }
     }

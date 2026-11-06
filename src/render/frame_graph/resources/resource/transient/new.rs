@@ -2,13 +2,14 @@ use crate::render::frame_graph::{FrameGraphResourceState, FrameGraphTransientRes
 use alexandria::gpu::{VulkanAttachmentLoadOp, VulkanFormat};
 use std::ffi::CString;
 
-impl FrameGraphTransientResourceInfo {
+impl<ExtraData> FrameGraphTransientResourceInfo<ExtraData> {
     /// Create a new [`FrameGraphTransientResourceInfo`]
     pub fn new(
         name: &'static str,
         format: VulkanFormat,
         initial_load_op: VulkanAttachmentLoadOp,
-    ) -> FrameGraphTransientResourceInfo {
+        extra_data: ExtraData,
+    ) -> FrameGraphTransientResourceInfo<ExtraData> {
         FrameGraphTransientResourceInfo {
             name,
             image_name: [
@@ -33,6 +34,8 @@ impl FrameGraphTransientResourceInfo {
             is_sampled_image: false,
 
             descriptor_sets: Vec::new(),
+
+            extra_data,
         }
     }
 }

@@ -4,22 +4,26 @@ use alexandria::{
     math::Vector2u,
 };
 
+mod data;
+
 mod get;
 mod new;
 mod resize;
 
+pub(in crate::render::frame_graph) use data::*;
+
 /// A buffer of transient resources
-pub(in crate::render::frame_graph::resources) struct FrameGraphShadowMapBuffer {
+pub(in crate::render::frame_graph) struct FrameGraphShadowMapBuffer {
     /// The name of this buffer
-    memory_name: &'static str,
+    memory_name: String,
 
     /// The information describing the resources
-    info: FrameGraphTransientResourceInfo,
+    info: FrameGraphTransientResourceInfo<ShadowMapData>,
 
     /// The size of the contained resources
     size: [Vector2u; MAX_FRAMES_IN_FLIGHT],
 
-    /// The number of array layers for the resources
+    /// The number of array layers allocated for the resources
     array_layers: [u32; MAX_FRAMES_IN_FLIGHT],
 
     /// The image views for the resources

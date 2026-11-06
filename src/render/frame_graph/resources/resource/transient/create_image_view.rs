@@ -8,7 +8,7 @@ use alexandria::gpu::{
 };
 use colosseum_core::new_error;
 
-impl FrameGraphTransientResourceInfo {
+impl<ExtraData> FrameGraphTransientResourceInfo<ExtraData> {
     /// Create a new image view for this resource
     pub fn create_image_view(
         &self,
@@ -60,5 +60,108 @@ impl FrameGraphTransientResourceInfo {
             })?;
 
         Ok((image_view, offset + *memory_requirements.size()))
+    }
+
+    /// Create a full image view for a shadow map resource
+    pub fn create_shadow_map_full_image_view(
+        &self,
+        image: &VulkanImage,
+        array_layers: u32,
+        cube_map: bool,
+        frame_index: usize,
+        device: &GraphicsDevice,
+    ) -> Result<VulkanImageView> {
+        // Create the image view
+        #[cfg_attr(not(debug_assertions), allow(unused_mut))]
+        let mut image_view = image
+            .create_image_view(
+                0,
+                if cube_map {
+                    VulkanImageViewType::CubeArray
+                } else {
+                    VulkanImageViewType::_2dArray
+                },
+                self.format,
+                VulkanComponentMapping::default(),
+                self.aspect_mask(),
+                0,
+                1,
+                0,
+                array_layers,
+            )
+            .map_err(|error| {
+                new_error!(
+                    "unable to create an image view for \"{}\" - {}",
+                    self.name,
+                    error
+                )
+            })?;
+
+        // Name the image view
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut image_view, &self.image_view_name[frame_index])
+            .map_err(|error| {
+                new_error!(
+                    "unable to set image view name for \"{}\" - {}",
+                    self.name,
+                    error
+                )
+            })?;
+
+        Ok(image_view)
+    }
+
+    /// Create a image view for a single layer in a shadow map resource
+    pub fn create_shadow_map_image_view(
+        &self,
+        image: &VulkanImage,
+        layer: u32,
+        cube_map: bool,
+        cascades: u32,
+        frame_index: usize,
+        device: &GraphicsDevice,
+    ) -> Result<VulkanImageView> {
+        // Create the image view
+        #[cfg_attr(not(debug_assertions), allow(unused_mut))]
+        let mut image_view = image
+            .create_image_view(
+                0,
+                if cube_map {
+                    VulkanImageViewType::Cube
+                } else if cascades > 1 {
+                    VulkanImageViewType::_2dArray
+                } else {
+                    VulkanImageViewType::_2d
+                },
+                self.format,
+                VulkanComponentMapping::default(),
+                self.aspect_mask(),
+                0,
+                1,
+                layer,
+                cascades,
+            )
+            .map_err(|error| {
+                new_error!(
+                    "unable to create an image view for \"{}\" - {}",
+                    self.name,
+                    error
+                )
+            })?;
+
+        // Name the image view
+        #[cfg(debug_assertions)]
+        device
+            .set_object_name(&mut image_view, &self.image_view_name[frame_index])
+            .map_err(|error| {
+                new_error!(
+                    "unable to set image view name for \"{}\" - {}",
+                    self.name,
+                    error
+                )
+            })?;
+
+        Ok(image_view)
     }
 }

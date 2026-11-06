@@ -1,3 +1,4 @@
+use crate::render::frame_graph::ShadowMapData;
 use alexandria::{gpu::VulkanImageView, math::Vector2u};
 
 mod external;
@@ -21,5 +22,13 @@ pub(in crate::render::frame_graph) enum FrameGraphResource<'a> {
         info: &'a FrameGraphTransientResourceInfo,
         image_view: &'a VulkanImageView,
         size: Vector2u,
+    },
+
+    /// A shadow map
+    ShadowMap {
+        info: &'a FrameGraphTransientResourceInfo<ShadowMapData>,
+        image_view: &'a VulkanImageView,
+        size: Vector2u,
+        array_layers: u32,
     },
 }

@@ -1,7 +1,8 @@
 use crate::{
     Result, SettingsCache,
     render::{
-        DescriptorSetLayouts, FrameGraph, FrameIndex, GpuDataBuffers, Samplers, Skybox, Swapchain,
+        DescriptorSetLayouts, FrameGraph, FrameIndex, GpuDataBuffers, GpuDirectionalLight,
+        GpuPointLight, GpuSpotLight, HostDataBuffer, Samplers, Skybox, Swapchain,
         frame_graph::{FrameGraphResourceId, FrameGraphResources},
         phases::FrameGraphSetup,
     },
@@ -26,6 +27,10 @@ impl<Game: crate::Game> FrameGraph<Game> {
         data_buffers: Res<GpuDataBuffers>,
         samplers: Res<Samplers>,
 
+        directional_lights: Res<HostDataBuffer<GpuDirectionalLight>>,
+        point_lights: Res<HostDataBuffer<GpuPointLight>>,
+        spot_lights: Res<HostDataBuffer<GpuSpotLight>>,
+
         settings: Res<Game::SettingsCache>,
         skybox: Res<Skybox>,
     ) -> Result<()> {
@@ -41,11 +46,16 @@ impl<Game: crate::Game> FrameGraph<Game> {
         )?;
 
         // Handle resizing if needed
+        let display_settings = settings.display_settings();
         resources.resize(
             swapchain.size(),
-            settings.display_settings().render_scale(),
-            &frame_index,
+            display_settings.render_scale(),
             &data_buffers,
+            display_settings.shadow_quality(),
+            &directional_lights,
+            &point_lights,
+            &spot_lights,
+            &frame_index,
             &self.device,
         )?;
 

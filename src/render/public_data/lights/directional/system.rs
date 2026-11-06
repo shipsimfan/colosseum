@@ -1,12 +1,12 @@
 use crate::{
-    SettingsCache, Window,
+    Result, SettingsCache, Window,
     render::{
         Camera, DirectionalLight, FrameIndex, GpuDirectionalLight, GpuDirectionalLightMatrix,
         HostDataBuffer,
     },
 };
 use alexandria::math::{Matrix4x4f, Vector3f};
-use colosseum_ecs::{Res, ResMut};
+use colosseum_ecs::{Query, Res, ResMut};
 
 impl DirectionalLight {
     /// The system to copy directional light data into the host buffer
@@ -14,32 +14,44 @@ impl DirectionalLight {
         frame_index: Res<FrameIndex>,
         mut light_buffer: ResMut<HostDataBuffer<GpuDirectionalLight>>,
         mut matrix_buffer: ResMut<HostDataBuffer<GpuDirectionalLightMatrix>>,
-        directional_light: Option<Res<DirectionalLight>>,
+        directional_lights: Query<&DirectionalLight>,
         camera: Res<Camera>,
         window: Res<Window>,
         settings: Res<Game::SettingsCache>,
-    ) {
-        let directional_light = match directional_light {
-            Some(directional_light) => directional_light,
-            None => return,
-        };
+    ) -> Result<()> {
+        let light_buffer = &mut light_buffer[&frame_index];
+        let matrix_buffer = &mut matrix_buffer[&frame_index];
 
         let size = settings
             .display_settings()
             .shadow_quality()
-            .directional_light_size();
+            .directional_light_size() as f32;
 
         let window_size = window.size();
         let aspect = window_size.x as f32 / window_size.y as f32;
 
-        let (camera_corners, far_depths) = camera
-            .projection
-            .shadow_corners(aspect, directional_light.shadow_lambda);
-        let inverse_view = camera.inverse_view_matrix();
+        light_buffer.reset();
+        matrix_buffer.reset();
 
-        light_buffer[&frame_index][0] = directional_light.gpu(far_depths);
-        matrix_buffer[&frame_index][0] =
-            directional_light.view_projection(camera_corners, inverse_view, size);
+        let len = directional_lights.len();
+        light_buffer.reserve(len)?;
+        matrix_buffer.reserve(len)?;
+
+        for directional_light in directional_lights {
+            let (camera_corners, far_depths) = camera
+                .projection
+                .shadow_corners(aspect, directional_light.shadow_lambda);
+            let inverse_view = camera.inverse_view_matrix();
+
+            light_buffer.push(directional_light.gpu(far_depths));
+            matrix_buffer.push(directional_light.view_projection(
+                camera_corners,
+                inverse_view,
+                size,
+            ));
+        }
+
+        Ok(())
     }
 
     /// Create a new [`GpuDirectionalLight`] for this spotlight
@@ -128,8 +140,8 @@ impl DirectionalLight {
             snapped_center.x + half_span,
             snapped_center.y + half_span,
             snapped_center.y - half_span,
-            min.z,
             max.z,
+            min.z,
         );
 
         // Combine the view and projection matrices

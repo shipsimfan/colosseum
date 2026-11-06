@@ -20,6 +20,7 @@ impl FrameGraphBuilderResources {
                         name,
                         format,
                         initial_load_op,
+                        (),
                     ));
                 FrameGraphResourceId::new_transient_native_scale(
                     self.native_scale_resources.len() - 1,
@@ -31,6 +32,7 @@ impl FrameGraphBuilderResources {
                         name,
                         format,
                         initial_load_op,
+                        (),
                     ));
                 FrameGraphResourceId::new_transient_render_scale(
                     self.render_scale_resources.len() - 1,

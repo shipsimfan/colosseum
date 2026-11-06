@@ -2,7 +2,7 @@ use crate::render::frame_graph::FrameGraphResourceId;
 
 impl FrameGraphResourceId {
     /// Create a new [`FrameGraphResourceId`] for an external resource, such as the swapchain image
-    pub const fn new_external(id: usize) -> FrameGraphResourceId {
+    pub(in crate::render::frame_graph) const fn new_external(id: usize) -> FrameGraphResourceId {
         debug_assert!(
             id < FrameGraphResourceId::TYPE_MASK,
             "external resource ID too large"
@@ -14,7 +14,9 @@ impl FrameGraphResourceId {
     }
 
     /// Create a new [`FrameGraphResourceId`] for a transient resource at render scale
-    pub const fn new_transient_render_scale(id: usize) -> FrameGraphResourceId {
+    pub(in crate::render::frame_graph) const fn new_transient_render_scale(
+        id: usize,
+    ) -> FrameGraphResourceId {
         debug_assert!(
             id < FrameGraphResourceId::TYPE_MASK,
             "render scale transient resource ID too large"
@@ -26,7 +28,9 @@ impl FrameGraphResourceId {
     }
 
     /// Create a new [`FrameGraphResourceId`] for a transient resource at native scale
-    pub const fn new_transient_native_scale(id: usize) -> FrameGraphResourceId {
+    pub(in crate::render::frame_graph) const fn new_transient_native_scale(
+        id: usize,
+    ) -> FrameGraphResourceId {
         debug_assert!(
             id < FrameGraphResourceId::TYPE_MASK,
             "native scale transient resource ID too large"
@@ -37,7 +41,9 @@ impl FrameGraphResourceId {
         }
     }
     /// Create a new [`FrameGraphResourceId`] for a shadow map resource
-    pub const fn new_shadow_map(id: usize) -> FrameGraphResourceId {
+    pub(in crate::render::frame_graph::resources::id) const fn new_shadow_map(
+        id: usize,
+    ) -> FrameGraphResourceId {
         debug_assert!(
             id < FrameGraphResourceId::TYPE_MASK,
             "shadow map resource ID too large"

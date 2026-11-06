@@ -1,7 +1,7 @@
 use crate::render::{
     DEPTH_FORMAT,
     frame_graph::{
-        FrameGraphExternalResourceInfo, FrameGraphTransientResourceInfo,
+        FrameGraphExternalResourceInfo, FrameGraphTransientResourceInfo, ShadowMapData,
         builder::FrameGraphBuilderResources,
     },
 };
@@ -22,16 +22,19 @@ impl FrameGraphBuilderResources {
                     "Directional Light Shadow Maps",
                     DEPTH_FORMAT,
                     VulkanAttachmentLoadOp::Clear,
+                    ShadowMapData::new(4, false),
                 ),
                 FrameGraphTransientResourceInfo::new(
                     "Point Light Shadow Maps",
                     DEPTH_FORMAT,
                     VulkanAttachmentLoadOp::Clear,
+                    ShadowMapData::new(6, true),
                 ),
                 FrameGraphTransientResourceInfo::new(
                     "Spot Light Shadow Maps",
                     DEPTH_FORMAT,
                     VulkanAttachmentLoadOp::Clear,
+                    ShadowMapData::new(1, false),
                 ),
             ],
         }

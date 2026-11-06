@@ -13,7 +13,7 @@ impl<'a> FrameGraphResourceUsage<'a> {
             FrameGraphResourceUsage::DepthAttachment => FrameGraphResourceState::new(
                 VulkanPipelineStageFlag::EarlyFragmentTests,
                 VulkanAccessFlag::DepthStencilAttachmentWrite,
-                VulkanImageLayout::DepthStencilAttachmentOptimal,
+                VulkanImageLayout::DepthAttachmentOptimal,
             ),
             FrameGraphResourceUsage::TransferDst => FrameGraphResourceState::new(
                 VulkanPipelineStageFlag::Blit,

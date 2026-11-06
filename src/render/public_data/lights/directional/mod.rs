@@ -7,6 +7,7 @@ mod create_buffer;
 mod get;
 mod new;
 mod set;
+mod shadow_map;
 mod system;
 
 pub(in crate::render) use gpu::*;

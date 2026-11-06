@@ -6,7 +6,7 @@ use alexandria::gpu::VulkanPipelineBindPoint;
 use colosseum_ecs::{Res, ResMut};
 
 impl UnlitForwardRenderNode {
-    /// Clear the sky with a solid color
+    /// Renders unlit objects using the forward rendering pipeline
     pub(in crate::render::frame_graph::nodes::unlit_forward_render) fn system(
         self: Res<Self>,
         materials: Res<Materials>,
@@ -43,7 +43,7 @@ impl UnlitForwardRenderNode {
                 .unlit_material(material)
                 .bind(cmd_buffer, pipeline_layout, object_index);
 
-            assets.mesh(mesh).draw(cmd_buffer);
+            assets.mesh(mesh).draw(cmd_buffer, 1);
         }
     }
 }

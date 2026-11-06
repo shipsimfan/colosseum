@@ -5,7 +5,12 @@ use alexandria::gpu::{
 };
 use std::sync::Arc;
 
-impl FrameGraphTransientResourceInfo {
+impl<ExtraData> FrameGraphTransientResourceInfo<ExtraData> {
+    /// Get the name of this resource
+    pub fn name(&self) -> &'static str {
+        self.name
+    }
+
     /// Get the Vulkan image usage flags for this resource
     pub fn usage(&self) -> VulkanImageUsageFlags {
         let mut flags = VulkanImageUsageFlags::empty();
@@ -45,5 +50,10 @@ impl FrameGraphTransientResourceInfo {
     /// Get the descriptor sets for this resource
     pub fn descriptor_sets(&self) -> &[(usize, u32, Arc<VulkanSampler>)] {
         &self.descriptor_sets
+    }
+
+    /// Get the extra data for this resource
+    pub fn extra_data(&self) -> &ExtraData {
+        &self.extra_data
     }
 }

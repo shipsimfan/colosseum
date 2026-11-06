@@ -17,6 +17,9 @@ impl<'a> FrameGraphBuilderResource<'a> {
             FrameGraphBuilderResource::Transient(transient) => {
                 transient.transition(resource, new_state)
             }
+            FrameGraphBuilderResource::ShadowMap(shadow_map) => {
+                shadow_map.transition(resource, new_state)
+            }
         }
     }
 }

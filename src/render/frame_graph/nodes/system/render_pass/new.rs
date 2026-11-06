@@ -11,6 +11,14 @@ impl FrameGraphRenderPass {
             return None;
         }
 
+        if depth_attachment
+            .map(|(id, _)| id.is_shadow_map())
+            .unwrap_or(false)
+        {
+            debug_assert!(color_attachment.is_none());
+            return None;
+        }
+
         Some(FrameGraphRenderPass {
             resources: 0,
             frame_index: 0,

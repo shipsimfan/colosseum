@@ -8,7 +8,7 @@ impl<T> FrameHostDataBuffer<T> {
     }
 
     /// Get the current capacity of the buffer
-    pub(in crate::render::per_frame_data::data_buffers) fn capacity(&self) -> usize {
+    pub fn capacity(&self) -> usize {
         self.capacity
     }
 

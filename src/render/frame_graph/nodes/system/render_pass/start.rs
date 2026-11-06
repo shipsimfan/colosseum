@@ -57,7 +57,7 @@ impl FrameGraphRenderPass {
 
                 Some(VulkanRenderingAttachmentInfo::new(
                     depth_attachment.image_view(),
-                    VulkanImageLayout::DepthStencilAttachmentOptimal,
+                    VulkanImageLayout::DepthAttachmentOptimal,
                     VulkanResolveModeFlag::None,
                     None,
                     VulkanImageLayout::Undefined,

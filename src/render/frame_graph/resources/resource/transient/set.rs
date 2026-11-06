@@ -2,7 +2,7 @@ use crate::render::frame_graph::FrameGraphTransientResourceInfo;
 use alexandria::gpu::{VulkanAttachmentLoadOp, VulkanSampler};
 use std::sync::Arc;
 
-impl FrameGraphTransientResourceInfo {
+impl<ExtraData> FrameGraphTransientResourceInfo<ExtraData> {
     /// Set this resource to be a color resource
     pub fn set_color(&mut self) -> VulkanAttachmentLoadOp {
         assert!(!self.is_depth);

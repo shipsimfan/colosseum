@@ -55,6 +55,6 @@ impl ProceduralSkyNode {
         };
 
         // Bind the mesh
-        assets.mesh(primitives.cube()).draw(cmd_buffer);
+        assets.mesh(primitives.cube()).draw(cmd_buffer, 1);
     }
 }

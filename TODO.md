@@ -1,9 +1,6 @@
 # ToDo
  1. Update remaining engine to new ECS
-   1. Add lit rendering
-     1. Add shadow map buffers
-     2. Add shadow mapping
-     3. Add lit forward rendering node
+   1. Validate all objects are named in RenderDoc
    2. Add skybox system to update procedural sky settings based on directional light
    3. Add `Single` system parameter
    4. Finish cube example

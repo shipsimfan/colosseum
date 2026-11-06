@@ -3,8 +3,10 @@ use crate::{
     render::{
         DescriptorSetBinding, DescriptorSetLayouts, GraphicsDevice, MAX_FRAMES_IN_FLIGHT,
         frame_graph::{
-            FrameGraphResources, FrameGraphTransientResourceInfo,
-            resources::{FrameGraphDataBinding, FrameGraphTransientResourceBuffer},
+            FrameGraphResources, FrameGraphTransientResourceInfo, ShadowMapData,
+            resources::{
+                FrameGraphDataBinding, FrameGraphShadowMapBuffer, FrameGraphTransientResourceBuffer,
+            },
         },
     },
 };
@@ -19,7 +21,7 @@ impl FrameGraphResources {
     pub fn new(
         native_scale_resources: Vec<FrameGraphTransientResourceInfo>,
         render_scale_resources: Vec<FrameGraphTransientResourceInfo>,
-        shadow_map_resources: Vec<FrameGraphTransientResourceInfo>,
+        shadow_map_resources: Vec<FrameGraphTransientResourceInfo<ShadowMapData>>,
 
         mut descriptors: Vec<VulkanDescriptorPoolSize>,
         descriptor_sets: Vec<(TypeId, Cow<'static, str>, &'static [DescriptorSetBinding])>,
@@ -73,6 +75,12 @@ impl FrameGraphResources {
             .map(|(_, index, bindings)| FrameGraphDataBinding::new(index, bindings))
             .collect();
 
+        // Create shadow map buffers
+        let mut shadow_maps = Vec::with_capacity(shadow_map_resources.len());
+        for info in shadow_map_resources {
+            shadow_maps.push(FrameGraphShadowMapBuffer::new(info));
+        }
+
         Ok(FrameGraphResources {
             external_resources: Vec::new(),
             native_scale: FrameGraphTransientResourceBuffer::new(
@@ -83,10 +91,7 @@ impl FrameGraphResources {
                 "Render Scale Memory",
                 render_scale_resources,
             ),
-            shadow_map: FrameGraphTransientResourceBuffer::new(
-                "Shadow Map Memory",
-                shadow_map_resources,
-            ),
+            shadow_maps,
 
             descriptor_pool: Some(descriptor_pool),
             descriptor_sets: new_descriptor_sets,
@@ -100,7 +105,7 @@ impl FrameGraphResources {
             external_resources: Vec::new(),
             native_scale: FrameGraphTransientResourceBuffer::new("", Vec::new()),
             render_scale: FrameGraphTransientResourceBuffer::new("", Vec::new()),
-            shadow_map: FrameGraphTransientResourceBuffer::new("", Vec::new()),
+            shadow_maps: Vec::new(),
 
             descriptor_pool: None,
             descriptor_sets: Vec::new(),

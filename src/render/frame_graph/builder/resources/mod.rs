@@ -1,4 +1,6 @@
-use crate::render::frame_graph::{FrameGraphExternalResourceInfo, FrameGraphTransientResourceInfo};
+use crate::render::frame_graph::{
+    FrameGraphExternalResourceInfo, FrameGraphTransientResourceInfo, ShadowMapData,
+};
 
 mod create;
 mod finish;
@@ -17,5 +19,5 @@ pub(in crate::render::frame_graph::builder) struct FrameGraphBuilderResources {
     render_scale_resources: Vec<FrameGraphTransientResourceInfo>,
 
     /// The transient shadow map resources that need to be allocated
-    shadow_map_resources: Vec<FrameGraphTransientResourceInfo>,
+    shadow_map_resources: Vec<FrameGraphTransientResourceInfo<ShadowMapData>>,
 }

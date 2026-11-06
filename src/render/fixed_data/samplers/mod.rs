@@ -8,4 +8,7 @@ mod new;
 pub(in crate::render) struct Samplers {
     /// A linear sampler without anisotropic filtering
     linear: Arc<VulkanSampler>,
+
+    /// A percentage-closer filtering (PCF) sampler
+    pcf: Arc<VulkanSampler>,
 }

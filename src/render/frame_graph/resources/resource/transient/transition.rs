@@ -3,7 +3,7 @@ use crate::render::frame_graph::{
     FrameGraphTransientResourceInfo,
 };
 
-impl FrameGraphTransientResourceInfo {
+impl<ExtraData> FrameGraphTransientResourceInfo<ExtraData> {
     /// Transition the resource to a new state, returning a pipeline barrier if needed
     pub fn transition(
         &mut self,

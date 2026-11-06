@@ -10,7 +10,7 @@ mod set;
 mod transition;
 
 /// The information describing a transient resource
-pub(in crate::render::frame_graph) struct FrameGraphTransientResourceInfo {
+pub(in crate::render::frame_graph) struct FrameGraphTransientResourceInfo<ExtraData = ()> {
     /// The name of the transient resource
     name: &'static str,
 
@@ -46,4 +46,7 @@ pub(in crate::render::frame_graph) struct FrameGraphTransientResourceInfo {
 
     /// The descriptor sets and the binding in the set that references this resource
     descriptor_sets: Vec<(usize, u32, Arc<VulkanSampler>)>,
+
+    /// Extra data associated with the transient resource
+    extra_data: ExtraData,
 }

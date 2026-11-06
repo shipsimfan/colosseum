@@ -18,6 +18,7 @@ mod new;
 mod prepare;
 
 pub(in crate::render) use nodes::create_frame_graph_resources;
+pub(in crate::render) use resources::FrameGraphResourceId;
 
 /// A frame graph, which can be built and executed to render a frame
 pub(in crate::render) struct FrameGraph<Game: crate::Game> {

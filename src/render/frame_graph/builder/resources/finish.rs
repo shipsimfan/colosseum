@@ -1,6 +1,6 @@
 use crate::render::frame_graph::{
     FrameGraphPipelineBarrier, FrameGraphResourceId, FrameGraphResourceState,
-    FrameGraphTransientResourceInfo, builder::FrameGraphBuilderResources,
+    FrameGraphTransientResourceInfo, ShadowMapData, builder::FrameGraphBuilderResources,
 };
 use alexandria::gpu::{VulkanAccessFlag, VulkanImageLayout, VulkanPipelineStageFlag};
 
@@ -12,7 +12,7 @@ impl FrameGraphBuilderResources {
         Option<FrameGraphPipelineBarrier>,
         Vec<FrameGraphTransientResourceInfo>,
         Vec<FrameGraphTransientResourceInfo>,
-        Vec<FrameGraphTransientResourceInfo>,
+        Vec<FrameGraphTransientResourceInfo<ShadowMapData>>,
     ) {
         let present_barrier = self.external_resources[0].transition(
             FrameGraphResourceId::SWAPCHAIN_IMAGE,

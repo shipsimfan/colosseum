@@ -157,7 +157,7 @@ float cascade_shadow_factor(float3 position, uint index, float depth)
 
 float point_shadow_factor(float3 difference, float3 direction, uint index)
 {
-    float ref_depth = length(difference) / point_lights[index].range;
+    float ref_depth = 1.0 - length(difference) / point_lights[index].range;
 
     return point_light_shadow_maps.SampleCmp(float4(-direction, index), ref_depth);
 }

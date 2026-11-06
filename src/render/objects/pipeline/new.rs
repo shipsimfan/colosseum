@@ -18,7 +18,7 @@ use std::marker::PhantomData;
 impl<Kind> Pipeline<Kind> {
     /// Create a completely custom pair of pipeline and layout
     pub fn new(
-        name: &'static str,
+        name: &str,
         descriptor_set_layouts: &[&VulkanDescriptorSetLayout],
         push_constant_ranges: &[VulkanPushConstantRange],
         output_formats: &[VulkanFormat],

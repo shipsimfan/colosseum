@@ -7,6 +7,7 @@ use colosseum_ecs::World;
 
 impl GpuDataBuffers {
     /// Create a new uniform buffer
+    #[allow(unused)]
     pub fn create_uniform<T: 'static>(
         &mut self,
         name: &str,

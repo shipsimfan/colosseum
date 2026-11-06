@@ -12,7 +12,7 @@ impl FrameGraphBuilderResources {
         } else if id.is_transient_render_scale() {
             FrameGraphBuilderResource::Transient(&mut self.render_scale_resources[id.index()])
         } else if id.is_shadow_map() {
-            FrameGraphBuilderResource::Transient(&mut self.shadow_map_resources[id.index()])
+            FrameGraphBuilderResource::ShadowMap(&mut self.shadow_map_resources[id.index()])
         } else {
             unreachable!("unknown resource ID type")
         }

@@ -1,9 +1,10 @@
-use alexandria::gpu::VulkanDescriptorSet;
-
 use crate::render::{
     FrameIndex,
-    frame_graph::{FrameGraphResource, FrameGraphResourceId, FrameGraphResources},
+    frame_graph::{
+        FrameGraphResource, FrameGraphResourceId, FrameGraphResources, FrameGraphShadowMapBuffer,
+    },
 };
+use alexandria::gpu::VulkanDescriptorSet;
 
 impl FrameGraphResources {
     /// Get a resource based on its id
@@ -28,9 +29,24 @@ impl FrameGraphResources {
                 image_view,
                 size,
             }
+        } else if id.is_shadow_map() {
+            let (info, image_view, size, array_layers) =
+                self.shadow_maps[id.index()].get_full(**frame_index);
+            FrameGraphResource::ShadowMap {
+                info,
+                image_view,
+                size,
+                array_layers,
+            }
         } else {
-            panic!("only external resources are currently supported")
+            unreachable!("unknown frame graph resource type")
         }
+    }
+
+    /// Get a reference to a shadow map
+    pub fn get_shadow_map(&self, id: FrameGraphResourceId) -> &FrameGraphShadowMapBuffer {
+        assert!(id.is_shadow_map(), "id must be a shadow map");
+        &self.shadow_maps[id.index()]
     }
 
     /// Get a descriptor set based on its id
