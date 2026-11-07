@@ -9,7 +9,7 @@ impl FrameGraphNode for UnlitForwardRenderNode {
     }
 
     fn color(&self) -> impl Into<Color3f<Srgb>> {
-        (1.0, 1.0, 1.0)
+        (0.30, 0.90, 0.45)
     }
 
     fn system(&self) -> impl 'static + System {

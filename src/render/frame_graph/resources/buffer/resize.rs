@@ -65,13 +65,16 @@ impl FrameGraphTransientResourceBuffer {
         // Bind the allocated memory to the new resources, create the image views for them, and
         // update descriptor sets
         let mut offset = 0;
-        for ((image, memory_requirements), info) in images.into_iter().zip(&self.info) {
+        for (index, ((image, memory_requirements), info)) in
+            images.into_iter().zip(&self.info).enumerate()
+        {
             // Create the image view
             let (image_view, new_offset) = info.create_image_view(
                 image,
                 &memory_requirements,
                 &device_memory,
                 offset,
+                index,
                 frame_index,
                 device,
             )?;

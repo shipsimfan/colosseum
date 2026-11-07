@@ -1,3 +1,6 @@
+#[cfg(debug_assertions)]
+use std::ffi::CString;
+
 use crate::{
     Result,
     render::{GraphicsDevice, frame_graph::FrameGraphTransientResourceInfo},
@@ -16,6 +19,7 @@ impl<ExtraData> FrameGraphTransientResourceInfo<ExtraData> {
         memory_requirements: &VulkanMemoryRequirements,
         memory: &VulkanDeviceMemory,
         mut offset: u64,
+        index: usize,
         frame_index: usize,
         device: &GraphicsDevice,
     ) -> Result<(VulkanImageView, u64)> {
@@ -50,7 +54,10 @@ impl<ExtraData> FrameGraphTransientResourceInfo<ExtraData> {
         // Name the image view
         #[cfg(debug_assertions)]
         device
-            .set_object_name(&mut image_view, &self.image_view_name[frame_index])
+            .set_object_name(
+                &mut image_view,
+                &CString::new(format!("{}-{}", self.image_view_name[frame_index], index)).unwrap(),
+            )
             .map_err(|error| {
                 new_error!(
                     "unable to set image view name for \"{}\" - {}",
@@ -100,7 +107,10 @@ impl<ExtraData> FrameGraphTransientResourceInfo<ExtraData> {
         // Name the image view
         #[cfg(debug_assertions)]
         device
-            .set_object_name(&mut image_view, &self.image_view_name[frame_index])
+            .set_object_name(
+                &mut image_view,
+                &CString::new(format!("Full {}", self.image_view_name[frame_index])).unwrap(),
+            )
             .map_err(|error| {
                 new_error!(
                     "unable to set image view name for \"{}\" - {}",
@@ -119,6 +129,7 @@ impl<ExtraData> FrameGraphTransientResourceInfo<ExtraData> {
         layer: u32,
         cube_map: bool,
         cascades: u32,
+        index: usize,
         frame_index: usize,
         device: &GraphicsDevice,
     ) -> Result<VulkanImageView> {
@@ -153,7 +164,10 @@ impl<ExtraData> FrameGraphTransientResourceInfo<ExtraData> {
         // Name the image view
         #[cfg(debug_assertions)]
         device
-            .set_object_name(&mut image_view, &self.image_view_name[frame_index])
+            .set_object_name(
+                &mut image_view,
+                &CString::new(format!("{}-{}", self.image_view_name[frame_index], index)).unwrap(),
+            )
             .map_err(|error| {
                 new_error!(
                     "unable to set image view name for \"{}\" - {}",

@@ -56,7 +56,13 @@ colosseum::run!(
 );
 
 /// The cube example
-struct Cube;
+struct Cube {
+    /// The ID of the mesh associated with this cube
+    mesh: colosseum::Id<colosseum::render::Mesh>,
+
+    /// The ID of the material associated with this cube
+    material: colosseum::Id<colosseum::render::LitForwardMaterial>,
+}
 
 impl colosseum::GameMetadata for Cube {
     const NAME: &str = "Cube Example";
@@ -127,21 +133,11 @@ fn init_main_scene(
     world: &mut colosseum::ecs::World,
     cube_mesh: colosseum::Id<colosseum::render::Mesh>,
 ) -> colosseum::Result<()> {
+    // Add FPS counter
     world.insert_resource(FpsCounter::new());
     world.register_system(colosseum::update::Update, FpsCounter::tick);
 
-    world.insert_resource(colosseum::render::Skybox::Procedural(
-        colosseum::render::ProceduralSkybox::new(
-            (0.5, 0.7, 0.9),
-            (0.0, 0.0, -1.0),
-            0.003,
-            5.0,
-            (1.0, 1.0, 1.0),
-            1.0,
-            (0.37, 0.29, 0.20),
-        ),
-    ));
-
+    // Add input handling system
     world.register_system(colosseum::update::Update, input_handling);
 
     // Get materials
@@ -155,10 +151,15 @@ fn init_main_scene(
         .sphere();
 
     // Spawn the cube entity with its renderer and transform
-    world.spawn((
-        colosseum::render::Renderer::new(cube_material, cube_mesh),
+    let cube = world.spawn((
         colosseum::update::Transform::new_at((0.0, 0.0, 3.0)),
+        Cube {
+            mesh: cube_mesh,
+            material: cube_material,
+        },
+        colosseum::render::Renderer::new(cube_material, cube_mesh),
     ));
+    colosseum::debug_s!("cube", "Cube ID: {}", cube);
 
     // Create a sphere
     world.spawn((
@@ -171,7 +172,7 @@ fn init_main_scene(
     ));
 
     // Create a directional light
-    world.spawn((colosseum::render::DirectionalLight::new(
+    let directional_light = world.spawn((colosseum::render::DirectionalLight::new(
         (1.0, 1.0, 1.0),
         0.5,
         (-1.0, -1.5, 1.0),
@@ -188,15 +189,32 @@ fn init_main_scene(
     ),));
 
     // Create a spot light
-    world.spawn((colosseum::render::SpotLight::new(
-        (1.0, 0.95, 0.85),
-        1.0,
-        (0.0, 0.0, 0.0),
-        10.0,
-        (0.0, 0.0, 0.0),
-        3.14 / 8.0,
-        3.14 / 12.0,
-    ),));
+    world.spawn((
+        colosseum::render::SpotLight::new(
+            (1.0, 0.95, 0.85),
+            1.0,
+            (0.0, 0.0, 0.0),
+            10.0,
+            (0.0, 0.0, 1.0),
+            3.14 / 8.0,
+            3.14 / 12.0,
+        ),
+        SpotLightState {
+            angle: std::f32::consts::PI / 2.0,
+        },
+    ));
+
+    // Set skybox
+    world.insert_resource(colosseum::render::Skybox::Procedural(
+        colosseum::render::ProceduralSkybox::new_light(
+            (0.5, 0.7, 0.9),
+            directional_light,
+            0.003,
+            5.0,
+            1.0,
+            (0.37, 0.29, 0.20),
+        ),
+    ));
 
     Ok(())
 }
@@ -236,12 +254,29 @@ impl FpsCounter {
     }
 }
 
+/// The state associated with the spot light
+struct SpotLightState {
+    /// The angle of the spot light
+    angle: f32,
+}
+
 fn input_handling(
     input: colosseum::ecs::Res<colosseum::update::Input>,
     settings: colosseum::ecs::Res<CubeSettings>,
     window: colosseum::ecs::Res<colosseum::Window>,
     delta_time: colosseum::ecs::Res<colosseum::update::DeltaTime>,
+    mut cube: colosseum::ecs::Single<(
+        &colosseum::Id<colosseum::ecs::Entity>,
+        &mut colosseum::update::Transform,
+        Option<&colosseum::render::Renderer>,
+        &Cube,
+    )>,
     mut camera: colosseum::ecs::ResMut<colosseum::render::Camera>,
+    mut spot_light: colosseum::ecs::Single<(
+        &mut colosseum::render::SpotLight,
+        &mut SpotLightState,
+    )>,
+    commands: &mut colosseum::ecs::Commands,
 ) -> colosseum::Result<()> {
     // Toggle fullscreen mode when the user presses F11
     if input.key_down(colosseum::Key::F11) {
@@ -252,9 +287,23 @@ fn input_handling(
         }
     }
 
+    // Toggle visibility of the cube when the user presses V
+    if input.key_down(colosseum::Key::V) {
+        if cube.2.is_some() {
+            colosseum::debug_s!("cube", "Cube ID: {}", cube.0);
+            commands.remove_component::<colosseum::render::Renderer>(*cube.0);
+        } else {
+            commands.add_component::<colosseum::render::Renderer>(
+                *cube.0,
+                colosseum::render::Renderer::new(cube.3.material, cube.3.mesh),
+            );
+        }
+    }
+
     // Move the camera based on user input
     let rotating = input.key(colosseum::Key::LeftShift) | input.key(colosseum::Key::RightShift);
-    //let changing_cube = input.key(colosseum::Key::LeftControl) | input.key(colosseum::Key::RightControl);
+    let changing_cube =
+        input.key(colosseum::Key::LeftControl) | input.key(colosseum::Key::RightControl);
 
     let mut change = colosseum::math::Vector3f::ZERO;
     let mut changed = false;
@@ -313,111 +362,42 @@ fn input_handling(
 
     if changed {
         if rotating {
-            camera.rotation *= colosseum::math::Quaternionf::from_euler_angles(change);
+            let change = colosseum::math::Quaternionf::from_euler_angles(change);
+            if changing_cube {
+                cube.1.rotation *= change;
+            } else {
+                camera.rotation *= change;
+            }
         } else {
-            change = camera.rotation.rotate(change);
-            camera.position += change;
+            if changing_cube {
+                change = cube.1.rotation.rotate(change);
+                cube.1.position += change;
+            } else {
+                change = camera.rotation.rotate(change);
+                camera.position += change;
+            }
         }
     }
+
+    // Update the spot light angle based on user input
+    if input.key(colosseum::Key::OpenBracket) {
+        spot_light.1.angle -= speed;
+    }
+    if input.key(colosseum::Key::CloseBracket) {
+        spot_light.1.angle += speed;
+    }
+
+    spot_light.1.angle = spot_light.1.angle % (2.0 * std::f32::consts::PI);
+
+    let position =
+        colosseum::math::Vector3f::new(spot_light.1.angle.cos(), 0.0, spot_light.1.angle.sin())
+            * 5.0
+            + colosseum::math::Vector3f::new(0.0, 0.0, 3.0);
+
+    let direction = colosseum::math::Vector3f::new(0.0, 0.0, 3.0) - position;
+
+    spot_light.0.position = position;
+    spot_light.0.direction = direction.normalized();
 
     Ok(())
 }
-
-/*
-
-/// The main scene for the cube example
-struct CubeMainScene {
-    /// The material used to render the cube
-    material: colosseum::render::MaterialId,
-
-    /// The mesh used to render the cube
-    mesh: colosseum::Id<colosseum::render::Mesh>,
-
-    /// The ID of the renderable cube
-    cube: colosseum::Id<colosseum::update::Entity>,
-
-    /// Should the cube be rendered?
-    render_state: bool,
-
-    /// The ID of the spot light
-    spot_light: colosseum::Id<colosseum::update::Entity>,
-
-    /// The angle of the spot light
-    spot_light_angle: f32,
-}
-
-impl colosseum::update::Scene for CubeMainScene {
-    type Game = Cube;
-
-    fn update(
-        &mut self,
-        context: &mut colosseum::update::UpdateContext<Cube>,
-    ) -> colosseum::Result<()> {
-        // Move the camera based on user input
-        let changing_cube = input.key(colosseum::Key::LeftControl)
-            | input.key(colosseum::Key::RightControl);
-
-        if changed {
-            let transform = context
-                .ecs_mut()
-                .get_mut::<colosseum::update::components::Transform>(if changing_cube {
-                    self.cube
-                } else {
-                    self.camera
-                });
-
-            if rotating {
-                let euler = colosseum::math::Quaternionf::from_euler_angles(change);
-                let rotation = transform.rotation() * euler;
-
-                transform.set_rotation(rotation);
-            } else {
-                change = transform.rotation().rotate(change);
-                *transform.position_mut() += change;
-            }
-        }
-
-        // Render the cube
-        if input.key_down(colosseum::Key::V) {
-            self.render_state = !self.render_state;
-            if self.render_state {
-                context.ecs_mut().add_component(
-                    self.cube,
-                    colosseum::update::components::Renderer::new(self.material, self.mesh),
-                );
-            } else {
-                context
-                    .ecs_mut()
-                    .remove_component::<colosseum::update::components::Renderer>(self.cube);
-            }
-        }
-
-        // Update the spot light angle based on user input
-        if input.key(colosseum::Key::OpenBracket) {
-            self.spot_light_angle -= speed;
-        }
-        if input.key(colosseum::Key::CloseBracket) {
-            self.spot_light_angle += speed;
-        }
-
-        self.spot_light_angle = self.spot_light_angle % (2.0 * std::f32::consts::PI);
-
-        let position = colosseum::math::Vector3f::new(
-            self.spot_light_angle.cos(),
-            0.0,
-            self.spot_light_angle.sin(),
-        ) * SPOT_LIGHT_RADIUS
-            + INITIAL_CUBE_POSITION;
-
-        let direction = INITIAL_CUBE_POSITION - position;
-
-        let spotlight = context
-            .ecs_mut()
-            .get_mut::<colosseum::update::components::SpotLight>(self.spot_light);
-        spotlight.set_position(position);
-        spotlight.set_direction(direction);
-
-        Ok(())
-    }
-}
-*/

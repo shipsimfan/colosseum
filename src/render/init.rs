@@ -2,7 +2,7 @@ use crate::{
     Result, SettingsCache, UserEvent,
     render::{
         Camera, DirectionalLight, FrameGraph, GraphicsDevice, LightMetadata, PointLight,
-        RenderGpuTransferQueue, RenderIndices, Renderer, SpotLight, Swapchain,
+        ProceduralSkybox, RenderGpuTransferQueue, RenderIndices, Renderer, SpotLight, Swapchain,
         create_fixed_render_data_resources, create_frame_graph_resources,
         create_per_frame_render_data, create_public_data_resources,
         create_public_data_scene_resources,
@@ -78,6 +78,7 @@ fn init_pre_render<Game: crate::Game>(world: &mut World) {
         world.register_system(PreRender, RenderGpuTransferQueue::system);
     }
 
+    ProceduralSkybox::register_system(world);
     world.register_system(PreRender, Camera::system);
     world.register_system(PreRender, Renderer::system);
     world.register_system(PreRender, LightMetadata::system);

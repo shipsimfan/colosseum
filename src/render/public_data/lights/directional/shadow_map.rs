@@ -17,7 +17,7 @@ compile_shader! {
 
 impl ShadowMapLight for DirectionalLight {
     const NAME: &'static str = "Directional Light";
-    const COLOR: Color3f<Srgb> = (0.0, 0.0, 0.0).into();
+    const COLOR: Color3f<Srgb> = (0.55, 0.30, 0.75).into();
 
     const SHADOW_MAP: FrameGraphResourceId = FrameGraphResourceId::DIRECTIONAL_LIGHT_SHADOW_MAP;
     const CASCADES: u32 = 4;

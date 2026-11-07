@@ -7,6 +7,7 @@ use colosseum_ecs::Entity;
 mod get;
 mod new;
 mod set;
+mod system;
 
 /// The parameters controlling a procedural skybox
 #[derive(Clone)]

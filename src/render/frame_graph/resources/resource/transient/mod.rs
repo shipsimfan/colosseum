@@ -17,8 +17,8 @@ pub(in crate::render::frame_graph) struct FrameGraphTransientResourceInfo<ExtraD
     /// The C name for the image
     image_name: [CString; MAX_FRAMES_IN_FLIGHT],
 
-    /// The C name for the image view
-    image_view_name: [CString; MAX_FRAMES_IN_FLIGHT],
+    /// The base name for the image view
+    image_view_name: [String; MAX_FRAMES_IN_FLIGHT],
 
     /// The format of the resource
     format: VulkanFormat,

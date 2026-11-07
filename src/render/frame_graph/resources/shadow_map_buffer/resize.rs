@@ -118,6 +118,7 @@ impl FrameGraphShadowMapBuffer {
                 layer,
                 self.info.extra_data().cube_map(),
                 self.info.extra_data().cascades(),
+                image_view_index as _,
                 frame_index,
                 device,
             )?);

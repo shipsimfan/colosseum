@@ -18,7 +18,7 @@ compile_shader! {
 
 impl ShadowMapLight for PointLight {
     const NAME: &'static str = "Point Light";
-    const COLOR: Color3f<Srgb> = (0.0, 0.0, 0.0).into();
+    const COLOR: Color3f<Srgb> = (0.70, 0.45, 0.85).into();
 
     const SHADOW_MAP: FrameGraphResourceId = FrameGraphResourceId::POINT_LIGHT_SHADOW_MAP;
     const CASCADES: u32 = 6;

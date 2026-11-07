@@ -1,12 +1,6 @@
 # ToDo
  1. Update remaining engine to new ECS
-   1. Validate all objects are named in RenderDoc
-   2. Add skybox system to update procedural sky settings based on directional light
-   3. Add `Single` system parameter
-   4. Finish cube example
-     1. Toggle cube visibility
-     2. Move cube
-     3. Move spot light
+   1. Fix issue with missing archetype on removing component
  2. Add mesh loading
  3. Add raycasting
  4. Add texture loading

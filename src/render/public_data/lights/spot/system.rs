@@ -45,9 +45,7 @@ impl SpotLight {
 
     /// Create a new [`GpuSpotLightMatrix`] for this spotlight
     fn view_projection(&self) -> GpuSpotLightMatrix {
-        let mut projection = Matrix4x4f::new_perspective(1.0, self.cutoff_angle, 0.01, self.range);
-        projection[2][2] = -projection[2][2];
-        projection[2][3] = -projection[2][3];
+        let projection = Matrix4x4f::new_perspective(1.0, self.cutoff_angle, self.range, 0.01);
 
         let mut up = Vector3f::Y;
         if up.dot(self.direction).abs() > 0.999 {

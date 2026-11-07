@@ -27,7 +27,8 @@ pub trait System {
     fn access(&self) -> &WorldAccess;
 
     /// Register a new archetype with the system
-    fn register_archetype(&mut self, archetype: usize, components: &[TypeId]);
+    #[allow(unused_variables)]
+    fn register_archetype(&mut self, archetype: usize, components: &[TypeId]) {}
 
     /// Apply any deferred actions for the system
     #[allow(unused_variables)]

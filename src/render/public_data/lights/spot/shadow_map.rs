@@ -17,7 +17,7 @@ compile_shader! {
 
 impl ShadowMapLight for SpotLight {
     const NAME: &'static str = "Spot Light";
-    const COLOR: Color3f<Srgb> = (0.0, 0.0, 0.0).into();
+    const COLOR: Color3f<Srgb> = (0.85, 0.60, 0.95).into();
 
     const SHADOW_MAP: FrameGraphResourceId = FrameGraphResourceId::SPOT_LIGHT_SHADOW_MAP;
     const CASCADES: u32 = 1;

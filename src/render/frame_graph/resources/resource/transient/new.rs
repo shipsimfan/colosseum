@@ -46,6 +46,6 @@ fn create_image_name(name: &'static str, index: usize) -> CString {
 }
 
 /// Create the image view name for a given frame index
-fn create_image_view_name(name: &'static str, index: usize) -> CString {
-    CString::new(format!("{} Image View {}", name, index)).unwrap()
+fn create_image_view_name(name: &'static str, index: usize) -> String {
+    format!("{} Image View {}", name, index)
 }
