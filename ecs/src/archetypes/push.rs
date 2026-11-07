@@ -5,14 +5,24 @@ use crate::{
 use std::any::TypeId;
 
 impl Archetypes {
-    /// Push a new archetype to the set of archetypes
-    pub(in crate::archetypes) fn push<Component: 'static + Send + Sync + Sized>(
+    /// Push a new archetype with a new component to the set of archetypes
+    pub(in crate::archetypes) fn push_next<Component: 'static + Send + Sync + Sized>(
         &mut self,
         archetype_index: usize,
     ) -> usize {
-        // Create the new archetype
-        let mut new_archetype =
-            self.archetypes[archetype_index].extend(Components::new::<Component>());
+        self.push(self.archetypes[archetype_index].extend(Components::new::<Component>()))
+    }
+
+    /// Push a new archetype by removing a component from another archetype
+    pub(in crate::archetypes) fn push_prev<Component: 'static + Send + Sync + Sized>(
+        &mut self,
+        archetype_index: usize,
+    ) -> usize {
+        self.push(self.archetypes[archetype_index].contract::<Component>())
+    }
+
+    /// Push a new archetype to the set of archetypes
+    fn push(&mut self, mut new_archetype: Archetype) -> usize {
         let new_archetype_index = self.archetypes.len();
 
         // Check for archetypes that are one away from the new archetype and update their next_archetype mapping

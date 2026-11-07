@@ -8,8 +8,16 @@ impl World {
     }
 
     /// Remove a component from an entity
-    pub fn remove_component<T: 'static>(&mut self, entity: Id<Entity>) {
-        self.archetypes.remove_component::<T>(entity);
+    pub fn remove_component<Component: 'static + Send + Sync + Sized>(
+        &mut self,
+        entity: Id<Entity>,
+    ) {
+        if let Some((new_archetype_index, new_archetype_types)) =
+            self.archetypes.remove_component::<Component>(entity)
+        {
+            self.systems
+                .register_archetype(new_archetype_index, &new_archetype_types);
+        }
     }
 
     /// Remove a resource from the world, returning it if it exists

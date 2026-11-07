@@ -16,7 +16,10 @@ pub struct RemoveComponent<Component: 'static> {
 
 impl Commands {
     /// Remove a component from an entity
-    pub fn remove_component<Component: 'static>(&mut self, entity: Id<Entity>) {
+    pub fn remove_component<Component: 'static + Send + Sync + Sized>(
+        &mut self,
+        entity: Id<Entity>,
+    ) {
         self.queue(RemoveComponent::<Component>::new(entity));
     }
 }

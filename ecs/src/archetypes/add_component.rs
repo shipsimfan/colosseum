@@ -22,7 +22,7 @@ impl Archetypes {
         let (new_archetype_index, archetype_created) = self.archetypes[archetype_index]
             .next_archetype(type_id)
             .map(|index| (index, false))
-            .unwrap_or_else(|| (self.push::<Component>(archetype_index), true));
+            .unwrap_or_else(|| (self.push_next::<Component>(archetype_index), true));
 
         // Insert the component into the new archetype
         let [source_archetype, target_archetype] = self

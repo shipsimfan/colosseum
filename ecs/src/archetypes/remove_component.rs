@@ -4,7 +4,10 @@ use std::any::TypeId;
 
 impl Archetypes {
     /// Remove a component from an entity
-    pub fn remove_component<Component: 'static>(&mut self, entity: Id<Entity>) {
+    pub fn remove_component<Component: 'static + Send + Sync + Sized>(
+        &mut self,
+        entity: Id<Entity>,
+    ) -> Option<(usize, &[TypeId])> {
         let type_id = TypeId::of::<Component>();
 
         // Get the current archetype and entity index for the given entity
@@ -14,9 +17,10 @@ impl Archetypes {
             .expect("entity does not exist");
 
         // Get the new archetype index for the entity after removing the component
-        let new_archetype_index = self.archetypes[archetype_index]
+        let (new_archetype_index, archetype_created) = self.archetypes[archetype_index]
             .prev_archetype(type_id)
-            .expect("component does not exist in entity's archetype");
+            .map(|index| (index, false))
+            .unwrap_or_else(|| (self.push_prev::<Component>(archetype_index), true));
 
         // Insert the entity data into the new archetype
         let [source_archetype, target_archetype] = self
@@ -40,6 +44,12 @@ impl Archetypes {
         // Update the swapped entity's index in the ECS
         if let Some(swapped_entity) = swapped_entity {
             self.entities[unsafe { swapped_entity.cast() }] = (archetype_index, entity_index);
+        }
+
+        if archetype_created {
+            Some((new_archetype_index, target_archetype.component_ids()))
+        } else {
+            None
         }
     }
 }

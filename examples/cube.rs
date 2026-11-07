@@ -151,15 +151,14 @@ fn init_main_scene(
         .sphere();
 
     // Spawn the cube entity with its renderer and transform
-    let cube = world.spawn((
+    world.spawn((
+        colosseum::render::Renderer::new(cube_material, cube_mesh),
         colosseum::update::Transform::new_at((0.0, 0.0, 3.0)),
         Cube {
             mesh: cube_mesh,
             material: cube_material,
         },
-        colosseum::render::Renderer::new(cube_material, cube_mesh),
     ));
-    colosseum::debug_s!("cube", "Cube ID: {}", cube);
 
     // Create a sphere
     world.spawn((
@@ -290,7 +289,6 @@ fn input_handling(
     // Toggle visibility of the cube when the user presses V
     if input.key_down(colosseum::Key::V) {
         if cube.2.is_some() {
-            colosseum::debug_s!("cube", "Cube ID: {}", cube.0);
             commands.remove_component::<colosseum::render::Renderer>(*cube.0);
         } else {
             commands.add_component::<colosseum::render::Renderer>(

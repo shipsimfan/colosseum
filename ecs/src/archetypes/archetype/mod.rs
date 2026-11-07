@@ -1,6 +1,7 @@
 use crate::archetypes::Components;
 use std::any::TypeId;
 
+mod contract;
 mod extend;
 mod get;
 mod new;
