@@ -6,7 +6,7 @@ impl SubmissionNode {
     /// Submit the secondary command buffer associated with this node to the primary command buffer
     pub fn submit(
         &self,
-        world: &UnsafeWorldCell,
+        world: UnsafeWorldCell,
         primary_command_buffer: &mut VulkanCommandBuffer,
         frame_index: &FrameIndex,
     ) {

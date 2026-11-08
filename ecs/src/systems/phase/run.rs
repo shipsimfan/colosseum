@@ -5,7 +5,7 @@ impl Phase {
     /// Run all systems in the phase
     pub fn run(&mut self, world: UnsafeWorldCell) -> Result<()> {
         for system in &mut self.systems {
-            system.run(&world)?;
+            system.run(world.clone())?;
         }
 
         for &system in &self.deferred {

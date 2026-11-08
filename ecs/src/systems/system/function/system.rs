@@ -19,7 +19,7 @@ macro_rules! impl_fn_system {
             }
 
             #[allow(unused_variables, non_snake_case)]
-            fn run(&mut self, world: &UnsafeWorldCell) -> Result<()> {
+            fn run(&mut self, world: UnsafeWorldCell) -> Result<()> {
                 fn call_inner<$($params,)* R: SystemReturn>(
                     mut f: impl FnMut($($params),*) -> R,
                     $($params: $params),*
@@ -30,7 +30,7 @@ macro_rules! impl_fn_system {
                 let ($($params,)*) = self.state.as_mut().unwrap();
 
                 $(
-                    let $params = unsafe { $params::retrieve($params, world) };
+                    let $params = unsafe { $params::retrieve($params, world.clone()) };
                 )*
 
                 call_inner(&mut self.f, $($params),*)

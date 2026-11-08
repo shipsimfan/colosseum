@@ -26,11 +26,11 @@ macro_rules! impl_tuple_query_data {
             unsafe fn query<'world, 'state>(
                 archetype: usize,
                 index: usize,
-                world: &'world UnsafeWorldCell,
+                world: UnsafeWorldCell<'world>,
                 state: &'state Self::State,
             ) -> Self::Item<'world, 'state> {
                 let ($($params,)*) = state;
-                ($(unsafe { $params::query(archetype, index, world, $params) },)*)
+                ($(unsafe { $params::query(archetype, index, world.clone(), $params) },)*)
             }
         }
     };

@@ -27,7 +27,7 @@ impl System for FrameGraphSubmissionSystem {
 
     fn register_archetype(&mut self, _: usize, _: &[TypeId]) {}
 
-    fn run(&mut self, world: &UnsafeWorldCell) -> Result<()> {
+    fn run(&mut self, world: UnsafeWorldCell) -> Result<()> {
         let frame_index = unsafe {
             world
                 .get()
@@ -65,7 +65,7 @@ impl System for FrameGraphSubmissionSystem {
             node.add_pipeline_barriers(primary_command_buffer, barriers, &resources, &frame_index);
 
             // Submit the secondary command buffer to the primary command buffer
-            node.submit(world, primary_command_buffer, &frame_index);
+            node.submit(world.clone(), primary_command_buffer, &frame_index);
 
             barriers = &barriers[node.pipeline_barriers()..];
         }

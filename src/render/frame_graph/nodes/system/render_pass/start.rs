@@ -9,21 +9,14 @@ use alexandria::{
     },
     math::{Color4f, Linear, Recti, Vector2, Vector2i},
 };
-use colosseum_ecs::UnsafeWorldCell;
+use colosseum_ecs::World;
 
 impl FrameGraphRenderPass {
     /// Start the render pass
-    pub fn start(&self, cmd_buffer: &mut VulkanCommandBuffer, world: &UnsafeWorldCell) {
-        let resources = unsafe {
-            world
-                .get()
-                .get_resource_at_index::<FrameGraphResources>(self.resources)
-        };
-        let frame_index = unsafe {
-            world
-                .get()
-                .get_resource_at_index::<FrameIndex>(self.frame_index)
-        };
+    pub fn start(&self, cmd_buffer: &mut VulkanCommandBuffer, world: &World) {
+        let resources =
+            unsafe { world.get_resource_at_index::<FrameGraphResources>(self.resources) };
+        let frame_index = unsafe { world.get_resource_at_index::<FrameIndex>(self.frame_index) };
 
         let (color_attachment, mut size_and_layer_count) = match self.color_attachment {
             Some((color_attachment, load_op)) => {

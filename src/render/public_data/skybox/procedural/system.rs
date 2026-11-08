@@ -30,7 +30,7 @@ impl System for ProceduralSkyboxSystem {
         false
     }
 
-    fn run(&mut self, world: &UnsafeWorldCell) -> Result<()> {
+    fn run(&mut self, world: UnsafeWorldCell) -> Result<()> {
         let mut skybox = unsafe {
             world
                 .get_mut()

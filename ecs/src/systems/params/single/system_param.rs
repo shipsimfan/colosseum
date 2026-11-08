@@ -21,7 +21,7 @@ impl<'world, 'state, Data: 'static + QueryData, Filter: 'static + QueryFilter> S
 
     unsafe fn retrieve<'new_world, 'new_state>(
         state: &'new_state mut Self::State,
-        world: &'new_world UnsafeWorldCell,
+        world: UnsafeWorldCell<'new_world>,
     ) -> Self::Item<'new_world, 'new_state> {
         match unsafe { Query::<Data, Filter>::retrieve(state, world) }.next() {
             Some(value) => Single {
@@ -50,7 +50,7 @@ impl<'world, 'state, Data: 'static + QueryData, Filter: 'static + QueryFilter> S
 
     unsafe fn retrieve<'new_world, 'new_state>(
         state: &'new_state mut Self::State,
-        world: &'new_world UnsafeWorldCell,
+        world: UnsafeWorldCell<'new_world>,
     ) -> Self::Item<'new_world, 'new_state> {
         unsafe { Query::<Data, Filter>::retrieve(state, world) }
             .next()

@@ -24,7 +24,7 @@ pub trait QueryData {
     unsafe fn query<'world, 'state>(
         archetype: usize,
         index: usize,
-        world: &'world UnsafeWorldCell,
+        world: UnsafeWorldCell<'world>,
         state: &'state Self::State,
     ) -> Self::Item<'world, 'state>;
 }

@@ -14,7 +14,7 @@ impl<'res, Resource: 'static> SystemParam for Res<'res, Resource> {
 
     unsafe fn retrieve<'world, 'state>(
         state: &'state mut Self::State,
-        world: &'world UnsafeWorldCell,
+        world: UnsafeWorldCell<'world>,
     ) -> Self::Item<'world, 'state> {
         unsafe { world.get().get_resource_at_index(state.0) }
     }
@@ -34,7 +34,7 @@ impl<'res, Resource: 'static> SystemParam for Option<Res<'res, Resource>> {
 
     unsafe fn retrieve<'world, 'state>(
         state: &'state mut Self::State,
-        world: &'world UnsafeWorldCell,
+        world: UnsafeWorldCell<'world>,
     ) -> Self::Item<'world, 'state> {
         unsafe { world.get().try_get_resource_at_index(state.0) }
     }

@@ -33,7 +33,7 @@ fn get_command_buffer<Node: FrameGraphNode>(world: &mut World) -> usize {
 
 /// Submit the secondary command buffer associated with the given node to the primary command buffer
 fn submit_command_buffer<Node: FrameGraphNode>(
-    world: &UnsafeWorldCell,
+    world: UnsafeWorldCell,
     index: usize,
     primary_command_buffer: &mut VulkanCommandBuffer,
     frame_index: &FrameIndex,
