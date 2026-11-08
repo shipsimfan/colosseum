@@ -24,7 +24,7 @@ impl<'world, 'state, Components: QueryData, Filter: QueryFilter> Iterator
         };
 
         // Return the state for the current entity
-        let state = unsafe { Components::query(archetype, self.index, self.world, state) };
+        let state = unsafe { Components::query(archetype, self.index, self.world.clone(), state) };
         self.index += 1;
         Some(state)
     }

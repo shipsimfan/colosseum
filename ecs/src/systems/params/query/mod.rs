@@ -19,7 +19,7 @@ pub struct Query<'world, 'state, Components: QueryData, Filter: QueryFilter = ()
     state: &'state QueryState<Components, Filter>,
 
     /// Access to the world
-    world: &'world UnsafeWorldCell,
+    world: UnsafeWorldCell<'world>,
 
     /// The current archetype being queried
     archetype: usize,

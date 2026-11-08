@@ -27,7 +27,7 @@ impl System for CopySystem {
 
     fn register_archetype(&mut self, _: usize, _: &[TypeId]) {}
 
-    fn run(&mut self, world: &UnsafeWorldCell) -> Result<()> {
+    fn run(&mut self, world: UnsafeWorldCell) -> Result<()> {
         let mut copy_command_buffer = unsafe {
             world
                 .get_mut()

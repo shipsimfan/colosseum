@@ -16,7 +16,7 @@ impl<T: QueryData> QueryData for Option<T> {
     unsafe fn query<'world, 'state>(
         archetype: usize,
         index: usize,
-        world: &'world UnsafeWorldCell,
+        world: UnsafeWorldCell<'world>,
         state: &'state Self::State,
     ) -> Self::Item<'world, 'state> {
         state

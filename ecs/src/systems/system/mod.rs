@@ -16,7 +16,7 @@ pub trait System {
     fn initialize(&mut self, world: &mut World);
 
     /// Execute the system
-    fn run(&mut self, world: &UnsafeWorldCell) -> Result<()>;
+    fn run(&mut self, world: UnsafeWorldCell) -> Result<()>;
 
     /// Does the system have deferred actions?
     fn deferred(&self) -> bool {

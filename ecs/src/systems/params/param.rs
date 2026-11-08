@@ -20,7 +20,7 @@ pub trait SystemParam {
     /// Retrieves the system parameter from the given resources and archetypes
     unsafe fn retrieve<'world, 'state>(
         state: &'state mut Self::State,
-        world: &'world UnsafeWorldCell,
+        world: UnsafeWorldCell<'world>,
     ) -> Self::Item<'world, 'state>;
 }
 
@@ -47,11 +47,11 @@ macro_rules! impl_tuple_system_param {
             #[allow(unused_variables, non_snake_case)]
             unsafe fn retrieve<'world, 'state>(
                 state: &'state mut Self::State,
-                world: &'world UnsafeWorldCell,
+                world: UnsafeWorldCell<'world>,
             ) -> Self::Item<'world, 'state> {
                 let ($($params,)*) = state;
                 ($(
-                    unsafe { $params::retrieve($params, world) },
+                    unsafe { $params::retrieve($params, world.clone()) },
                 )*)
             }
         }

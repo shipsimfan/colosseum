@@ -14,7 +14,7 @@ impl SystemParam for &mut World {
 
     unsafe fn retrieve<'world, 'state>(
         _: &'state mut Self::State,
-        world: &'world UnsafeWorldCell,
+        world: UnsafeWorldCell<'world>,
     ) -> Self::Item<'world, 'state> {
         unsafe { world.get_mut() }
     }

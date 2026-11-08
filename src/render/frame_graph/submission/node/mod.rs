@@ -15,7 +15,7 @@ mod submit;
 /// A single node that must be submitted to the primary command buffer
 pub(in crate::render::frame_graph) struct SubmissionNode {
     /// The function to submit a secondary command buffer to the primary command buffer
-    submit_command_buffer: fn(&UnsafeWorldCell, usize, &mut VulkanCommandBuffer, &FrameIndex),
+    submit_command_buffer: fn(UnsafeWorldCell, usize, &mut VulkanCommandBuffer, &FrameIndex),
 
     /// The function to get the index of the command buffer for this node from the world
     get_command_buffer_index: fn(&mut World) -> usize,

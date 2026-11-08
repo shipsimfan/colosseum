@@ -37,7 +37,7 @@ impl<Node: FrameGraphNode, System: 'static + crate::ecs::System> crate::ecs::Sys
         self.system.register_archetype(archetype, components);
     }
 
-    fn run(&mut self, world: &UnsafeWorldCell) -> Result<()> {
+    fn run(&mut self, world: UnsafeWorldCell) -> Result<()> {
         let frame_index = unsafe {
             world
                 .get_mut()
@@ -67,7 +67,7 @@ impl<Node: FrameGraphNode, System: 'static + crate::ecs::System> crate::ecs::Sys
 
         // Start a render pass if needed
         if let Some(render_pass) = &self.render_pass {
-            render_pass.start(cmd_buffer, world);
+            render_pass.start(cmd_buffer, unsafe { world.get() });
         }
 
         self.system.run(world)?;
@@ -94,8 +94,8 @@ impl<Node: FrameGraphNode, System: 'static + crate::ecs::System> crate::ecs::Sys
     }
 }
 
-impl<Node: FrameGraphNode, System: 'static + crate::ecs::System> IntoSystem<UnsafeWorldCell>
-    for FrameGraphNodeSystem<Node, System>
+impl<'world, Node: FrameGraphNode, System: 'static + crate::ecs::System>
+    IntoSystem<UnsafeWorldCell<'world>> for FrameGraphNodeSystem<Node, System>
 {
     type System = Self;
 

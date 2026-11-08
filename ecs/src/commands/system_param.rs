@@ -16,7 +16,7 @@ impl SystemParam for &mut Commands {
 
     unsafe fn retrieve<'world, 'state>(
         state: &'state mut Self::State,
-        _: &'world UnsafeWorldCell,
+        _: UnsafeWorldCell<'world>,
     ) -> Self::Item<'world, 'state> {
         state
     }
