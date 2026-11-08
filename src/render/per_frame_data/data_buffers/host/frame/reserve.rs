@@ -1,3 +1,5 @@
+use colosseum_core::debug_s;
+
 use crate::{Result, render::FrameHostDataBuffer};
 
 impl<T> FrameHostDataBuffer<T> {
@@ -23,6 +25,7 @@ impl<T> FrameHostDataBuffer<T> {
         self.buffer = buffer;
         self.memory = memory;
         self.stride = stride;
+        self.capacity = new_capacity;
 
         Ok(())
     }
