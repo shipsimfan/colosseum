@@ -42,7 +42,7 @@ impl RenderGpuTransferQueue {
         let command_buffer = &mut self.command_pool[self.command_buffer_id];
 
         let vertices_size = mesh.vertices().len() * std::mem::size_of::<Vertex>();
-        let indices_size = mesh.indices().len() * std::mem::size_of::<u32>();
+        let indices_size = mesh.indices().len() * 3 * std::mem::size_of::<u32>();
         let size = vertices_size + indices_size;
         self.staging_buffer.resize(size)?;
 

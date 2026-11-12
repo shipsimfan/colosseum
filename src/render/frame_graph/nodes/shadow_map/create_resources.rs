@@ -52,7 +52,7 @@ impl<L: ShadowMapLight> ShadowMapNode<L> {
                 false,
                 VulkanPolygonMode::Fill,
                 VulkanCullModeFlag::Front,
-                VulkanFrontFace::CounterClockwise,
+                VulkanFrontFace::Clockwise,
                 false,
                 0.0,
                 0.0,

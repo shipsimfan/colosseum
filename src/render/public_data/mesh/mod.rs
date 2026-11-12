@@ -17,7 +17,7 @@ pub struct Mesh {
     vertices: Vec<Vertex>,
 
     /// The indices of the mesh
-    indices: Vec<u32>,
+    indices: Vec<[u32; 3]>,
 
     /// The buffer for the vertices of the mesh
     vertex_buffer: VulkanBuffer,

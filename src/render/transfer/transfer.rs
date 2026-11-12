@@ -8,7 +8,7 @@ impl GpuTransferQueue {
     /// Transfer a mesh to the GPU
     pub(in crate::render) fn transfer_mesh(&self, mesh: Mesh) -> Result<LoadingMesh> {
         let (sender, receiver) = single_value_channel(true)?;
-        let transfer = LoadingMesh::new(receiver);
+        let transfer = LoadingMesh::new_transfer(receiver);
 
         self.queue
             .send(GpuTransferCommand::Mesh { mesh, sender })

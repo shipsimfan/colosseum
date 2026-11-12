@@ -1,7 +1,7 @@
 use crate::render::Vertex;
 
 /// Create a new cylinder primitive mesh
-pub(in crate::render::public_data::primitives::new) fn cylinder() -> (Vec<Vertex>, Vec<u32>) {
+pub(in crate::render::public_data::primitives::new) fn cylinder() -> (Vec<Vertex>, Vec<[u32; 3]>) {
     const SEGMENTS: usize = 32;
     const HEIGHT: f32 = 2.0;
 
@@ -56,23 +56,22 @@ pub(in crate::render::public_data::primitives::new) fn cylinder() -> (Vec<Vertex
         let next = (i + 1) % SEGMENTS;
 
         // Side faces
-        indices.push(i as u32 * 2);
-        indices.push(i as u32 * 2 + 1);
-        indices.push(next as u32 * 2);
-
-        indices.push(next as u32 * 2);
-        indices.push(i as u32 * 2 + 1);
-        indices.push(next as u32 * 2 + 1);
+        indices.push([i as u32 * 2, next as u32 * 2, i as u32 * 2 + 1]);
+        indices.push([next as u32 * 2, next as u32 * 2 + 1, i as u32 * 2 + 1]);
 
         // Top face
-        indices.push(top_center);
-        indices.push(top_ring_start + i as u32);
-        indices.push(top_ring_start + next as u32);
+        indices.push([
+            top_center,
+            top_ring_start + next as u32,
+            top_ring_start + i as u32,
+        ]);
 
         // Bottom face
-        indices.push(bottom_center);
-        indices.push(bottom_ring_start + next as u32);
-        indices.push(bottom_ring_start + i as u32);
+        indices.push([
+            bottom_center,
+            bottom_ring_start + i as u32,
+            bottom_ring_start + next as u32,
+        ]);
     }
 
     (vertices, indices)

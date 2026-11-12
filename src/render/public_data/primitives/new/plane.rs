@@ -2,7 +2,7 @@ use crate::render::Vertex;
 use alexandria::math::Vector3f;
 
 /// Create a new plane primitive mesh
-pub(in crate::render::public_data::primitives::new) fn plane() -> (Vec<Vertex>, Vec<u32>) {
+pub(in crate::render::public_data::primitives::new) fn plane() -> (Vec<Vertex>, Vec<[u32; 3]>) {
     const WIDTH: usize = 10;
     const HEIGHT: usize = 10;
 
@@ -30,13 +30,8 @@ pub(in crate::render::public_data::primitives::new) fn plane() -> (Vec<Vertex>, 
             let bottom_left = (y * (WIDTH + 1) + x) as u32;
             let bottom_right = bottom_left + 1;
 
-            indices.push(top_left);
-            indices.push(bottom_left);
-            indices.push(top_right);
-
-            indices.push(top_right);
-            indices.push(bottom_left);
-            indices.push(bottom_right);
+            indices.push([top_left, top_right, bottom_left]);
+            indices.push([top_right, bottom_right, bottom_left]);
         }
     }
 

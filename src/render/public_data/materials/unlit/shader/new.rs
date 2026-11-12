@@ -67,7 +67,7 @@ impl UnlitShader {
             false,
             VulkanPolygonMode::Fill,
             VulkanCullModeFlag::Back,
-            VulkanFrontFace::CounterClockwise,
+            VulkanFrontFace::Clockwise,
             false,
             0.0,
             0.0,

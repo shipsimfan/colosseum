@@ -15,7 +15,7 @@ impl Assets {
         &mut self,
         name: &str,
         vertices: Vec<Vertex>,
-        indices: Vec<u32>,
+        indices: Vec<[u32; 3]>,
     ) -> Result<LoadingMesh> {
         // Create the vertex and index buffers
         let mut vertex_buffer = self
@@ -48,7 +48,7 @@ impl Assets {
             .device
             .create_buffer(
                 0,
-                indices.len() as u64 * std::mem::size_of::<u32>() as u64,
+                3 * indices.len() as u64 * std::mem::size_of::<u32>() as u64,
                 VulkanBufferUsageFlag::IndexBuffer | VulkanBufferUsageFlag::TransferDst,
                 VulkanSharingMode::Exclusive,
                 &[],

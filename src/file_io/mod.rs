@@ -6,6 +6,7 @@ mod operations;
 
 mod new;
 mod read_full_file;
+mod read_mesh_file;
 mod thread;
 mod write_full_file;
 

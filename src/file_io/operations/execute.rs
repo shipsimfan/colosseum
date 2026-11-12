@@ -6,6 +6,7 @@ impl FileIoOperation {
         match self {
             FileIoOperation::ReadFullFile(op) => op.execute(logger),
             FileIoOperation::WriteFullFile(op) => op.execute(logger),
+            FileIoOperation::ReadMeshFile(op) => op.execute(logger),
         }
     }
 }

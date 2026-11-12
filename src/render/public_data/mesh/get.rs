@@ -8,7 +8,7 @@ impl Mesh {
     }
 
     /// Get the indices of the mesh
-    pub fn indices(&self) -> &[u32] {
+    pub fn indices(&self) -> &[[u32; 3]] {
         &self.indices
     }
 

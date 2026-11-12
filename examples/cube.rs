@@ -33,13 +33,19 @@ const CUBE_VERTICES: &[colosseum::render::Vertex] = &[
     colosseum::render::Vertex::new((1.0, -1.0, 1.0), (0.0, 1.0, 1.0), (1.0, 0.0, 0.0)),
     colosseum::render::Vertex::new((1.0, -1.0, -1.0), (1.0, 1.0, 1.0), (1.0, 0.0, 0.0)),
 ];
-const CUBE_INDICES: &[u32] = &[
-    0, 1, 2, 1, 3, 2, // Front
-    4, 6, 5, 5, 6, 7, // Back
-    8, 9, 10, 10, 9, 11, // Top
-    12, 13, 14, 13, 15, 14, // Bottom
-    16, 17, 18, 17, 19, 18, // Left
-    20, 21, 22, 22, 21, 23, // Right
+const CUBE_INDICES: &[[u32; 3]] = &[
+    [0, 1, 2],
+    [1, 3, 2], // Front
+    [4, 6, 5],
+    [5, 6, 7], // Back
+    [8, 9, 10],
+    [10, 9, 11], // Top
+    [12, 13, 14],
+    [13, 15, 14], // Bottom
+    [16, 17, 18],
+    [17, 19, 18], // Left
+    [20, 21, 22],
+    [22, 21, 23], // Right
 ];
 
 colosseum::run!(
@@ -113,18 +119,19 @@ impl MeshLoading {
         mut self: colosseum::ecs::ResMut<MeshLoading>,
         mut next_scene: colosseum::ecs::ResMut<colosseum::update::NextScene>,
         mut assets: colosseum::ecs::ResMut<colosseum::render::Assets>,
-    ) {
+    ) -> colosseum::Result<()> {
         match &mut self.transfer {
             Some(transfer) => {
-                if !transfer.is_complete() {
-                    return;
+                if !transfer.is_complete(&mut assets) {
+                    return Ok(());
                 }
             }
-            None => return,
+            None => unreachable!(),
         };
 
-        let mesh = assets.complete_mesh(self.transfer.take().unwrap());
+        let mesh = assets.complete_mesh(self.transfer.take().unwrap())?;
         next_scene.set(move |world: &mut colosseum::ecs::World| init_main_scene(world, mesh));
+        Ok(())
     }
 }
 

@@ -1,7 +1,7 @@
 use crate::render::Vertex;
 
 /// Create a new cube primitive mesh
-pub(in crate::render::public_data::primitives::new) fn cube() -> (Vec<Vertex>, Vec<u32>) {
+pub(in crate::render::public_data::primitives::new) fn cube() -> (Vec<Vertex>, Vec<[u32; 3]>) {
     (CUBE_VERTICES.to_vec(), CUBE_INDICES.to_vec())
 }
 
@@ -40,11 +40,17 @@ const CUBE_VERTICES: &[Vertex] = &[
 ];
 
 /// The indices of a cube
-const CUBE_INDICES: &[u32] = &[
-    0, 1, 2, 1, 3, 2, // Front
-    4, 6, 5, 5, 6, 7, // Back
-    8, 9, 10, 9, 11, 10, // Left
-    12, 13, 14, 13, 15, 14, // Right
-    16, 17, 18, 17, 19, 18, // Top
-    20, 21, 22, 21, 23, 22, // Bottom
+const CUBE_INDICES: &[[u32; 3]] = &[
+    [2, 1, 0],
+    [2, 3, 1], // Front
+    [4, 5, 6],
+    [5, 7, 6], // Back
+    [8, 10, 9],
+    [9, 10, 11], // Left
+    [12, 14, 13],
+    [13, 14, 15], // Right
+    [16, 18, 17],
+    [17, 18, 19], // Top
+    [20, 22, 21],
+    [21, 22, 23], // Bottom
 ];

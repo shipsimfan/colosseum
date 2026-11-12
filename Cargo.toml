@@ -20,6 +20,7 @@ alexandria = { git = "https://github.com/shipsimfan/alexandria", features = [
 argparse.git = "https://github.com/shipsimfan/lib-argparse"
 data-format.git = "https://github.com/shipsimfan/lib-data-format"
 json.git = "https://github.com/shipsimfan/lib-json"
+parthenon.git = "https://github.com/shipsimfan/parthenon"
 time.git = "https://github.com/shipsimfan/lib-time"
 
 [profile.debug]
@@ -56,6 +57,7 @@ alexandria.workspace = true
 argparse.workspace = true
 data-format.workspace = true
 json.workspace = true
+parthenon.workspace = true
 time.workspace = true
 
 [build-dependencies]

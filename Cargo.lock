@@ -47,6 +47,7 @@ dependencies = [
  "colosseum-macros",
  "data-format",
  "json",
+ "parthenon",
  "time",
 ]
 
@@ -148,6 +149,15 @@ version = "4.0.2"
 source = "git+https://github.com/shipsimfan/lib-argparse#fb50575c0d8bcc8cccd785788456f002a88ec45e"
 dependencies = [
  "proc-macro-util",
+]
+
+[[package]]
+name = "parthenon"
+version = "1.0.1"
+source = "git+https://github.com/shipsimfan/parthenon#676304e9ad3bfb0577ff4878feeb6f38832dfb2d"
+dependencies = [
+ "dioptra",
+ "lct-streams",
 ]
 
 [[package]]

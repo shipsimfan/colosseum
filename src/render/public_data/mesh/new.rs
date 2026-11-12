@@ -8,7 +8,7 @@ impl Mesh {
     /// Create a new [`Mesh`]
     pub(in crate::render::public_data) fn new(
         vertices: Vec<Vertex>,
-        indices: Vec<u32>,
+        indices: Vec<[u32; 3]>,
         vertex_buffer: VulkanBuffer,
         index_buffer: VulkanBuffer,
         memory: GpuAllocatedMemory,

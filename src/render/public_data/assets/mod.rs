@@ -10,6 +10,7 @@ mod allocator;
 mod complete_mesh;
 mod create_mesh;
 mod get;
+mod load_mesh;
 mod new;
 mod remove_mesh;
 

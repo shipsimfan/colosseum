@@ -1,4 +1,5 @@
 mod read_full_file;
+mod read_mesh_file;
 mod write_full_file;
 
 mod execute;
@@ -6,6 +7,8 @@ mod from;
 
 pub use read_full_file::*;
 pub use write_full_file::*;
+
+pub(crate) use read_mesh_file::*;
 
 /// Operations that the file I/O thread can perform
 pub(in crate::file_io) enum FileIoOperation {
@@ -15,4 +18,7 @@ pub(in crate::file_io) enum FileIoOperation {
     /// Write the entire contents of a file from memory, creating the file if it doesn't exist or
     /// overwriting it if it does
     WriteFullFile(WriteFullFileOp),
+
+    /// Read a mesh file into memory
+    ReadMeshFile(ReadMeshFileOp),
 }

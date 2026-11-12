@@ -60,18 +60,18 @@ impl Primitives {
 /// Create a mesh primitive
 fn create_mesh_primitive(
     name: &str,
-    f: fn() -> (Vec<Vertex>, Vec<u32>),
+    f: fn() -> (Vec<Vertex>, Vec<[u32; 3]>),
     assets: &mut Assets,
     gpu_transfer_queue: &mut Option<(&mut RenderGpuTransferQueue, &mut VulkanQueue)>,
 ) -> Result<Id<Mesh>> {
     // Start the transfer
     let (vertices, indices) = f();
-    let loading_mesh = assets.create_mesh(name, vertices, indices)?;
+    let mut loading_mesh = assets.create_mesh(name, vertices, indices)?;
 
     // Wait for the transfer to complete
     match gpu_transfer_queue {
         Some((transfer_queue, queue)) => {
-            while !loading_mesh.is_complete() {
+            while !loading_mesh.is_complete(assets) {
                 transfer_queue.handle_command(queue, true)?;
             }
         }
@@ -81,5 +81,5 @@ fn create_mesh_primitive(
     }
 
     // Insert into the assets
-    Ok(assets.complete_mesh(loading_mesh))
+    assets.complete_mesh(loading_mesh)
 }
