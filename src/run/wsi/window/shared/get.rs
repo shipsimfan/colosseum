@@ -30,4 +30,14 @@ impl SharedWindow {
     pub(in crate::run::wsi::window) fn focused(&self) -> bool {
         self.focused.load(Ordering::Acquire)
     }
+
+    /// Get the current position of the mouse cursor
+    pub(in crate::run::wsi::window) fn mouse_position(&self) -> Vector2i {
+        decode_position(self.mouse_position.load(Ordering::Acquire))
+    }
+
+    /// Get the current scroll wheel delta
+    pub(in crate::run::wsi::window) fn mouse_wheel(&self) -> i32 {
+        self.mouse_wheel.swap(0, Ordering::Acquire)
+    }
 }

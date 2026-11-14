@@ -1,5 +1,5 @@
 use alexandria::math::{Vector2i, Vector2u};
-use std::sync::atomic::{AtomicBool, AtomicU64};
+use std::sync::atomic::{AtomicBool, AtomicI32, AtomicU64};
 
 mod get;
 mod new;
@@ -23,6 +23,13 @@ pub(in crate::run) struct SharedWindow {
 
     /// Whether the window is currently focused or not
     focused: AtomicBool,
+
+    /// The current position of the mouse cursor, encoded as a single `u64` with the x position in
+    /// the upper 32 bits and the y position in the lower 32 bits.
+    mouse_position: AtomicU64,
+
+    /// The current scroll wheel delta
+    mouse_wheel: AtomicI32,
 }
 
 /// Encode a [`Vector2i`] as a single `u64` with the x position in the upper 32 bits and the y

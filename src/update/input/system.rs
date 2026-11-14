@@ -9,7 +9,12 @@ impl Input {
             match event {
                 InputEvent::KeyDown { key } => self.set_key_down(key),
                 InputEvent::KeyUp { key } => self.set_key_up(key),
+                InputEvent::MouseButtonDown { button } => self.set_mouse_button_down(button),
+                InputEvent::MouseButtonUp { button } => self.set_mouse_button_up(button),
             }
         }
+
+        self.set_mouse_position(window.mouse_position());
+        self.set_mouse_wheel(window.mouse_wheel());
     }
 }

@@ -31,4 +31,15 @@ impl SharedWindow {
     pub(in crate::run::wsi) fn set_focused(&self, focused: bool) {
         self.focused.store(focused, Ordering::Release);
     }
+
+    /// Set the current position of the mouse cursor
+    pub(in crate::run::wsi) fn set_mouse_position(&self, position: Vector2i) {
+        self.mouse_position
+            .store(encode_position(position), Ordering::Release);
+    }
+
+    /// Add to the current scroll wheel delta
+    pub(in crate::run::wsi) fn add_mouse_wheel(&self, delta: i32) {
+        self.mouse_wheel.fetch_add(delta, Ordering::Release);
+    }
 }

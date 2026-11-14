@@ -3,7 +3,7 @@ use crate::run::wsi::{
     window::shared::{encode_position, encode_size},
 };
 use alexandria::math::{Vector2i, Vector2u};
-use std::sync::atomic::{AtomicBool, AtomicU64};
+use std::sync::atomic::{AtomicBool, AtomicI32, AtomicU64};
 
 impl SharedWindow {
     /// Create a new [`SharedWindow`] state
@@ -19,6 +19,8 @@ impl SharedWindow {
             fullscreen: AtomicBool::new(fullscreen),
             maximized: AtomicBool::new(maximized),
             focused: AtomicBool::new(true),
+            mouse_position: AtomicU64::new(0),
+            mouse_wheel: AtomicI32::new(0),
         }
     }
 }

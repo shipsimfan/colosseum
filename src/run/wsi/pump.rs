@@ -85,6 +85,23 @@ impl Wsi {
                     .ok();
             }
 
+            EventKind::MouseMove { position, .. } => {
+                self.shared_window.set_mouse_position(position);
+            }
+            EventKind::MouseButtonDown { button, .. } => {
+                self.input_sender
+                    .send(InputEvent::MouseButtonDown { button })
+                    .ok();
+            }
+            EventKind::MouseButtonUp { button, .. } => {
+                self.input_sender
+                    .send(InputEvent::MouseButtonUp { button })
+                    .ok();
+            }
+            EventKind::MouseWheel { delta, .. } => {
+                self.shared_window.add_mouse_wheel(delta);
+            }
+
             EventKind::User(UserEvent::SetFullscreen) => {
                 self.window.set_fullscreen(true).map_err(|error| {
                     new_error!("unable to set window to fullscreen - {}", error)
