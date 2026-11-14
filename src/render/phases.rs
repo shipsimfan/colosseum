@@ -46,7 +46,7 @@ pub(crate) fn execute_render_systems<Game: crate::Game>(
     let settings = indices.settings(world);
     let display_settings = settings.display_settings();
     let max_frame_rate = display_settings.maximum_frame_rate();
-    let min_frame_rate = display_settings.minimized_frame_rate();
+    let background_frame_rate = display_settings.background_frame_rate();
 
     if indices.try_swapchain(world).is_some() {
         let swapchain_ok = render_frame(world, indices)?;
@@ -54,9 +54,18 @@ pub(crate) fn execute_render_systems<Game: crate::Game>(
         indices.frame_index_mut(world).increment();
 
         if swapchain_ok {
-            if let Some(max_frame_rate) = max_frame_rate {
-                // Limit frame rate based on max_frame_rate
-                let frame_duration = Duration::from_secs_f32(1.0 / max_frame_rate);
+            if indices.window(world).focused() {
+                if let Some(max_frame_rate) = max_frame_rate {
+                    // Limit frame rate based on max_frame_rate
+                    let frame_duration = Duration::from_secs_f32(1.0 / max_frame_rate);
+                    let elapsed = last_render_time.elapsed();
+                    if elapsed < frame_duration {
+                        std::thread::sleep(frame_duration - elapsed);
+                    }
+                }
+            } else {
+                // Sleep for a short duration to limit background FPS
+                let frame_duration = Duration::from_secs_f32(1.0 / background_frame_rate);
                 let elapsed = last_render_time.elapsed();
                 if elapsed < frame_duration {
                     std::thread::sleep(frame_duration - elapsed);
@@ -78,7 +87,7 @@ pub(crate) fn execute_render_systems<Game: crate::Game>(
     }
 
     // Sleep for a short duration to limit background FPS
-    let frame_duration = Duration::from_secs_f32(1.0 / min_frame_rate);
+    let frame_duration = Duration::from_secs_f32(1.0 / background_frame_rate);
     let elapsed = last_render_time.elapsed();
     if elapsed < frame_duration {
         std::thread::sleep(frame_duration - elapsed);

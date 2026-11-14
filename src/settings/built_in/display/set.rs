@@ -45,9 +45,9 @@ impl DisplaySettings {
         self.shadow_quality = shadow_quality;
     }
 
-    /// Set the frame rate to run the game at when minimized
-    pub fn set_minimized_frame_rate(&mut self, minimized_frame_rate: f32) {
-        self.minimized_frame_rate = minimized_frame_rate;
+    /// Set the frame rate to run the game at when running in the background
+    pub fn set_background_frame_rate(&mut self, background_frame_rate: f32) {
+        self.background_frame_rate = background_frame_rate;
     }
 
     /// Set the maximum frame rate to run the game at

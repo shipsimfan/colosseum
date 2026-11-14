@@ -26,4 +26,9 @@ impl SharedWindow {
     pub(in crate::run::wsi) fn set_maximized(&self, maximized: bool) {
         self.maximized.store(maximized, Ordering::Release);
     }
+
+    /// Set whether the window is currently focused or not
+    pub(in crate::run::wsi) fn set_focused(&self, focused: bool) {
+        self.focused.store(focused, Ordering::Release);
+    }
 }

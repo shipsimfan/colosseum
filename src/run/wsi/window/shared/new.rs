@@ -18,6 +18,7 @@ impl SharedWindow {
             size: AtomicU64::new(encode_size(size)),
             fullscreen: AtomicBool::new(fullscreen),
             maximized: AtomicBool::new(maximized),
+            focused: AtomicBool::new(true),
         }
     }
 }

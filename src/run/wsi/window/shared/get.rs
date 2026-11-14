@@ -25,4 +25,9 @@ impl SharedWindow {
     pub(in crate::run::wsi::window) fn maximized(&self) -> bool {
         self.maximized.load(Ordering::Acquire)
     }
+
+    /// Get whether the window is currently focused or not
+    pub(in crate::run::wsi::window) fn focused(&self) -> bool {
+        self.focused.load(Ordering::Acquire)
+    }
 }

@@ -15,7 +15,7 @@ impl Default for DisplaySettings {
             gamma: 2.2,
             anti_aliasing: AntiAliasing::default(),
             shadow_quality: ShadowQuality::default(),
-            minimized_frame_rate: 30.0,
+            background_frame_rate: 30.0,
             maximum_frame_rate: None,
         }
     }

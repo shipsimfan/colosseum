@@ -20,6 +20,9 @@ pub(in crate::run) struct SharedWindow {
 
     /// Whether the window is currently maximized or not
     maximized: AtomicBool,
+
+    /// Whether the window is currently focused or not
+    focused: AtomicBool,
 }
 
 /// Encode a [`Vector2i`] as a single `u64` with the x position in the upper 32 bits and the y

@@ -61,6 +61,12 @@ impl Wsi {
             EventKind::WindowMaximized { .. } => {
                 self.shared_window.set_maximized(true);
             }
+            EventKind::WindowGainedFocus { .. } => {
+                self.shared_window.set_focused(true);
+            }
+            EventKind::WindowLostFocus { .. } => {
+                self.shared_window.set_focused(false);
+            }
 
             EventKind::KeyDown {
                 key_code, key_mod, ..

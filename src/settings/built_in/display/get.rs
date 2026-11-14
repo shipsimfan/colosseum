@@ -50,9 +50,9 @@ impl DisplaySettings {
         self.shadow_quality
     }
 
-    /// Get the frame rate to run the game at when minimized
-    pub fn minimized_frame_rate(&self) -> f32 {
-        self.minimized_frame_rate
+    /// Get the frame rate to run the game at when running in the background
+    pub fn background_frame_rate(&self) -> f32 {
+        self.background_frame_rate
     }
 
     /// Get the maximum frame rate to run the game at

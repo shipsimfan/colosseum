@@ -22,6 +22,11 @@ impl Window {
         self.shared.maximized()
     }
 
+    /// Get whether the window is currently focused or not
+    pub fn focused(&self) -> bool {
+        self.shared.focused()
+    }
+
     /// Get the next input event
     pub(crate) fn next_input(&self) -> Option<InputEvent> {
         self.inputs.try_recv().ok()
