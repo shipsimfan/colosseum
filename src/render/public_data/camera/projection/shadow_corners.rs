@@ -1,5 +1,6 @@
 use crate::render::CameraProjection;
 use alexandria::math::Vector3f;
+use std::f32::consts::PI;
 
 impl CameraProjection {
     /// Get the eight corners that make up this projection
@@ -10,13 +11,13 @@ impl CameraProjection {
     ) -> ([([Vector3f; 4], f32); 5], [f32; 4]) {
         match self {
             &CameraProjection::Perspective { fov_y, near, far } => {
-                perspective_corners(aspect, fov_y, near, far, lambda)
+                perspective_corners(aspect, fov_y * PI / 180.0, near, far, lambda)
             }
             &CameraProjection::InfinitePerspective {
                 fov_y,
                 near,
                 shadow_distance,
-            } => perspective_corners(aspect, fov_y, near, shadow_distance, lambda),
+            } => perspective_corners(aspect, fov_y * PI / 180.0, near, shadow_distance, lambda),
             &CameraProjection::Orthographic { size, near, far } => {
                 orthographic_corners(aspect, size, near, far, lambda)
             }

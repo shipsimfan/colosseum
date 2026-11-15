@@ -3,6 +3,7 @@ use crate::{
     render::{Camera, CameraProjection},
 };
 use alexandria::math::{Vector2f, Vector2i, Vector2u};
+use std::f32::consts::PI;
 
 impl Ray {
     /// Create a new [`Ray`] from a screen position
@@ -16,9 +17,12 @@ impl Ray {
 
         match camera.projection {
             CameraProjection::InfinitePerspective { fov_y, .. }
-            | CameraProjection::Perspective { fov_y, .. } => {
-                Ray::from_perspective(normalized_screen_position, aspect, fov_y, camera)
-            }
+            | CameraProjection::Perspective { fov_y, .. } => Ray::from_perspective(
+                normalized_screen_position,
+                aspect,
+                fov_y * PI / 180.0,
+                camera,
+            ),
             CameraProjection::Orthographic { size, .. } => {
                 Ray::from_orthographic(normalized_screen_position, aspect, size, camera)
             }
