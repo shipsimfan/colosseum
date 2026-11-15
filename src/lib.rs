@@ -12,6 +12,7 @@
 #![feature(const_trait_impl)]
 #![feature(const_type_name)]
 
+pub mod physics;
 pub mod render;
 pub mod update;
 
