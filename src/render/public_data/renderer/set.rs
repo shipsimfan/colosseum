@@ -3,8 +3,8 @@ use alexandria::Id;
 
 impl Renderer {
     /// Set the material used to render the object
-    pub fn set_material(&mut self, material: MaterialId) -> &mut Renderer {
-        self.material = material;
+    pub fn set_material<M: Into<MaterialId>>(&mut self, material: M) -> &mut Renderer {
+        self.material = material.into();
         self
     }
 

@@ -8,6 +8,7 @@ mod unlit;
 mod create;
 mod get;
 mod new;
+mod remove;
 
 pub use id::*;
 pub use lit_forward::*;

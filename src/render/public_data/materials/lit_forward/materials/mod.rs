@@ -5,6 +5,7 @@ use std::sync::Arc;
 mod create;
 mod get;
 mod new;
+mod remove;
 
 /// The items related to lit materials using forward rendering
 pub(in crate::render::public_data::materials) struct LitForwardMaterials {
